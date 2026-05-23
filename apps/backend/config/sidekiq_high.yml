@@ -1,0 +1,20 @@
+# HIGH-priority Sidekiq process.
+#
+# Queue → class mapping (in priority order):
+#   webhooks  — (reserved) any payment/webhook side-effect jobs enqueued by
+#               Spree::Api::V2::Storefront::Payments::* controllers. No
+#               consumer ships to this queue today, but it stays first so
+#               future webhook follow-up jobs never wait behind broadcasts.
+#   mailers   — ActionMailer::MailDeliveryJob (Spree order confirmations,
+#               password resets, devise-token-auth emails).
+#   default   — ApplicationJob default. Currently:
+#                 * Labor::RefreshProductAggregatesJob (vote recompute)
+#                 * Labor::Fiscal::ManualReceiptJob (was :fiscal, now :default)
+#
+# Sized to match the web pool: 5 worker threads → RAILS_MAX_THREADS=5,
+# AR pool ≥ 8 (see config/database.yml).
+:concurrency: 5
+:queues:
+  - webhooks
+  - mailers
+  - default

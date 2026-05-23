@@ -1,0 +1,25 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # Pool sizing accounts for 3 separate processes (web, sidekiq-high,
+  # sidekiq-low) each running ~5 threads. Per-process pool floor is 25
+  # to leave headroom for Mobility / ar_lazy_preload / ActiveStorage
+  # variant work that checks out extra connections. Postgres total
+  # connections used = 3 procs * pool — keep below max_connections on
+  # the shared Postgres (default 100, leaves room for pg_isready and
+  # rails console).
+  pool: <%= ENV.fetch('RAILS_DB_POOL', [ENV.fetch('RAILS_MAX_THREADS', 5).to_i * 3, 25].max) %>
+  checkout_timeout: <%= ENV.fetch('RAILS_DB_CHECKOUT_TIMEOUT', 10) %>
+  reaping_frequency: <%= ENV.fetch('RAILS_DB_REAPING_FREQUENCY', 10) %>
+  url: <%= ENV.fetch('DATABASE_URL', '') %>
+
+development:
+  <<: *default
+  database: labor_development
+
+test:
+  <<: *default
+  database: labor_test
+
+production:
+  <<: *default

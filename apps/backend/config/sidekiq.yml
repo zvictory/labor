@@ -1,0 +1,19 @@
+# Legacy single-process config. As of the Sidekiq split (A-1/A-2), the
+# real configs live in:
+#   * config/sidekiq_high.yml  — webhooks, mailers, default
+#   * config/sidekiq_low.yml   — broadcasts, telegram, delivery, active_storage
+#
+# Compose runs two processes, each with explicit `-C config/sidekiq_*.yml`.
+# This file is kept so that ad-hoc `bundle exec sidekiq` (no -C flag) and
+# tooling that probes config/sidekiq.yml still find every queue listed.
+# DO NOT add concurrency here — production sizing is per-process in the
+# sidekiq_high.yml / sidekiq_low.yml files.
+:concurrency: 5
+:queues:
+  - webhooks
+  - mailers
+  - default
+  - broadcasts
+  - telegram
+  - delivery
+  - active_storage

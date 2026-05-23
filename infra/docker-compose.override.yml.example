@@ -1,0 +1,18 @@
+# DEV ONLY. Do not use in production. Copy to docker-compose.override.yml
+# to enable host port forwarding for Postgres and Redis during local
+# development (e.g. to connect psql, redis-cli, or a GUI client from the
+# host machine).
+#
+#   cp docker-compose.override.yml.example docker-compose.override.yml
+#
+# docker-compose.override.yml is gitignored and merged automatically by
+# `docker compose up`. Never check it in.
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"

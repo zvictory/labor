@@ -1,0 +1,23 @@
+# LOW-priority Sidekiq process.
+#
+# Queue → class mapping (in priority order):
+#   broadcasts     — Labor::Campaigns::BroadcastWorker (10k-row fan-out to
+#                    Telegram subscribers). Isolated here so it cannot starve
+#                    payment webhook processing on the HIGH process.
+#   telegram       — (reserved) outbound Telegram notify jobs that may be
+#                    introduced when notify.ts callbacks are queued instead
+#                    of fired inline.
+#   delivery       — (reserved) Labor::Delivery::* follow-up jobs from the
+#                    Yandex / Express24 webhook controllers.
+#   active_storage — ActiveStorage::AnalyzeJob and PurgeJob. Image variant
+#                    work must not block webhook processing.
+#
+# Sized identically to sidekiq_high: 5 worker threads. Both processes
+# share the same DATABASE_URL but each gets its own AR pool from the
+# RAILS_DB_POOL formula in config/database.yml.
+:concurrency: 5
+:queues:
+  - broadcasts
+  - telegram
+  - delivery
+  - active_storage

@@ -1,0 +1,68 @@
+# Node
+node_modules/
+.npm
+*.log
+npm-debug.log*
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Docker compose local dev overrides
+infra/docker-compose.override.yml
+!infra/docker-compose.override.yml.example
+
+# Rails
+apps/backend/log/*.log
+apps/backend/tmp/
+apps/backend/storage/
+apps/backend/public/uploads/
+apps/backend/.byebug_history
+apps/backend/.env
+apps/backend/db/*.sqlite3*
+apps/backend/coverage/
+apps/backend/node_modules/
+
+# Large catalog data dumps (>100MB — exceeds GitHub file limit)
+apps/backend/db/catalog/billz_catalog_enriched.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage
+coverage/
+
+# Misc
+*.pem
+.vercel
+.cache/
+
+# Brand source files (large, AI files)
+apps/web/public/brand/*.ai
+apps/web/public/brand/*.psd
+
+# Local scratch
+tmp/
+
+# Antigravity reference bottle photos (downloaded by scripts/generate_image_prompts.py)
+apps/web/public/products/raw/
+
+# Reference (delete after migration)
+lelabo-clone/
