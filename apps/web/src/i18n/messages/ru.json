@@ -1,0 +1,370 @@
+{
+  "brand": {
+    "name": "Labor",
+    "tagline": "Парфюмерия для тех, кто слышит запахи"
+  },
+  "nav": {
+    "shop": "Магазин",
+    "brands": "Бренды",
+    "notes": "Ноты",
+    "perfumers": "Парфюмеры",
+    "finder": "Подбор",
+    "campaigns": "Кампании",
+    "wishlist": "Избранное",
+    "cart": "Корзина",
+    "account": "Кабинет",
+    "search": "Поиск",
+    "login": "Войти",
+    "logout": "Выйти"
+  },
+  "home": {
+    "hero": {
+      "headline": "Аромат как подпись",
+      "sub": "Селективная и нишевая парфюмерия с доставкой по Узбекистану",
+      "cta": "Смотреть каталог"
+    },
+    "sections": {
+      "newArrivals": "Новинки",
+      "featured": "Избранное",
+      "bestsellers": "Бестселлеры",
+      "byNotes": "По нотам",
+      "byBrand": "По брендам"
+    }
+  },
+  "product": {
+    "addToCart": "В корзину",
+    "outOfStock": "Нет в наличии",
+    "pricePerMl": "{price} / мл",
+    "volume": "Объем",
+    "brand": "Бренд",
+    "perfumer": "Парфюмер",
+    "year": "Год выпуска",
+    "concentration": "Концентрация",
+    "gender": {
+      "label": "Для кого",
+      "men": "Мужской",
+      "women": "Женский",
+      "unisex": "Унисекс"
+    },
+    "pyramid": "Пирамида аромата",
+    "topNotes": "Верхние ноты",
+    "heartNotes": "Средние ноты",
+    "baseNotes": "Базовые ноты",
+    "accords": "Основные аккорды",
+    "longevity": "Стойкость",
+    "sillage": "Шлейф",
+    "season": "Когда носить",
+    "seasons": { "winter": "Зима", "spring": "Весна", "summer": "Лето", "autumn": "Осень" },
+    "timeOfDay": { "day": "День", "evening": "Вечер", "night": "Ночь" },
+    "rating": "Оценка",
+    "ratings": {
+      "love": "Люблю",
+      "like": "Нравится",
+      "neutral": "Нейтрально",
+      "dislike": "Не нравится",
+      "hate": "Ненавижу"
+    },
+    "similar": "Похожие ароматы",
+    "compare": "Сравнить",
+    "reviews": "Отзывы",
+    "writeReview": "Написать отзыв"
+  },
+  "pdp": {
+    "longevityShort": "Стойк.",
+    "sillageShort": "Шлейф",
+    "cart": {
+      "add": "Добавить в корзину"
+    },
+    "actions": {
+      "inWishlist": "В избранном",
+      "addToWishlist": "Добавить в избранное",
+      "inCompare": "В сравнении",
+      "addToCompare": "Добавить к сравнению",
+      "compareFull": "Список сравнения заполнен (макс. {max})"
+    },
+    "accords": {
+      "title": "Основные аккорды"
+    },
+    "pyramid": {
+      "title": "Пирамида аромата",
+      "top": "Верхние ноты (Top)",
+      "heart": "Средние ноты (Heart)",
+      "base": "Базовые ноты (Base)"
+    },
+    "aggregates": {
+      "seasons": "Когда носить",
+      "timeTitle": "Время суток",
+      "loveTitle": "Оценки покупателей",
+      "basedOn": "На основе {count} оценок",
+      "season": {
+        "winter": "Зима",
+        "spring": "Весна",
+        "summer": "Лето",
+        "autumn": "Осень"
+      },
+      "time": {
+        "day": "День",
+        "evening": "Вечер",
+        "night": "Ночь"
+      },
+      "love": {
+        "love": "Люблю",
+        "like": "Нравится",
+        "neutral": "Нейтрально",
+        "dislike": "Не нравится",
+        "hate": "Ненавижу"
+      }
+    },
+    "vote": {
+      "title": "Оцените этот аромат",
+      "rating": "Ваша оценка",
+      "longevity": "Стойкость",
+      "sillage": "Шлейф",
+      "seasons": "Рекомендуемый сезон",
+      "timeTitle": "Рекомендуемое время суток",
+      "loveTitle": "Ваше отношение",
+      "submit": "Отправить оценку",
+      "saving": "Отправка…",
+      "saved": "Спасибо за вашу оценку!",
+      "signInRequired": "Пожалуйста, войдите, чтобы проголосовать",
+      "error": "Не удалось отправить оценку",
+      "season": {
+        "winter": "Зима",
+        "spring": "Весна",
+        "summer": "Лето",
+        "autumn": "Осень"
+      },
+      "time": {
+        "day": "День",
+        "evening": "Вечер",
+        "night": "Ночь"
+      },
+      "love": {
+        "love": "Люблю",
+        "like": "Нравится",
+        "neutral": "Нейтрально",
+        "dislike": "Не нравится",
+        "hate": "Ненавижу"
+      }
+    },
+    "similar": {
+      "title": "Похожие ароматы"
+    }
+  },
+  "cart": {
+    "title": "Корзина",
+    "empty": "Корзина пуста",
+    "emptyCta": "Перейти в каталог",
+    "checkout": "Оформить заказ",
+    "subtotal": "Подытог",
+    "shipping": "Доставка",
+    "tax": "НДС (12%)",
+    "total": "Итого",
+    "itemTotal": "Итого по позиции",
+    "proceed": "Оформить заказ",
+    "remove": "Удалить",
+    "quantity": "Количество",
+    "promoCode": "Промокод",
+    "apply": "Применить"
+  },
+  "checkout": {
+    "title": "Оформление заказа",
+    "contact": "Контактные данные",
+    "name": "Имя",
+    "phone": "Телефон",
+    "address": "Адрес доставки",
+    "city": "Город",
+    "street": "Улица",
+    "building": "Дом",
+    "apt": "Квартира",
+    "delivery": "Способ доставки",
+    "deliveryYandex": "Yandex",
+    "deliveryExpress24": "Express24",
+    "deliveryBts": "BTS",
+    "payment": "Способ оплаты",
+    "paymentClick": "Click",
+    "paymentPayme": "Payme",
+    "paymentUzum": "Uzum",
+    "comment": "Комментарий к заказу",
+    "submit": "Перейти к оплате",
+    "submitting": "Создаём заказ…",
+    "errorRequired": "Поле обязательно",
+    "errorPhone": "Введите корректный номер телефона",
+    "errorGeneric": "Не удалось оформить заказ"
+  },
+  "auth": {
+    "telegramLogin": "Войти через Telegram",
+    "telegramHint": "Безопасный вход через ваш аккаунт Telegram",
+    "widgetTitle": "Вход через Telegram",
+    "widgetExplainer": "Нажмите кнопку ниже, чтобы войти через ваш аккаунт Telegram. Мы получим только имя и публичную аватарку.",
+    "widgetMissingConfig": "Вход через Telegram временно недоступен: не настроен бот.",
+    "signingIn": "Выполняем вход…",
+    "signInError": "Не удалось войти"
+  },
+  "campaigns": {
+    "eyebrow": "Акции",
+    "title": "Кампании Labor",
+    "empty": "Сейчас активных кампаний нет",
+    "itemsCount": "{count} ароматов",
+    "until": "до {date}"
+  },
+  "catalog": {
+    "title": "Каталог",
+    "foundCount": "Найдено: {count}",
+    "empty": "Пока ничего не найдено",
+    "prev": "Назад",
+    "next": "Вперёд",
+    "pageOf": "Стр. {page} из {total}"
+  },
+  "search": {
+    "title": "Поиск",
+    "placeholder": "Поиск по ароматам, брендам, нотам…",
+    "idle": "Начните вводить запрос, чтобы найти аромат",
+    "loading": "Ищем…",
+    "empty": "Ничего не найдено по запросу «{query}»",
+    "errorLoading": "Не удалось загрузить результаты",
+    "resultsCount": "{count, plural, one {# результат} few {# результата} many {# результатов} other {# результата}}"
+  },
+  "compare": {
+    "drawer": {
+      "label": "Сравнение",
+      "remove": "Убрать",
+      "cta": "Открыть сравнение",
+      "clear": "Очистить"
+    }
+  },
+  "brands": {
+    "title": "Бренды",
+    "subtitle": "Селективная и нишевая парфюмерия в Labor",
+    "productCount": "{count, plural, one {# аромат} few {# аромата} many {# ароматов} other {# аромата}}",
+    "empty": "Бренды скоро появятся",
+    "viewAll": "Все бренды",
+    "detailDescription": "О бренде",
+    "detailProducts": "Ароматы",
+    "errorLoading": "Не удалось загрузить бренды"
+  },
+  "perfumers": {
+    "title": "Парфюмеры",
+    "subtitle": "Носы за каждым флаконом",
+    "productCount": "{count, plural, =0 {нет ароматов} one {# аромат} few {# аромата} other {# ароматов}}",
+    "empty": "Парфюмеры скоро появятся",
+    "detailFragrances": "Ароматы",
+    "bio": "Биография",
+    "country": "Страна",
+    "errorLoading": "Не удалось загрузить парфюмеров"
+  },
+  "campaign": {
+    "useCode": "Используйте код",
+    "until": "Действует до {date}"
+  },
+  "tg": {
+    "tabs": {
+      "home": "Главная",
+      "catalog": "Каталог",
+      "cart": "Корзина",
+      "orders": "Заказы"
+    },
+    "home": { "new": "Новинки", "all": "Все" },
+    "cart": {
+      "title": "Корзина",
+      "total": "Итого",
+      "checkout": "К оформлению",
+      "remove": "Удалить",
+      "empty": {
+        "title": "Корзина пуста",
+        "body": "Откройте каталог и добавьте любимый аромат",
+        "cta": "В каталог"
+      }
+    },
+    "checkout": {
+      "title": "Оформление",
+      "contact": "Контакт",
+      "name": "Имя",
+      "address": "Доставка",
+      "city": "Город",
+      "street": "Улица, дом, квартира",
+      "delivery": "Способ доставки",
+      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "eta": "{minutes} мин",
+      "payment": "Оплата",
+      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "При получении" },
+      "promo": "Промокод",
+      "promoPlaceholder": "LABOR2026",
+      "subtotal": "Товары",
+      "shipping": "Доставка",
+      "total": "К оплате",
+      "pay": "Оплатить",
+      "submitting": "Создаём заказ…",
+      "quote": { "error": "Не удалось рассчитать доставку" },
+      "error": { "generic": "Не удалось оформить заказ" }
+    },
+    "orders": {
+      "title": "Мои заказы",
+      "loading": "Загрузка…",
+      "empty": "У вас пока нет заказов",
+      "state": {
+        "cart": "В корзине",
+        "address": "Адрес",
+        "delivery": "Доставка",
+        "payment": "Оплата",
+        "confirm": "Подтверждение",
+        "complete": "Готов",
+        "canceled": "Отменён"
+      }
+    },
+    "pdp": { "add": "В корзину" },
+    "localeSwitcher": {
+      "label": "Язык интерфейса",
+      "names": {
+        "ru": "Русский",
+        "en": "English",
+        "uz": "Oʻzbekcha",
+        "uzc": "Ўзбекча"
+      }
+    }
+  },
+  "notes": {
+    "title": "Ольфакторная библиотека нот",
+    "subtitle": "Исследуйте ключевые парфюмерные ингредиенты, лежащие в основе нашей селективной коллекции",
+    "eyebrow": "ЭССЕНЦИЯ И ХАРАКТЕР",
+    "productCount": "{count, plural, =0 {Нет ароматов} one {# аромат} few {# аромата} many {# ароматов} other {# ароматов}}",
+    "family": "Семейство",
+    "empty": "Ноты пока недоступны",
+    "detailProducts": "Ароматы с этой нотой",
+    "errorLoading": "Не удалось загрузить ноты"
+  },
+  "common": {
+    "loading": "Загрузка…",
+    "error": "Что-то пошло не так",
+    "retry": "Повторить",
+    "all": "Все",
+    "more": "Ещё",
+    "back": "Назад",
+    "next": "Далее",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "notFound": "Страница не найдена",
+    "backHome": "На главную"
+  },
+  "account": {
+    "greeting": "Личный кабинет",
+    "viewOrders": "Мои заказы",
+    "login": "Пожалуйста, войдите, чтобы продолжить",
+    "loggingIn": "Войти через Telegram",
+    "ordersTitle": "Мои заказы",
+    "orderNumber": "Заказ",
+    "orderState": "Статус",
+    "orderDate": "Дата",
+    "orderTotal": "Итого",
+    "empty": "У вас пока нет заказов",
+    "emptyCta": "Перейти в каталог",
+    "detailTitle": "Детали заказа",
+    "detailLineItems": "Состав заказа",
+    "detailShipping": "Адрес доставки",
+    "detailShipmentTracking": "Отслеживание",
+    "detailPayments": "Оплата",
+    "detailNoTracking": "Трек-номер не назначен",
+    "loading": "Загрузка…",
+    "error": "Не удалось загрузить данные"
+  }
+}

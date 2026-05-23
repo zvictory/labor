@@ -1,0 +1,13 @@
+/*
+ * Spree Admin Tailwind CSS entry point for Labor.
+ * Imports the Spree Admin base styles and scans host app admin code.
+ * $SPREE_ADMIN_PATH and $SPREE_ENGINE_SOURCES are resolved at build time.
+ */
+
+@import "$SPREE_ADMIN_PATH/app/assets/tailwind/spree/admin/index.css";
+
+/* $SPREE_ENGINE_SOURCES */
+
+@source "../../views/spree/admin/**/*.erb";
+@source "../../helpers/spree/admin/**/*.rb";
+@source "../../javascript/spree/admin/**/*.js";

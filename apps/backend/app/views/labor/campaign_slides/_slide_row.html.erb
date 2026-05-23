@@ -1,0 +1,28 @@
+<tr id="<%= dom_id(slide) %>">
+  <td><%= slide.position %></td>
+  <td><%= Mobility.with_locale(:ru) { slide.title } %></td>
+  <td>
+    <% if slide.image_url.present? %>
+      <%= image_tag slide.image_url, style: 'max-height: 40px;' %>
+    <% else %>
+      <span class="text-muted">—</span>
+    <% end %>
+  </td>
+  <td>
+    <% if slide.link_url.present? %>
+      <small><%= truncate(slide.link_url, length: 40) %></small>
+    <% else %>
+      <span class="text-muted">—</span>
+    <% end %>
+  </td>
+  <td class="actions text-right">
+    <%= link_to 'Edit',
+                spree.edit_admin_labor_campaign_slide_path(campaign, slide),
+                class: 'btn btn-light btn-sm' %>
+    <%= link_to 'Delete',
+                spree.admin_labor_campaign_slide_path(campaign, slide),
+                method: :delete,
+                data: { confirm: 'Are you sure?' },
+                class: 'btn btn-danger btn-sm' %>
+  </td>
+</tr>

@@ -1,0 +1,14 @@
+<% admin_breadcrumb('Notes', spree.admin_labor_notes_path) %>
+<% admin_breadcrumb(@note.name) %>
+
+<% content_for :page_title do %>
+  Edit Note: <%= @note.name %>
+<% end %>
+
+<%= form_with model: @note,
+              url: spree.admin_labor_note_path(@note),
+              method: :patch,
+              local: true,
+              html: { class: 'edit_labor_note' } do |f| %>
+  <%= render 'form', f: f %>
+<% end %>

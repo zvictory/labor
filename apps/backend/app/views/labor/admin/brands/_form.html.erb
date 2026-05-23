@@ -1,0 +1,60 @@
+<fieldset class="no-border-bottom">
+  <legend>Brand</legend>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :slug %>
+        <%= f.text_field :slug, class: 'form-control', required: true %>
+        <small class="form-text text-muted">lowercase, digits, dashes only</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :country %>
+        <%= f.text_field :country, class: 'form-control', placeholder: 'FR, UZ, ...' %>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :founded_year %>
+        <%= f.number_field :founded_year, class: 'form-control', min: 1700, max: Date.current.year %>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :website %>
+        <%= f.url_field :website, class: 'form-control', placeholder: 'https://...' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group form-check" style="margin-top: 2rem;">
+        <%= f.check_box :niche, class: 'form-check-input' %>
+        <%= f.label :niche, class: 'form-check-label' %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group form-check" style="margin-top: 2rem;">
+        <%= f.check_box :active, class: 'form-check-input' %>
+        <%= f.label :active, class: 'form-check-label' %>
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<div class="form-actions">
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', spree.admin_labor_brands_path, class: 'btn btn-light' %>
+</div>

@@ -1,0 +1,83 @@
+source 'https://rubygems.org'
+
+ruby '3.3.5'
+
+# Bumped 7.1 → 7.2 on 2026-05-22 alongside Spree 5.4 (Rails ≥ 7.2 required).
+# Bumped 7.2 → 8.1 on 2026-05-22 — Spree 5.4 supports `>= 7.2, < 8.2`, so 8.1.x
+# is the highest patch series allowed. Bundler will refuse 8.2+ until Spree
+# relaxes the constraint, which is the desired safety rail.
+gem 'rails', '~> 8.1.0'
+gem 'pg', '~> 1.5'
+gem 'puma', '~> 6.4'
+# Asset pipeline: Spree 5 admin ships compiled Tailwind CSS via tailwindcss-rails,
+# which enhances `assets:precompile` at load time and aborts Rake if the task
+# is absent. Propshaft (Rails 7.2 default) provides that task without the
+# Sprockets baggage. Required even for our otherwise-headless app.
+gem 'propshaft', '~> 1.1'
+gem 'bootsnap', require: false
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+# Ruby 3.5 removes ostruct from the default gems. Pin explicitly so existing
+# OpenStruct usage in Spree + transitive deps keeps working when we bump Ruby.
+gem 'ostruct', '~> 0.6'
+
+# Spree headless: API + admin only, no default storefront.
+# Migrated to 5.4.x on 2026-05-22 (was 4.8.x).
+# Note: in 5.x, `spree_backend` was renamed to `spree_admin`, and we avoid
+# the `spree` meta-gem because it transitively pulls in `spree_storefront`
+# (we have a Next.js storefront and disable Spree's).
+gem 'spree_core', '~> 5.4.0'
+gem 'spree_admin', '~> 5.4.0'
+gem 'spree_api', '~> 5.4.0'
+gem 'spree_emails', '~> 5.4.0'
+# spree_sample is paused upstream at 5.3.x — dev-only sample data, fine on lag.
+gem 'spree_sample', '~> 5.3.0', group: :development
+
+# Auth: Spree ships with devise + devise-token_auth for headless flows
+gem 'devise', '~> 4.9'
+gem 'devise_token_auth', '~> 1.2'
+
+# Async + background
+gem 'redis', '~> 5.2'
+gem 'sidekiq', '~> 8.0'
+# Rails 7.2+ accepts kwargs in RedisCacheStore — no need to pin connection_pool.
+
+# CORS for headless API (storefront + mini-app cross-origin)
+gem 'rack-cors', '~> 2.0'
+
+# Translations for catalog (product name/desc per locale)
+gem 'mobility', '~> 1.3'
+
+# Image/storage
+gem 'image_processing', '~> 1.13'
+gem 'aws-sdk-s3', '~> 1.160', require: false
+
+# JSON API serializers
+gem 'jsonapi-serializer', '~> 2.2'
+
+# HTTP for payment/delivery adapters
+gem 'faraday', '~> 2.10'
+gem 'faraday-retry', '~> 2.2'
+
+# CSV (BTS export)
+gem 'csv'
+
+# Telegram initData HMAC verification — pure stdlib (openssl), no gem needed
+
+group :development, :test do
+  gem 'debug', platforms: %i[mri mingw x64_mingw]
+  gem 'rspec-rails', '~> 7.0'
+  gem 'factory_bot_rails', '~> 6.4'
+  gem 'faker', '~> 3.4'
+  gem 'dotenv-rails', '~> 3.1'
+end
+
+group :development do
+  gem 'web-console'
+  gem 'listen', '~> 3.9'
+  gem 'spring'
+end
+
+group :test do
+  gem 'webmock', '~> 3.24'
+  gem 'vcr', '~> 6.3'
+end

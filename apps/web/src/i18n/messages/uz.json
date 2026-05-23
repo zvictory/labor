@@ -1,0 +1,361 @@
+{
+  "brand": {
+    "name": "Labor",
+    "tagline": "Hidlarni eshitganlar uchun parfyumeriya"
+  },
+  "nav": {
+    "shop": "Doʻkon",
+    "brands": "Brendlar",
+    "notes": "Notalar",
+    "perfumers": "Parfyumerlar",
+    "finder": "Tanlash",
+    "campaigns": "Aksiyalar",
+    "wishlist": "Sevimlilar",
+    "cart": "Savat",
+    "account": "Kabinet",
+    "search": "Qidirish",
+    "login": "Kirish",
+    "logout": "Chiqish"
+  },
+  "home": {
+    "hero": {
+      "headline": "Imzo kabi hid",
+      "sub": "Oʻzbekiston boʻylab yetkazib beriladigan selektiv va nisha parfyumeriya",
+      "cta": "Katalogni koʻrish"
+    },
+    "sections": {
+      "newArrivals": "Yangiliklar",
+      "featured": "Tanlangan",
+      "bestsellers": "Eng sotiladiganlar",
+      "byNotes": "Notalar boʻyicha",
+      "byBrand": "Brendlar boʻyicha"
+    }
+  },
+  "product": {
+    "addToCart": "Savatga",
+    "outOfStock": "Sotuvda yoʻq",
+    "pricePerMl": "{price} / ml",
+    "volume": "Hajmi",
+    "brand": "Brend",
+    "perfumer": "Parfyumer",
+    "year": "Chiqarilgan yil",
+    "concentration": "Konsentratsiya",
+    "gender": { "label": "Kim uchun", "men": "Erkak", "women": "Ayol", "unisex": "Uniseks" },
+    "pyramid": "Hid piramidasi",
+    "topNotes": "Yuqori notalar",
+    "heartNotes": "Oʻrta notalar",
+    "baseNotes": "Asosiy notalar",
+    "accords": "Asosiy akkordlar",
+    "longevity": "Davomiyligi",
+    "sillage": "Iz qoldirishi",
+    "season": "Qachon kiyish",
+    "seasons": { "winter": "Qish", "spring": "Bahor", "summer": "Yoz", "autumn": "Kuz" },
+    "timeOfDay": { "day": "Kunduz", "evening": "Kech", "night": "Tun" },
+    "rating": "Baho",
+    "ratings": {
+      "love": "Yaxshi koʻraman",
+      "like": "Yoqadi",
+      "neutral": "Neytral",
+      "dislike": "Yoqmaydi",
+      "hate": "Yomon koʻraman"
+    },
+    "similar": "Oʻxshash hidlar",
+    "compare": "Solishtirish",
+    "reviews": "Sharhlar",
+    "writeReview": "Sharh yozish"
+  },
+  "pdp": {
+    "longevityShort": "Davom.",
+    "sillageShort": "Iz",
+    "cart": {
+      "add": "Savatga qoʻshish"
+    },
+    "actions": {
+      "inWishlist": "Sevimlilarda",
+      "addToWishlist": "Saralanganlarga qoʻshish",
+      "inCompare": "Solishtirishda",
+      "addToCompare": "Solishtirishga qoʻshish",
+      "compareFull": "Taqqoslash roʻyxati toʻla (maks. {max})"
+    },
+    "accords": {
+      "title": "Asosiy akkordlar"
+    },
+    "pyramid": {
+      "title": "Hid piramidasi",
+      "top": "Yuqori notalar (Top)",
+      "heart": "Oʻrta notalar (Heart)",
+      "base": "Asosiy notalar (Base)"
+    },
+    "aggregates": {
+      "seasons": "Qaysi faslda kiyish",
+      "timeTitle": "Kunning qaysi vaqtida",
+      "loveTitle": "Foydalanuvchilar bahosi",
+      "basedOn": "{count} ta ovoz asosida",
+      "season": {
+        "winter": "Qish",
+        "spring": "Bahor",
+        "summer": "Yoz",
+        "autumn": "Kuz"
+      },
+      "time": {
+        "day": "Kunduz",
+        "evening": "Kech",
+        "night": "Tun"
+      },
+      "love": {
+        "love": "Yaxshi koʻraman",
+        "like": "Yoqadi",
+        "neutral": "Neytral",
+        "dislike": "Yoqmaydi",
+        "hate": "Yomon koʻraman"
+      }
+    },
+    "vote": {
+      "title": "Bu hidni baholang",
+      "rating": "Sizning bahoingiz",
+      "longevity": "Davomiyligi",
+      "sillage": "Iz qoldirishi",
+      "seasons": "Tavsiya etilgan fasllar",
+      "timeTitle": "Tavsiya etilgan vaqt",
+      "loveTitle": "Sizning hissingiz",
+      "submit": "Bahoni joʻnatish",
+      "saving": "Yuborilmoqda…",
+      "saved": "Bahoingiz uchun rahmat!",
+      "signInRequired": "Baholash uchun tizimga kiring",
+      "error": "Baholashda xatolik yuz berdi",
+      "season": {
+        "winter": "Qish",
+        "spring": "Bahor",
+        "summer": "Yoz",
+        "autumn": "Kuz"
+      },
+      "time": {
+        "day": "Kunduz",
+        "evening": "Kech",
+        "night": "Tun"
+      },
+      "love": {
+        "love": "Yaxshi koʻraman",
+        "like": "Yoqadi",
+        "neutral": "Neytral",
+        "dislike": "Yoqmaydi",
+        "hate": "Yomon koʻraman"
+      }
+    },
+    "similar": {
+      "title": "Oʻxshash hidlar"
+    }
+  },
+  "cart": {
+    "title": "Savat",
+    "empty": "Savat boʻsh",
+    "emptyCta": "Katalogga oʻtish",
+    "checkout": "Buyurtma berish",
+    "subtotal": "Oraliq summa",
+    "shipping": "Yetkazib berish",
+    "tax": "QQS (12%)",
+    "total": "Jami",
+    "itemTotal": "Jami",
+    "proceed": "Buyurtma berish",
+    "remove": "Oʻchirish",
+    "quantity": "Miqdor",
+    "promoCode": "Promokod",
+    "apply": "Qoʻllash"
+  },
+  "checkout": {
+    "title": "Buyurtma rasmiylashtirish",
+    "contact": "Aloqa maʼlumotlari",
+    "name": "Ism",
+    "phone": "Telefon",
+    "address": "Yetkazib berish manzili",
+    "city": "Shahar",
+    "street": "Koʻcha",
+    "building": "Uy",
+    "apt": "Xonadon",
+    "delivery": "Yetkazib berish usuli",
+    "deliveryYandex": "Yandex",
+    "deliveryExpress24": "Express24",
+    "deliveryBts": "BTS",
+    "payment": "Toʻlov usuli",
+    "paymentClick": "Click",
+    "paymentPayme": "Payme",
+    "paymentUzum": "Uzum",
+    "comment": "Buyurtmaga izoh",
+    "submit": "Toʻlovga oʻtish",
+    "submitting": "Buyurtma yaratilmoqda…",
+    "errorRequired": "Maydon toʻldirilishi shart",
+    "errorPhone": "Toʻgʻri telefon raqamini kiriting",
+    "errorGeneric": "Buyurtma rasmiylashtirilmadi"
+  },
+  "auth": {
+    "telegramLogin": "Telegram orqali kirish",
+    "telegramHint": "Telegram akkauntingiz orqali xavfsiz kirish",
+    "widgetTitle": "Telegram orqali kirish",
+    "widgetExplainer": "Telegram akkauntingiz orqali kirish uchun quyidagi tugmani bosing. Biz faqat ismingizni va ommaviy avatarni olamiz.",
+    "widgetMissingConfig": "Telegram orqali kirish hozircha mavjud emas: bot sozlanmagan.",
+    "signingIn": "Kirilmoqda…",
+    "signInError": "Kirib bo‘lmadi"
+  },
+  "campaigns": {
+    "eyebrow": "Aksiyalar",
+    "title": "Labor kampaniyalari",
+    "empty": "Hozircha faol kampaniya yo'q",
+    "itemsCount": "{count} ta atir",
+    "until": "{date} gacha"
+  },
+  "catalog": {
+    "title": "Katalog",
+    "foundCount": "Topildi: {count}",
+    "empty": "Hozircha hech narsa topilmadi",
+    "prev": "Orqaga",
+    "next": "Oldinga",
+    "pageOf": "{page}-bet, jami {total}"
+  },
+  "search": {
+    "title": "Qidiruv",
+    "placeholder": "Atirlar, brendlar, notalar boʻyicha qidirish…",
+    "idle": "Aromatni topish uchun yozishni boshlang",
+    "loading": "Qidirilmoqda…",
+    "empty": "“{query}” boʻyicha hech narsa topilmadi",
+    "errorLoading": "Natijalarni yuklab boʻlmadi",
+    "resultsCount": "{count, plural, one {# natija} other {# ta natija}}"
+  },
+  "compare": {
+    "drawer": {
+      "label": "Solishtirish",
+      "remove": "O'chirish",
+      "cta": "Solishtirishni ochish",
+      "clear": "Tozalash"
+    }
+  },
+  "brands": {
+    "title": "Brendlar",
+    "subtitle": "Labor'dagi nicha va selektiv parfyumeriya",
+    "productCount": "{count, plural, one {# atir} other {# atir}}",
+    "empty": "Hozircha brendlar yo'q",
+    "viewAll": "Barcha brendlar",
+    "detailDescription": "Brend haqida",
+    "detailProducts": "Atirlar",
+    "errorLoading": "Brendlarni yuklab bo'lmadi"
+  },
+  "perfumers": {
+    "title": "Parfyumerlar",
+    "subtitle": "Har bir hidning ortidagi ustalar",
+    "productCount": "{count, plural, =0 {hidlar yoʻq} one {# hid} other {# hid}}",
+    "empty": "Parfyumerlar tez orada qoʻshiladi",
+    "detailFragrances": "Hidlar",
+    "bio": "Biografiya",
+    "country": "Mamlakat",
+    "errorLoading": "Parfyumerlarni yuklab boʻlmadi"
+  },
+  "campaign": {
+    "useCode": "Promokod",
+    "until": "{date} gacha amal qiladi"
+  },
+  "tg": {
+    "tabs": {
+      "home": "Asosiy",
+      "catalog": "Katalog",
+      "cart": "Savat",
+      "orders": "Buyurtmalar"
+    },
+    "home": { "new": "Yangi", "all": "Hammasi" },
+    "cart": {
+      "title": "Savat",
+      "total": "Jami",
+      "checkout": "Rasmiylashtirish",
+      "remove": "O'chirish",
+      "empty": { "title": "Savat bo'sh", "body": "Katalogni oching va atir tanlang", "cta": "Katalogga" }
+    },
+    "checkout": {
+      "title": "Buyurtma",
+      "contact": "Aloqa",
+      "name": "Ism",
+      "address": "Yetkazib berish",
+      "city": "Shahar",
+      "street": "Ko'cha, uy, xonadon",
+      "delivery": "Yetkazish",
+      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "eta": "{minutes} daqiqa",
+      "payment": "To'lov",
+      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "Olganda naqd" },
+      "promo": "Promokod",
+      "promoPlaceholder": "LABOR2026",
+      "subtotal": "Mahsulotlar",
+      "shipping": "Yetkazish",
+      "total": "Jami",
+      "pay": "To'lash",
+      "submitting": "Buyurtma yaratilmoqda…",
+      "quote": { "error": "Yetkazishni hisoblab bo'lmadi" },
+      "error": { "generic": "Buyurtma berib bo'lmadi" }
+    },
+    "orders": {
+      "title": "Mening buyurtmalarim",
+      "loading": "Yuklanmoqda…",
+      "empty": "Hali buyurtmalaringiz yo'q",
+      "state": {
+        "cart": "Savatda",
+        "address": "Manzil",
+        "delivery": "Yetkazish",
+        "payment": "To'lov",
+        "confirm": "Tasdiqlash",
+        "complete": "Tayyor",
+        "canceled": "Bekor qilingan"
+      }
+    },
+    "pdp": { "add": "Savatga" },
+    "localeSwitcher": {
+      "label": "Interfeys tili",
+      "names": {
+        "ru": "Русский",
+        "en": "English",
+        "uz": "Oʻzbekcha",
+        "uzc": "Ўзбекча"
+      }
+    }
+  },
+  "notes": {
+    "title": "Olfaktor notalar kutubxonasi",
+    "subtitle": "Bizning selektiv toʻplamimiz asosini tashkil etuvchi asosiy atir notalarini kashf eting",
+    "eyebrow": "MOHIYAT VA XARAKTER",
+    "productCount": "{count, plural, =0 {Atirlar yoʻq} one {# atir} other {# atir}}",
+    "family": "Oilasi",
+    "empty": "Notalar hali mavjud emas",
+    "detailProducts": "Ushbu nota mavjud atirlar",
+    "errorLoading": "Notalarni yuklab boʻlmadi"
+  },
+  "common": {
+    "loading": "Yuklanmoqda…",
+    "error": "Nimadir xato ketdi",
+    "retry": "Qayta urinish",
+    "all": "Hammasi",
+    "more": "Yana",
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "notFound": "Sahifa topilmadi",
+    "backHome": "Bosh sahifaga"
+  },
+  "account": {
+    "greeting": "Shaxsiy kabinet",
+    "viewOrders": "Buyurtmalarim",
+    "login": "Davom etish uchun tizimga kiring",
+    "loggingIn": "Telegram orqali kirish",
+    "ordersTitle": "Buyurtmalarim",
+    "orderNumber": "Buyurtma",
+    "orderState": "Holati",
+    "orderDate": "Sana",
+    "orderTotal": "Jami",
+    "empty": "Sizda hali buyurtmalar yo'q",
+    "emptyCta": "Katalogga o'tish",
+    "detailTitle": "Buyurtma tafsilotlari",
+    "detailLineItems": "Buyurtma tarkibi",
+    "detailShipping": "Yetkazish manzili",
+    "detailShipmentTracking": "Kuzatuv",
+    "detailPayments": "To'lov",
+    "detailNoTracking": "Kuzatuv raqami berilmagan",
+    "loading": "Yuklanmoqda…",
+    "error": "Ma'lumotlarni yuklab bo'lmadi"
+  }
+}

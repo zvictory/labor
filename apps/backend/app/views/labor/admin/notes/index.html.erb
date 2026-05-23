@@ -1,0 +1,51 @@
+<% admin_breadcrumb('Notes') %>
+
+<% content_for :page_actions do %>
+  <li>
+    <%= link_to 'New Note', spree.new_admin_labor_note_path, class: 'btn btn-primary' %>
+  </li>
+<% end %>
+
+<% content_for :page_title do %>
+  Notes
+<% end %>
+
+<% if @notes.any? %>
+  <table class="table table-striped" id="listing_labor_notes">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th>Family</th>
+        <th>Icon</th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @notes.each do |n| %>
+        <tr id="<%= dom_id(n) %>">
+          <td><%= n.name %></td>
+          <td><code><%= n.slug %></code></td>
+          <td><%= n.family %></td>
+          <td>
+            <% if n.icon_url.present? %>
+              <%= image_tag n.icon_url, style: 'height: 24px;' rescue n.icon_url %>
+            <% end %>
+          </td>
+          <td class="actions text-right">
+            <%= link_to 'Edit', spree.edit_admin_labor_note_path(n), class: 'btn btn-light btn-sm' %>
+            <%= link_to 'Delete',
+                        spree.admin_labor_note_path(n),
+                        method: :delete,
+                        data: { confirm: 'Delete this note?' },
+                        class: 'btn btn-danger btn-sm' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info">
+    No notes yet. <%= link_to 'Create one', spree.new_admin_labor_note_path %>.
+  </div>
+<% end %>

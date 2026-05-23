@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Labor Payme Notification Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #211f1c;
+        --muted: #746d64;
+        --line: rgba(33, 31, 28, 0.12);
+        --paper: #f7f1e8;
+        --panel: rgba(255, 252, 246, 0.88);
+        --panel-strong: #fffaf1;
+        --accent: #4f6f52;
+        --accent-dark: #2e4b35;
+        --amber: #b88a45;
+        --charcoal: #2b2a27;
+        --shadow: 0 24px 80px rgba(70, 52, 28, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background:
+          radial-gradient(circle at 78% 14%, rgba(184, 138, 69, 0.18), transparent 28rem),
+          linear-gradient(135deg, #fbf6ee 0%, #efe2cf 52%, #e8d8c1 100%);
+      }
+
+      body {
+        min-height: 100dvh;
+        margin: 0;
+        color: var(--ink);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        letter-spacing: 0;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 34px 0;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border: 1px solid rgba(33, 31, 28, 0.14);
+        border-radius: 14px;
+        background: rgba(255, 250, 241, 0.72);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64);
+        color: var(--accent-dark);
+        font-family: Georgia, serif;
+        font-size: 22px;
+        font-weight: 600;
+      }
+
+      .eyebrow {
+        margin: 0 0 2px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(30px, 4vw, 54px);
+        font-weight: 500;
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid rgba(79, 111, 82, 0.24);
+        border-radius: 999px;
+        background: rgba(247, 241, 232, 0.72);
+        color: var(--accent-dark);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .live-pill.is-pending {
+        border-color: rgba(184, 138, 69, 0.32);
+        color: #7b5d2f;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 6px rgba(79, 111, 82, 0.12);
+      }
+
+      .live-pill.is-pending .status-dot {
+        background: var(--amber);
+        box-shadow: 0 0 0 6px rgba(184, 138, 69, 0.14);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.88fr) minmax(360px, 1.12fr);
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        overflow: hidden;
+      }
+
+      .telegram-panel {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 610px;
+        padding: 24px;
+        background:
+          linear-gradient(150deg, rgba(255, 250, 241, 0.96), rgba(247, 241, 232, 0.62)),
+          repeating-linear-gradient(45deg, rgba(33, 31, 28, 0.025), rgba(33, 31, 28, 0.025) 1px, transparent 1px, transparent 16px);
+      }
+
+      .telegram-panel::before {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 36%;
+        content: "";
+        background: linear-gradient(90deg, rgba(255, 252, 246, 0.92), rgba(255, 252, 246, 0));
+        pointer-events: none;
+      }
+
+      .phone {
+        position: relative;
+        width: min(100%, 390px);
+        margin: 18px auto 0;
+        border: 1px solid rgba(33, 31, 28, 0.16);
+        border-radius: 34px;
+        background: #f0ece4;
+        box-shadow:
+          inset 0 0 0 7px #302f2b,
+          0 24px 56px rgba(47, 39, 28, 0.2);
+        padding: 18px;
+      }
+
+      .phone-screen {
+        min-height: 480px;
+        overflow: hidden;
+        border-radius: 24px;
+        background:
+          linear-gradient(180deg, #e7f0ec, #dbe7e1 46%, #d6e0db),
+          repeating-linear-gradient(135deg, rgba(79, 111, 82, 0.08), rgba(79, 111, 82, 0.08) 2px, transparent 2px, transparent 18px);
+      }
+
+      .chat-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 14px 12px;
+        border-bottom: 1px solid rgba(33, 31, 28, 0.08);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .chat-avatar {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
+        place-items: center;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #4f6f52, #b88a45);
+        color: #fffaf1;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .chat-title {
+        min-width: 0;
+      }
+
+      .chat-title strong {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+
+      .chat-title span {
+        display: block;
+        color: rgba(33, 31, 28, 0.58);
+        font-size: 12px;
+      }
+
+      .message-stack {
+        padding: 22px 13px;
+      }
+
+      .message {
+        width: 91%;
+        margin-left: auto;
+        border-radius: 18px 18px 6px 18px;
+        background: #fffaf1;
+        box-shadow: 0 10px 24px rgba(64, 54, 40, 0.12);
+        overflow: hidden;
+      }
+
+      .message-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid rgba(33, 31, 28, 0.08);
+      }
+
+      .message-head strong {
+        font-size: 13px;
+      }
+
+      .provider {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: rgba(79, 111, 82, 0.12);
+        color: var(--accent-dark);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .provider.is-pending {
+        background: rgba(184, 138, 69, 0.14);
+        color: #7b5d2f;
+      }
+
+      .message-body {
+        padding: 14px;
+      }
+
+      .message-body h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        line-height: 1.1;
+        letter-spacing: 0;
+      }
+
+      .message-body p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .message-meta {
+        display: grid;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        font-size: 12px;
+      }
+
+      .meta-row span:first-child {
+        color: var(--muted);
+      }
+
+      .meta-row span:last-child {
+        font-weight: 700;
+        text-align: right;
+      }
+
+      .message-time {
+        display: block;
+        padding: 0 14px 12px;
+        color: rgba(33, 31, 28, 0.48);
+        font-size: 11px;
+        text-align: right;
+      }
+
+      .side-note {
+        position: relative;
+        max-width: 410px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .telegram-controls {
+        position: relative;
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .telegram-controls label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .telegram-controls textarea {
+        width: 100%;
+        min-height: 154px;
+        resize: vertical;
+        border: 1px solid rgba(33, 31, 28, 0.14);
+        border-radius: 18px;
+        outline: none;
+        padding: 13px 14px;
+        background: rgba(255, 252, 246, 0.78);
+        color: var(--ink);
+        font-size: 13px;
+        line-height: 1.45;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
+      }
+
+      .telegram-controls textarea:focus {
+        border-color: rgba(79, 111, 82, 0.5);
+      }
+
+      .control-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .control-row button {
+        min-height: 40px;
+        cursor: pointer;
+        border: 1px solid rgba(33, 31, 28, 0.12);
+        border-radius: 999px;
+        padding: 0 16px;
+        background: var(--charcoal);
+        color: #fffaf1;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .control-row button.secondary {
+        background: rgba(255, 252, 246, 0.74);
+        color: var(--ink);
+      }
+
+      .control-row button:active {
+        transform: translateY(1px) scale(0.99);
+      }
+
+      .cart-panel {
+        padding: 26px;
+        background:
+          linear-gradient(150deg, rgba(255, 250, 241, 0.98), rgba(255, 246, 232, 0.86)),
+          linear-gradient(90deg, rgba(79, 111, 82, 0.06), transparent 42%);
+      }
+
+      .cart-head {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: start;
+        padding-bottom: 22px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .cart-head h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(28px, 4vw, 48px);
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .order-copy {
+        margin: 9px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .paid-stamp {
+        display: grid;
+        width: 118px;
+        height: 118px;
+        place-items: center;
+        border: 2px solid rgba(79, 111, 82, 0.72);
+        border-radius: 999px;
+        color: var(--accent-dark);
+        transform: rotate(-8deg);
+        transition: border-color 180ms ease, color 180ms ease, opacity 180ms ease;
+      }
+
+      .paid-stamp.is-pending {
+        border-color: rgba(184, 138, 69, 0.72);
+        color: #7b5d2f;
+        opacity: 0.82;
+      }
+
+      .paid-stamp span {
+        display: block;
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+      }
+
+      .cart-list {
+        display: grid;
+        gap: 12px;
+        margin: 22px 0;
+      }
+
+      .cart-item {
+        display: grid;
+        grid-template-columns: 62px 1fr auto;
+        gap: 14px;
+        align-items: center;
+        min-height: 84px;
+        padding: 12px;
+        border: 1px solid rgba(33, 31, 28, 0.1);
+        border-radius: 18px;
+        background: rgba(255, 252, 246, 0.68);
+      }
+
+      .bottle {
+        position: relative;
+        width: 44px;
+        height: 64px;
+        margin: 0 auto;
+        border: 1px solid rgba(33, 31, 28, 0.18);
+        border-radius: 12px 12px 10px 10px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.16) 38%, rgba(184, 138, 69, 0.16)),
+          rgba(255, 250, 241, 0.88);
+        box-shadow: inset 8px 0 12px rgba(255, 255, 255, 0.54);
+      }
+
+      .bottle::before {
+        position: absolute;
+        top: -12px;
+        left: 12px;
+        width: 20px;
+        height: 14px;
+        border-radius: 5px 5px 2px 2px;
+        background: var(--charcoal);
+        content: "";
+      }
+
+      .bottle::after {
+        position: absolute;
+        inset: 25px 7px 12px;
+        border-radius: 4px;
+        background: #efe4d0;
+        content: "";
+      }
+
+      .item-title {
+        margin: 0 0 3px;
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .item-meta {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .item-price {
+        min-width: 112px;
+        text-align: right;
+      }
+
+      .item-price strong {
+        display: block;
+        font-size: 14px;
+      }
+
+      .item-price span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .summary {
+        display: grid;
+        gap: 10px;
+        padding: 18px 0 20px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .summary-row strong {
+        color: var(--ink);
+      }
+
+      .summary-row.total {
+        align-items: baseline;
+        color: var(--ink);
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .summary-row.total strong {
+        font-size: clamp(26px, 3vw, 38px);
+        letter-spacing: 0;
+      }
+
+      .payment-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .payment-cell {
+        min-height: 74px;
+        padding: 12px;
+        border: 1px solid rgba(33, 31, 28, 0.1);
+        border-radius: 16px;
+        background: rgba(255, 252, 246, 0.52);
+      }
+
+      .payment-cell span {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .payment-cell strong {
+        display: block;
+        overflow-wrap: anywhere;
+        font-size: 14px;
+      }
+
+      .raw-message {
+        min-height: 88px;
+        margin: 18px 0 0;
+        padding: 13px 14px;
+        border: 1px solid rgba(33, 31, 28, 0.1);
+        border-radius: 16px;
+        background: rgba(255, 252, 246, 0.54);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.48;
+        white-space: pre-wrap;
+      }
+
+      .toast {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        max-width: min(360px, calc(100% - 36px));
+        padding: 14px 16px;
+        border: 1px solid rgba(79, 111, 82, 0.24);
+        border-radius: 16px;
+        background: rgba(255, 250, 241, 0.94);
+        box-shadow: 0 18px 54px rgba(70, 52, 28, 0.18);
+        color: var(--accent-dark);
+        font-size: 13px;
+        font-weight: 700;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px);
+        transition: opacity 220ms ease, transform 220ms ease;
+      }
+
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 860px) {
+        .shell {
+          width: min(100% - 22px, 620px);
+          padding: 22px 0;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .telegram-panel {
+          min-height: auto;
+        }
+
+        .phone {
+          margin-top: 16px;
+        }
+
+        .cart-head {
+          grid-template-columns: 1fr;
+        }
+
+        .paid-stamp {
+          width: 94px;
+          height: 94px;
+        }
+
+        .payment-strip {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .cart-panel,
+        .telegram-panel {
+          padding: 18px;
+          border-radius: 22px;
+        }
+
+        .cart-item {
+          grid-template-columns: 52px 1fr;
+        }
+
+        .item-price {
+          grid-column: 2;
+          min-width: 0;
+          text-align: left;
+        }
+
+        .message {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar" aria-label="Page heading">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">L</div>
+          <div>
+            <p class="eyebrow">Payment operations demo</p>
+            <h1>Payme notification and paid cart</h1>
+          </div>
+        </div>
+        <div class="live-pill is-pending" data-field="livePill" aria-label="Payment status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span data-field="livePillText">Payment pending</span>
+        </div>
+      </header>
+
+      <section class="grid" aria-label="Payme notification and shopping cart preview">
+        <article class="panel telegram-panel" aria-label="Telegram group notification">
+          <p class="side-note">
+            Paste the Payme message from the Telegram group. The cart stays pending until the message says it was successfully paid.
+          </p>
+
+          <div class="phone" aria-label="Telegram phone preview">
+            <div class="phone-screen">
+              <div class="chat-header">
+                <div class="chat-avatar" aria-hidden="true">LP</div>
+                <div class="chat-title">
+                  <strong data-field="groupName">Labor Parfume &amp; Payme</strong>
+                  <span>service notifications</span>
+                </div>
+              </div>
+
+              <div class="message-stack">
+                <div class="message">
+                  <div class="message-head">
+                    <strong data-field="notificationSource">Payme Bot</strong>
+                    <span class="provider is-pending" data-field="provider">Payme</span>
+                  </div>
+                  <div class="message-body">
+                    <h2 data-field="notificationTitle">Waiting for Payme payment</h2>
+                    <p>
+                      Order <strong data-field="orderNumber">#LB-240524-703</strong> is waiting for a successful Payme notification.
+                    </p>
+                    <div class="message-meta" aria-label="Payment metadata">
+                      <div class="meta-row">
+                        <span>Status</span>
+                        <span data-field="statusLabel">Pending</span>
+                      </div>
+                      <div class="meta-row">
+                        <span>Total</span>
+                        <span data-field="notificationTotal">520,000 UZS</span>
+                      </div>
+                      <div class="meta-row">
+                        <span>Transaction</span>
+                        <span data-field="transactionId">Not received</span>
+                      </div>
+                    </div>
+                  </div>
+                  <time class="message-time" data-field="paidAtHuman">Waiting for group message</time>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="telegram-controls" aria-label="Telegram Payme message receiver">
+            <label for="telegramMessage">Incoming Telegram group message</label>
+            <textarea id="telegramMessage" spellcheck="false"></textarea>
+            <div class="control-row">
+              <button type="button" data-action="receive">Receive message</button>
+              <button class="secondary" type="button" data-action="clear">Clear to pending</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel cart-panel" aria-label="Shopping cart payment state">
+          <div class="cart-head">
+            <div>
+              <p class="eyebrow">Shopping cart</p>
+              <h2 data-field="cartTitle">Order #LB-240524-703</h2>
+              <p class="order-copy">
+                Customer: <strong data-field="customerName">Aziz Karimov</strong>
+              </p>
+            </div>
+            <div class="paid-stamp is-pending" data-field="paymentStamp" aria-label="Order payment status">
+              <span data-field="paymentStampText">PENDING</span>
+            </div>
+          </div>
+
+          <div class="cart-list" data-field="items" aria-label="Cart items"></div>
+
+          <div class="summary" aria-label="Order totals">
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <strong data-field="subtotal">1,244,000 UZS</strong>
+            </div>
+            <div class="summary-row">
+              <span>Delivery</span>
+              <strong data-field="delivery">40,000 UZS</strong>
+            </div>
+            <div class="summary-row total">
+              <span data-field="totalLabel">Total due</span>
+              <strong data-field="cartTotal">520,000 UZS</strong>
+            </div>
+          </div>
+
+          <div class="payment-strip" aria-label="Payment details">
+            <div class="payment-cell">
+              <span>Method</span>
+              <strong data-field="paymentMethod">Payme</strong>
+            </div>
+            <div class="payment-cell">
+              <span>Transaction</span>
+              <strong data-field="paymentTransactionId">Not received</strong>
+            </div>
+            <div class="payment-cell">
+              <span data-field="paidAtLabel">Status time</span>
+              <strong data-field="paymentPaidAt">Waiting</strong>
+            </div>
+          </div>
+          <pre class="raw-message" data-field="rawTelegramMessage">No Telegram Payme notification received yet.</pre>
+        </article>
+      </section>
+    </main>
+
+    <div class="toast" data-field="toast" role="status" aria-live="polite">Payment payload rendered</div>
+
+    <script>
+      const sampleTelegramMessage = `📍 LABOR PARFUME
+🧾 703
+💳 986035******9776
+🇺🇿 520 000,00 сум
+🕓 19:10:16 23.05.2026
+🆔 6a11b53cfb1a624138832248
+✅ Успешно оплачен`;
+
+      const paymentPayload = {
+        groupName: "Labor Parfume & Payme",
+        provider: "Payme",
+        status: "pending",
+        orderNumber: "LB-240524-703",
+        receiptNumber: "703",
+        card: "986035******9776",
+        transactionId: null,
+        paidAt: null,
+        rawMessage: "",
+        customer: {
+          name: "Aziz Karimov"
+        },
+        items: [
+          {
+            brand: "Labor Parfume",
+            name: "Signature Discovery Cart",
+            volumeMl: 30,
+            quantity: 1,
+            price: 480000
+          }
+        ],
+        subtotal: 480000,
+        delivery: 40000,
+        total: 520000,
+        currency: "UZS"
+      };
+
+      const field = (name) => document.querySelector(`[data-field="${name}"]`);
+      const fields = (name) => [...document.querySelectorAll(`[data-field="${name}"]`)];
+
+      const formatMoney = (amount, currency) => {
+        const value = Number(amount || 0).toLocaleString("en-US");
+        return `${value} ${currency || "UZS"}`;
+      };
+
+      const formatDate = (isoValue) => {
+        if (!isoValue) return "Waiting";
+        const date = new Date(isoValue);
+        if (Number.isNaN(date.getTime())) return String(isoValue || "");
+        return new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date);
+      };
+
+      const titleCase = (value) => {
+        const text = String(value || "");
+        return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : "";
+      };
+
+      const parsePaymeAmount = (line) => {
+        const match = line.match(/([\d\s]+)(?:,\d{2})?\s*(?:сум|sum|uzs)/i);
+        if (!match) return null;
+        return Number(match[1].replace(/\s/g, ""));
+      };
+
+      const parsePaymeDate = (line) => {
+        const match = line.match(/(\d{2}):(\d{2}):(\d{2})\s+(\d{2})\.(\d{2})\.(\d{4})/);
+        if (!match) return null;
+        const [, hour, minute, second, day, month, year] = match;
+        return `${year}-${month}-${day}T${hour}:${minute}:${second}+05:00`;
+      };
+
+      const parseTelegramPaymeMessage = (message) => {
+        const rawMessage = String(message || "").trim();
+        const normalized = rawMessage.replace(/\u00a0/g, " ");
+        const lines = normalized.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        const isPaid = /успешно\s+оплачен/i.test(normalized);
+        const receiptLine = lines.find((line) => line.includes("🧾")) || "";
+        const cardLine = lines.find((line) => line.includes("💳")) || "";
+        const amountLine = lines.find((line) => /(?:сум|sum|uzs)/i.test(line)) || "";
+        const timeLine = lines.find((line) => line.includes("🕓")) || "";
+        const idLine = lines.find((line) => line.includes("🆔")) || "";
+        const receiptNumber = (receiptLine.match(/\d+/) || [paymentPayload.receiptNumber])[0];
+        const total = parsePaymeAmount(amountLine) || paymentPayload.total;
+
+        return {
+          ...paymentPayload,
+          status: isPaid ? "paid" : "pending",
+          orderNumber: `LB-240524-${receiptNumber}`,
+          receiptNumber,
+          card: cardLine.replace("💳", "").trim() || paymentPayload.card,
+          transactionId: idLine.replace("🆔", "").trim() || null,
+          paidAt: isPaid ? parsePaymeDate(timeLine) : null,
+          rawMessage,
+          subtotal: Math.max(total - paymentPayload.delivery, 0),
+          total
+        };
+      };
+
+      const renderItems = (payload) => {
+        const list = field("items");
+        if (!list) return;
+        list.innerHTML = "";
+
+        for (const item of payload.items || []) {
+          const row = document.createElement("div");
+          row.className = "cart-item";
+          row.innerHTML = `
+            <div class="bottle" aria-hidden="true"></div>
+            <div>
+              <p class="item-title"></p>
+              <p class="item-meta"></p>
+            </div>
+            <div class="item-price">
+              <strong></strong>
+              <span></span>
+            </div>
+          `;
+
+          row.querySelector(".item-title").textContent = `${item.name} · ${item.brand}`;
+          row.querySelector(".item-meta").textContent = `${item.volumeMl} ml · Qty ${item.quantity}`;
+          row.querySelector(".item-price strong").textContent = formatMoney(Number(item.price || 0) * Number(item.quantity || 0), payload.currency);
+          row.querySelector(".item-price span").textContent = `${formatMoney(item.price, payload.currency)} each`;
+          list.appendChild(row);
+        }
+      };
+
+      const showToast = (text) => {
+        const toast = field("toast");
+        if (!toast) return;
+        toast.textContent = text;
+        toast.classList.add("is-visible");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 2200);
+      };
+
+      window.renderPayment = (payload) => {
+        const data = {
+          ...paymentPayload,
+          ...payload,
+          customer: { ...paymentPayload.customer, ...(payload && payload.customer ? payload.customer : {}) },
+          items: payload && payload.items ? payload.items : paymentPayload.items
+        };
+
+        const isPaid = data.status === "paid";
+        const paidAtHuman = formatDate(data.paidAt);
+        const total = formatMoney(data.total, data.currency);
+        const subtotal = formatMoney(data.subtotal, data.currency);
+        const delivery = formatMoney(data.delivery, data.currency);
+        const transactionText = data.transactionId || "Not received";
+
+        field("livePill").classList.toggle("is-pending", !isPaid);
+        field("livePillText").textContent = isPaid ? "Payment received" : "Payment pending";
+        field("provider").classList.toggle("is-pending", !isPaid);
+        field("notificationTitle").textContent = isPaid ? "New Payme payment received" : "Waiting for Payme payment";
+        field("paymentStamp").classList.toggle("is-pending", !isPaid);
+        field("paymentStampText").textContent = isPaid ? "PAID" : "PENDING";
+        field("totalLabel").textContent = isPaid ? "Total paid" : "Total due";
+        field("paidAtLabel").textContent = isPaid ? "Paid at" : "Status time";
+
+        fields("groupName").forEach((node) => { node.textContent = data.groupName; });
+        fields("provider").forEach((node) => { node.textContent = data.provider; });
+        field("notificationSource").textContent = `${data.provider} Bot`;
+        fields("orderNumber").forEach((node) => { node.textContent = `#${data.orderNumber}`; });
+        field("cartTitle").textContent = `Order #${data.orderNumber}`;
+        field("customerName").textContent = data.customer.name;
+        field("statusLabel").textContent = titleCase(data.status);
+        field("notificationTotal").textContent = total;
+        fields("transactionId").forEach((node) => { node.textContent = transactionText; });
+        field("paidAtHuman").textContent = paidAtHuman;
+        field("subtotal").textContent = subtotal;
+        field("delivery").textContent = delivery;
+        field("cartTotal").textContent = total;
+        field("paymentMethod").textContent = data.provider;
+        field("paymentTransactionId").textContent = transactionText;
+        field("paymentPaidAt").textContent = paidAtHuman;
+        field("rawTelegramMessage").textContent = data.rawMessage || "No Telegram Payme notification received yet.";
+
+        renderItems(data);
+        showToast(isPaid ? `Payment ${transactionText} received` : "Payment pending");
+      };
+
+      window.receiveTelegramPaymeMessage = (message) => {
+        const parsed = parseTelegramPaymeMessage(message);
+        window.renderPayment(parsed);
+        return parsed;
+      };
+
+      window.addEventListener("message", (event) => {
+        if (!event.data) return;
+        if (event.data.type === "labor:telegram-payme-message") {
+          window.receiveTelegramPaymeMessage(event.data.message || "");
+          return;
+        }
+        if (event.data.type === "labor:payment-paid") {
+          window.renderPayment(event.data.payload || {});
+        }
+      });
+
+      const textarea = document.querySelector("#telegramMessage");
+      textarea.value = sampleTelegramMessage;
+      document.querySelector('[data-action="receive"]').addEventListener("click", () => {
+        window.receiveTelegramPaymeMessage(textarea.value);
+      });
+      document.querySelector('[data-action="clear"]').addEventListener("click", () => {
+        textarea.value = "";
+        window.renderPayment({ ...paymentPayload, rawMessage: "" });
+      });
+
+      window.sampleTelegramMessage = sampleTelegramMessage;
+      window.paymentPayload = paymentPayload;
+      window.renderPayment(paymentPayload);
+    </script>
+  </body>
+</html>

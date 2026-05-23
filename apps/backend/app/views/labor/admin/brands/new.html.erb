@@ -1,0 +1,13 @@
+<% admin_breadcrumb('Brands', spree.admin_labor_brands_path) %>
+<% admin_breadcrumb('New') %>
+
+<% content_for :page_title do %>
+  New Brand
+<% end %>
+
+<%= form_with model: @brand,
+              url: spree.admin_labor_brands_path,
+              local: true,
+              html: { class: 'edit_labor_brand' } do |f| %>
+  <%= render 'form', f: f %>
+<% end %>

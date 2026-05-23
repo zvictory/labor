@@ -1,0 +1,42 @@
+<fieldset class="no-border-bottom">
+  <legend>Note</legend>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :slug %>
+        <%= f.text_field :slug, class: 'form-control', required: true %>
+        <small class="form-text text-muted">lowercase, digits, dashes only</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :family %>
+        <%= f.select :family,
+                     Labor::Note::FAMILIES.map { |fam| [fam.humanize, fam] },
+                     { include_blank: '—' },
+                     class: 'form-control' %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :icon_url %>
+        <%= f.url_field :icon_url, class: 'form-control', placeholder: 'https://...' %>
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<div class="form-actions">
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', spree.admin_labor_notes_path, class: 'btn btn-light' %>
+</div>

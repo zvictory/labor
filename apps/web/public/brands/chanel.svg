@@ -1,0 +1,45 @@
+<svg version="1.1" id="svg2" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" sodipodi:version="0.32" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 419.9 66" style="enable-background:new 0 0 419.9 66;" xml:space="preserve">
+ <style type="text/css">
+  .st0{fill-rule:evenodd;clip-rule:evenodd;fill:#161413;}
+ </style>
+ <defs>
+  <inkscape:perspective id="perspective41" inkscape:persp3d-origin="121.25 : 80.833333 : 1" inkscape:vp_x="0 : 121.25 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="242.5 : 121.25 : 1" sodipodi:type="inkscape:persp3d">
+  </inkscape:perspective>
+ </defs>
+ <sodipodi:namedview bordercolor="#666666" borderopacity="1.0" gridtolerance="10.0" guidetolerance="10.0" id="base" inkscape:current-layer="svg2" inkscape:cx="-0.40702423" inkscape:cy="9.9095772" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="667" inkscape:window-width="640" inkscape:window-x="611" inkscape:window-y="368" inkscape:zoom="10.777182" objecttolerance="10.0" pagecolor="#ffffff" showgrid="false">
+ </sodipodi:namedview>
+ <g id="g2452" transform="matrix(2.4763374,0,0,2.4763374,-150.24767,-82.943284)">
+  <g id="g2414" transform="matrix(0.6960123,0,0,0.6960123,56.08938,15.250729)">
+   <g id="g2438" transform="translate(-33.78554,60.934635)">
+    <g id="g4" transform="translate(8.76367,50.1689)">
+     <path id="path6" class="st0" d="M66.7-56.9c0,0.1-0.1,0.2-0.1,0.3c-3.1,5.9-9.3,10-16.4,10c-10.2,0-18.6-8.6-18.6-19.1
+					c0-10.5,8.4-19.1,18.6-19.1c7.1,0,13.3,4.1,16.4,10.2c0.1,0.1,0.1,0.2,0.2,0.3c0,0-5.9,4.3-6,4.3c0-0.1-0.1-0.2-0.1-0.3
+					c-1.7-4.3-5.8-7.1-10.5-7.1c-6.3,0.1-11.4,5.2-11.4,11.7C38.8-59.2,44-54,50.2-54c4.5,0,8.5-2.8,10.3-6.8
+					c0.1-0.1,0.1-0.3,0.2-0.4L66.7-56.9z">
+     </path>
+    </g>
+    <g id="g8" transform="translate(39.6699,50.4219)">
+     <path id="path10" class="st0" d="M43.5-84.8h7.2v13.4h18.8v-13.4h7.2v37.2h-7.2v-16.3H50.7v16.3h-7.2V-84.8z">
+     </path>
+    </g>
+    <g id="g12" transform="translate(136.638,50.4219)">
+     <path id="path14" class="st0" d="M81-47.6v-37.2h26v7.5H88.2v7.4h17.3v7.4H88.2v7.4h21.4v7.4H81z">
+     </path>
+    </g>
+    <g id="g16" transform="translate(164.664,50.4219)">
+     <path id="path18" class="st0" d="M91.8-47.6v-37.2h7.3V-55h20.2v7.4H91.8z">
+     </path>
+    </g>
+    <g id="g20" transform="translate(103.166,50.4219)">
+     <path id="path22" class="st0" d="M75.3-47.6h-0.2h-7.1v-37.2h0.5h9.6l15.9,22.4v-22.4h7.2v37.2h-5.8L75.3-75.6V-47.6z">
+     </path>
+    </g>
+    <g id="g24" transform="translate(67.8223,50.4219)">
+     <path id="path26" class="st0" d="M76-77.3l-6.4,14.9h13L76-77.3z M66.4-55L63-47.6h-8.6l16.5-37.2H81l16.6,37.2H89L85.6-55H66.4
+					z">
+     </path>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

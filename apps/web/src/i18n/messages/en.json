@@ -1,0 +1,361 @@
+{
+  "brand": {
+    "name": "Labor",
+    "tagline": "Fragrance for those who listen to scent"
+  },
+  "nav": {
+    "shop": "Shop",
+    "brands": "Brands",
+    "notes": "Notes",
+    "perfumers": "Perfumers",
+    "finder": "Finder",
+    "campaigns": "Campaigns",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "account": "Account",
+    "search": "Search",
+    "login": "Sign in",
+    "logout": "Sign out"
+  },
+  "home": {
+    "hero": {
+      "headline": "A scent like a signature",
+      "sub": "Curated niche and selective fragrance, delivered across Uzbekistan",
+      "cta": "Browse the catalog"
+    },
+    "sections": {
+      "newArrivals": "New arrivals",
+      "featured": "Featured",
+      "bestsellers": "Bestsellers",
+      "byNotes": "By notes",
+      "byBrand": "By brand"
+    }
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "outOfStock": "Out of stock",
+    "pricePerMl": "{price} / ml",
+    "volume": "Volume",
+    "brand": "Brand",
+    "perfumer": "Perfumer",
+    "year": "Released",
+    "concentration": "Concentration",
+    "gender": { "label": "For", "men": "Men", "women": "Women", "unisex": "Unisex" },
+    "pyramid": "Fragrance pyramid",
+    "topNotes": "Top notes",
+    "heartNotes": "Heart notes",
+    "baseNotes": "Base notes",
+    "accords": "Main accords",
+    "longevity": "Longevity",
+    "sillage": "Sillage",
+    "season": "When to wear",
+    "seasons": { "winter": "Winter", "spring": "Spring", "summer": "Summer", "autumn": "Autumn" },
+    "timeOfDay": { "day": "Day", "evening": "Evening", "night": "Night" },
+    "rating": "Rating",
+    "ratings": {
+      "love": "Love",
+      "like": "Like",
+      "neutral": "Neutral",
+      "dislike": "Dislike",
+      "hate": "Hate"
+    },
+    "similar": "Similar fragrances",
+    "compare": "Compare",
+    "reviews": "Reviews",
+    "writeReview": "Write a review"
+  },
+  "pdp": {
+    "longevityShort": "Long.",
+    "sillageShort": "Sillage",
+    "cart": {
+      "add": "Add to cart"
+    },
+    "actions": {
+      "inWishlist": "In Wishlist",
+      "addToWishlist": "Add to Wishlist",
+      "inCompare": "In Compare",
+      "addToCompare": "Add to Compare",
+      "compareFull": "Comparison is full (max {max})"
+    },
+    "accords": {
+      "title": "Main accords"
+    },
+    "pyramid": {
+      "title": "Fragrance pyramid",
+      "top": "Top notes",
+      "heart": "Heart notes",
+      "base": "Base notes"
+    },
+    "aggregates": {
+      "seasons": "When to wear",
+      "timeTitle": "Time of day",
+      "loveTitle": "Customer ratings",
+      "basedOn": "Based on {count} ratings",
+      "season": {
+        "winter": "Winter",
+        "spring": "Spring",
+        "summer": "Summer",
+        "autumn": "Autumn"
+      },
+      "time": {
+        "day": "Day",
+        "evening": "Evening",
+        "night": "Night"
+      },
+      "love": {
+        "love": "Love",
+        "like": "Like",
+        "neutral": "Neutral",
+        "dislike": "Dislike",
+        "hate": "Hate"
+      }
+    },
+    "vote": {
+      "title": "Rate this fragrance",
+      "rating": "Your rating",
+      "longevity": "Longevity",
+      "sillage": "Sillage",
+      "seasons": "Best seasons",
+      "timeTitle": "Best time of day",
+      "loveTitle": "Your feeling",
+      "submit": "Submit rating",
+      "saving": "Submitting…",
+      "saved": "Thank you for your rating!",
+      "signInRequired": "Please sign in to rate",
+      "error": "Could not submit rating",
+      "season": {
+        "winter": "Winter",
+        "spring": "Spring",
+        "summer": "Summer",
+        "autumn": "Autumn"
+      },
+      "time": {
+        "day": "Day",
+        "evening": "Evening",
+        "night": "Night"
+      },
+      "love": {
+        "love": "Love",
+        "like": "Like",
+        "neutral": "Neutral",
+        "dislike": "Dislike",
+        "hate": "Hate"
+      }
+    },
+    "similar": {
+      "title": "Similar fragrances"
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "emptyCta": "Go to catalog",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "VAT (12%)",
+    "total": "Total",
+    "itemTotal": "Line total",
+    "proceed": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "promoCode": "Promo code",
+    "apply": "Apply"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "contact": "Contact details",
+    "name": "Name",
+    "phone": "Phone",
+    "address": "Delivery address",
+    "city": "City",
+    "street": "Street",
+    "building": "Building",
+    "apt": "Apartment",
+    "delivery": "Delivery method",
+    "deliveryYandex": "Yandex",
+    "deliveryExpress24": "Express24",
+    "deliveryBts": "BTS",
+    "payment": "Payment method",
+    "paymentClick": "Click",
+    "paymentPayme": "Payme",
+    "paymentUzum": "Uzum",
+    "comment": "Order comment",
+    "submit": "Proceed to payment",
+    "submitting": "Creating order…",
+    "errorRequired": "This field is required",
+    "errorPhone": "Enter a valid phone number",
+    "errorGeneric": "Could not place the order"
+  },
+  "auth": {
+    "telegramLogin": "Sign in with Telegram",
+    "telegramHint": "Secure sign-in via your Telegram account",
+    "widgetTitle": "Sign in with Telegram",
+    "widgetExplainer": "Tap the button below to sign in with your Telegram account. We only receive your name and public avatar.",
+    "widgetMissingConfig": "Telegram sign-in is temporarily unavailable: bot is not configured.",
+    "signingIn": "Signing in…",
+    "signInError": "Sign-in failed"
+  },
+  "campaigns": {
+    "eyebrow": "Specials",
+    "title": "Labor campaigns",
+    "empty": "No active campaigns right now",
+    "itemsCount": "{count} fragrances",
+    "until": "until {date}"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "foundCount": "Found: {count}",
+    "empty": "Nothing here yet",
+    "prev": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {total}"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search fragrances, brands, notes…",
+    "idle": "Start typing to find a fragrance",
+    "loading": "Searching…",
+    "empty": "No products match “{query}”",
+    "errorLoading": "Could not load results",
+    "resultsCount": "{count, plural, one {# result} other {# results}}"
+  },
+  "compare": {
+    "drawer": {
+      "label": "Compare",
+      "remove": "Remove",
+      "cta": "Open compare",
+      "clear": "Clear"
+    }
+  },
+  "brands": {
+    "title": "Brands",
+    "subtitle": "Selective and niche perfumery at Labor",
+    "productCount": "{count, plural, one {# fragrance} other {# fragrances}}",
+    "empty": "No brands yet",
+    "viewAll": "All brands",
+    "detailDescription": "About the brand",
+    "detailProducts": "Fragrances",
+    "errorLoading": "Failed to load brands"
+  },
+  "perfumers": {
+    "title": "Perfumers",
+    "subtitle": "The noses behind every fragrance",
+    "productCount": "{count, plural, =0 {no fragrances} one {# fragrance} other {# fragrances}}",
+    "empty": "Perfumers coming soon",
+    "detailFragrances": "Fragrances",
+    "bio": "Biography",
+    "country": "Country",
+    "errorLoading": "Failed to load perfumers"
+  },
+  "campaign": {
+    "useCode": "Use code",
+    "until": "Ends {date}"
+  },
+  "tg": {
+    "tabs": {
+      "home": "Home",
+      "catalog": "Catalog",
+      "cart": "Cart",
+      "orders": "Orders"
+    },
+    "home": { "new": "New arrivals", "all": "All" },
+    "cart": {
+      "title": "Cart",
+      "total": "Total",
+      "checkout": "Checkout",
+      "remove": "Remove",
+      "empty": { "title": "Cart is empty", "body": "Browse the catalog and add a fragrance", "cta": "Open catalog" }
+    },
+    "checkout": {
+      "title": "Checkout",
+      "contact": "Contact",
+      "name": "Name",
+      "address": "Shipping",
+      "city": "City",
+      "street": "Street, building, apartment",
+      "delivery": "Delivery",
+      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "eta": "{minutes} min",
+      "payment": "Payment",
+      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "Cash on delivery" },
+      "promo": "Promo code",
+      "promoPlaceholder": "LABOR2026",
+      "subtotal": "Items",
+      "shipping": "Shipping",
+      "total": "Total",
+      "pay": "Pay",
+      "submitting": "Creating order…",
+      "quote": { "error": "Could not calculate delivery" },
+      "error": { "generic": "Could not place order" }
+    },
+    "orders": {
+      "title": "Your orders",
+      "loading": "Loading…",
+      "empty": "You have no orders yet",
+      "state": {
+        "cart": "In cart",
+        "address": "Address",
+        "delivery": "Delivery",
+        "payment": "Payment",
+        "confirm": "Confirming",
+        "complete": "Complete",
+        "canceled": "Canceled"
+      }
+    },
+    "pdp": { "add": "Add to cart" },
+    "localeSwitcher": {
+      "label": "Interface language",
+      "names": {
+        "ru": "Русский",
+        "en": "English",
+        "uz": "Oʻzbekcha",
+        "uzc": "Ўзбекча"
+      }
+    }
+  },
+  "notes": {
+    "title": "Olfactory Notes Library",
+    "subtitle": "Explore the signature scent pillars that form the foundation of our selective fragrance collection",
+    "eyebrow": "ESSENCE & OLFACATION",
+    "productCount": "{count, plural, =0 {No fragrances} =1 {1 fragrance} other {# fragrances}}",
+    "family": "Family",
+    "empty": "No notes available yet",
+    "detailProducts": "Fragrances featuring this note",
+    "errorLoading": "Could not load notes"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "all": "All",
+    "more": "More",
+    "back": "Back",
+    "next": "Next",
+    "save": "Save",
+    "cancel": "Cancel",
+    "notFound": "Page not found",
+    "backHome": "Back to home"
+  },
+  "account": {
+    "greeting": "My account",
+    "viewOrders": "My orders",
+    "login": "Please sign in to continue",
+    "loggingIn": "Sign in with Telegram",
+    "ordersTitle": "My orders",
+    "orderNumber": "Order",
+    "orderState": "Status",
+    "orderDate": "Date",
+    "orderTotal": "Total",
+    "empty": "You have no orders yet",
+    "emptyCta": "Browse catalog",
+    "detailTitle": "Order details",
+    "detailLineItems": "Items",
+    "detailShipping": "Shipping address",
+    "detailShipmentTracking": "Tracking",
+    "detailPayments": "Payments",
+    "detailNoTracking": "No tracking yet",
+    "loading": "Loading…",
+    "error": "Could not load data"
+  }
+}

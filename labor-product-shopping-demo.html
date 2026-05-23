@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Labor Shopping Demo</title>
+    <style>
+      @font-face {
+        font-family: "Labor Script";
+        src: url("apps/web/public/fonts/StoryScript-Regular.ttf") format("truetype");
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Labor Slab";
+        src: url("apps/web/public/fonts/RobotoSlab-VariableFont.ttf") format("truetype");
+        font-display: swap;
+      }
+
+      :root {
+        --bg: #f7f5f2;
+        --panel: #fffdf8;
+        --ink: #1f1b18;
+        --muted: #6f6861;
+        --line: #ddd8d0;
+        --soft-line: rgba(31, 27, 24, 0.1);
+        --accent: #8b6c42;
+        --paid: #426247;
+        --pending: #a57528;
+        --danger: #8a3c2f;
+        --shadow: 0 24px 70px rgba(46, 38, 29, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      body {
+        min-height: 100dvh;
+        margin: 0;
+        font-family: "Labor Slab", Georgia, serif;
+        letter-spacing: 0;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        border-bottom: 1px solid var(--line);
+        background: rgba(247, 245, 242, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      .nav {
+        display: grid;
+        grid-template-columns: 230px 1fr 320px;
+        align-items: center;
+        width: min(1256px, calc(100% - 36px));
+        height: 88px;
+        margin: 0 auto;
+        gap: 22px;
+      }
+
+      .logo {
+        color: var(--ink);
+        font-family: "Labor Script", cursive;
+        font-size: 68px;
+        line-height: 0.8;
+        text-decoration: none;
+      }
+
+      .links,
+      .tools {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .links {
+        justify-content: center;
+      }
+
+      .links a,
+      .language {
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .tools {
+        justify-content: flex-end;
+        gap: 22px;
+      }
+
+      .icon-button {
+        position: relative;
+        display: inline-grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        padding: 0;
+      }
+
+      .icon-button svg {
+        width: 21px;
+        height: 21px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+      }
+
+      .cart-count {
+        position: absolute;
+        top: -2px;
+        right: -4px;
+        display: none;
+        min-width: 17px;
+        height: 17px;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .cart-count.is-visible {
+        display: grid;
+      }
+
+      main {
+        width: min(1120px, calc(100% - 36px));
+        margin: 0 auto;
+        padding: 60px 0 90px;
+      }
+
+      .crumbs {
+        display: flex;
+        gap: 10px;
+        margin: 0 0 48px;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: minmax(380px, 536px) minmax(360px, 1fr);
+        align-items: start;
+        gap: 48px;
+      }
+
+      .image-card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        box-shadow: 0 2px 8px rgba(31, 27, 24, 0.08);
+        padding: 24px;
+      }
+
+      .image-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+
+      .product-info {
+        padding-top: 2px;
+      }
+
+      .brand-kicker {
+        margin: 0 0 18px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: clamp(44px, 5vw, 54px);
+        line-height: 0.98;
+        letter-spacing: -0.01em;
+      }
+
+      .meta {
+        margin: 0 0 24px;
+        color: #514b45;
+        font-size: 15px;
+      }
+
+      .rating {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+        margin: 0 0 26px;
+        color: #514b45;
+        font-size: 14px;
+      }
+
+      .star {
+        color: #ff9500;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .price {
+        margin: 0 0 24px;
+        color: var(--accent);
+        font-size: 31px;
+        font-weight: 900;
+      }
+
+      .size-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .size-row label {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .size-row select {
+        height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fffdf8;
+        color: var(--ink);
+        padding: 0 16px;
+        outline: none;
+      }
+
+      .primary {
+        width: 100%;
+        min-height: 54px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        transition: transform 150ms ease, background 150ms ease;
+      }
+
+      .primary:hover {
+        background: #2d2722;
+      }
+
+      .primary:active,
+      .pill:active,
+      .checkout-button:active {
+        transform: translateY(1px) scale(0.99);
+      }
+
+      .secondary-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 24px;
+      }
+
+      .pill {
+        min-height: 38px;
+        border: 1px solid #d3cdc5;
+        border-radius: 999px;
+        background: transparent;
+        color: #514b45;
+        padding: 0 16px;
+        transition: transform 150ms ease, background 150ms ease;
+      }
+
+      .below {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        margin-top: 48px;
+      }
+
+      .below h2 {
+        margin: 0 0 16px;
+        font-size: 26px;
+        font-weight: 500;
+      }
+
+      .accords {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .accords span {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 13px;
+        background: rgba(255, 253, 248, 0.7);
+        color: #514b45;
+        font-size: 13px;
+      }
+
+      .pyramid {
+        display: grid;
+        gap: 12px;
+        color: #514b45;
+        font-size: 14px;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        background: rgba(31, 27, 24, 0.28);
+      }
+
+      .overlay.is-open {
+        display: block;
+      }
+
+      .cart-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 21;
+        display: flex;
+        width: min(476px, 100%);
+        height: 100dvh;
+        flex-direction: column;
+        border-left: 1px solid var(--line);
+        background: #f9f6f0;
+        box-shadow: var(--shadow);
+        transform: translateX(100%);
+        transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .cart-drawer.is-open {
+        transform: translateX(0);
+      }
+
+      .cart-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 78px;
+        border-bottom: 1px solid var(--line);
+        padding: 0 22px;
+      }
+
+      .cart-head h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .cart-body {
+        flex: 1;
+        overflow: auto;
+        padding: 22px;
+      }
+
+      .cart-item {
+        display: grid;
+        grid-template-columns: 74px 1fr;
+        gap: 14px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 18px;
+      }
+
+      .cart-thumb {
+        width: 74px;
+        height: 74px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        object-fit: cover;
+      }
+
+      .cart-title {
+        margin: 0 0 4px;
+        font-weight: 900;
+      }
+
+      .cart-sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .cart-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 12px;
+      }
+
+      .qty {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .qty button {
+        width: 34px;
+        height: 32px;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .qty span {
+        min-width: 28px;
+        text-align: center;
+      }
+
+      .summary {
+        display: grid;
+        gap: 11px;
+        margin-top: 22px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 20px;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .summary-row strong {
+        color: var(--ink);
+      }
+
+      .summary-row.total {
+        align-items: baseline;
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .summary-row.total strong {
+        color: var(--accent);
+        font-size: 27px;
+      }
+
+      .checkout {
+        display: none;
+        margin-top: 20px;
+      }
+
+      .checkout.is-visible {
+        display: block;
+      }
+
+      .section-label {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .field-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .field-grid input,
+      .field-grid textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fffdf8;
+        color: var(--ink);
+        outline: none;
+        padding: 12px 13px;
+      }
+
+      .field-grid textarea {
+        min-height: 142px;
+        resize: vertical;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .method {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 56px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fffdf8;
+        padding: 0 14px;
+      }
+
+      .status-box {
+        margin-top: 16px;
+        border: 1px solid rgba(165, 117, 40, 0.24);
+        border-radius: 16px;
+        background: rgba(165, 117, 40, 0.08);
+        color: #6f542d;
+        padding: 14px;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .status-box.is-paid {
+        border-color: rgba(66, 98, 71, 0.28);
+        background: rgba(66, 98, 71, 0.1);
+        color: var(--paid);
+      }
+
+      .stamp {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        border: 1px solid rgba(165, 117, 40, 0.4);
+        border-radius: 999px;
+        color: var(--pending);
+        padding: 0 12px;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .stamp.is-paid {
+        border-color: rgba(66, 98, 71, 0.45);
+        color: var(--paid);
+      }
+
+      .checkout-button {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 14px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 30;
+        max-width: min(360px, calc(100% - 40px));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fffdf8;
+        box-shadow: var(--shadow);
+        color: var(--ink);
+        opacity: 0;
+        padding: 13px 15px;
+        pointer-events: none;
+        transform: translateY(12px);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 960px) {
+        .nav {
+          grid-template-columns: 1fr auto;
+          height: auto;
+          min-height: 82px;
+          padding: 12px 0;
+        }
+
+        .links {
+          display: none;
+        }
+
+        .tools {
+          gap: 12px;
+        }
+
+        .product-grid,
+        .below {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .nav,
+        main {
+          width: min(100% - 24px, 520px);
+        }
+
+        .logo {
+          font-size: 54px;
+        }
+
+        .language {
+          display: none;
+        }
+
+        main {
+          padding-top: 34px;
+        }
+
+        .crumbs {
+          margin-bottom: 28px;
+        }
+
+        .image-card {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="logo" href="#">Labor</a>
+        <div class="links" aria-label="Catalog navigation">
+          <a href="#">Shop</a>
+          <a href="#">Brands</a>
+          <a href="#">Notes</a>
+          <a href="#">Perfumers</a>
+          <a href="#">Campaigns</a>
+        </div>
+        <div class="tools">
+          <span class="language">English</span>
+          <button class="icon-button" type="button" aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="Account">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="Wishlist">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 5.6c-1.6-2.1-4.7-2.1-6.4 0L12 8.5 9.6 5.6c-1.7-2.1-4.8-2.1-6.4 0-1.5 1.9-1.3 4.6.4 6.4l8.4 8 8.4-8c1.7-1.8 1.9-4.5.4-6.4Z"></path></svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="Open cart" data-action="open-cart">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-.7 13H7.7L7 7Z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+            <span class="cart-count" data-field="cartCount">0</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="crumbs" aria-label="Breadcrumbs">
+        <span>Labor</span><span>/</span><span>Le Labo</span><span>/</span><span>Santal 33</span>
+      </div>
+
+      <section class="product-grid" aria-label="Product detail">
+        <div class="image-card">
+          <img src="apps/web/public/products/santal-33.png" alt="Santal 33 perfume bottle">
+        </div>
+
+        <div class="product-info">
+          <p class="brand-kicker">Le Labo</p>
+          <h1>Santal 33</h1>
+          <p class="meta">masculine · EDP · 0 ml</p>
+          <div class="rating" aria-label="Rating and performance">
+            <span><span class="star">★</span> <strong>4.9</strong> (73)</span>
+            <span>·</span>
+            <span>Long 7.4/5</span>
+            <span>·</span>
+            <span>Sillage 5.6/5</span>
+          </div>
+          <p class="price">12,000 UZS</p>
+          <div class="size-row">
+            <label for="volume">Bottle volume</label>
+            <select id="volume">
+              <option value="40" selected>40 ml</option>
+              <option value="50">50 ml</option>
+              <option value="100">100 ml</option>
+            </select>
+          </div>
+          <button class="primary" type="button" data-action="add-to-cart">Add to cart</button>
+          <div class="secondary-actions">
+            <button class="pill" type="button">♡ Add to Wishlist</button>
+            <button class="pill" type="button">⇄ Add to Compare</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="below" aria-label="Fragrance details">
+        <div>
+          <h2>Main accords</h2>
+          <div class="accords">
+            <span>Woody</span>
+            <span>Aromatic</span>
+            <span>Powdery</span>
+            <span>Leather</span>
+            <span>Warm spicy</span>
+          </div>
+        </div>
+        <div>
+          <h2>Fragrance pyramid</h2>
+          <div class="pyramid">
+            <div><strong>Top:</strong> Violet accord, cardamom</div>
+            <div><strong>Heart:</strong> Iris, ambrox, cedarwood</div>
+            <div><strong>Base:</strong> Sandalwood, leather, musk</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="overlay" data-field="overlay"></div>
+    <aside class="cart-drawer" data-field="cartDrawer" aria-label="Shopping cart">
+      <div class="cart-head">
+        <h2>Your cart</h2>
+        <button class="icon-button" type="button" aria-label="Close cart" data-action="close-cart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+        </button>
+      </div>
+
+      <div class="cart-body">
+        <div class="cart-item">
+          <img class="cart-thumb" src="apps/web/public/products/santal-33.png" alt="Santal 33 bottle">
+          <div>
+            <p class="cart-title">Santal 33 · Le Labo</p>
+            <p class="cart-sub"><span data-field="cartVolume">40</span> ml · 12,000 UZS per ml</p>
+            <div class="cart-actions">
+              <div class="qty" aria-label="Quantity">
+                <button type="button" data-action="qty-down">−</button>
+                <span data-field="quantity">1</span>
+                <button type="button" data-action="qty-up">+</button>
+              </div>
+              <strong data-field="lineTotal">480,000 UZS</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <strong data-field="subtotal">480,000 UZS</strong>
+          </div>
+          <div class="summary-row">
+            <span>Delivery</span>
+            <strong data-field="delivery">40,000 UZS</strong>
+          </div>
+          <div class="summary-row total">
+            <span data-field="totalLabel">Total due</span>
+            <strong data-field="total">520,000 UZS</strong>
+          </div>
+        </div>
+
+        <button class="checkout-button" type="button" data-action="checkout">Checkout</button>
+
+        <section class="checkout" data-field="checkoutPanel" aria-label="Checkout">
+          <p class="section-label">Customer</p>
+          <div class="field-grid">
+            <input type="text" value="Aziz Karimov" aria-label="Customer name">
+            <input type="tel" value="+998 90 123 45 67" aria-label="Phone number">
+          </div>
+
+          <p class="section-label" style="margin-top: 18px;">Payment method</p>
+          <div class="method">
+            <strong>Payme</strong>
+            <span class="stamp" data-field="paymentStamp">Pending</span>
+          </div>
+
+          <div class="status-box" data-field="statusBox">
+            Create the Payme payment, then paste the Telegram group message below. The order stays pending until the Payme success text is received.
+          </div>
+
+          <button class="checkout-button" type="button" data-action="create-payment">Create Payme payment</button>
+
+          <p class="section-label" style="margin-top: 18px;">Labor Parfume & Payme group message</p>
+          <div class="field-grid">
+            <textarea data-field="telegramMessage" spellcheck="false"></textarea>
+          </div>
+          <button class="checkout-button" type="button" data-action="receive-message">Receive Telegram message</button>
+        </section>
+      </div>
+    </aside>
+
+    <div class="toast" data-field="toast" role="status" aria-live="polite"></div>
+    <audio data-field="paidAudio" preload="auto"></audio>
+
+    <script>
+      const paidAudioTracks = [
+        "assets/payme-paid.mp3",
+        "assets/50-cent-i-get-money.mp3",
+        "assets/abba-money-money-money.mp3"
+      ];
+
+      const product = {
+        name: "Santal 33",
+        brand: "Le Labo",
+        unitPrice: 12000,
+        delivery: 40000
+      };
+
+      const samplePaymeMessage = `📍 LABOR PARFUME
+🧾 703
+💳 986035******9776
+🇺🇿 520 000,00 сум
+🕓 19:10:16 23.05.2026
+🆔 6a11b53cfb1a624138832248
+✅ Успешно оплачен`;
+
+      const state = {
+        isInCart: false,
+        isCheckout: false,
+        paymentStatus: "pending",
+        quantity: 1,
+        volume: 40,
+        transactionId: null,
+        card: null,
+        paidAt: null
+      };
+
+      const field = (name) => document.querySelector(`[data-field="${name}"]`);
+      const action = (name) => document.querySelector(`[data-action="${name}"]`);
+      const money = (value) => `${Number(value || 0).toLocaleString("en-US")} UZS`;
+
+      const parsePaymeMessage = (message) => {
+        const raw = String(message || "").replace(/\u00a0/g, " ").trim();
+        const lines = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        const idLine = lines.find((line) => line.includes("🆔")) || "";
+        const cardLine = lines.find((line) => line.includes("💳")) || "";
+        const amountLine = lines.find((line) => /(?:сум|sum|uzs)/i.test(line)) || "";
+        const timeLine = lines.find((line) => line.includes("🕓")) || "";
+        const paid = /успешно\s+оплачен/i.test(raw);
+        const amountMatch = amountLine.match(/([\d\s]+)(?:,\d{2})?\s*(?:сум|sum|uzs)/i);
+        const timeMatch = timeLine.match(/(\d{2}:\d{2}:\d{2})\s+(\d{2}\.\d{2}\.\d{4})/);
+
+        return {
+          paid,
+          amount: amountMatch ? Number(amountMatch[1].replace(/\s/g, "")) : null,
+          transactionId: idLine.replace("🆔", "").trim(),
+          card: cardLine.replace("💳", "").trim(),
+          paidAt: timeMatch ? `${timeMatch[1]} ${timeMatch[2]}` : null,
+          raw
+        };
+      };
+
+      const showToast = (message) => {
+        const toast = field("toast");
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove("is-visible"), 2200);
+      };
+
+      const speakPaid = () => {
+        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+          return false;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance("Payme dan tolandi, rahmat");
+        utterance.lang = "uz-UZ";
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        window.speechSynthesis.speak(utterance);
+        return true;
+      };
+
+      const playPaidAudio = () => {
+        const audio = field("paidAudio");
+        if (!audio) {
+          speakPaid();
+          return;
+        }
+
+        const currentSrc = audio.getAttribute("src");
+        let nextSrc = paidAudioTracks[Math.floor(Math.random() * paidAudioTracks.length)];
+        if (paidAudioTracks.length > 1) {
+          while (nextSrc === currentSrc) {
+            nextSrc = paidAudioTracks[Math.floor(Math.random() * paidAudioTracks.length)];
+          }
+        }
+
+        audio.src = nextSrc;
+        audio.currentTime = 0;
+        const playResult = audio.play();
+        if (playResult && typeof playResult.catch === "function") {
+          playResult.catch(() => speakPaid());
+        }
+      };
+
+      const markPaymentStatus = (nextStatus) => {
+        const wasPaid = state.paymentStatus === "paid";
+        state.paymentStatus = nextStatus;
+        if (!wasPaid && nextStatus === "paid") {
+          playPaidAudio();
+        }
+      };
+
+      const openCart = () => {
+        field("overlay").classList.add("is-open");
+        field("cartDrawer").classList.add("is-open");
+      };
+
+      const closeCart = () => {
+        field("overlay").classList.remove("is-open");
+        field("cartDrawer").classList.remove("is-open");
+      };
+
+      const render = () => {
+        const lineTotal = state.volume * product.unitPrice * state.quantity;
+        const total = lineTotal + product.delivery;
+        const isPaid = state.paymentStatus === "paid";
+
+        field("cartCount").textContent = state.isInCart ? String(state.quantity) : "0";
+        field("cartCount").classList.toggle("is-visible", state.isInCart);
+        field("cartVolume").textContent = String(state.volume);
+        field("quantity").textContent = String(state.quantity);
+        field("lineTotal").textContent = money(lineTotal);
+        field("subtotal").textContent = money(lineTotal);
+        field("delivery").textContent = money(product.delivery);
+        field("total").textContent = money(total);
+        field("totalLabel").textContent = isPaid ? "Total paid" : "Total due";
+        field("checkoutPanel").classList.toggle("is-visible", state.isCheckout);
+        field("paymentStamp").textContent = isPaid ? "Paid" : "Pending";
+        field("paymentStamp").classList.toggle("is-paid", isPaid);
+        field("statusBox").classList.toggle("is-paid", isPaid);
+        field("statusBox").innerHTML = isPaid
+          ? `Payment received from Payme.<br>Card: <strong>${state.card || "Payme card"}</strong><br>Transaction: <strong>${state.transactionId || "received"}</strong><br>Paid at: <strong>${state.paidAt || "Telegram time"}</strong>`
+          : "Payment pending. Paste the Telegram Payme group message and click Receive Telegram message.";
+      };
+
+      action("add-to-cart").addEventListener("click", () => {
+        state.isInCart = true;
+        state.volume = Number(document.querySelector("#volume").value);
+        markPaymentStatus("pending");
+        state.isCheckout = false;
+        render();
+        openCart();
+        showToast("Santal 33 added to cart");
+      });
+
+      action("open-cart").addEventListener("click", () => {
+        state.isInCart = true;
+        render();
+        openCart();
+      });
+
+      action("close-cart").addEventListener("click", closeCart);
+      field("overlay").addEventListener("click", closeCart);
+
+      action("qty-down").addEventListener("click", () => {
+        state.quantity = Math.max(1, state.quantity - 1);
+        markPaymentStatus("pending");
+        render();
+      });
+
+      action("qty-up").addEventListener("click", () => {
+        state.quantity += 1;
+        markPaymentStatus("pending");
+        render();
+      });
+
+      action("checkout").addEventListener("click", () => {
+        state.isCheckout = true;
+        render();
+        showToast("Checkout opened");
+      });
+
+      action("create-payment").addEventListener("click", () => {
+        markPaymentStatus("pending");
+        field("telegramMessage").value = samplePaymeMessage;
+        render();
+        showToast("Payme payment created. Waiting for Telegram group message.");
+      });
+
+      action("receive-message").addEventListener("click", () => {
+        const parsed = parsePaymeMessage(field("telegramMessage").value);
+        markPaymentStatus(parsed.paid ? "paid" : "pending");
+        state.transactionId = parsed.transactionId;
+        state.card = parsed.card;
+        state.paidAt = parsed.paidAt;
+        render();
+        showToast(parsed.paid ? "Telegram Payme message received. Cart marked paid." : "No successful Payme payment found.");
+      });
+
+      window.receiveTelegramPaymeMessage = (message) => {
+        const parsed = parsePaymeMessage(message);
+        state.isInCart = true;
+        state.isCheckout = true;
+        markPaymentStatus(parsed.paid ? "paid" : "pending");
+        state.transactionId = parsed.transactionId;
+        state.card = parsed.card;
+        state.paidAt = parsed.paidAt;
+        field("telegramMessage").value = message;
+        render();
+        openCart();
+        return parsed;
+      };
+
+      window.addEventListener("message", (event) => {
+        if (!event.data || event.data.type !== "labor:telegram-payme-message") return;
+        window.receiveTelegramPaymeMessage(event.data.message || "");
+      });
+
+      field("telegramMessage").value = samplePaymeMessage;
+      window.samplePaymeMessage = samplePaymeMessage;
+      render();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+<% admin_breadcrumb('Perfumers', spree.admin_labor_perfumers_path) %>
+<% admin_breadcrumb(@perfumer.name) %>
+
+<% content_for :page_title do %>
+  Edit Perfumer: <%= @perfumer.name %>
+<% end %>
+
+<%= form_with model: @perfumer,
+              url: spree.admin_labor_perfumer_path(@perfumer),
+              method: :patch,
+              local: true,
+              html: { class: 'edit_labor_perfumer' } do |f| %>
+  <%= render 'form', f: f %>
+<% end %>

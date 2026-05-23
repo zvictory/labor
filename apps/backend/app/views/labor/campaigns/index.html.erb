@@ -1,0 +1,89 @@
+<% admin_breadcrumb(plural_resource_name(Labor::Campaign)) %>
+
+<% content_for :page_actions do %>
+  <li>
+    <%= link_to t('spree.admin.labor_campaigns.new', default: 'New Campaign'),
+                spree.new_admin_labor_campaign_path,
+                class: 'btn btn-primary' %>
+  </li>
+<% end %>
+
+<% content_for :page_title do %>
+  <%= t('spree.admin.tabs.labor_campaigns', default: 'Campaigns') %>
+<% end %>
+
+<% if @campaigns.any? %>
+  <table class="table table-striped" id="listing_labor_campaigns">
+    <colgroup>
+      <col style="width: 25%;">
+      <col style="width: 20%;">
+      <col style="width: 10%;">
+      <col style="width: 10%;">
+      <col style="width: 15%;">
+      <col style="width: 10%;">
+      <col style="width: 10%;">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Slug</th>
+        <th>Title (ru)</th>
+        <th>Status</th>
+        <th>Broadcast</th>
+        <th>Window</th>
+        <th>Slides</th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @campaigns.each do |c| %>
+        <tr id="<%= dom_id(c) %>">
+          <td><%= c.slug %></td>
+          <td><%= Mobility.with_locale(:ru) { c.title } %></td>
+          <td>
+            <span class="badge badge-<%= c.status == 'active' ? 'success' : (c.status == 'ended' ? 'secondary' : 'warning') %>">
+              <%= c.status %>
+            </span>
+          </td>
+          <td>
+            <% if c.broadcast_to_telegram %>
+              <% if c.broadcast_sent_at %>
+                <span class="badge badge-success" title="<%= c.broadcast_sent_at %>">sent</span>
+              <% else %>
+                <span class="badge badge-info">queued</span>
+              <% end %>
+            <% else %>
+              <span class="badge badge-light">off</span>
+            <% end %>
+          </td>
+          <td>
+            <small>
+              <%= c.starts_at&.to_date || '—' %>
+              →
+              <%= c.ends_at&.to_date || '—' %>
+            </small>
+          </td>
+          <td><%= c.slides.size %></td>
+          <td class="actions text-right">
+            <%= link_to 'Edit', spree.edit_admin_labor_campaign_path(c), class: 'btn btn-light btn-sm' %>
+            <% if c.broadcastable? %>
+              <%= button_to 'Broadcast',
+                            spree.broadcast_admin_labor_campaign_path(c),
+                            method: :post,
+                            class: 'btn btn-info btn-sm',
+                            form: { style: 'display:inline' } %>
+            <% end %>
+            <%= link_to 'Delete',
+                        spree.admin_labor_campaign_path(c),
+                        method: :delete,
+                        data: { confirm: 'Are you sure?' },
+                        class: 'btn btn-danger btn-sm' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info">
+    No campaigns yet. <%= link_to 'Create one', spree.new_admin_labor_campaign_path %>.
+  </div>
+<% end %>

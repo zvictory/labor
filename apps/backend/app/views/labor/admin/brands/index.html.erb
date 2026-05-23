@@ -1,0 +1,53 @@
+<% admin_breadcrumb('Brands') %>
+
+<% content_for :page_actions do %>
+  <li>
+    <%= link_to 'New Brand', spree.new_admin_labor_brand_path, class: 'btn btn-primary' %>
+  </li>
+<% end %>
+
+<% content_for :page_title do %>
+  Brands
+<% end %>
+
+<% if @brands.any? %>
+  <table class="table table-striped" id="listing_labor_brands">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th>Country</th>
+        <th>Founded</th>
+        <th>Niche</th>
+        <th>Active</th>
+        <th>Products</th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @brands.each do |b| %>
+        <tr id="<%= dom_id(b) %>">
+          <td><%= b.name %></td>
+          <td><code><%= b.slug %></code></td>
+          <td><%= b.country %></td>
+          <td><%= b.founded_year %></td>
+          <td><%= b.niche? ? 'yes' : '' %></td>
+          <td><%= b.active? ? 'yes' : 'no' %></td>
+          <td><%= b.products_count %></td>
+          <td class="actions text-right">
+            <%= link_to 'Edit', spree.edit_admin_labor_brand_path(b), class: 'btn btn-light btn-sm' %>
+            <%= link_to 'Delete',
+                        spree.admin_labor_brand_path(b),
+                        method: :delete,
+                        data: { confirm: 'Delete this brand?' },
+                        class: 'btn btn-danger btn-sm' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info">
+    No brands yet. <%= link_to 'Create one', spree.new_admin_labor_brand_path %>.
+  </div>
+<% end %>

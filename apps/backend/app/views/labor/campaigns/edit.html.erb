@@ -1,0 +1,55 @@
+<% admin_breadcrumb(plural_resource_name(Labor::Campaign), spree.admin_labor_campaigns_path) %>
+<% admin_breadcrumb(@campaign.slug) %>
+
+<% content_for :page_title do %>
+  Edit Campaign: <%= @campaign.slug %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <% if @campaign.broadcastable? %>
+    <li>
+      <%= button_to 'Broadcast to Telegram',
+                    spree.broadcast_admin_labor_campaign_path(@campaign),
+                    method: :post,
+                    class: 'btn btn-info' %>
+    </li>
+  <% end %>
+<% end %>
+
+<%= form_with model: @campaign,
+              url: spree.admin_labor_campaign_path(@campaign),
+              method: :patch,
+              local: true,
+              html: { class: 'edit_labor_campaign' } do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+
+<fieldset class="no-border-bottom">
+  <legend>
+    Slides
+    <%= link_to '+ Add slide',
+                spree.new_admin_labor_campaign_slide_path(@campaign),
+                class: 'btn btn-primary btn-sm float-right' %>
+  </legend>
+
+  <% if @campaign.slides.any? %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="width: 60px;">#</th>
+          <th>Title (ru)</th>
+          <th>Image</th>
+          <th>Link</th>
+          <th class="actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @campaign.slides.each do |slide| %>
+          <%= render 'labor/campaign_slides/slide_row', campaign: @campaign, slide: slide %>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-muted">No slides yet.</p>
+  <% end %>
+</fieldset>

@@ -1,0 +1,130 @@
+<% locales = %w[ru en uz uzc] %>
+
+<fieldset class="no-border-bottom">
+  <legend>Basics</legend>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :slug %>
+        <%= f.text_field :slug, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= f.label :status %>
+        <%= f.select :status,
+                     Labor::Campaign::STATUSES.map { |s| [s.humanize, s] },
+                     {},
+                     class: 'form-control' %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group form-check" style="margin-top: 2rem;">
+        <%= f.check_box :broadcast_to_telegram, class: 'form-check-input' %>
+        <%= f.label :broadcast_to_telegram, 'Broadcast to Telegram', class: 'form-check-label' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :hero_image_url %>
+        <%= f.text_field :hero_image_url, class: 'form-control', placeholder: 'https://...' %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= f.label :starts_at %>
+        <%= f.datetime_local_field :starts_at,
+                                   value: f.object.starts_at&.strftime('%Y-%m-%dT%H:%M'),
+                                   class: 'form-control' %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= f.label :ends_at %>
+        <%= f.datetime_local_field :ends_at,
+                                   value: f.object.ends_at&.strftime('%Y-%m-%dT%H:%M'),
+                                   class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :spree_promotion_id, 'Promotion (optional)' %>
+        <%= f.collection_select :spree_promotion_id,
+                                Spree::Promotion.order(:name),
+                                :id, :name,
+                                { include_blank: '— none —' },
+                                class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset class="no-border-bottom">
+  <legend>Translations</legend>
+
+  <ul class="nav nav-tabs" role="tablist">
+    <% locales.each_with_index do |loc, i| %>
+      <li class="nav-item">
+        <a class="nav-link <%= 'active' if i.zero? %>"
+           data-toggle="tab"
+           href="#camp-locale-<%= loc %>"
+           role="tab"><%= loc.upcase %></a>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="tab-content" style="padding-top: 1rem;">
+    <% locales.each_with_index do |loc, i| %>
+      <div class="tab-pane fade <%= 'show active' if i.zero? %>"
+           id="camp-locale-<%= loc %>"
+           role="tabpanel">
+        <div class="form-group">
+          <%= f.label :"title_#{loc}", "Title (#{loc})" %>
+          <%= f.text_field :"title_#{loc}", class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :"subtitle_#{loc}", "Subtitle (#{loc})" %>
+          <%= f.text_area :"subtitle_#{loc}", rows: 2, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :"body_#{loc}", "Body (#{loc})" %>
+          <%= f.text_area :"body_#{loc}", rows: 5, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :"cta_label_#{loc}", "CTA label (#{loc})" %>
+          <%= f.text_field :"cta_label_#{loc}", class: 'form-control' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</fieldset>
+
+<fieldset class="no-border-bottom">
+  <legend>Products</legend>
+  <div class="form-group">
+    <%= label_tag 'labor_campaign[product_ids][]', 'Featured products' %>
+    <%= select_tag 'labor_campaign[product_ids][]',
+                   options_from_collection_for_select(
+                     Spree::Product.order(:name),
+                     :id,
+                     :name,
+                     f.object.product_ids
+                   ),
+                   multiple: true,
+                   class: 'form-control select2',
+                   data: { placeholder: 'Pick products' } %>
+    <small class="form-text text-muted">Cmd/Ctrl-click to select multiple.</small>
+  </div>
+</fieldset>
+
+<div class="form-actions">
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', spree.admin_labor_campaigns_path, class: 'btn btn-light' %>
+</div>

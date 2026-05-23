@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+@config '../../tailwind.config.ts';
+
+@layer base {
+  :root {
+    /* Le Labo-inspired warm-neutral palette */
+    --background: 39 33% 97%; /* #FAF8F4 bone */
+    --foreground: 24 14% 9%; /* #1A1714 ink */
+
+    --card: 0 0% 100%;
+    --card-foreground: 24 14% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 14% 9%;
+
+    --primary: 24 14% 9%; /* near-black */
+    --primary-foreground: 39 33% 97%;
+
+    --secondary: 36 19% 90%;
+    --secondary-foreground: 24 14% 9%;
+
+    --muted: 36 19% 90%;
+    --muted-foreground: 30 8% 38%; /* #6B6258 */
+
+    --accent: 30 32% 41%; /* #8B6F47 brass */
+    --accent-foreground: 39 33% 97%;
+
+    --destructive: 0 56% 39%; /* #9B2C2C */
+    --destructive-foreground: 39 33% 97%;
+
+    --border: 30 12% 85%;
+    --input: 30 12% 85%;
+    --ring: 30 32% 41%;
+
+    --radius: 0.25rem;
+  }
+
+  .dark {
+    --background: 24 14% 9%;
+    --foreground: 39 33% 97%;
+    --card: 24 14% 12%;
+    --card-foreground: 39 33% 97%;
+    --popover: 24 14% 12%;
+    --popover-foreground: 39 33% 97%;
+    --primary: 39 33% 97%;
+    --primary-foreground: 24 14% 9%;
+    --secondary: 24 8% 18%;
+    --secondary-foreground: 39 33% 97%;
+    --muted: 24 8% 18%;
+    --muted-foreground: 30 10% 65%;
+    --accent: 30 32% 50%;
+    --accent-foreground: 24 14% 9%;
+    --destructive: 0 56% 50%;
+    --destructive-foreground: 39 33% 97%;
+    --border: 24 8% 22%;
+    --input: 24 8% 22%;
+    --ring: 30 32% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+

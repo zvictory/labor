@@ -1,0 +1,40 @@
+en:
+  hello: "Hello"
+  labor:
+    currency: "UZS"
+  spree:
+    admin:
+      tabs:
+        labor_brands: "Brands"
+        labor_campaigns: "Campaigns"
+        labor_notes: "Fragrance notes"
+        labor_perfumers: "Perfumers"
+      missing_images: "Missing images"
+      labor_campaigns:
+        new: "New Campaign"
+        edit: "Edit Campaign"
+        broadcast: "Broadcast to Telegram"
+ru:
+  spree:
+    admin:
+      tabs:
+        labor_brands: "Бренды"
+        labor_notes: "Парфюмерные ноты"
+        labor_perfumers: "Парфюмеры"
+      missing_images: "Без изображения"
+uz:
+  spree:
+    admin:
+      tabs:
+        labor_brands: "Brendlar"
+        labor_notes: "Hidlar"
+        labor_perfumers: "Parfyumerlar"
+      missing_images: "Rasmsiz"
+uzc:
+  spree:
+    admin:
+      tabs:
+        labor_brands: "Брендлар"
+        labor_notes: "Ҳидлар"
+        labor_perfumers: "Парфюмерлар"
+      missing_images: "Расмсиз"

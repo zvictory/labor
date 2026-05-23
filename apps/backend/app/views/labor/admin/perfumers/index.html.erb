@@ -1,0 +1,45 @@
+<% admin_breadcrumb('Perfumers') %>
+
+<% content_for :page_actions do %>
+  <li>
+    <%= link_to 'New Perfumer', spree.new_admin_labor_perfumer_path, class: 'btn btn-primary' %>
+  </li>
+<% end %>
+
+<% content_for :page_title do %>
+  Perfumers
+<% end %>
+
+<% if @perfumers.any? %>
+  <table class="table table-striped" id="listing_labor_perfumers">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th>Country</th>
+        <th class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @perfumers.each do |p| %>
+        <tr id="<%= dom_id(p) %>">
+          <td><%= p.name %></td>
+          <td><code><%= p.slug %></code></td>
+          <td><%= p.country %></td>
+          <td class="actions text-right">
+            <%= link_to 'Edit', spree.edit_admin_labor_perfumer_path(p), class: 'btn btn-light btn-sm' %>
+            <%= link_to 'Delete',
+                        spree.admin_labor_perfumer_path(p),
+                        method: :delete,
+                        data: { confirm: 'Delete this perfumer?' },
+                        class: 'btn btn-danger btn-sm' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info">
+    No perfumers yet. <%= link_to 'Create one', spree.new_admin_labor_perfumer_path %>.
+  </div>
+<% end %>

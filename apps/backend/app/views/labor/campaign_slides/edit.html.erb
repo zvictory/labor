@@ -1,0 +1,15 @@
+<% admin_breadcrumb(plural_resource_name(Labor::Campaign), spree.admin_labor_campaigns_path) %>
+<% admin_breadcrumb(@campaign.slug, spree.edit_admin_labor_campaign_path(@campaign)) %>
+<% admin_breadcrumb("Slide ##{@slide.position}") %>
+
+<% content_for :page_title do %>
+  Edit Slide
+<% end %>
+
+<%= form_with model: @slide,
+              url: spree.admin_labor_campaign_slide_path(@campaign, @slide),
+              method: :patch,
+              local: true,
+              html: { class: 'edit_labor_campaign_slide' } do |f| %>
+  <%= render 'form', f: f %>
+<% end %>

@@ -1,0 +1,33 @@
+<fieldset class="no-border-bottom">
+  <legend>Perfumer</legend>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :slug %>
+        <%= f.text_field :slug, class: 'form-control', required: true %>
+        <small class="form-text text-muted">lowercase, digits, dashes only</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= f.label :country %>
+        <%= f.text_field :country, class: 'form-control', placeholder: 'FR, IT, ...' %>
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<div class="form-actions">
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', spree.admin_labor_perfumers_path, class: 'btn btn-light' %>
+</div>

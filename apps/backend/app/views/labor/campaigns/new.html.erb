@@ -1,0 +1,13 @@
+<% admin_breadcrumb(plural_resource_name(Labor::Campaign), spree.admin_labor_campaigns_path) %>
+<% admin_breadcrumb('New') %>
+
+<% content_for :page_title do %>
+  New Campaign
+<% end %>
+
+<%= form_with model: @campaign,
+              url: spree.admin_labor_campaigns_path,
+              local: true,
+              html: { class: 'edit_labor_campaign' } do |f| %>
+  <%= render 'form', f: f %>
+<% end %>

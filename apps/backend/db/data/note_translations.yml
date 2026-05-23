@@ -1,0 +1,533 @@
+# Note name translations for the 101 fragrance notes in labor_notes.
+#
+# Applied by `rake labor:notes:apply_translations` via Mobility.with_locale.
+# Editing rule: keep all four locale keys (en/ru/uz/uzc) present per slug.
+# ru = Russian, uzc = Cyrillic Uzbek (Soviet-era script), uz = Latin Uzbek.
+# Curated against established perfumery vocabulary.
+
+# --- aquatic ---------------------------------------------------------------
+ozone:
+  en: Ozone
+  ru: Озон
+  uz: Ozon
+  uzc: Озон
+rain:
+  en: Rain
+  ru: Дождь
+  uz: Yomg‘ir
+  uzc: Ёмғир
+salt:
+  en: Sea Salt
+  ru: Морская соль
+  uz: Dengiz tuzi
+  uzc: Денгиз тузи
+seaweed:
+  en: Seaweed
+  ru: Морские водоросли
+  uz: Dengiz o‘tlari
+  uzc: Денгиз ўтлари
+
+# --- aromatic --------------------------------------------------------------
+basil:
+  en: Basil
+  ru: Базилик
+  uz: Rayhon
+  uzc: Райҳон
+black-tea:
+  en: Black Tea
+  ru: Чёрный чай
+  uz: Qora choy
+  uzc: Қора чой
+cardamom:
+  en: Cardamom
+  ru: Кардамон
+  uz: Kardamon
+  uzc: Кардамон
+cinnamon:
+  en: Cinnamon
+  ru: Корица
+  uz: Dolchin
+  uzc: Долчин
+clove:
+  en: Clove
+  ru: Гвоздика
+  uz: Mixchagul
+  uzc: Михчагул
+geranium:
+  en: Geranium
+  ru: Герань
+  uz: Geran
+  uzc: Геран
+ginger:
+  en: Ginger
+  ru: Имбирь
+  uz: Zanjabil
+  uzc: Занжабил
+lavender:
+  en: Lavender
+  ru: Лаванда
+  uz: Lavanda
+  uzc: Лаванда
+mint:
+  en: Mint
+  ru: Мята
+  uz: Yalpiz
+  uzc: Ялпиз
+nutmeg:
+  en: Nutmeg
+  ru: Мускатный орех
+  uz: Muskat yong‘og‘i
+  uzc: Мускат ёнғоғи
+pepper:
+  en: Pepper
+  ru: Перец
+  uz: Garmdori
+  uzc: Гармдори
+saffron:
+  en: Saffron
+  ru: Шафран
+  uz: Za’faron
+  uzc: Заъфарон
+sage:
+  en: Sage
+  ru: Шалфей
+  uz: Marvarid o‘ti
+  uzc: Марварид ўти
+
+# --- chypre ----------------------------------------------------------------
+aldehydes:
+  en: Aldehydes
+  ru: Альдегиды
+  uz: Aldegidlar
+  uzc: Альдегидлар
+
+# --- citrus ----------------------------------------------------------------
+bergamot:
+  en: Bergamot
+  ru: Бергамот
+  uz: Bergamot
+  uzc: Бергамот
+bitter-orange:
+  en: Bitter Orange
+  ru: Горький апельсин
+  uz: Achchiq apelsin
+  uzc: Аччиқ апельсин
+grapefruit:
+  en: Grapefruit
+  ru: Грейпфрут
+  uz: Greypfrut
+  uzc: Грейпфрут
+lemon:
+  en: Lemon
+  ru: Лимон
+  uz: Limon
+  uzc: Лимон
+lime:
+  en: Lime
+  ru: Лайм
+  uz: Laym
+  uzc: Лайм
+mandarin:
+  en: Mandarin
+  ru: Мандарин
+  uz: Mandarin
+  uzc: Мандарин
+neroli:
+  en: Neroli
+  ru: Нероли
+  uz: Neroli
+  uzc: Нероли
+orange:
+  en: Orange
+  ru: Апельсин
+  uz: Apelsin
+  uzc: Апельсин
+petitgrain:
+  en: Petitgrain
+  ru: Петитгрейн
+  uz: Petitgreyn
+  uzc: Петитгрейн
+yuzu:
+  en: Yuzu
+  ru: Юдзу
+  uz: Yuzu
+  uzc: Юдзу
+
+# --- floral ----------------------------------------------------------------
+gardenia:
+  en: Gardenia
+  ru: Гардения
+  uz: Gardeniya
+  uzc: Гардения
+honeysuckle:
+  en: Honeysuckle
+  ru: Жимолость
+  uz: Sallagul
+  uzc: Саллагул
+iris:
+  en: Iris
+  ru: Ирис
+  uz: Iris
+  uzc: Ирис
+jasmine:
+  en: Jasmine
+  ru: Жасмин
+  uz: Yasemin
+  uzc: Ясемин
+lily:
+  en: Lily
+  ru: Лилия
+  uz: Lilya
+  uzc: Лилия
+lily-of-the-valley:
+  en: Lily of the Valley
+  ru: Ландыш
+  uz: Marvaridgul
+  uzc: Марваридгул
+magnolia:
+  en: Magnolia
+  ru: Магнолия
+  uz: Magnoliya
+  uzc: Магнолия
+mimosa:
+  en: Mimosa
+  ru: Мимоза
+  uz: Mimoza
+  uzc: Мимоза
+orange-blossom:
+  en: Orange Blossom
+  ru: Цветок апельсина
+  uz: Apelsin guli
+  uzc: Апельсин гули
+orchid:
+  en: Orchid
+  ru: Орхидея
+  uz: Orxideya
+  uzc: Орхидея
+osmanthus:
+  en: Osmanthus
+  ru: Османтус
+  uz: Osmantus
+  uzc: Османтус
+peony:
+  en: Peony
+  ru: Пион
+  uz: Pion
+  uzc: Пион
+rose:
+  en: Rose
+  ru: Роза
+  uz: Atirgul
+  uzc: Атиргул
+tuberose:
+  en: Tuberose
+  ru: Тубероза
+  uz: Tuberoza
+  uzc: Тубероза
+violet:
+  en: Violet
+  ru: Фиалка
+  uz: Binafsha
+  uzc: Бинафша
+ylang-ylang:
+  en: Ylang-Ylang
+  ru: Иланг-иланг
+  uz: Ilang-ilang
+  uzc: Иланг-иланг
+
+# --- gourmand --------------------------------------------------------------
+almond:
+  en: Almond
+  ru: Миндаль
+  uz: Bodom
+  uzc: Бодом
+caramel:
+  en: Caramel
+  ru: Карамель
+  uz: Karamel
+  uzc: Карамел
+chocolate:
+  en: Chocolate
+  ru: Шоколад
+  uz: Shokolad
+  uzc: Шоколад
+coconut:
+  en: Coconut
+  ru: Кокос
+  uz: Kokos
+  uzc: Кокос
+coffee:
+  en: Coffee
+  ru: Кофе
+  uz: Qahva
+  uzc: Қаҳва
+honey:
+  en: Honey
+  ru: Мёд
+  uz: Asal
+  uzc: Асал
+praline:
+  en: Praline
+  ru: Пралине
+  uz: Pralin
+  uzc: Пралин
+
+# --- green / fruity --------------------------------------------------------
+apple:
+  en: Apple
+  ru: Яблоко
+  uz: Olma
+  uzc: Олма
+blackcurrant:
+  en: Blackcurrant
+  ru: Чёрная смородина
+  uz: Qora smorodina
+  uzc: Қора смородина
+cucumber:
+  en: Cucumber
+  ru: Огурец
+  uz: Bodring
+  uzc: Бодринг
+fig:
+  en: Fig
+  ru: Инжир
+  uz: Anjir
+  uzc: Анжир
+hay:
+  en: Hay
+  ru: Сено
+  uz: Pichan
+  uzc: Пичан
+immortelle:
+  en: Immortelle
+  ru: Бессмертник
+  uz: Bessmertnik
+  uzc: Бессмертник
+lychee:
+  en: Lychee
+  ru: Личи
+  uz: Lichi
+  uzc: Личи
+mango:
+  en: Mango
+  ru: Манго
+  uz: Mango
+  uzc: Манго
+melon:
+  en: Melon
+  ru: Дыня
+  uz: Qovun
+  uzc: Қовун
+peach:
+  en: Peach
+  ru: Персик
+  uz: Shaftoli
+  uzc: Шафтоли
+pear:
+  en: Pear
+  ru: Груша
+  uz: Nok
+  uzc: Нок
+pineapple:
+  en: Pineapple
+  ru: Ананас
+  uz: Ananas
+  uzc: Ананас
+plum:
+  en: Plum
+  ru: Слива
+  uz: Olxo‘ri
+  uzc: Олхўри
+raspberry:
+  en: Raspberry
+  ru: Малина
+  uz: Malina
+  uzc: Малина
+
+# --- leather ---------------------------------------------------------------
+leather:
+  en: Leather
+  ru: Кожа
+  uz: Charm
+  uzc: Чарм
+suede:
+  en: Suede
+  ru: Замша
+  uz: Zamsh
+  uzc: Замш
+
+# --- oriental --------------------------------------------------------------
+amber:
+  en: Amber
+  ru: Амбра
+  uz: Anbar
+  uzc: Анбар
+ambergris:
+  en: Ambergris
+  ru: Серая амбра
+  uz: Kulrang anbar
+  uzc: Кулранг анбар
+benzoin:
+  en: Benzoin
+  ru: Бензоин
+  uz: Benzoin
+  uzc: Бензоин
+civet:
+  en: Civet
+  ru: Цивет
+  uz: Sivet
+  uzc: Сивет
+frankincense:
+  en: Frankincense
+  ru: Ладан
+  uz: Ladan
+  uzc: Ладан
+labdanum:
+  en: Labdanum
+  ru: Лабданум
+  uz: Labdanum
+  uzc: Лабданум
+musk:
+  en: Musk
+  ru: Мускус
+  uz: Mushk
+  uzc: Мушк
+myrrh:
+  en: Myrrh
+  ru: Мирра
+  uz: Mirra
+  uzc: Мирра
+opoponax:
+  en: Opoponax
+  ru: Опопонакс
+  uz: Opoponaks
+  uzc: Опопонакс
+styrax:
+  en: Styrax
+  ru: Стиракс
+  uz: Stiraks
+  uzc: Стиракс
+tonka:
+  en: Tonka Bean
+  ru: Бобы тонка
+  uz: Tonka loviyasi
+  uzc: Тонка ловияси
+vanilla:
+  en: Vanilla
+  ru: Ваниль
+  uz: Vanil
+  uzc: Ванил
+
+# --- smoky -----------------------------------------------------------------
+incense:
+  en: Incense
+  ru: Ладан-смола
+  uz: Tutatqi
+  uzc: Тутатқи
+ink:
+  en: Ink
+  ru: Чернила
+  uz: Siyoh
+  uzc: Сиёҳ
+paper:
+  en: Paper
+  ru: Бумага
+  uz: Qog‘oz
+  uzc: Қоғоз
+smoke:
+  en: Smoke
+  ru: Дым
+  uz: Tutun
+  uzc: Тутун
+tobacco:
+  en: Tobacco
+  ru: Табак
+  uz: Tamaki
+  uzc: Тамаки
+
+# --- woody -----------------------------------------------------------------
+agarwood:
+  en: Agarwood
+  ru: Агаровое дерево
+  uz: Agar yog‘ochi
+  uzc: Агар ёғочи
+ambroxan:
+  en: Ambroxan
+  ru: Амброксан
+  uz: Ambroksan
+  uzc: Амброксан
+birch:
+  en: Birch
+  ru: Берёза
+  uz: Qayin
+  uzc: Қайин
+cashmere-wood:
+  en: Cashmere Wood
+  ru: Кашемировое дерево
+  uz: Kashmir yog‘ochi
+  uzc: Кашмир ёғочи
+cedar:
+  en: Cedar
+  ru: Кедр
+  uz: Sadr
+  uzc: Садр
+cypress:
+  en: Cypress
+  ru: Кипарис
+  uz: Sarv
+  uzc: Сарв
+fir:
+  en: Fir
+  ru: Пихта
+  uz: Pixta
+  uzc: Пихта
+gaiac:
+  en: Gaiac Wood
+  ru: Гваяковое дерево
+  uz: Gvayak yog‘ochi
+  uzc: Гваяк ёғочи
+iso-e-super:
+  en: Iso E Super
+  ru: Изо Е Супер
+  uz: Iso E Super
+  uzc: Изо Е Супер
+juniper:
+  en: Juniper
+  ru: Можжевельник
+  uz: Archa
+  uzc: Арча
+oakmoss:
+  en: Oakmoss
+  ru: Дубовый мох
+  uz: Eman mox
+  uzc: Эман мох
+oud:
+  en: Oud
+  ru: Уд
+  uz: Ud
+  uzc: Уд
+papyrus:
+  en: Papyrus
+  ru: Папирус
+  uz: Papirus
+  uzc: Папирус
+pine:
+  en: Pine
+  ru: Сосна
+  uz: Qarag‘ay
+  uzc: Қарағай
+sandal-mysore:
+  en: Mysore Sandalwood
+  ru: Майсорский сандал
+  uz: Maysor sandalshi
+  uzc: Майсор сандалши
+sandalwood:
+  en: Sandalwood
+  ru: Сандал
+  uz: Sandal
+  uzc: Сандал
+vetiver:
+  en: Vetiver
+  ru: Ветивер
+  uz: Vetiver
+  uzc: Ветивер
