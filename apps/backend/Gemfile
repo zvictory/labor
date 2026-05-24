@@ -80,4 +80,9 @@ end
 group :test do
   gem 'webmock', '~> 3.24'
   gem 'vcr', '~> 6.3'
+  # Required by the concurrent race specs in
+  # `spec/requests/spree/api/v2/storefront/payments/*` — those examples set
+  # `use_transactional_fixtures = false` so threads can see each other's
+  # writes; DatabaseCleaner with the :deletion strategy cleans up afterward.
+  gem 'database_cleaner-active_record', '~> 2.2'
 end

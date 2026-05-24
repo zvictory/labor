@@ -138,6 +138,10 @@ GEM
       rexml
     crass (1.0.6)
     csv (3.3.5)
+    database_cleaner-active_record (2.2.2)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0)
+    database_cleaner-core (2.0.1)
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
@@ -568,6 +572,7 @@ DEPENDENCIES
   aws-sdk-s3 (~> 1.160)
   bootsnap
   csv
+  database_cleaner-active_record (~> 2.2)
   debug
   devise (~> 4.9)
   devise_token_auth (~> 1.2)
