@@ -3,6 +3,9 @@ module Spree
     module V2
       module Storefront
         class CheckoutController < ::Spree::Api::V2::BaseController
+          # Raised when a requested line-item quantity exceeds available stock.
+          class InsufficientStockError < StandardError; end
+
           def create
             ActiveRecord::Base.transaction do
               user = resolve_user
@@ -21,6 +24,8 @@ module Spree
                 }
               }
             end
+          rescue InsufficientStockError => e
+            render_error(:unprocessable_content, e.message)
           rescue ActiveRecord::RecordInvalid => e
             render_error(:unprocessable_content, e.record.errors.full_messages.join(', '))
           # Spree 5 port: V2 BaseController used to render ParameterMissing as 400 — V3 doesn't.
@@ -48,7 +53,15 @@ module Spree
             )
             params.require(:line_items).each do |li|
               variant = Spree::Variant.find(li[:variant_id])
-              order.contents.add(variant, li[:quantity].to_i)
+              # Spree 5.4 removed Order#contents. OrderContents#add still enforces
+              # stock via the AvailabilityValidator: on oversell it returns an
+              # unsaved, invalid line item (it does not raise), so the result must
+              # be inspected — otherwise the order proceeds with the item dropped.
+              line_item = Spree::OrderContents.new(order).add(variant, li[:quantity].to_i)
+              next if line_item.persisted? && line_item.errors.empty?
+
+              raise InsufficientStockError,
+                    "Insufficient stock — #{line_item.errors.full_messages.to_sentence}"
             end
             order
           end
