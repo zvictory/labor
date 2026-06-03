@@ -1,4 +1,5 @@
 import createNextIntlPlugin from 'next-intl/plugin';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -33,4 +34,12 @@ const nextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+// Sentry wraps the fully-composed config (next-intl already applied). Source-map
+// upload runs at build only when SENTRY_AUTH_TOKEN/org/project are present;
+// absent in dev → upload is skipped and the build still succeeds (graceful
+// degrade, same contract as the runtime DSN guard).
+export default withSentryConfig(withNextIntl(nextConfig), {
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  disableLogger: true,
+});

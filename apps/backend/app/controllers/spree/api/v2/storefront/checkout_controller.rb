@@ -6,6 +6,11 @@ module Spree
           # Raised when a requested line-item quantity exceeds available stock.
           class InsufficientStockError < StandardError; end
 
+          # The five canonical UTM keys the storefront captures (apps/web
+          # src/lib/analytics/utm.ts). Anything else the URL carries (fbclid,
+          # gclid, locale, …) is not attribution and must never be stored.
+          UTM_KEYS = %i[utm_source utm_medium utm_campaign utm_term utm_content].freeze
+
           def create
             ActiveRecord::Base.transaction do
               user = resolve_user
@@ -49,7 +54,8 @@ module Spree
               user: user,
               email: user&.email,
               currency: 'UZS',
-              store: current_store
+              store: current_store,
+              private_metadata: order_private_metadata
             )
             params.require(:line_items).each do |li|
               variant = Spree::Variant.find(li[:variant_id])
@@ -97,7 +103,11 @@ module Spree
           end
 
           def advance_order(order)
-            order.next while order.can_proceed?
+            # Spree 5.4 has no Order#can_proceed?. `next` runs one checkout
+            # transition and returns false (never raises) when the order can't
+            # advance further — e.g. `delivery` with no shipping method selected.
+            # Loop until it stops, advancing as far as the order's data allows.
+            nil while order.next
           end
 
           def enqueue_payment(order)
@@ -115,6 +125,21 @@ module Spree
             else
               raise ArgumentError, "unknown payment method: #{method}"
             end
+          end
+
+          # Internal attribution (not storefront-exposed), so it lives in
+          # private_metadata. Empty when the visitor was never tagged — the key
+          # is simply absent rather than stored as a blank, keeping untracked
+          # orders honest. jsonb round-trips every key as a string.
+          def order_private_metadata
+            utm = permitted_utm
+            utm.present? ? { 'utm' => utm } : {}
+          end
+
+          def permitted_utm
+            return {} if params[:utm].blank?
+
+            params.require(:utm).permit(first: UTM_KEYS, last: UTM_KEYS).to_h
           end
 
           def default_country

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { apiFetch, ApiError } from './client';
+import { readUtm } from '@/lib/analytics/utm';
 
 const PHONE_REGEX = /^\+?\d[\d\s\-()]{7,}$/;
 
@@ -58,6 +59,10 @@ export const createCheckout = async (
       ? localStorage.getItem('labor-token') ?? undefined
       : undefined;
 
+  // first/last-touch attribution captured by the analytics listener. Optional —
+  // an untracked buyer simply omits it and the order carries no utm metadata.
+  const utm = readUtm() ?? undefined;
+
   try {
     const res = await apiFetch<BackendCheckoutEnvelope>('/storefront/checkout', {
       method: 'POST',
@@ -74,6 +79,7 @@ export const createCheckout = async (
         delivery_provider: parsed.delivery_method,
         payment_method: parsed.payment_method,
         comment: parsed.comment,
+        ...(utm ? { utm } : {}),
       },
     });
 

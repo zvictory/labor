@@ -63,6 +63,14 @@ gem 'csv'
 
 # Telegram initData HMAC verification — pure stdlib (openssl), no gem needed
 
+# Error monitoring. Degrades gracefully: config/initializers/sentry.rb returns
+# early when SENTRY_DSN is blank, so the gem loads but stays dormant. NOT added
+# to REQUIRED_ENV_KEYS — observability is not a security secret (cf.
+# 00_required_env.rb). sentry-rails/-sidekiq auto-instrument once required.
+gem 'sentry-ruby', '~> 5.18'
+gem 'sentry-rails', '~> 5.18'
+gem 'sentry-sidekiq', '~> 5.18'
+
 group :development, :test do
   gem 'debug', platforms: %i[mri mingw x64_mingw]
   gem 'rspec-rails', '~> 7.0'

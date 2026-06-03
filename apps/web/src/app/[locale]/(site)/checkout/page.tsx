@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCartStore } from '@/lib/stores/cart-store';
 import { useHydrated } from '@/lib/hooks/use-hydrated';
+import { track } from '@/lib/analytics/track';
 import {
   CheckoutPayloadSchema,
   createCheckout,
@@ -68,6 +69,14 @@ export default function CheckoutPage() {
           quantity: l.quantity,
         })),
       };
+      track({
+        name: 'InitiateCheckout',
+        payload: {
+          value: lines.reduce((sum, l) => sum + l.price * l.quantity, 0),
+          numItems: lines.reduce((sum, l) => sum + l.quantity, 0),
+          contentIds: lines.map((l) => l.variant_id),
+        },
+      });
       const response = await createCheckout(payload, locale);
       clear();
       window.location.href = response.payment_url;
