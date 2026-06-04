@@ -9,7 +9,7 @@ module Spree
             before_action :require_admin!
 
             def export
-              csv = Labor::Delivery::BtsCsvExporter.call
+              csv = Labor::Delivery::BtsCSVExporter.call
               filename = "bts_export_#{Time.current.strftime('%Y%m%d_%H%M')}.csv"
               send_data csv, type: 'text/csv; charset=utf-8', disposition: "attachment; filename=#{filename}"
             end

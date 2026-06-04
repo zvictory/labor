@@ -4,7 +4,7 @@ module Labor
   module Delivery
     # BTS Express export. BTS accepts a CSV upload with a fixed column order.
     # Columns derived from BTS partner spec v2.3 (Cyrillic headers preferred).
-    class BtsCsvExporter
+    class BtsCSVExporter
       HEADERS = [
         'Tracking', 'Recipient', 'Phone', 'Region', 'District', 'Address',
         'WeightKg', 'DeclaredValueUZS', 'Items', 'CodAmountUZS', 'Comment'
