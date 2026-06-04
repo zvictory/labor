@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import { setRequestLocale } from 'next-intl/server';
 import { PageIntro } from '@/components/page-intro';
