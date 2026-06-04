@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_25_000200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -120,6 +120,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.datetime "updated_at", null: false
     t.text "website"
     t.index ["active"], name: "index_labor_brands_on_active"
+    t.index ["name"], name: "idx_labor_brands_name_trgm", opclass: :gin_trgm_ops, where: "(name IS NOT NULL)", using: :gin
     t.index ["slug"], name: "index_labor_brands_on_slug", unique: true
   end
 
@@ -208,6 +209,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.datetime "updated_at", null: false
     t.index ["labor_note_id", "locale"], name: "idx_note_trans_locale", unique: true
     t.index ["labor_note_id"], name: "idx_note_trans_note"
+    t.index ["name"], name: "idx_note_translations_name_trgm", opclass: :gin_trgm_ops, where: "(name IS NOT NULL)", using: :gin
   end
 
   create_table "labor_notes", force: :cascade do |t|
@@ -217,6 +219,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.string "name"
     t.string "slug", null: false
     t.datetime "updated_at", null: false
+    t.index ["family"], name: "idx_labor_notes_family_trgm", opclass: :gin_trgm_ops, where: "(family IS NOT NULL)", using: :gin
     t.index ["family"], name: "index_labor_notes_on_family"
     t.index ["slug"], name: "index_labor_notes_on_slug", unique: true
   end
@@ -255,6 +258,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "idx_labor_perfumers_name_trgm", opclass: :gin_trgm_ops, where: "(name IS NOT NULL)", using: :gin
     t.index ["slug"], name: "index_labor_perfumers_on_slug", unique: true
   end
 
@@ -266,6 +270,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.integer "weight", default: 50, null: false
     t.index ["labor_accord_id"], name: "idx_pa_accord"
     t.index ["spree_product_id", "labor_accord_id"], name: "idx_pa_unique", unique: true
+    t.index ["spree_product_id", "weight", "id"], name: "idx_pa_product_weight"
     t.index ["spree_product_id"], name: "idx_pa_product"
   end
 
@@ -287,6 +292,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.datetime "updated_at", null: false
     t.integer "volume_ml"
     t.integer "votes_count", default: 0, null: false
+    t.index ["avg_rating", "spree_product_id"], name: "idx_pfd_rating_product", order: :desc
+    t.index ["gender", "spree_product_id"], name: "idx_pfd_gender_product"
     t.index ["labor_brand_id"], name: "idx_pfd_brand"
     t.index ["spree_product_id"], name: "idx_pfd_product", unique: true
   end
@@ -1448,6 +1455,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.index ["deleted_at"], name: "index_spree_product_translations_on_deleted_at"
     t.index ["locale", "slug"], name: "unique_slug_per_locale", unique: true
     t.index ["locale"], name: "index_spree_product_translations_on_locale"
+    t.index ["name"], name: "idx_product_translations_name_trgm", opclass: :gin_trgm_ops, where: "(name IS NOT NULL)", using: :gin
     t.index ["spree_product_id", "locale"], name: "unique_product_id_per_locale", unique: true
   end
 
@@ -1480,6 +1488,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_163011) do
     t.index ["discontinue_on"], name: "index_spree_products_on_discontinue_on"
     t.index ["make_active_at"], name: "index_spree_products_on_make_active_at"
     t.index ["media_count"], name: "index_spree_products_on_media_count"
+    t.index ["name"], name: "idx_spree_products_name_trgm", opclass: :gin_trgm_ops, where: "(name IS NOT NULL)", using: :gin
     t.index ["name"], name: "index_spree_products_on_name"
     t.index ["primary_media_id"], name: "index_spree_products_on_primary_media_id"
     t.index ["promotionable"], name: "index_spree_products_on_promotionable"

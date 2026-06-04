@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
+import { PageIntro } from '@/components/page-intro';
 import { getNotes, type NoteSummary } from '@/lib/api/notes';
 
 interface Props {
@@ -30,18 +31,18 @@ const NoteCard = ({
   <Link
     key={note.slug}
     href={`/${locale}/catalog?note=${note.slug}`}
-    className="group relative flex flex-col bg-bone dark:bg-[#1A1714]/30 border border-border/80 rounded-xl overflow-hidden hover:border-brass/70 hover:shadow-xl transition-all duration-500 hover:bg-stone-50 dark:hover:bg-[#1A1714]/60 p-4 space-y-3"
+    className="group bg-bone border-border/80 hover:border-brass/70 relative flex flex-col space-y-3 overflow-hidden rounded-xl border p-4 transition-all duration-500 hover:bg-stone-50 hover:shadow-xl dark:bg-[#1A1714]/30 dark:hover:bg-[#1A1714]/60"
   >
     {/* Product count chip — top-right circle, brass-on-bone */}
     <span
       aria-label={productCountLabel}
-      className="absolute top-2 right-2 z-10 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-full bg-brass text-bone text-[11px] font-mono font-bold tabular-nums tracking-tight px-2 shadow-md ring-2 ring-bone dark:ring-[#1A1714]"
+      className="bg-brass text-bone ring-bone absolute top-2 right-2 z-10 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-full px-2 font-mono text-[11px] font-bold tracking-tight tabular-nums shadow-md ring-2 dark:ring-[#1A1714]"
     >
       {note.product_count}
     </span>
 
     <div
-      className="relative w-full aspect-square overflow-hidden rounded-lg border border-stone-200/50 shadow-inner"
+      className="relative aspect-square w-full overflow-hidden rounded-lg border border-stone-200/50 shadow-inner"
       style={{
         background: note.color_hex
           ? `linear-gradient(135deg, ${note.color_hex}33, ${note.color_hex}11)`
@@ -71,18 +72,18 @@ const NoteCard = ({
       )}
     </div>
 
-    <div className="space-y-0.5 flex-1 min-w-0">
-      <h2 className="font-serif text-base tracking-tight text-ink dark:text-bone group-hover:text-brass transition-colors duration-300 truncate">
+    <div className="min-w-0 flex-1 space-y-0.5">
+      <h2 className="text-ink dark:text-bone group-hover:text-brass truncate font-serif text-base tracking-tight transition-colors duration-300">
         {note.name}
       </h2>
       {note.family ? (
-        <span className="block text-[9px] uppercase font-mono tracking-widest text-brass/80 truncate">
+        <span className="text-brass/80 block truncate font-mono text-[9px] tracking-widest uppercase">
           {note.family}
         </span>
       ) : null}
     </div>
 
-    <div className="absolute bottom-0 inset-x-0 h-[2px] bg-brass transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+    <div className="bg-brass absolute inset-x-0 bottom-0 h-[2px] scale-x-0 transform transition-transform duration-500 group-hover:scale-x-100" />
   </Link>
 );
 
@@ -105,35 +106,22 @@ export default async function NotesPage({ params }: Props) {
     families.size > 1 && Array.from(families.keys()).every((k) => k.length > 0);
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-16 space-y-12">
-      <header className="space-y-4 text-center max-w-2xl mx-auto py-8">
-        <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-brass font-bold block">
-          {t('eyebrow')}
-        </span>
-        <h1 className="font-sans font-bold text-4xl md:text-5xl tracking-tight text-ink dark:text-bone">
-          {t('title')}
-        </h1>
-        <div className="h-[1px] w-12 bg-brass mx-auto my-6 opacity-60" />
-        <p className="text-sm font-sans leading-relaxed text-ink-muted dark:text-stone-400">
-          {t('subtitle')}
-        </p>
-      </header>
+    <main className="mx-auto max-w-7xl space-y-6 px-6 py-4 md:py-6">
+      <PageIntro eyebrow={t('eyebrow')} title={t('title')} lead={t('subtitle')} />
 
       {loadError ? (
-        <div className="text-center text-sm text-stone-500 dark:text-stone-400 py-16">
+        <div className="py-16 text-center text-sm text-stone-500 dark:text-stone-400">
           {t('errorLoading')}
         </div>
       ) : notes.length === 0 ? (
-        <div className="text-center text-sm text-stone-500 dark:text-stone-400 py-16">
+        <div className="py-16 text-center text-sm text-stone-500 dark:text-stone-400">
           {t('empty')}
         </div>
       ) : hasMultipleFamilies ? (
         <div className="space-y-16">
           {Array.from(families.entries()).map(([family, items]) => (
             <section key={family} className="space-y-6">
-              <h2 className="text-xs uppercase font-mono tracking-[0.3em] text-brass">
-                {family}
-              </h2>
+              <h2 className="text-brass font-mono text-xs tracking-[0.3em] uppercase">{family}</h2>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {items.map((note) => (
                   <NoteCard

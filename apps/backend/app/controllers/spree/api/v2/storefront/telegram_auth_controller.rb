@@ -25,15 +25,14 @@ module Spree
 
           def issue_token(payload)
             user = Labor::TelegramUserProvisioner.call(payload)
-            client_id   = SecureRandom.urlsafe_base64
-            token, _    = user.create_new_auth_token(client_id)
 
+            # Spree 5's V3 storefront API authenticates via JWT Bearer only
+            # (see Spree::Api::V3::JwtAuthentication). `generate_jwt` is the
+            # protected helper that concern exposes; the storefront/bot send it
+            # back as `Authorization: Bearer <token>`.
             render json: {
               data: {
-                token: token['access-token'],
-                client: token['client'],
-                uid: token['uid'],
-                expiry: token['expiry'],
+                token: generate_jwt(user),
                 user: {
                   id: user.id,
                   email: user.email,

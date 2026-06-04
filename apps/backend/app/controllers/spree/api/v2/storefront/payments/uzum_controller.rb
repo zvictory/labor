@@ -28,23 +28,32 @@ module Spree
               order = Spree::Order.find_by(number: body['order_id'])
               return render json: { ok: false, error: 'order_not_found' }, status: :not_found unless order
 
-              event = Labor::PaymentWebhookEvent.record!(
-                provider: 'uzum',
-                external_txn_id: body['transaction_id'],
-                event_type: body['event'] || 'callback',
-                payload: body
-              )
+              unless Integer(body['amount'], exception: false) == order.total.to_i
+                return render json: { ok: false, error: 'amount_mismatch' }, status: :unprocessable_entity
+              end
 
-              if event.status == 'received' && body['status'] == 'success'
-                payment = order.payments.create!(
+              ActiveRecord::Base.transaction do
+                locked_order = Spree::Order.lock.find_by(number: body['order_id'])
+                raise ActiveRecord::Rollback unless locked_order
+
+                event = Labor::PaymentWebhookEvent.record!(
+                  provider: 'uzum',
+                  external_txn_id: body['transaction_id'],
+                  event_type: body['event'] || 'callback',
+                  payload: body
+                )
+
+                next unless event.status == 'received' && body['status'] == 'success'
+
+                payment = locked_order.payments.create!(
                   payment_method: Spree::PaymentMethod.find_by(name: 'Uzum'),
                   amount: body['amount'].to_d,
                   state: 'completed',
                   response_code: body['transaction_id']
                 )
-                order.payment_state = 'paid'
-                order.save!
-                event.update!(spree_order_id: order.id, spree_payment_id: payment.id, status: 'processed', processed_at: Time.current)
+                locked_order.payment_state = 'paid'
+                locked_order.save!
+                event.update!(spree_order_id: locked_order.id, spree_payment_id: payment.id, status: 'processed', processed_at: Time.current)
               end
 
               render json: { ok: true }

@@ -1,14 +1,32 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const required = (key: string): string => {
   const v = process.env[key];
-  if (!v) throw new Error(`Missing required env: ${key}`);
+  if (!v) {
+    if (process.env.NODE_ENV === 'development') {
+      return `mock_${key.toLowerCase()}`;
+    }
+    throw new Error(`Missing required env: ${key}`);
+  }
   return v;
 };
 
 const requiredMinLength = (key: string, min: number): string => {
-  const v = required(key);
-  if (v.length < min) throw new Error(`Env ${key} must be at least ${min} chars (got ${v.length})`);
+  const v = process.env[key];
+  if (!v || v.length < min) {
+    if (process.env.NODE_ENV === 'development') {
+      return `mock_${key.toLowerCase()}`.padEnd(min, '_');
+    }
+    if (!v) throw new Error(`Missing required env: ${key}`);
+    throw new Error(`Env ${key} must be at least ${min} chars (got ${v.length})`);
+  }
   return v;
 };
 

@@ -19,6 +19,7 @@ module Labor
           # Spree 5 dropped kaminari from spree_api; paginate manually with limit/offset.
           total_count = relation.count
           records = relation.limit(per_page).offset(offset).to_a
+          preload_card_associations(records)
           total_pages = per_page.positive? ? (total_count.to_f / per_page).ceil : 0
 
           render json: {
@@ -49,42 +50,35 @@ module Labor
       private
 
       def sorted_collection
-        # Pluck deduped IDs from filtered_collection (which uses DISTINCT) then
-        # re-scope without DISTINCT so we can ORDER BY joined columns freely.
-        ids = filtered_collection.pluck(:id)
-        rel = ::Spree::Product.where(id: ids)
-        case params[:sort]
-        when 'popular'
-          rel.left_outer_joins(:labor_fragrance_detail)
-             .order(Arel.sql('labor_product_fragrance_details.avg_rating DESC NULLS LAST, spree_products.id DESC'))
-        when 'price_asc'
-          rel.left_outer_joins(master: :prices)
-             .where(spree_prices: { currency: 'UZS', is_default: true })
-             .order(Arel.sql('spree_prices.amount ASC NULLS LAST, spree_products.id DESC'))
-        when 'price_desc'
-          rel.left_outer_joins(master: :prices)
-             .where(spree_prices: { currency: 'UZS', is_default: true })
-             .order(Arel.sql('spree_prices.amount DESC NULLS LAST, spree_products.id DESC'))
-        else
-          rel.order(id: :desc)
+        ::Labor::Catalog::ProductScope.new(params: params).relation
+      end
+
+      def preload_card_associations(records)
+        ActiveRecord::Associations::Preloader.new(
+          records: records,
+          associations: [
+            :translations,
+            { labor_fragrance_detail: { brand: :translations } },
+            { master: [:default_price, { images: { attachment_attachment: :blob } }] }
+          ]
+        ).call
+        preload_top_product_accords(records)
+      end
+
+      def preload_top_product_accords(records)
+        product_ids = records.map(&:id)
+        top_accords = Labor::ProductAccord
+                        .where(spree_product_id: product_ids)
+                        .select(Arel.sql('DISTINCT ON (spree_product_id) labor_product_accords.*'))
+                        .includes(accord: :translations)
+                        .order(Arel.sql('spree_product_id ASC, weight DESC, id ASC'))
+                        .index_by(&:spree_product_id)
+
+        records.each do |product|
+          association = product.association(:labor_top_product_accord)
+          association.target = top_accords[product.id]
+          association.loaded!
         end
-      end
-
-      def filtered_collection
-        rel = ::Spree::Product.available
-        rel = rel.joins(labor_fragrance_detail: :brand).where(labor_brands: { slug: params.dig(:filter, :brand) }) if params.dig(:filter, :brand).present?
-        rel = rel.joins(labor_product_notes: :note).where(labor_notes: { slug: params.dig(:filter, :note) }) if params.dig(:filter, :note).present?
-        rel = rel.joins(labor_product_notes: :note).where(labor_notes: { family: params.dig(:filter, :family) }) if params.dig(:filter, :family).present?
-        rel = rel.joins(:labor_fragrance_detail).where(labor_product_fragrance_details: { gender: params.dig(:filter, :gender) }) if params.dig(:filter, :gender).present?
-        rel = rel.where('spree_products.name ILIKE ?', "%#{params.dig(:filter, :name)}%") if params.dig(:filter, :name).present?
-        rel.where(id: canonical_product_ids).distinct
-      end
-
-      def canonical_product_ids
-        parent_expr = "regexp_replace(spree_products.slug, '-[0-9]+$', '')"
-        ::Spree::Product
-          .select(Arel.sql("DISTINCT ON (#{parent_expr}) spree_products.id"))
-          .order(Arel.sql("#{parent_expr} ASC, length(spree_products.slug) ASC, spree_products.id ASC"))
       end
 
       def with_locale(&blk)

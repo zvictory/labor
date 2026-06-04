@@ -9,7 +9,7 @@ module Labor
           name: perfumer.name.to_s,
           bio: perfumer.bio.to_s,
           country: perfumer.try(:country),
-          product_count: perfumer.product_perfumers.count
+          product_count: Labor::Catalog::CanonicalProducts.count(perfumer.products.available)
         }
 
         if with_products
@@ -19,7 +19,9 @@ module Labor
                        .available
                        .includes(:labor_fragrance_detail, master: [:images, :default_price])
                        .distinct
-          payload[:products] = products.map { |p| Labor::Storefront::ProductCardSerializer.call(p) }
+                       .order(:id)
+          canonical_products = Labor::Catalog::CanonicalProducts.call(products)
+          payload[:products] = canonical_products.map { |p| Labor::Storefront::ProductCardSerializer.call(p) }
         end
 
         payload

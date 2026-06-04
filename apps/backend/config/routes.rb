@@ -57,6 +57,7 @@ Rails.application.routes.draw do
           resources :brands,    only: %i[index show], param: :slug
           resources :notes,     only: %i[index show], param: :slug
           resources :perfumers, only: %i[index show], param: :slug
+          get 'catalog_map', to: 'catalog_map#show'
           get 'filter_facets', to: 'filter_facets#index'
           get 'search', to: 'search#index'
           post 'checkout',          to: 'checkout#create'
@@ -68,6 +69,9 @@ Rails.application.routes.draw do
           # Labor flat-DTO products (Spree 5 port of the products decorator).
           get 'products',         to: '/labor/storefront/products#index'
           get 'products/:slug',   to: '/labor/storefront/products#show'
+
+          # Storefront vote widget (apps/web pdp/vote-widget.tsx) — upsert per (user, product).
+          post 'votes', to: '/labor/storefront/votes#create'
         end
       end
     end

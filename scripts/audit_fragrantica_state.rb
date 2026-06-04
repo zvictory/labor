@@ -55,6 +55,44 @@ missing_conc   = perfumes.reject { |p| (d = details_by_pid[p.id]) && d.concentra
 missing_rating = perfumes.reject { |p| (d = details_by_pid[p.id]) && d.avg_rating.to_f.positive? }
 missing_img    = perfumes.reject { |p| p.images.any? }
 
+brand_by_id = Labor::Brand
+              .where(id: details_by_pid.values.filter_map(&:labor_brand_id).uniq)
+              .index_by(&:id)
+
+def first_image_blob(product)
+  image = product.images.first
+  return unless image&.attachment&.attached?
+
+  image.attachment.blob
+end
+
+def image_blob_url(blob)
+  return nil unless blob
+
+  Rails.application.routes.url_helpers.rails_blob_url(
+    blob,
+    host: ENV.fetch('PUBLIC_HOST', 'http://localhost:4000')
+  )
+rescue StandardError
+  nil
+end
+
+image_quality_items = perfumes.map do |product|
+  detail = details_by_pid[product.id]
+  blob = first_image_blob(product)
+  {
+    slug: product.slug,
+    name: product.name,
+    brand_hint: brand_by_id[detail&.labor_brand_id]&.name.to_s,
+    current_image: image_blob_url(blob),
+    image_quality: Labor::CatalogImageQuality.call(blob),
+  }
+end
+image_quality_counts = image_quality_items
+                       .group_by { |item| item[:image_quality][:status] }
+                       .transform_values(&:size)
+not_suitable_images = image_quality_items.reject { |item| item[:image_quality][:status] == 'suitable' }
+
 # Brand completeness
 brand_total = Labor::Brand.count
 brands = Labor::Brand.all.to_a
@@ -81,6 +119,17 @@ audit = {
   images: {
     perfumes_with_image:    perfumes.size - missing_img.size,
     perfumes_without_image: missing_img.size,
+    suitable:               image_quality_counts.fetch('suitable', 0),
+    not_suitable:           image_quality_counts.fetch('not_suitable', 0),
+  },
+  image_quality: {
+    target: Labor::CatalogImageQuality::TARGET,
+    counts: {
+      suitable:     image_quality_counts.fetch('suitable', 0),
+      not_suitable: image_quality_counts.fetch('not_suitable', 0),
+      missing:      image_quality_counts.fetch('missing', 0),
+    },
+    items: image_quality_items,
   },
   harvested_real_count: perfumes.count { |p| harvested_real?(p, real_set) },
   synthesized_count:    synthesized.size,
@@ -93,6 +142,7 @@ audit = {
     missing_concentration: missing_conc.size,
     missing_avg_rating:   missing_rating.size,
     missing_image:        missing_img.map(&:slug),
+    not_suitable_image:   not_suitable_images.map { |item| item[:slug] },
   },
   accords: {
     total:              accord_total,
@@ -128,6 +178,7 @@ puts ''
 puts '| Slot | Filled | Total | % |'
 puts '|---|---:|---:|---:|'
 puts "| image attached       | #{audit[:images][:perfumes_with_image]} | #{perfumes.size} | #{pct.call(audit[:images][:perfumes_with_image], perfumes.size)} |"
+puts "| shop image suitable  | #{audit[:images][:suitable]} | #{perfumes.size} | #{pct.call(audit[:images][:suitable], perfumes.size)} |"
 puts "| real Fragrantica row | #{audit[:harvested_real_count]} | #{perfumes.size} | #{pct.call(audit[:harvested_real_count], perfumes.size)} |"
 puts "| notes pyramid        | #{perfumes.size - missing_notes.size} | #{perfumes.size} | #{pct.call(perfumes.size - missing_notes.size, perfumes.size)} |"
 puts "| accords              | #{perfumes.size - missing_accord.size} | #{perfumes.size} | #{pct.call(perfumes.size - missing_accord.size, perfumes.size)} |"

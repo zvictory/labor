@@ -46,6 +46,8 @@ module Spree
               end
             rescue JSON::ParserError
               render_error(JSON_RPC_PARSE_ERROR, 'Parse error')
+            rescue PaymeError => e
+              render_error(e.code, e.message)
             end
 
             private
@@ -107,14 +109,7 @@ module Spree
                 )
 
                 if pe.status == 'received'
-                  payment = order.payments.create!(
-                    payment_method: Spree::PaymentMethod.find_by(name: 'Payme'),
-                    amount: order.total,
-                    state: 'completed',
-                    response_code: p['id']
-                  )
-                  order.payment_state = 'paid'
-                  order.save!
+                  payment = create_payment!(order: order, txn_id: p['id'])
                   pe.update!(spree_order_id: order.id, spree_payment_id: payment.id, status: 'processed', processed_at: Time.current)
                 end
 
@@ -199,6 +194,22 @@ module Spree
               }
             end
 
+            def create_payment!(order:, txn_id:)
+              method = Spree::PaymentMethod.find_by(type: 'Labor::PaymentMethod::Payme') ||
+                       Spree::PaymentMethod.find_by(name: 'Payme')
+              payment = order.payments.create!(
+                payment_method: method,
+                amount: order.total,
+                state: 'completed',
+                response_code: txn_id,
+                source_type: nil
+              )
+              order.update_totals
+              order.payment_state = 'paid'
+              order.save!
+              payment
+            end
+
             def enforce_timestamp_window!(p)
               ts = p['time']
               return if ts.nil?
@@ -209,8 +220,6 @@ module Spree
 
             def render_result(result)
               render json: { result: result }
-            rescue PaymeError => e
-              render_error(e.code, e.message)
             end
 
             def render_error(code, message)

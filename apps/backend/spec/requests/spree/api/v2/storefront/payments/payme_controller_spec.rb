@@ -30,17 +30,14 @@ RSpec.describe 'Spree::Api::V2::Storefront::Payments::Payme', type: :request do
 
   before do
     stub_const('Spree::Api::V2::Storefront::Payments::PaymeController::MERCHANT_KEY', merchant_key)
-    store # ensure store exists before payment method
-    unless Spree::PaymentMethod.find_by(name: 'Payme')
-      pm = Spree::PaymentMethod.new(
-        name: 'Payme',
-        type: 'Spree::PaymentMethod::Check',
-        active: true,
-        display_on: 'both'
-      )
-      pm.stores << store
-      pm.save!
+    store
+    pm = Spree::PaymentMethod.find_or_initialize_by(name: 'Payme') do |m|
+      m.type = 'Spree::PaymentMethod::Check'
+      m.active = true
+      m.display_on = 'both'
     end
+    pm.stores = [store]
+    pm.save!
   end
   let(:order) do
     Spree::Order.create!(
@@ -123,7 +120,8 @@ RSpec.describe 'Spree::Api::V2::Storefront::Payments::Payme', type: :request do
                method: 'PerformTransaction',
                params: { id: txn_id, time: (Time.current.to_f * 1000).to_i }
              }.to_json,
-             headers: auth_header.merge('CONTENT_TYPE' => 'application/json')
+             headers: auth_header.merge('CONTENT_TYPE' => 'application/json'),
+             env: { 'HTTP_HOST' => 'localhost', 'SERVER_NAME' => 'localhost' }
         JSON.parse(response.body)
       end
 

@@ -1,4 +1,5 @@
 import { setRequestLocale } from 'next-intl/server';
+import { PageIntro } from '@/components/page-intro';
 import { locales, type Locale } from '@/i18n/config';
 
 type Lang = 'en' | 'ru' | 'uz' | 'uzc';
@@ -68,15 +69,9 @@ export default async function AboutPage({ params }: Props) {
   const c = COPY[toLang(locale)];
 
   return (
-    <article className="container max-w-3xl py-16 md:py-24">
-      <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
-        {c.eyebrow}
-      </span>
-      <h1 className="mt-3 font-display text-4xl text-ink dark:text-bone md:text-5xl">
-        {c.title}
-      </h1>
-      <p className="mt-6 text-lg leading-relaxed text-ink dark:text-bone/90">{c.lead}</p>
-      <div className="mt-8 space-y-5 text-base leading-relaxed text-ink-muted dark:text-stone-300">
+    <article className="container max-w-3xl py-4 md:py-6">
+      <PageIntro eyebrow={c.eyebrow} title={c.title} lead={c.lead} align="left" />
+      <div className="text-ink-muted mt-4 space-y-5 text-base leading-relaxed dark:text-stone-300">
         {c.body.map((p, i) => (
           <p key={i}>{p}</p>
         ))}

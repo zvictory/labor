@@ -13,6 +13,10 @@ module Spree
                     class_name: 'Labor::ProductAccord',
                     foreign_key: :spree_product_id,
                     dependent: :destroy
+      base.has_one :labor_top_product_accord,
+                   -> { order(weight: :desc, id: :asc) },
+                   class_name: 'Labor::ProductAccord',
+                   foreign_key: :spree_product_id
       base.has_many :labor_product_perfumers,
                     class_name: 'Labor::ProductPerfumer',
                     foreign_key: :spree_product_id,

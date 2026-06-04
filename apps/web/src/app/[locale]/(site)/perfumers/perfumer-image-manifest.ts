@@ -9,7 +9,7 @@
 // fimgs.net/images/nosevi/o.<id>.jpg <img> on the rendered profile page.
 // Files resized to 480px @ q80 via macOS `sips` after fetch.
 //
-// Coverage: 40 / 40.
+// Coverage: 47 / 47.
 export const PERFUMER_IMAGES: Record<string, string> = {
   'alberto-morillas': 'alberto-morillas.jpg',
   'andy-tauer': 'andy-tauer.jpg',
@@ -30,24 +30,31 @@ export const PERFUMER_IMAGES: Record<string, string> = {
   'dominique-ropion': 'dominique-ropion.jpg',
   'edouard-flechier': 'edouard-flechier.jpg',
   'francis-kurkdjian': 'francis-kurkdjian.jpg',
+  'gerald-ghislain': 'gerald-ghislain.jpg',
   'geza-schoen': 'geza-schoen.jpg',
   'honorine-blanc': 'honorine-blanc.jpg',
   'jacques-cavallier': 'jacques-cavallier.jpg',
+  'jacques-cavallier-belletrud': 'jacques-cavallier.jpg',
   'jacques-polge': 'jacques-polge.jpg',
   'jean-kerleo': 'jean-kerleo.jpg',
   'jean-claude-delville': 'jean-claude-delville.jpg',
   'jean-claude-ellena': 'jean-claude-ellena.jpg',
   'lyn-harris': 'lyn-harris.jpg',
+  'louise-turner': 'louise-turner.jpg',
   'mark-buxton': 'mark-buxton.jpg',
   'mathilde-laurent': 'mathilde-laurent.jpg',
   'maurice-roucel': 'maurice-roucel.jpg',
   'nathalie-lorson': 'nathalie-lorson.jpg',
   'olivia-giacobetti': 'olivia-giacobetti.jpg',
   'olivier-cresp': 'olivier-cresp.jpg',
+  'olivier-gillotin': 'olivier-gillotin.jpg',
   'olivier-polge': 'olivier-polge.jpg',
   'patricia-de-nicolai': 'patricia-de-nicolai.jpg',
   'pierre-bourdon': 'pierre-bourdon.jpg',
   'quentin-bisch': 'quentin-bisch.jpg',
+  'rodrigo-flores-roux': 'rodrigo-flores-roux.jpg',
+  'sidonie-lancesseur': 'sidonie-lancesseur.jpg',
+  'sonia-constant': 'sonia-constant.jpg',
   'sophie-labbe': 'sophie-labbe.jpg',
   'vero-kern': 'vero-kern.jpg',
   'yann-vasnier': 'yann-vasnier.jpg',

@@ -11,20 +11,17 @@ module Labor
     validates :event_type,      presence: true
     validates :status,          inclusion: { in: STATUSES }
 
-    # idempotency upsert helper
+    # idempotency upsert helper — atomic via INSERT + unique-index CAS
     def self.record!(provider:, external_txn_id:, event_type:, payload:)
-      event = find_or_initialize_by(
+      event = create_or_find_by!(
         provider: provider,
         external_txn_id: external_txn_id,
         event_type: event_type
-      )
-      if event.persisted?
-        event.status = 'duplicate'
-        return event
+      ) do |e|
+        e.payload = payload
+        e.status  = 'received'
       end
-      event.assign_attributes(payload: payload, status: 'received')
-      event.save!
-      event
+      event.tap { |e| e.status = 'duplicate' unless e.previously_new_record? }
     end
   end
 end

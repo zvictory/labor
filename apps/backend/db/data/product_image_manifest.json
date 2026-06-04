@@ -41,7 +41,7 @@
   },
   {
     "product_id": 1021,
-    "fragrantica_id": 93022,
+    "fragrantica_id": 16939,
     "name": "Herod Parfums de Marly"
   },
   {
@@ -291,7 +291,7 @@
   },
   {
     "product_id": 1346,
-    "fragrantica_id": 107084,
+    "fragrantica_id": 67370,
     "name": "Imagination Louis Vuitton"
   },
   {
@@ -331,7 +331,7 @@
   },
   {
     "product_id": 1519,
-    "fragrantica_id": 109251,
+    "fragrantica_id": 50239,
     "name": "Ombre Leather"
   },
   {
@@ -341,17 +341,17 @@
   },
   {
     "product_id": 1398,
-    "fragrantica_id": 93025,
+    "fragrantica_id": 3575,
     "name": "Gypsy Water Byredo"
   },
   {
     "product_id": 1360,
-    "fragrantica_id": 104248,
+    "fragrantica_id": 56402,
     "name": "Rolling in Love By Kilian"
   },
   {
     "product_id": 1300,
-    "fragrantica_id": 93074,
+    "fragrantica_id": 1825,
     "name": "Tobacco Vanille Tom Ford"
   },
   {
@@ -421,7 +421,7 @@
   },
   {
     "product_id": 1370,
-    "fragrantica_id": 104494,
+    "fragrantica_id": 69224,
     "name": "Oud for Happiness Initio"
   },
   {
@@ -441,7 +441,7 @@
   },
   {
     "product_id": 1537,
-    "fragrantica_id": 127601,
+    "fragrantica_id": 60388,
     "name": "California Dream"
   },
   {
@@ -541,7 +541,7 @@
   },
   {
     "product_id": 1314,
-    "fragrantica_id": 92971,
+    "fragrantica_id": 39314,
     "name": "Layton Parfums de Marly"
   },
   {
@@ -606,12 +606,12 @@
   },
   {
     "product_id": 1259,
-    "fragrantica_id": 111215,
+    "fragrantica_id": 68198,
     "name": "Vanilla Diorama Dior"
   },
   {
     "product_id": 1198,
-    "fragrantica_id": 107710,
+    "fragrantica_id": 46066,
     "name": "Baccarat Extrait Maison Francis Kurkdjian"
   },
   {
@@ -676,7 +676,7 @@
   },
   {
     "product_id": 1524,
-    "fragrantica_id": 107710,
+    "fragrantica_id": 46066,
     "name": "Baccarat Rouge 540"
   },
   {
@@ -736,7 +736,7 @@
   },
   {
     "product_id": 1303,
-    "fragrantica_id": 109252,
+    "fragrantica_id": 68716,
     "name": "Ombré Leather Parfum Tom Ford"
   },
   {
@@ -801,7 +801,7 @@
   },
   {
     "product_id": 1248,
-    "fragrantica_id": 107351,
+    "fragrantica_id": 49751,
     "name": "L’Immensité Louis Vuitton"
   },
   {
@@ -856,7 +856,7 @@
   },
   {
     "product_id": 1515,
-    "fragrantica_id": 104248,
+    "fragrantica_id": 56402,
     "name": "Rolling in Love"
   },
   {
@@ -881,7 +881,7 @@
   },
   {
     "product_id": 1394,
-    "fragrantica_id": 30796,
+    "fragrantica_id": 1483,
     "name": "Chance Eau Fraiche Chanel"
   },
   {
@@ -896,7 +896,7 @@
   },
   {
     "product_id": 1533,
-    "fragrantica_id": 110343,
+    "fragrantica_id": 44174,
     "name": "Hacivat"
   },
   {
@@ -911,7 +911,7 @@
   },
   {
     "product_id": 1359,
-    "fragrantica_id": 93011,
+    "fragrantica_id": 43632,
     "name": "Black Phantom By Kilian"
   },
   {
@@ -921,7 +921,7 @@
   },
   {
     "product_id": 1540,
-    "fragrantica_id": 104882,
+    "fragrantica_id": 25967,
     "name": "Chanel blue"
   },
   {
@@ -1011,7 +1011,7 @@
   },
   {
     "product_id": 1247,
-    "fragrantica_id": 127601,
+    "fragrantica_id": 60388,
     "name": "California Dream Louis Vuitton"
   },
   {
@@ -1261,7 +1261,7 @@
   },
   {
     "product_id": 1395,
-    "fragrantica_id": 30796,
+    "fragrantica_id": 8069,
     "name": "Chance Eau Tendre Chanel"
   },
   {
@@ -1606,7 +1606,7 @@
   },
   {
     "product_id": 1538,
-    "fragrantica_id": 107351,
+    "fragrantica_id": 49751,
     "name": "Limmensite"
   },
   {
@@ -1701,7 +1701,7 @@
   },
   {
     "product_id": 1535,
-    "fragrantica_id": 107084,
+    "fragrantica_id": 67370,
     "name": "Imagination"
   },
   {
@@ -1746,7 +1746,7 @@
   },
   {
     "product_id": 1126,
-    "fragrantica_id": 92545,
+    "fragrantica_id": null,
     "name": "LUNARIO Casa Tito"
   },
   {
@@ -1803,5 +1803,335 @@
     "product_id": 1232,
     "fragrantica_id": 30623,
     "name": "Andromeda Tiziana Terenzi"
+  },
+  {
+    "product_id": 1146,
+    "fragrantica_id": 120377,
+    "name": "Универсальный парфюм TYGAR 50 ml"
+  },
+  {
+    "product_id": 1150,
+    "fragrantica_id": 120377,
+    "name": "Домашний парфюм Tygar 220 ml"
+  },
+  {
+    "product_id": 1424,
+    "fragrantica_id": 104878,
+    "name": "спрей парфбм 50 мл (Ganymede)"
+  },
+  {
+    "product_id": 1427,
+    "fragrantica_id": 30045,
+    "name": "спрей парфюм ATelier Cologne"
+  },
+  {
+    "product_id": 1428,
+    "fragrantica_id": 22528,
+    "name": "Авто парфюм"
+  },
+  {
+    "product_id": 1431,
+    "fragrantica_id": 485,
+    "name": "Авто парфюм Light Blue"
+  },
+  {
+    "product_id": 1434,
+    "fragrantica_id": 49305,
+    "name": "Авто парфюм Mango Skin"
+  },
+  {
+    "product_id": 1441,
+    "fragrantica_id": 57887,
+    "name": "Спрей парфюм 20"
+  },
+  {
+    "product_id": 1459,
+    "fragrantica_id": 102207,
+    "name": "Libre"
+  },
+  {
+    "product_id": 1485,
+    "fragrantica_id": 96989,
+    "name": "Elysium"
+  },
+  {
+    "product_id": 1491,
+    "fragrantica_id": 3606,
+    "name": "Molecule 02"
+  },
+  {
+    "product_id": 1002,
+    "fragrantica_id": 8174,
+    "name": "London Eye cassette"
+  },
+  {
+    "product_id": 1037,
+    "fragrantica_id": 67370,
+    "name": "Avto Parfum Imagination"
+  },
+  {
+    "product_id": 1085,
+    "fragrantica_id": 79632,
+    "name": "Ganymede Extrait"
+  },
+  {
+    "product_id": 1138,
+    "fragrantica_id": 104351,
+    "name": "Универсальный парфюм Megamare 50 ml"
+  },
+  {
+    "product_id": 1139,
+    "fragrantica_id": 68357,
+    "name": "Универсальный парфюм Symphony 50 ml"
+  },
+  {
+    "product_id": 1140,
+    "fragrantica_id": 3606,
+    "name": "Универсальный парфюм Molecule 02 50 ml"
+  },
+  {
+    "product_id": 1141,
+    "fragrantica_id": 50239,
+    "name": "Универсальный парфюм Ombre Leather 50 ml"
+  },
+  {
+    "product_id": 1142,
+    "fragrantica_id": 104878,
+    "name": "Универсальный парфюм Ganymed 50 ml"
+  },
+  {
+    "product_id": 1143,
+    "fragrantica_id": 62036,
+    "name": "Универсальный парфюм My Way 50 ml"
+  },
+  {
+    "product_id": 1145,
+    "fragrantica_id": 6472,
+    "name": "Универсальный парфюм Black Afgano 50 ml"
+  },
+  {
+    "product_id": 1156,
+    "fragrantica_id": 101568,
+    "name": "Универсальный парфюм Montabaco 50 ml"
+  },
+  {
+    "product_id": 1157,
+    "fragrantica_id": 77057,
+    "name": "Универсальный парфюм Good Girl Gone Bad 50 ml"
+  },
+  {
+    "product_id": 1158,
+    "fragrantica_id": 49751,
+    "name": "Универсальный парфюм Limmensite 50 ml"
+  },
+  {
+    "product_id": 1159,
+    "fragrantica_id": 38497,
+    "name": "Универсальный парфюм Aventus 50 ml"
+  },
+  {
+    "product_id": 1160,
+    "fragrantica_id": 31861,
+    "name": "Универсальный парфюм Sauvage 50 ml"
+  },
+  {
+    "product_id": 1161,
+    "fragrantica_id": 1825,
+    "name": "Универсальный парфюм Tobacco Vanille 50 ml"
+  },
+  {
+    "product_id": 1162,
+    "fragrantica_id": 11775,
+    "name": "Универсальный парфюм Flora 50 ml"
+  },
+  {
+    "product_id": 1163,
+    "fragrantica_id": 96989,
+    "name": "Универсальный парфюм Elysium 50 ml"
+  },
+  {
+    "product_id": 1514,
+    "fragrantica_id": 62036,
+    "name": "My Way"
+  },
+  {
+    "product_id": 1185,
+    "fragrantica_id": 6555,
+    "name": "Fahrenheit 32"
+  },
+  {
+    "product_id": 1236,
+    "fragrantica_id": 49751,
+    "name": "Домашний парфюм Limmensite 220 ml"
+  },
+  {
+    "product_id": 1240,
+    "fragrantica_id": 116546,
+    "name": "Домашний парфюм Kirke 220 ml"
+  },
+  {
+    "product_id": 1241,
+    "fragrantica_id": 6472,
+    "name": "Домашний парфюм Black Afgano 220 ml"
+  },
+  {
+    "product_id": 1413,
+    "fragrantica_id": 22528,
+    "name": "Универсальный парфюм"
+  },
+  {
+    "product_id": 1435,
+    "fragrantica_id": 25529,
+    "name": "Авто парфюм Wood sage Sea salt"
+  },
+  {
+    "product_id": 1440,
+    "fragrantica_id": 22528,
+    "name": "Домашний парфюм"
+  },
+  {
+    "product_id": 1472,
+    "fragrantica_id": 93056,
+    "name": "Erba Pura"
+  },
+  {
+    "product_id": 1438,
+    "fragrantica_id": 120377,
+    "name": "Авто парфюм Tygar"
+  },
+  {
+    "product_id": 1437,
+    "fragrantica_id": 51411,
+    "name": "Авто парфюм Lost Cherry"
+  },
+  {
+    "product_id": 1175,
+    "fragrantica_id": 33269,
+    "name": "Dear Polly"
+  },
+  {
+    "product_id": 1235,
+    "fragrantica_id": 12201,
+    "name": "Домашний парфюм LeLabo Santal 33 220 ml"
+  },
+  {
+    "product_id": 1351,
+    "fragrantica_id": 12201,
+    "name": "Santal 33"
+  },
+  {
+    "product_id": 1483,
+    "fragrantica_id": 12201,
+    "name": "Santal 33"
+  },
+  {
+    "product_id": 1243,
+    "fragrantica_id": 637,
+    "name": "Домашний парфюм Bright Crystal 220 ml"
+  },
+  {
+    "product_id": 1429,
+    "fragrantica_id": 12513,
+    "name": "Авто парфюм Prada Candy"
+  },
+  {
+    "product_id": 1430,
+    "fragrantica_id": 4016,
+    "name": "Авто парфюм Elixir des Merveilles"
+  },
+  {
+    "product_id": 1436,
+    "fragrantica_id": 49314,
+    "name": "Авто парфюм Hayati"
+  },
+  {
+    "product_id": 1221,
+    "fragrantica_id": 49314,
+    "name": "Hayati"
+  },
+  {
+    "product_id": 1178,
+    "fragrantica_id": 28489,
+    "name": "Liebe"
+  },
+  {
+    "product_id": 1352,
+    "fragrantica_id": 31862,
+    "name": "Oud Satin Mood Maison"
+  },
+  {
+    "product_id": 1374,
+    "fragrantica_id": 53087,
+    "name": "The Voice Of The Snake Parfum"
+  },
+  {
+    "product_id": 1246,
+    "fragrantica_id": 1743,
+    "name": "Домашний парфюм Bulgari Aqua 220 ml"
+  },
+  {
+    "product_id": 1288,
+    "fragrantica_id": 25474,
+    "name": "PINK MOLéCULE 090.09"
+  },
+  {
+    "product_id": 1291,
+    "fragrantica_id": null,
+    "name": "Mefisto Casa Moratti"
+  },
+  {
+    "product_id": 1425,
+    "fragrantica_id": 46066,
+    "name": "спрей парфюм 50 мл (Baccarat)"
+  },
+  {
+    "product_id": 1242,
+    "fragrantica_id": 46066,
+    "name": "Домашний парфюм Maison Baccarat 220 ml"
+  },
+  {
+    "product_id": 1237,
+    "fragrantica_id": 8069,
+    "name": "Домашний парфюм Chanel Chance 220 ml"
+  },
+  {
+    "product_id": 1244,
+    "fragrantica_id": 14669,
+    "name": "Домашний парфюм Chanel Sport 220 ml"
+  },
+  {
+    "product_id": 1245,
+    "fragrantica_id": 107353,
+    "name": "Домашний парфюм Chanel Bleu 220 ml"
+  },
+  {
+    "product_id": 1035,
+    "fragrantica_id": 49454,
+    "name": "Avto Parfum Thomas Kosmala №4"
+  },
+  {
+    "product_id": 1144,
+    "fragrantica_id": 379,
+    "name": "Универсальный парфюм Black Code 50 ml"
+  },
+  {
+    "product_id": 1270,
+    "fragrantica_id": 68502,
+    "name": "Herbes Troublantes"
+  },
+  {
+    "product_id": 1238,
+    "fragrantica_id": 51411,
+    "name": "Домашний парфюм TomFord LostCherry 220 ml"
+  },
+  {
+    "product_id": 1239,
+    "fragrantica_id": 38497,
+    "name": "Домашний парфюм Creed Aventus 220 ml"
+  },
+  {
+    "product_id": 1378,
+    "fragrantica_id": 112864,
+    "name": "Bois Impérial"
   }
 ]

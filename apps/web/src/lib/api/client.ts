@@ -5,6 +5,7 @@ interface FetchOpts {
   body?: unknown | undefined;
   token?: string | undefined;
   locale?: string | undefined;
+  cache?: RequestCache | undefined;
   next?: { revalidate?: number | false; tags?: string[] } | undefined;
 }
 
@@ -19,17 +20,20 @@ export class ApiError extends Error {
 }
 
 export const apiFetch = async <T>(path: string, opts: FetchOpts = {}): Promise<T> => {
-  const { method = 'GET', body, token, locale = 'ru', next } = opts;
-  
+  const { method = 'GET', body, token, locale = 'ru', cache, next } = opts;
+
   const fetchOpts: RequestInit = {
     method,
     headers: {
       'Content-Type': 'application/json',
       'Accept-Language': locale,
-      ...(token ? { 'access-token': token } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   };
-  
+  if (cache !== undefined) {
+    fetchOpts.cache = cache;
+  }
+
   if (body !== undefined && body !== null) {
     fetchOpts.body = JSON.stringify(body);
   }
@@ -49,7 +53,11 @@ export const apiFetch = async <T>(path: string, opts: FetchOpts = {}): Promise<T
     try {
       json = JSON.parse(text) as unknown;
     } catch {
-      throw new ApiError(res.status, text.slice(0, 200), `${method} ${path} -> non-JSON response (status ${res.status})`);
+      throw new ApiError(
+        res.status,
+        text.slice(0, 200),
+        `${method} ${path} -> non-JSON response (status ${res.status})`,
+      );
     }
   }
   if (!res.ok) throw new ApiError(res.status, json, `${method} ${path} -> ${res.status}`);

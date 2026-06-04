@@ -383,6 +383,164 @@ namespace :labor do
       puts "DONE  attached=#{attached}  skipped=#{skipped}  unmatched_files=#{missing}"
     end
 
+    # Attach exactly ONE image per parfum from fimgs.net, HD-preferred.
+    # For each imageless manifest product:
+    #   1. Fetch o.{fid}.jpg (max CDN res), attach, blob.analyze for dimensions.
+    #   2. If it passes Labor::CatalogImageQuality (≥600×800, 0.75±0.12 ratio): keep it. Done.
+    #   3. Else (404 or below quality gate): destroy the orig attempt, fetch the deterministic
+    #      375x500.{fid}.2x.jpg retina fallback (750×1000), attach, flag below-standard, and
+    #      append a row to /tmp/harvest_image_updates.jsonl for later replacement.
+    #
+    # Exactly ONE Spree::Image per master variant either way.
+    # Idempotent: skips products that already have any image attached.
+    # Requires blob.analyze — needs ImageMagick or libvips in the container.
+    #
+    # Usage:
+    #   docker exec labor-backend-1 bundle exec rake labor:images:attach_one_from_fimgs
+    desc 'Attach one HD image per parfum from fimgs.net; fall back to 375x500@2x below quality gate'
+    task attach_one_from_fimgs: :environment do
+      require 'json'
+      require 'stringio'
+
+      manifest_path = ENV['MANIFEST'] || Rails.root.join('db/data/product_image_manifest.json')
+      updates_path  = ENV.fetch('UPDATES_FILE', '/tmp/harvest_image_updates.jsonl')
+
+      raise "Manifest not found: #{manifest_path}" unless File.exist?(manifest_path)
+
+      manifest = JSON.parse(File.read(manifest_path))
+      raise 'Manifest must be a JSON array' unless manifest.is_a?(Array)
+
+      attached_hd = 0
+      attached_2x = 0
+      skipped     = 0
+      missing     = []
+      failed      = []
+
+      File.open(updates_path, 'a') do |updates_file|
+        manifest.each do |row|
+          pid = row['product_id']
+          fid = row['fragrantica_id']
+
+          unless pid && fid
+            failed << "bad manifest row: #{row.inspect}"
+            next
+          end
+
+          product = Spree::Product.find_by(id: pid)
+          unless product
+            missing << pid
+            puts "  · product_id=#{pid} not found"
+            next
+          end
+
+          master = product.master
+          if master.images.any?
+            skipped += 1
+            puts "  = #{pid} already has #{master.images.size} image(s) — skip (#{product.name})"
+            next
+          end
+
+          orig_url     = "https://fimgs.net/mdimg/perfume/o.#{fid}.jpg"
+          fallback_url = "https://fimgs.net/mdimg/perfume/375x500.#{fid}.jpg"
+          orig_ok      = false
+
+          # ── Step 1: try the HD original ───────────────────────────────────────────
+          begin
+            body, content_type = fetch_image(orig_url)
+            ext = case content_type
+                  when %r{image/png}  then 'png'
+                  when %r{image/webp} then 'webp'
+                  else 'jpg'
+                  end
+
+            image = master.images.new(position: 1)
+            image.attachment.attach(
+              io:           StringIO.new(body),
+              filename:     "fimgs-#{fid}-orig.#{ext}",
+              content_type: content_type
+            )
+            image.save!
+
+            blob = image.attachment.blob
+            begin
+              blob.analyze
+            rescue StandardError => analyze_err
+              warn "    blob.analyze failed #{pid}/#{fid}: #{analyze_err.message}"
+            end
+
+            quality = Labor::CatalogImageQuality.call(blob)
+
+            if quality[:status] == 'suitable'
+              orig_ok = true
+              attached_hd += 1
+              puts "  + #{pid} HD #{quality[:width]}x#{quality[:height]} → #{product.name}"
+            else
+              image.destroy!
+              raise "below-gate: #{quality[:reasons].join(', ')} " \
+                    "(#{quality[:width].inspect}x#{quality[:height].inspect})"
+            end
+          rescue StandardError => orig_err
+            unless orig_err.message.start_with?('below-gate')
+              warn "    orig failed #{pid}/#{fid}: #{orig_err.message.first(100)}"
+            end
+          end
+
+          next if orig_ok
+
+          # ── Step 2: fall back to 375x500.{fid}.2x.jpg (750×1000 retina) ──────────
+          begin
+            body, content_type = fetch_image(fallback_url)
+            ext = case content_type
+                  when %r{image/png}  then 'png'
+                  when %r{image/webp} then 'webp'
+                  else 'jpg'
+                  end
+
+            image = master.images.new(position: 1)
+            image.attachment.attach(
+              io:           StringIO.new(body),
+              filename:     "fimgs-#{fid}-thumb.#{ext}",
+              content_type: content_type
+            )
+            image.save!
+
+            blob = image.attachment.blob
+            begin
+              blob.analyze
+            rescue StandardError => analyze_err
+              warn "    blob.analyze failed #{pid}/#{fid} (fallback): #{analyze_err.message}"
+            end
+
+            quality = Labor::CatalogImageQuality.call(blob)
+
+            attached_2x += 1
+            puts "  ~ #{pid} fallback 2x (below standard) → #{product.name}"
+
+            updates_file.puts JSON.generate(
+              product_id:   pid,
+              fid:          fid,
+              slug:         product.slug,
+              catalog_name: product.name,
+              current_image: fallback_url,
+              image_quality: quality,
+              instruction:  'replace with high-res when available'
+            )
+            updates_file.flush
+          rescue StandardError => e2
+            failed << "#{pid}/#{fid}: #{e2.class}: #{e2.message}"
+            puts "  ! #{pid}/#{fid} both URLs failed: #{e2.class}: #{e2.message}"
+          end
+        end
+      end
+
+      puts ''
+      puts "DONE  attached_hd=#{attached_hd}  attached_2x_fallback=#{attached_2x}  " \
+           "skipped_existing=#{skipped}  unknown_products=#{missing.size}  failures=#{failed.size}"
+      puts "Below-standard queue: #{updates_path}  (#{attached_2x} row(s))"
+      failed.first(10).each { |f| puts "    · #{f}" }
+      puts "  Not found in DB (#{missing.size}): #{missing.first(10).join(', ')}" if missing.any?
+    end
+
     desc 'Report image attachment status across products'
     task report: :environment do
       total = Spree::Product.count

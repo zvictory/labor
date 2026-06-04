@@ -43,6 +43,7 @@ export default async function ProductPage({ params }: Props) {
     price: product.price,
     image: hero?.url ?? '',
     avg_rating: product.fragrance.avg_rating,
+    votes_count: product.fragrance.votes_count,
   };
 
   return (

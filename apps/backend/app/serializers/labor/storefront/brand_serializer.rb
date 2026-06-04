@@ -15,7 +15,7 @@ module Labor
           niche: !!brand.niche,
           description: brand.description.to_s,
           story: brand.story.to_s,
-          product_count: brand.product_fragrance_details.count
+          product_count: Labor::Catalog::CanonicalProducts.count(brand.products.available)
         }
 
         if with_products
@@ -25,7 +25,9 @@ module Labor
                        .available
                        .includes(:labor_fragrance_detail, master: [:images, :default_price])
                        .distinct
-          payload[:products] = products.map { |p| Labor::Storefront::ProductCardSerializer.call(p) }
+                       .order(:id)
+          canonical_products = Labor::Catalog::CanonicalProducts.call(products)
+          payload[:products] = canonical_products.map { |p| Labor::Storefront::ProductCardSerializer.call(p) }
         end
 
         payload

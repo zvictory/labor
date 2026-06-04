@@ -1,37 +1,31 @@
+import {
+  filterFacetsResponseSchema,
+  type BrandFacet,
+  type FamilyFacet,
+  type FilterFacets,
+  type GenderFacet,
+  type NoteFacet,
+} from '@labor/api-client/catalog';
+import type { ZodType } from 'zod';
+
 import { apiFetch } from './client';
 
-export interface BrandFacet {
-  slug: string;
-  name: string;
-  count: number;
-}
+export type { BrandFacet, FamilyFacet, FilterFacets, GenderFacet, NoteFacet };
 
-export interface NoteFacet {
-  slug: string;
-  name: string | null;
-  icon_url: string | null;
-  count: number;
-}
+const parseApiResponse = <T>(schema: ZodType<T>, value: unknown, label: string): T => {
+  const parsed = schema.safeParse(value);
+  if (!parsed.success) {
+    throw new Error(`${label} returned an invalid catalog payload: ${parsed.error.message}`);
+  }
 
-export interface FamilyFacet {
-  slug: string;
-  count: number;
-}
+  return parsed.data;
+};
 
-export interface GenderFacet {
-  slug: string;
-  count: number;
-}
-
-export interface FilterFacets {
-  brands: BrandFacet[];
-  notes: NoteFacet[];
-  families: FamilyFacet[];
-  genders: GenderFacet[];
-}
-
-export const getFilterFacets = (locale: string) =>
-  apiFetch<{ data: FilterFacets }>('/storefront/filter_facets', {
+export const getFilterFacets = async (locale: string) => {
+  const response = await apiFetch<unknown>('/storefront/filter_facets', {
     locale,
     next: { revalidate: 300, tags: ['filter_facets'] },
   });
+
+  return parseApiResponse(filterFacetsResponseSchema, response, 'GET /storefront/filter_facets');
+};

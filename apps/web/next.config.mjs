@@ -7,6 +7,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  transpilePackages: ['@labor/api-client'],
   experimental: {
     serverActions: { allowedOrigins: ['localhost:3001', 'labor.uz', '*.labor.uz'] },
   },
@@ -27,7 +28,11 @@ const nextConfig = {
         source: '/tg/:path*',
         headers: [
           // Telegram WebApp must allow framing inside Telegram
-          { key: 'Content-Security-Policy', value: "frame-ancestors 'self' https://telegram.org https://*.telegram.org https://web.telegram.org" },
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "frame-ancestors 'self' https://telegram.org https://*.telegram.org https://web.telegram.org",
+          },
         ],
       },
     ];

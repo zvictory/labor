@@ -18,9 +18,6 @@ interface TelegramWidgetUser {
 interface WidgetAuthResponse {
   data: {
     token: string;
-    client: string;
-    uid: string;
-    expiry: string;
     user: {
       id: number;
       email: string;

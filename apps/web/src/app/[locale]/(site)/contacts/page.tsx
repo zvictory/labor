@@ -1,4 +1,5 @@
 import { setRequestLocale } from 'next-intl/server';
+import { PageIntro } from '@/components/page-intro';
 import { locales, type Locale } from '@/i18n/config';
 
 type Lang = 'en' | 'ru' | 'uz' | 'uzc';
@@ -18,25 +19,49 @@ const COPY: Record<Lang, Copy> = {
     eyebrow: 'Контакты',
     title: 'Свяжитесь с нами',
     lead: 'Шоурум в центре Ташкента. Пишите в Telegram — отвечаем в течение часа.',
-    labels: { address: 'Адрес', hours: 'Часы работы', phone: 'Телефон', email: 'Почта', telegram: 'Telegram' },
+    labels: {
+      address: 'Адрес',
+      hours: 'Часы работы',
+      phone: 'Телефон',
+      email: 'Почта',
+      telegram: 'Telegram',
+    },
   },
   en: {
     eyebrow: 'Contacts',
     title: 'Get in touch',
     lead: 'Showroom in central Tashkent. Telegram is the fastest channel — we usually reply within an hour.',
-    labels: { address: 'Address', hours: 'Hours', phone: 'Phone', email: 'Email', telegram: 'Telegram' },
+    labels: {
+      address: 'Address',
+      hours: 'Hours',
+      phone: 'Phone',
+      email: 'Email',
+      telegram: 'Telegram',
+    },
   },
   uz: {
     eyebrow: 'Aloqa',
     title: 'Biz bilan bog‘laning',
     lead: 'Toshkent markazidagi shou-rum. Telegramga yozing — odatda bir soat ichida javob beramiz.',
-    labels: { address: 'Manzil', hours: 'Ish vaqti', phone: 'Telefon', email: 'Pochta', telegram: 'Telegram' },
+    labels: {
+      address: 'Manzil',
+      hours: 'Ish vaqti',
+      phone: 'Telefon',
+      email: 'Pochta',
+      telegram: 'Telegram',
+    },
   },
   uzc: {
     eyebrow: 'Алоқа',
     title: 'Биз билан боғланинг',
     lead: 'Тошкент марказидаги шоу-рум. Telegramга ёзинг — одатда бир соат ичида жавоб берамиз.',
-    labels: { address: 'Манзил', hours: 'Иш вақти', phone: 'Телефон', email: 'Почта', telegram: 'Telegram' },
+    labels: {
+      address: 'Манзил',
+      hours: 'Иш вақти',
+      phone: 'Телефон',
+      email: 'Почта',
+      telegram: 'Telegram',
+    },
   },
 };
 
@@ -96,19 +121,13 @@ export default async function ContactsPage({ params }: Props) {
   ];
 
   return (
-    <article className="container max-w-3xl py-16 md:py-24">
-      <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
-        {c.eyebrow}
-      </span>
-      <h1 className="mt-3 font-display text-4xl text-ink dark:text-bone md:text-5xl">
-        {c.title}
-      </h1>
-      <p className="mt-6 text-lg leading-relaxed text-ink dark:text-bone/90">{c.lead}</p>
-      <dl className="mt-10 divide-y divide-border border-y border-border">
+    <article className="container max-w-3xl py-4 md:py-6">
+      <PageIntro eyebrow={c.eyebrow} title={c.title} lead={c.lead} align="left" />
+      <dl className="divide-border border-border mt-4 divide-y border-y">
         {rows.map((r) => (
           <div key={r.k} className="grid grid-cols-1 gap-1 py-4 md:grid-cols-[200px_1fr]">
-            <dt className="text-xs uppercase tracking-widest text-ink-muted">{r.k}</dt>
-            <dd className="text-base text-ink dark:text-bone">{r.v}</dd>
+            <dt className="text-ink-muted text-xs tracking-widest uppercase">{r.k}</dt>
+            <dd className="text-ink dark:text-bone text-base">{r.v}</dd>
           </div>
         ))}
       </dl>

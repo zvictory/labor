@@ -28,7 +28,10 @@ module Spree
               order = Spree::Order.find_by(number: p['merchant_trans_id'])
               return render json: error_response(p, code: Labor::Payments::ClickVerifier::ERROR_USER, msg: 'User does not exist') unless order
 
-              payload = ActiveRecord::Base.transaction do
+              amount_mismatch = false
+              result = nil
+
+              ActiveRecord::Base.transaction do
                 order.lock!
 
                 event = Labor::PaymentWebhookEvent.record!(
@@ -39,18 +42,26 @@ module Spree
                 )
 
                 if event.status == 'duplicate'
-                  success_response(p, prepare_id: event.id)
+                  result = success_response(p, prepare_id: event.id)
                 elsif action == 0
                   event.update!(spree_order_id: order.id, status: 'processed', processed_at: Time.current)
-                  success_response(p, prepare_id: event.id)
+                  result = success_response(p, prepare_id: event.id)
                 else
+                  unless Integer(p['amount'], exception: false) == order.total.to_i
+                    amount_mismatch = true
+                    raise ActiveRecord::Rollback
+                  end
                   payment = create_payment!(order: order, amount: p['amount'].to_d, txn_id: p['click_trans_id'])
                   event.update!(spree_order_id: order.id, spree_payment_id: payment.id, status: 'processed', processed_at: Time.current)
-                  success_response(p, prepare_id: p['merchant_prepare_id'])
+                  result = success_response(p, prepare_id: p['merchant_prepare_id'])
                 end
               end
 
-              render json: payload
+              if amount_mismatch
+                render json: error_response(p, code: -5, msg: 'amount_mismatch')
+              else
+                render json: result
+              end
             rescue ActiveRecord::RecordInvalid => e
               render json: error_response(params, code: -9, msg: e.message)
             end

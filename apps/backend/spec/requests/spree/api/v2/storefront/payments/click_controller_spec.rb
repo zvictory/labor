@@ -28,16 +28,12 @@ RSpec.describe 'Spree::Api::V2::Storefront::Payments::Click', type: :request do
   before do
     stub_const('Spree::Api::V2::Storefront::Payments::ClickController::SECRET', secret)
     store # ensure store exists before payment method
-    unless Spree::PaymentMethod.find_by(name: 'Click')
-      pm = Spree::PaymentMethod.new(
-        name: 'Click',
-        type: 'Spree::PaymentMethod::Check',
-        active: true,
-        display_on: 'both'
-      )
-      pm.stores << store
-      pm.save!
-    end
+    pm = Spree::PaymentMethod.find_or_initialize_by(name: 'Click')
+    pm.type = 'Spree::PaymentMethod::Check'
+    pm.active = true
+    pm.display_on = 'both'
+    pm.stores = [store]
+    pm.save!
   end
   let(:order) do
     Spree::Order.create!(

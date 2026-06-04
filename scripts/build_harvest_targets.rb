@@ -4,6 +4,7 @@
 # Outputs:
 #   /tmp/harvest_batch_A.jsonl ... /tmp/harvest_batch_I.jsonl  (50 perfumes each)
 #   /tmp/harvest_brands.jsonl                                  (one line per brand)
+#   /tmp/harvest_image_updates.jsonl                           (bad/missing shop images)
 #
 # Each perfume line:
 #   {"slug": "...", "name": "...", "brand_hint": "...",
@@ -19,6 +20,7 @@ require 'uri'
 BATCH_SIZE = 50
 LABELS = %w[A B C D E F G H I J K L].freeze
 AUDIT_PATH = '/tmp/fragrantica_audit.json'
+IMAGE_UPDATE_INSTRUCTION = 'Find/update product image suitable for Labor shop: 3:4, minimum 600×800, preferred 750×1000, centered bottle, no text overlay.'.freeze
 
 audit = JSON.parse(File.read(AUDIT_PATH))
 synthesized_slugs = audit['synthesized_slugs']
@@ -83,7 +85,28 @@ File.open('/tmp/harvest_brands.jsonl', 'w') do |io|
 end
 puts "Wrote /tmp/harvest_brands.jsonl (#{brand_rows.size} brands)"
 
+image_rows = audit.dig('image_quality', 'items').to_a
+                  .reject { |item| item.dig('image_quality', 'status') == 'suitable' }
+                  .map do |item|
+  query = [item['brand_hint'], item['name']].reject { |s| s.to_s.strip.empty? }.join(' ')
+  {
+    slug: item['slug'],
+    name: item['name'],
+    brand_hint: item['brand_hint'],
+    current_image: item['current_image'],
+    image_quality: item['image_quality'],
+    search_url: "https://www.fragrantica.com/search/?searchString=#{URI.encode_www_form_component(query)}",
+    instruction: IMAGE_UPDATE_INSTRUCTION,
+  }
+end
+
+File.open('/tmp/harvest_image_updates.jsonl', 'w') do |io|
+  image_rows.each { |r| io.puts(JSON.generate(r)) }
+end
+puts "Wrote /tmp/harvest_image_updates.jsonl (#{image_rows.size} products)"
+
 puts ''
 puts "Total perfume targets: #{rows.size}"
 puts "Total brand targets:   #{brand_rows.size}"
+puts "Image update targets:  #{image_rows.size}"
 puts "Batches:               #{(rows.size.to_f / BATCH_SIZE).ceil}"

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
+import { PageIntro } from '@/components/page-intro';
 import { getBrands, type BrandSummary } from '@/lib/api/brands';
 import { LOGO_FILES } from './logo-manifest';
 
@@ -16,24 +17,32 @@ const toLang = (locale: string): Lang =>
 const EYEBROW: Record<Lang, string> = {
   ru: 'КУРАТОРЫ ХОРОШЕГО ВКУСА',
   en: 'CURATORS OF OLFACTORY ART',
-  uz: "DID KURATORLARI",
+  uz: 'DID KURATORLARI',
   uzc: 'ДИД КУРАТОРЛАРИ',
 };
 
-const BrandLogo = ({ slug, name, logoUrl }: { slug: string; name: string; logoUrl?: string | null }) => {
+const BrandLogo = ({
+  slug,
+  name,
+  logoUrl,
+}: {
+  slug: string;
+  name: string;
+  logoUrl?: string | null;
+}) => {
   const svgCls =
     'w-full text-ink dark:text-bone fill-current transition-colors duration-300 group-hover:text-brass';
 
   // Database-driven logo (harvest output) wins over committed assets.
   if (logoUrl) {
     return (
-      <div className="dark:bg-white/95 dark:rounded-xl dark:px-2 dark:shadow-sm w-full">
+      <div className="w-full dark:rounded-xl dark:bg-white/95 dark:px-2 dark:shadow-sm">
         <Image
           src={logoUrl}
           alt={name}
           width={400}
           height={130}
-          className="w-full h-auto object-contain [mix-blend-mode:multiply] dark:[mix-blend-mode:normal]"
+          className="h-auto w-full object-contain [mix-blend-mode:multiply] dark:[mix-blend-mode:normal]"
           unoptimized
         />
       </div>
@@ -48,7 +57,7 @@ const BrandLogo = ({ slug, name, logoUrl }: { slug: string; name: string; logoUr
         alt={name}
         width={400}
         height={130}
-        className="w-full h-auto object-contain dark:invert dark:brightness-95"
+        className="h-auto w-full object-contain dark:brightness-95 dark:invert"
         unoptimized={file.endsWith('.svg')}
       />
     );
@@ -58,13 +67,33 @@ const BrandLogo = ({ slug, name, logoUrl }: { slug: string; name: string; logoUr
     case 'chanel':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="23" letterSpacing="0.25em">CHANEL</text>
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            fontWeight="700"
+            fontSize="23"
+            letterSpacing="0.25em"
+          >
+            CHANEL
+          </text>
         </svg>
       );
     case 'dior':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="Georgia, serif" fontSize="26" fontWeight="500" letterSpacing="0.03em">Dior</text>
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="Georgia, serif"
+            fontSize="26"
+            fontWeight="500"
+            letterSpacing="0.03em"
+          >
+            Dior
+          </text>
         </svg>
       );
     case 'prada':
@@ -77,33 +106,98 @@ const BrandLogo = ({ slug, name, logoUrl }: { slug: string; name: string; logoUr
             <path d="M 125 16 L 138 16 C 145 16 149 20 149 28.5 C 149 37 145 41 138 41 L 125 41 Z M 131 20 L 131 37 L 137 37 C 142 37 143 34 143 28.5 C 143 23 142 20 137 20 Z" />
             <path d="M 159.5 16 L 165.5 16 L 174.5 41 L 168.5 41 L 166.5 35 L 158.5 35 L 156.5 41 L 150.5 41 Z M 160 25 L 165 25 L 162.5 18 Z" />
           </g>
-          <text x="50%" y="51" textAnchor="middle" fontFamily="sans-serif" fontSize="5" letterSpacing="0.4em" opacity="0.8">MILANO</text>
+          <text
+            x="50%"
+            y="51"
+            textAnchor="middle"
+            fontFamily="sans-serif"
+            fontSize="5"
+            letterSpacing="0.4em"
+            opacity="0.8"
+          >
+            MILANO
+          </text>
         </svg>
       );
     case 'gucci':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="300" fontSize="21" letterSpacing="0.32em">GUCCI</text>
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            fontWeight="300"
+            fontSize="21"
+            letterSpacing="0.32em"
+          >
+            GUCCI
+          </text>
         </svg>
       );
     case 'givenchy':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="19" letterSpacing="0.22em">GIVENCHY</text>
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            fontWeight="700"
+            fontSize="19"
+            letterSpacing="0.22em"
+          >
+            GIVENCHY
+          </text>
         </svg>
       );
     case 'versace':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="800" fontSize="22" letterSpacing="0.1em">VERSACE</text>
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            fontWeight="800"
+            fontSize="22"
+            letterSpacing="0.1em"
+          >
+            VERSACE
+          </text>
         </svg>
       );
     case 'tommy-hilfiger':
       return (
-        <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full text-ink dark:text-bone fill-current transition-colors duration-300">
+        <svg
+          viewBox="0 0 200 65"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="text-ink dark:text-bone w-full fill-current transition-colors duration-300"
+        >
           <g fill="currentColor" className="group-hover:text-brass transition-colors duration-300">
-            <text x="45" y="38" fontSize="11" fontWeight="800" fontFamily="system-ui, -apple-system, sans-serif" letterSpacing="0.12em" textAnchor="end">TOMMY</text>
-            <text x="155" y="38" fontSize="11" fontWeight="800" fontFamily="system-ui, -apple-system, sans-serif" letterSpacing="0.12em" textAnchor="start">HILFIGER</text>
+            <text
+              x="45"
+              y="38"
+              fontSize="11"
+              fontWeight="800"
+              fontFamily="system-ui, -apple-system, sans-serif"
+              letterSpacing="0.12em"
+              textAnchor="end"
+            >
+              TOMMY
+            </text>
+            <text
+              x="155"
+              y="38"
+              fontSize="11"
+              fontWeight="800"
+              fontFamily="system-ui, -apple-system, sans-serif"
+              letterSpacing="0.12em"
+              textAnchor="start"
+            >
+              HILFIGER
+            </text>
           </g>
           <rect x="85" y="24" width="30" height="17" fill="#0C1D33" />
           <rect x="85" y="27" width="15" height="11" fill="white" />
@@ -113,20 +207,59 @@ const BrandLogo = ({ slug, name, logoUrl }: { slug: string; name: string; logoUr
     case 'chloe':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="Georgia, serif" fontSize="25" fontWeight="500" letterSpacing="0.03em">Chloé</text>
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="Georgia, serif"
+            fontSize="25"
+            fontWeight="500"
+            letterSpacing="0.03em"
+          >
+            Chloé
+          </text>
         </svg>
       );
     case 'le-labo':
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <rect x="35" y="16" width="130" height="32" rx="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" fill="none" opacity="0.6" />
-          <text x="50%" y="38" textAnchor="middle" fontFamily="Courier New, Courier, monospace" fontWeight="bold" fontSize="18" letterSpacing="0.08em">LE LABO</text>
+          <rect
+            x="35"
+            y="16"
+            width="130"
+            height="32"
+            rx="2"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeDasharray="3 2"
+            fill="none"
+            opacity="0.6"
+          />
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="Courier New, Courier, monospace"
+            fontWeight="bold"
+            fontSize="18"
+            letterSpacing="0.08em"
+          >
+            LE LABO
+          </text>
         </svg>
       );
     default:
       return (
         <svg viewBox="0 0 200 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={svgCls}>
-          <text x="50%" y="38" textAnchor="middle" fontFamily="Georgia, serif" fontSize="22" fontWeight="500" letterSpacing="0.05em">
+          <text
+            x="50%"
+            y="38"
+            textAnchor="middle"
+            fontFamily="Georgia, serif"
+            fontSize="22"
+            fontWeight="500"
+            letterSpacing="0.05em"
+          >
             {name}
           </text>
         </svg>
@@ -149,48 +282,49 @@ export default async function BrandsPage({ params }: Props) {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-8 space-y-8">
-      <header className="space-y-1 text-center max-w-2xl mx-auto py-4">
-        <span className="text-[10px] uppercase tracking-[0.4em] text-brass font-bold block">
-          {EYEBROW[lang]}
-        </span>
-        <h1 className="font-sans font-bold text-3xl md:text-4xl tracking-tight text-ink dark:text-bone">
-          {t('title')}
-        </h1>
-        <div className="h-[1px] w-10 bg-brass mx-auto my-3 opacity-60" />
-        <p className="text-xs font-sans text-ink-muted dark:text-stone-400">
-          {t('subtitle')}
-        </p>
-      </header>
+    <main className="mx-auto max-w-6xl space-y-6 px-6 py-4 md:py-6">
+      <PageIntro
+        eyebrow={EYEBROW[lang]}
+        title={t('title')}
+        lead={t('subtitle')}
+        action={
+          <Link
+            href={`/${locale}/catalog-map`}
+            className="border-brass/40 text-brass hover:bg-brass hover:text-bone inline-flex rounded-full border px-4 py-2 text-[10px] font-bold tracking-[0.24em] uppercase transition-colors"
+          >
+            Catalog map
+          </Link>
+        }
+      />
 
       {errorMessage && process.env.NODE_ENV !== 'production' && (
         <div className="mx-auto max-w-2xl rounded-md border border-amber-400/60 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-          <p className="font-mono text-xs uppercase tracking-widest mb-1">{t('errorLoading')}</p>
+          <p className="mb-1 font-mono text-xs tracking-widest uppercase">{t('errorLoading')}</p>
           <p className="font-mono text-xs break-all">{errorMessage}</p>
         </div>
       )}
 
       {brands.length === 0 && !errorMessage && (
-        <p className="text-center text-sm text-ink-muted dark:text-stone-400">{t('empty')}</p>
+        <p className="text-ink-muted text-center text-sm dark:text-stone-400">{t('empty')}</p>
       )}
 
       {brands.length > 0 && (
         <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3">
           {brands.map((brand) => (
-            <li key={brand.slug} className="break-inside-avoid mb-4">
+            <li key={brand.slug} className="mb-4 break-inside-avoid">
               <Link
                 href={`/${locale}/brands/${brand.slug}`}
-                className="block p-5 bg-bone dark:bg-[#1A1714]/30 border border-border/80 group hover:border-brass/70 transition-all duration-500 hover:bg-stone-50 dark:hover:bg-[#1A1714]/60 rounded-xl relative overflow-hidden"
+                className="bg-bone border-border/80 group hover:border-brass/70 relative block overflow-hidden rounded-xl border p-5 transition-all duration-500 hover:bg-stone-50 dark:bg-[#1A1714]/30 dark:hover:bg-[#1A1714]/60"
               >
-                <span className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-stone-200/80 dark:bg-stone-700/60 text-[9px] font-mono font-bold text-stone-500 dark:text-stone-400 group-hover:bg-brass/20 group-hover:text-brass transition-colors z-10">
+                <span className="group-hover:bg-brass/20 group-hover:text-brass absolute top-2 right-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-stone-200/80 font-mono text-[9px] font-bold text-stone-500 transition-colors dark:bg-stone-700/60 dark:text-stone-400">
                   {brand.product_count}
                 </span>
 
-                <div className="w-full transition-transform duration-500 group-hover:scale-105 px-2">
+                <div className="w-full px-2 transition-transform duration-500 group-hover:scale-105">
                   <BrandLogo slug={brand.slug} name={brand.name} logoUrl={brand.logo_url ?? null} />
                 </div>
 
-                <div className="absolute bottom-0 inset-x-0 h-[2px] bg-brass transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                <div className="bg-brass absolute inset-x-0 bottom-0 h-[2px] scale-x-0 transform transition-transform duration-500 group-hover:scale-x-100" />
               </Link>
             </li>
           ))}

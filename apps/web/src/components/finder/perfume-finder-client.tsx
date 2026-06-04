@@ -15,7 +15,7 @@ export interface FinderCandidate {
   price: number;
   image: string;
   avg_rating: number;
-  top_accord?: { name: string; color_hex: string };
+  top_accord?: { name: string; color_hex: string } | null | undefined;
   matchedFamilies: string[];
   matchedGender?: string;
 }
@@ -91,7 +91,11 @@ const hasFamily = (product: FinderCandidate, families: string[]): boolean => {
   return families.some((family) => productFamilies.includes(family) || accord.includes(family));
 };
 
-const scoreProduct = (product: FinderCandidate, answers: Answers, copy: FinderCopy): ScoredProduct => {
+const scoreProduct = (
+  product: FinderCandidate,
+  answers: Answers,
+  copy: FinderCopy,
+): ScoredProduct => {
   let score = 42;
   const reasons: string[] = [];
   const familyChoice = answers.family;
@@ -194,11 +198,13 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
   if (candidates.length === 0) {
     return (
       <section className="mx-auto max-w-4xl px-4 py-20 text-center">
-        <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-brass">{copy.eyebrow}</p>
-        <h1 className="mt-4 font-sans text-4xl font-bold tracking-tight text-ink dark:text-bone md:text-6xl">
+        <p className="text-brass text-[10px] font-bold tracking-[0.32em] uppercase">
+          {copy.eyebrow}
+        </p>
+        <h1 className="text-ink dark:text-bone mt-4 font-sans text-4xl font-bold tracking-tight md:text-6xl">
           {copy.emptyTitle}
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-ink-muted dark:text-stone-300">
+        <p className="text-ink-muted mx-auto mt-5 max-w-2xl text-sm leading-7 dark:text-stone-300">
           {copy.emptyBody}
         </p>
       </section>
@@ -209,25 +215,29 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
     <section className="mx-auto max-w-7xl px-4 py-10 md:py-16">
       <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
         <div className="lg:sticky lg:top-32">
-          <p className="text-[10px] font-bold uppercase tracking-[0.34em] text-brass">{copy.eyebrow}</p>
-          <h1 className="mt-5 max-w-xl font-sans text-4xl font-bold leading-none tracking-tight text-ink dark:text-bone md:text-6xl">
+          <p className="text-brass text-[10px] font-bold tracking-[0.34em] uppercase">
+            {copy.eyebrow}
+          </p>
+          <h1 className="text-ink dark:text-bone mt-5 max-w-xl font-sans text-4xl leading-none font-bold tracking-tight md:text-6xl">
             {copy.title}
           </h1>
-          <p className="mt-6 max-w-md text-sm leading-7 text-ink-muted dark:text-stone-300 md:text-base">
+          <p className="text-ink-muted mt-6 max-w-md text-sm leading-7 md:text-base dark:text-stone-300">
             {copy.intro}
           </p>
 
-          <div className="mt-9 border-y border-border py-5">
+          <div className="border-border mt-9 border-y py-5">
             <div className="grid grid-cols-4 gap-2">
               {copy.steps.map((step, index) => (
                 <div key={step.key} className="space-y-2">
                   <div
                     className={[
                       'h-1.5 rounded-full transition-colors',
-                      index <= stepIndex || answers[step.key] ? 'bg-brass' : 'bg-stone-200 dark:bg-stone-800',
+                      index <= stepIndex || answers[step.key]
+                        ? 'bg-brass'
+                        : 'bg-stone-200 dark:bg-stone-800',
                     ].join(' ')}
                   />
-                  <p className="hidden text-[10px] uppercase tracking-widest text-stone-500 sm:block">
+                  <p className="hidden text-[10px] tracking-widest text-stone-500 uppercase sm:block">
                     {step.eyebrow}
                   </p>
                 </div>
@@ -240,7 +250,7 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
               <button
                 type="button"
                 onClick={() => setStarted(true)}
-                className="rounded-full bg-ink px-7 py-3 text-xs font-bold uppercase tracking-[0.18em] text-bone transition hover:bg-brass dark:bg-bone dark:text-ink"
+                className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink rounded-full px-7 py-3 text-xs font-bold tracking-[0.18em] uppercase transition"
               >
                 {copy.start}
               </button>
@@ -250,7 +260,7 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                   type="button"
                   onClick={() => setStepIndex((index) => Math.max(index - 1, 0))}
                   disabled={stepIndex === 0}
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-xs font-bold uppercase tracking-widest text-ink transition hover:border-brass hover:text-brass disabled:pointer-events-none disabled:opacity-35 dark:text-bone"
+                  className="border-border text-ink hover:border-brass hover:text-brass dark:text-bone inline-flex items-center gap-2 rounded-full border px-5 py-3 text-xs font-bold tracking-widest uppercase transition disabled:pointer-events-none disabled:opacity-35"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   {copy.back}
@@ -258,7 +268,7 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                 <button
                   type="button"
                   onClick={restart}
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-xs font-bold uppercase tracking-widest text-ink transition hover:border-brass hover:text-brass dark:text-bone"
+                  className="border-border text-ink hover:border-brass hover:text-brass dark:text-bone inline-flex items-center gap-2 rounded-full border px-5 py-3 text-xs font-bold tracking-widest uppercase transition"
                 >
                   <RotateCcw className="h-4 w-4" />
                   {copy.restart}
@@ -268,15 +278,17 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
           </div>
         </div>
 
-        <div className="min-h-[560px] border border-border bg-bone/80 p-4 shadow-sm dark:bg-stone-950/30 md:p-8">
+        <div className="border-border bg-bone/80 min-h-[560px] border p-4 shadow-sm md:p-8 dark:bg-stone-950/30">
           {!started && (
-            <div className="grid min-h-[500px] place-items-center border border-dashed border-brass/30 bg-brass/5 p-8 text-center">
+            <div className="border-brass/30 bg-brass/5 grid min-h-[500px] place-items-center border border-dashed p-8 text-center">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">{copy.progress}</p>
-                <h2 className="mt-4 font-sans text-3xl font-bold tracking-tight text-ink dark:text-bone">
+                <p className="text-brass text-[10px] font-bold tracking-[0.3em] uppercase">
+                  {copy.progress}
+                </p>
+                <h2 className="text-ink dark:text-bone mt-4 font-sans text-3xl font-bold tracking-tight">
                   {copy.steps[0]?.title}
                 </h2>
-                <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-ink-muted dark:text-stone-300">
+                <p className="text-ink-muted mx-auto mt-3 max-w-md text-sm leading-7 dark:text-stone-300">
                   {copy.steps[0]?.helper}
                 </p>
               </div>
@@ -286,13 +298,15 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
           {started && !isComplete && currentStep && (
             <div className="space-y-8">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-brass">
-                  {copy.progress.replace('{current}', String(stepIndex + 1)).replace('{total}', String(copy.steps.length))}
+                <p className="text-brass text-[10px] font-bold tracking-[0.32em] uppercase">
+                  {copy.progress
+                    .replace('{current}', String(stepIndex + 1))
+                    .replace('{total}', String(copy.steps.length))}
                 </p>
-                <h2 className="mt-4 font-sans text-3xl font-bold leading-tight tracking-tight text-ink dark:text-bone md:text-5xl">
+                <h2 className="text-ink dark:text-bone mt-4 font-sans text-3xl leading-tight font-bold tracking-tight md:text-5xl">
                   {currentStep.title}
                 </h2>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-ink-muted dark:text-stone-300">
+                <p className="text-ink-muted mt-4 max-w-2xl text-sm leading-7 dark:text-stone-300">
                   {currentStep.helper}
                 </p>
               </div>
@@ -303,12 +317,12 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                     key={choice.id}
                     type="button"
                     onClick={() => choose(choice)}
-                    className="group min-h-36 border border-border bg-background p-5 text-left transition hover:-translate-y-0.5 hover:border-brass hover:bg-brass/5"
+                    className="group border-border bg-background hover:border-brass hover:bg-brass/5 min-h-36 border p-5 text-left transition hover:-translate-y-0.5"
                   >
-                    <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-brass">
+                    <span className="text-brass text-[10px] font-bold tracking-[0.26em] uppercase">
                       {choice.label}
                     </span>
-                    <span className="mt-4 block font-sans text-xl font-bold leading-tight text-ink group-hover:text-brass dark:text-bone">
+                    <span className="text-ink group-hover:text-brass dark:text-bone mt-4 block font-sans text-xl leading-tight font-bold">
                       {choice.text}
                     </span>
                   </button>
@@ -320,13 +334,13 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
           {started && isComplete && (
             <div className="space-y-8">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-brass">
+                <p className="text-brass text-[10px] font-bold tracking-[0.32em] uppercase">
                   {copy.resultsEyebrow}
                 </p>
-                <h2 className="mt-4 font-sans text-3xl font-bold leading-tight tracking-tight text-ink dark:text-bone md:text-5xl">
+                <h2 className="text-ink dark:text-bone mt-4 font-sans text-3xl leading-tight font-bold tracking-tight md:text-5xl">
                   {copy.resultsTitle}
                 </h2>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-ink-muted dark:text-stone-300">
+                <p className="text-ink-muted mt-4 max-w-2xl text-sm leading-7 dark:text-stone-300">
                   {copy.resultsIntro}
                 </p>
               </div>
@@ -335,7 +349,7 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                 {results.map(({ product, score, reasons }, index) => (
                   <article
                     key={product.id}
-                    className="grid gap-5 border border-border bg-background p-4 sm:grid-cols-[132px_1fr] md:p-5"
+                    className="border-border bg-background grid gap-5 border p-4 sm:grid-cols-[132px_1fr] md:p-5"
                   >
                     <Link
                       href={`/${locale}/product/${product.slug}`}
@@ -350,7 +364,7 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                           className="object-contain p-3"
                         />
                       ) : (
-                        <div className="grid h-full place-items-center text-center text-[10px] uppercase tracking-widest text-stone-400">
+                        <div className="grid h-full place-items-center text-center text-[10px] tracking-widest text-stone-400 uppercase">
                           {product.brand}
                         </div>
                       )}
@@ -359,21 +373,21 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-stone-500">
+                          <p className="text-[10px] font-bold tracking-[0.24em] text-stone-500 uppercase">
                             {index + 1}. {product.brand}
                           </p>
                           <Link
                             href={`/${locale}/product/${product.slug}`}
-                            className="mt-1 block font-sans text-2xl font-bold leading-tight tracking-tight text-ink transition hover:text-brass dark:text-bone"
+                            className="text-ink hover:text-brass dark:text-bone mt-1 block font-sans text-2xl leading-tight font-bold tracking-tight transition"
                           >
                             {product.name}
                           </Link>
                         </div>
                         <div className="text-right">
-                          <p className="font-sans text-2xl font-bold text-brass">
-                            {score}%
+                          <p className="text-brass font-sans text-2xl font-bold">{score}%</p>
+                          <p className="text-[10px] tracking-widest text-stone-500 uppercase">
+                            {copy.match}
                           </p>
-                          <p className="text-[10px] uppercase tracking-widest text-stone-500">{copy.match}</p>
                         </div>
                       </div>
 
@@ -391,10 +405,10 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                         )}
                       </div>
 
-                      <ul className="mt-4 space-y-2 text-sm leading-6 text-ink-muted dark:text-stone-300">
+                      <ul className="text-ink-muted mt-4 space-y-2 text-sm leading-6 dark:text-stone-300">
                         {(reasons.length > 0 ? reasons : [copy.reasons.rating]).map((reason) => (
                           <li key={reason} className="flex gap-2">
-                            <Check className="mt-1 h-4 w-4 shrink-0 text-brass" />
+                            <Check className="text-brass mt-1 h-4 w-4 shrink-0" />
                             <span>{reason}</span>
                           </li>
                         ))}
@@ -403,14 +417,14 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                       <div className="mt-5 flex flex-wrap gap-3">
                         <Link
                           href={`/${locale}/product/${product.slug}`}
-                          className="inline-flex h-11 items-center justify-center rounded-full border border-border px-5 text-xs font-bold uppercase tracking-widest transition hover:border-brass hover:text-brass"
+                          className="border-border hover:border-brass hover:text-brass inline-flex h-11 items-center justify-center rounded-full border px-5 text-xs font-bold tracking-widest uppercase transition"
                         >
                           {copy.view}
                         </Link>
                         <button
                           type="button"
                           onClick={() => addProduct(product)}
-                          className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 text-xs font-bold uppercase tracking-widest text-bone transition hover:bg-brass dark:bg-bone dark:text-ink"
+                          className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-xs font-bold tracking-widest uppercase transition"
                         >
                           <ShoppingBag className="h-4 w-4" />
                           {addedId === product.id ? copy.added : copy.add}

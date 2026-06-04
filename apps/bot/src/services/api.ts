@@ -3,14 +3,15 @@ import { config } from '../config.js';
 type Json = Record<string, unknown> | unknown[];
 
 const req = async <T>(method: 'GET' | 'POST', path: string, body?: Json, token?: string): Promise<T> => {
-  const res = await fetch(`${config.apiBaseUrl}${path}`, {
+  const init: RequestInit = {
     method,
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'access-token': token } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  };
+  const res = await fetch(`${config.apiBaseUrl}${path}`, init);
   if (!res.ok) throw new Error(`api ${method} ${path} -> ${res.status}: ${await res.text()}`);
   return res.json() as Promise<T>;
 };

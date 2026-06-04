@@ -15,12 +15,13 @@ module Labor
           price: product.master.default_price&.amount.to_i,
           image: first_image_url(product),
           avg_rating: detail&.avg_rating.to_f,
+          votes_count: detail&.votes_count.to_i,
           top_accord: top
         }
       end
 
       def first_image_url(product)
-        img = product.images.first
+        img = product.master&.images&.first
         return '' unless img&.attachment&.attached?
 
         Rails.application.routes.url_helpers.rails_blob_url(
@@ -32,11 +33,15 @@ module Labor
       end
 
       def top_accord(product)
-        pa = Labor::ProductAccord
-               .where(spree_product_id: product.id)
-               .includes(:accord)
-               .order(weight: :desc)
-               .first
+        pa = if product.association(:labor_top_product_accord).loaded?
+               product.labor_top_product_accord
+             else
+               Labor::ProductAccord
+                 .where(spree_product_id: product.id)
+                 .includes(:accord)
+                 .order(weight: :desc)
+                 .first
+             end
         return nil unless pa
 
         { name: pa.accord.name.to_s, color_hex: pa.accord.color_hex.to_s }

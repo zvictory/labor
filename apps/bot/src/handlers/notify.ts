@@ -1,9 +1,10 @@
 import type { Bot } from 'grammy';
+import { config } from '../config.js';
 import { t, type LocaleKey } from '../i18n.js';
 import { logger } from '../logger.js';
 import type { LaborContext } from '../middleware/session.js';
 
-interface OrderPayload {
+export interface OrderPayload {
   telegram_id: number;
   locale?: LocaleKey;
   number: string;
@@ -25,11 +26,15 @@ export const notifyDelivered = async (bot: Bot<LaborContext>, p: OrderPayload): 
 
 type ParseMode = 'HTML' | 'Markdown' | 'MarkdownV2';
 
-interface ChannelPayload {
+export interface ChannelPayload {
   chat_id?: number | string;
   text?: string;
   parse_mode?: ParseMode;
 }
+
+const ALLOWED_CHANNEL_IDS = new Set<string>(
+  [config.adminChatId].filter((id): id is string => id !== undefined)
+);
 
 export const notifyChannel = async (
   bot: Bot<LaborContext>,
@@ -40,6 +45,12 @@ export const notifyChannel = async (
   if (chatId === undefined || chatId === null || chatId === '' || !text) {
     return { ok: false, error: 'missing chat_id or text' };
   }
+
+  if (!ALLOWED_CHANNEL_IDS.has(String(chatId))) {
+    logger.warn({ chatId }, 'notifyChannel: chat_id not in allowlist');
+    return { ok: false, error: 'chat_id not in allowlist' };
+  }
+
   try {
     await bot.api.sendMessage(chatId, text, {
       parse_mode: p.parse_mode ?? 'HTML',

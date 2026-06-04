@@ -6,7 +6,7 @@ module Spree
           def index
             with_locale do
               notes = Labor::Note.joins(:product_notes).distinct.order(:name)
-              render json: { data: notes.map { |n| Labor::Storefront::NoteSerializer.call(n) } }
+              render json: { data: Labor::Catalog::CanonicalNotes.call(notes).map { |n| Labor::Storefront::NoteSerializer.call(n) } }
             end
           end
 

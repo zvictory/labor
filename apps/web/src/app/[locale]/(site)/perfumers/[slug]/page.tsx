@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
+import { PageIntro } from '@/components/page-intro';
 import { getPerfumer } from '@/lib/api/perfumers';
 import { ProductCard } from '@/components/catalog/product-card';
 
@@ -16,40 +17,27 @@ export default async function PerfumerDetailPage({ params }: Props) {
     const { data: perfumer } = await getPerfumer(slug, locale);
 
     return (
-      <main className="mx-auto max-w-6xl px-6 py-16 space-y-16">
-        {/* Editorial Header */}
-        <header className="space-y-4 text-center max-w-3xl mx-auto py-8">
-          {perfumer.country && (
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-brass font-bold block">
-              {perfumer.country}
-            </span>
-          )}
-          <h1 className="font-sans font-bold text-4xl md:text-5xl tracking-tight text-ink dark:text-bone">
-            {perfumer.name}
-          </h1>
-          <div className="h-[1px] w-12 bg-brass mx-auto my-6 opacity-60" />
-          {perfumer.bio && (
-            <p className="text-sm md:text-base font-sans leading-relaxed text-ink-muted dark:text-stone-400 whitespace-pre-line">
-              {perfumer.bio}
-            </p>
-          )}
-        </header>
+      <main className="mx-auto max-w-6xl space-y-8 px-6 py-4 md:py-6">
+        <PageIntro
+          eyebrow={perfumer.country}
+          title={perfumer.name}
+          lead={perfumer.bio ? <span className="whitespace-pre-line">{perfumer.bio}</span> : null}
+          className="max-w-3xl"
+        />
 
         {/* Fragrances */}
         <section className="space-y-8">
-          <div className="flex items-baseline justify-between border-b border-border/60 pb-4">
-            <h2 className="font-serif text-2xl md:text-3xl tracking-tight text-ink dark:text-bone">
+          <div className="border-border/60 flex items-baseline justify-between border-b pb-4">
+            <h2 className="text-ink dark:text-bone font-serif text-2xl tracking-tight md:text-3xl">
               {t('detailFragrances')}
             </h2>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-ink-muted dark:text-stone-500 font-mono">
+            <span className="text-ink-muted font-mono text-[10px] tracking-[0.3em] uppercase dark:text-stone-500">
               {t('productCount', { count: perfumer.products.length })}
             </span>
           </div>
 
           {perfumer.products.length === 0 ? (
-            <p className="text-center text-sm text-ink-muted dark:text-stone-400">
-              {t('empty')}
-            </p>
+            <p className="text-ink-muted text-center text-sm dark:text-stone-400">{t('empty')}</p>
           ) : (
             <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
               {perfumer.products.map((p) => (
