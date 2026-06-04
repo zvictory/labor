@@ -1,8 +1,8 @@
 module Spree
   module Admin
     class DebugController < Spree::Admin::BaseController
-      skip_before_action :authorize_admin
-      skip_before_action :load_stores
+      skip_before_action :authorize_admin, raise: false
+      skip_before_action :load_stores, raise: false
 
       def show
         render plain: <<~OUT
