@@ -8,8 +8,8 @@ import { listProducts, type ProductCard as Card } from '@/lib/api/products';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'];
+type Lang = 'en' | 'ru' | 'uz';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
@@ -73,20 +73,6 @@ const COPY: Record<Lang, HomeCopy> = {
     slide2Sub:
       'Yo‘sin, nam kedr va yangi o‘rmon o‘tlari notalari bilan boyitilgan yog‘och kolleksiyamizni kashf eting.',
   },
-  uzc: {
-    eyebrowNew: 'Янги тушганлар',
-    eyebrowBest: 'Энг кўп сотилганлар',
-    eyebrowNotes: 'Парфюмерия ингредиентлари',
-    eyebrowBrands: 'Расмий дистрибютор',
-    viewAllNew: 'Барча янгиликлар',
-    viewAllBest: 'Барча бестселлерлар',
-    viewAllNotes: 'Барча ноталар',
-    viewAllBrands: 'Барча брендлар',
-    slide2Tagline: 'ТОЗА. ЎРМОН. ЯНГИ',
-    slide2Headline: 'Ёввойи табиат уйғунлиги',
-    slide2Sub:
-      'Йўсин, нам кедр ва янги ўрмон ўтлари ноталари билан бойитилган ёғоч коллекциямизни кашф этинг.',
-  },
 };
 
 // Popular notes name + descriptor per locale, keyed by note slug.
@@ -115,14 +101,6 @@ const POPULAR_NOTE_COPY: Record<Lang, Record<string, NoteCopy>> = {
     'black-tea': { name: 'Qora choy', descriptor: 'Tutunli • Achchiq' },
     vetiver: { name: 'Vetiver', descriptor: 'Tuproqli • Yashil' },
     musk: { name: 'Muskus', descriptor: 'Toza • Yumshoq' },
-  },
-  uzc: {
-    sandalwood: { name: 'Сандал', descriptor: 'Бой • Ёғочли' },
-    rose: { name: 'Атиргул', descriptor: 'Нозик • Гулли' },
-    bergamot: { name: 'Бергамот', descriptor: 'Ёрқин • Ситрус' },
-    'black-tea': { name: 'Қора чой', descriptor: 'Тутунли • Аччиқ' },
-    vetiver: { name: 'Ветивер', descriptor: 'Тупроқли • Яшил' },
-    musk: { name: 'Мускус', descriptor: 'Тоза • Юмшоқ' },
   },
 };
 

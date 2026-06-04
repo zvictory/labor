@@ -2,8 +2,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { PageIntro } from '@/components/page-intro';
 import { locales, type Locale } from '@/i18n/config';
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'];
+type Lang = 'en' | 'ru' | 'uz';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
@@ -82,29 +82,6 @@ const COPY: Record<Lang, Copy> = {
       {
         heading: 'Qaytarish',
         body: 'Muhrlangan mahsulotni 14 kun ichida qaytarish mumkin. Ochilgan atir gigiyenik sabablarga ko‘ra qaytarib olinmaydi.',
-      },
-    ],
-  },
-  uzc: {
-    eyebrow: 'Етказиб бериш ва тўлов',
-    title: 'Қандай етказиб берамиз',
-    lead: 'Асл атирларни бутун Ўзбекистон бўйлаб етказиб берамиз. Тошкент бўйлаб 18:00 гача бўлган буюртмалар шу куннинг ўзида етказилади.',
-    sections: [
-      {
-        heading: 'Тошкент бўйлаб',
-        body: '18:00 гача берилган буюртмалар шу куннинг ўзида курьер орқали етказилади. Нархи — 25 000 сўм, 1 500 000 сўмдан юқори буюртмалар учун бепул.',
-      },
-      {
-        heading: 'Вилоятларга',
-        body: 'Ўзбекистоннинг барча шаҳарларига BTS ва Yandex.Доставка орқали 1–3 иш куни ичида. Тариф буюртма расмийлаштиришда ҳисобланади.',
-      },
-      {
-        heading: 'Тўлов',
-        body: 'Click, Payme, Uzcard / Humo ёки Тошкентда етказиб беришда нақд пул. Олдиндан тўловдан кейин электрон чек оласиз.',
-      },
-      {
-        heading: 'Қайтариш',
-        body: 'Муҳрланган маҳсулотни 14 кун ичида қайтариш мумкин. Очилган атир гигиеник сабабларга кўра қайтариб олинмайди.',
       },
     ],
   },

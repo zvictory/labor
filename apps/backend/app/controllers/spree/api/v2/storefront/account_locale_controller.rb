@@ -3,7 +3,7 @@ module Spree
     module V2
       module Storefront
         # PATCH /api/v2/storefront/account/locale
-        # body: { locale: 'ru' | 'en' | 'uz' | 'uzc' }
+        # body: { locale: 'ru' | 'en' | 'uz' }
         # Auth: devise_token_auth headers (access-token / client / uid).
         # Persists the signed-in user's UI language preference.
         class AccountLocaleController < ::Spree::Api::V2::BaseController

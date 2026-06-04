@@ -2,8 +2,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { PageIntro } from '@/components/page-intro';
 import { locales, type Locale } from '@/i18n/config';
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'];
+type Lang = 'en' | 'ru' | 'uz';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
@@ -43,16 +43,6 @@ const COPY: Record<Lang, Copy> = {
       'Le Labo va Maison Margieladan to Tom Ford va Memo Parisgacha — biz kamyob va kult uylarni saralab tanlaymiz va faqat rasmiy distribyutorlardan keladigan asl flakonlarni taklif qilamiz.',
       'Bizda «replika» yoki «zavod testerlari» yo‘q. Har bir atirning akkordlari, notalari va parfyumeri haqida batafsil ma’lumot beriladi — siz ongli ravishda tanlaysiz.',
       'Shou-rum Toshkentda, butun O‘zbekiston bo‘ylab yetkazib berish.',
-    ],
-  },
-  uzc: {
-    eyebrow: 'Биз ҳақимизда',
-    title: 'Атирлар лабораторияси',
-    lead: 'Labor — Тошкентдаги ниша ва селектив парфюмерия концепт-дўкони.',
-    body: [
-      'Le Labo ва Maison Margieladan то Tom Ford ва Memo Parisгача — биз камёб ва культ уйларни саралаб танлаймиз ва фақат расмий дистрибюторлардан келадиган асл флаконларни таклиф қиламиз.',
-      'Бизда «реплика» ёки «завод тестерлари» йўқ. Ҳар бир атирнинг аккордлари, ноталари ва парфюмери ҳақида батафсил маълумот берилади — сиз онгли равишда танлайсиз.',
-      'Шоу-рум Тошкентда, бутун Ўзбекистон бўйлаб етказиб бериш.',
     ],
   },
 };

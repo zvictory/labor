@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# labor:notes:apply_translations — writes ru/en/uz/uzc Mobility values for the
+# labor:notes:apply_translations — writes ru/en/uz Mobility values for the
 # Labor::Note rows from db/data/note_translations.yml. Unknown slugs are
 # reported but do not abort the task. Idempotent: re-runs overwrite values
 # only when they differ from the YAML source of truth.
@@ -9,7 +9,7 @@ require 'yaml'
 
 namespace :labor do
   namespace :notes do
-    LOCALES = %i[en ru uz uzc].freeze
+    LOCALES = %i[en ru uz].freeze
 
     desc 'Apply curated 4-locale note name translations via Mobility'
     task apply_translations: :environment do
@@ -106,22 +106,17 @@ namespace :labor do
       missing.first(20).each { |m| puts "  · missing id=#{m}" } if missing.any?
     end
 
-    desc 'Show locale coverage and Cyrillic-vs-Latin sanity check for notes'
+    desc 'Show locale coverage and Cyrillic sanity check for ru notes'
     task audit_translations: :environment do
       rows = Labor::Note.order(:family, :slug).to_a
       cyr = /[Ѐ-ӿ]/
-      bad_ru  = []
-      bad_uzc = []
+      bad_ru = []
       rows.each do |n|
-        ru  = Mobility.with_locale(:ru)  { n.name }
-        uzc = Mobility.with_locale(:uzc) { n.name }
-        bad_ru  << "#{n.slug}: ru=#{ru.inspect}"   unless ru.to_s.match?(cyr)
-        bad_uzc << "#{n.slug}: uzc=#{uzc.inspect}" unless uzc.to_s.match?(cyr)
+        ru = Mobility.with_locale(:ru) { n.name }
+        bad_ru << "#{n.slug}: ru=#{ru.inspect}" unless ru.to_s.match?(cyr)
       end
       puts "ru non-Cyrillic: #{bad_ru.size}"
       bad_ru.first(20).each { |b| puts "  · #{b}" }
-      puts "uzc non-Cyrillic: #{bad_uzc.size}"
-      bad_uzc.first(20).each { |b| puts "  · #{b}" }
       puts "total notes: #{rows.size}"
     end
   end

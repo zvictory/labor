@@ -6,7 +6,6 @@ const GROUP_SEP: Record<string, string> = {
   ru: ' ',
   en: ',',
   uz: ' ',
-  uzc: ' ',
 };
 
 export const formatUzs = (amount: number, locale: string = 'ru'): string => {

@@ -25,7 +25,7 @@ module Labor
       when 'ru' then 'ru'
       when 'en' then 'en'
       when 'uz', 'uz-Latn' then 'uz'
-      when 'uz-Cyrl' then 'uzc'
+      when 'uz-Cyrl' then 'uz'
       end
     end
   end

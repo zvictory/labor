@@ -3,7 +3,7 @@ module Labor
     before_action :load_campaign
     before_action :load_slide, only: %i[edit update destroy]
 
-    LOCALES = %w[ru en uz uzc].freeze unless defined?(LOCALES)
+    LOCALES = %w[ru en uz].freeze unless defined?(LOCALES)
 
     def index
       redirect_to spree.edit_admin_labor_campaign_path(@campaign)

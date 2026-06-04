@@ -2,8 +2,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { PageIntro } from '@/components/page-intro';
 import { locales, type Locale } from '@/i18n/config';
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'];
+type Lang = 'en' | 'ru' | 'uz';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
@@ -108,37 +108,6 @@ const COPY: Record<Lang, Copy> = {
       {
         heading: '6. Aloqa',
         body: 'YeT Labor, Toshkent. Murojaat: hello@labor.uz yoki @labor_uz_bot.',
-      },
-    ],
-  },
-  uzc: {
-    eyebrow: 'Шартлар',
-    title: 'Фойдаланиш шартлари',
-    updated: 'Янгиланган',
-    sections: [
-      {
-        heading: '1. Оммавий оферта',
-        body: 'labor.uz сайтида буюртма бериб, сиз ушбу шартлар билан танишганингизни ва уларга рози эканлигингизни тасдиқлайсиз. Барча маҳсулотлар — расмий дистрибюторлар орқали етказиб бериладиган асл парфюмерия.',
-      },
-      {
-        heading: '2. Буюртма ва тўлов',
-        body: 'Буюртма менежер томонидан тасдиқлангандан сўнг қабул қилинган ҳисобланади. Тўлов: Click, Payme, Uzcard / Humo ёки Тошкент бўйлаб етказиб беришда нақд пул. Нархлар сўмда.',
-      },
-      {
-        heading: '3. Етказиб бериш',
-        body: 'Муддат ва тарифлар — «Етказиб бериш ва тўлов» саҳифасида. Йўқотиш хавфи харидорга топшириш пайтидан ўтади.',
-      },
-      {
-        heading: '4. Қайтариш',
-        body: 'Муҳрланган маҳсулот 14 кун ичида қайтарилади. Муҳри очилган атир гигиеник меъёрлар асосида қайтариб олинмайди. Нуқсонли маҳсулот бепул алмаштирилади.',
-      },
-      {
-        heading: '5. Шахсий маълумотлар',
-        body: 'Буюртмани бажариш учун зарур маълумотларнигина сақлаймиз: исм, телефон, манзил. Етказиб бериш хизматларидан ташқари учинчи шахсларга бермаймиз.',
-      },
-      {
-        heading: '6. Алоқа',
-        body: 'ЯТ Labor, Тошкент. Мурожаат: hello@labor.uz ёки @labor_uz_bot.',
       },
     ],
   },

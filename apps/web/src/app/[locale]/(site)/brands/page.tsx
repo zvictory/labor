@@ -9,8 +9,8 @@ interface Props {
   params: Promise<{ locale: string }>;
 }
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'];
+type Lang = 'en' | 'ru' | 'uz';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
@@ -18,7 +18,6 @@ const EYEBROW: Record<Lang, string> = {
   ru: 'КУРАТОРЫ ХОРОШЕГО ВКУСА',
   en: 'CURATORS OF OLFACTORY ART',
   uz: 'DID KURATORLARI',
-  uzc: 'ДИД КУРАТОРЛАРИ',
 };
 
 const BrandLogo = ({

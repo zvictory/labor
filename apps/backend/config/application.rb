@@ -12,9 +12,9 @@ module Labor
     config.active_record.default_timezone = :utc
 
     # i18n
-    config.i18n.available_locales = %i[ru en uz uzc]
+    config.i18n.available_locales = %i[ru en uz]
     config.i18n.default_locale = :ru
-    config.i18n.fallbacks = { uz: [:ru, :en], uzc: [:uz, :ru, :en], en: [:ru], ru: [:en] }
+    config.i18n.fallbacks = { uz: [:ru, :en], en: [:ru], ru: [:en] }
 
     # API + admin only; storefront lives in Next.js
     config.api_only = false

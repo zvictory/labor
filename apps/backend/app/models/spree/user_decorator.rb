@@ -6,13 +6,13 @@ module Spree
       base.has_many :wishlisted_products, through: :labor_wishlist, source: :product
 
       base.validates :telegram_id, uniqueness: true, allow_nil: true
-      base.validates :preferred_locale, inclusion: { in: %w[ru en uz uzc] }
+      base.validates :preferred_locale, inclusion: { in: %w[ru en uz] }
       base.scope :via_telegram, -> { where.not(telegram_id: nil) }
     end
 
     # `unless defined?` guards against "already initialized constant" warnings
     # in dev — Spree's to_prepare reloads decorators on each request.
-    SUPPORTED_LOCALES = %w[ru en uz uzc].freeze unless defined?(SUPPORTED_LOCALES)
+    SUPPORTED_LOCALES = %w[ru en uz].freeze unless defined?(SUPPORTED_LOCALES)
 
     def telegram?
       telegram_id.present?

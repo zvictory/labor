@@ -19,9 +19,9 @@ interface Props {
   }>;
 }
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
+type Lang = 'en' | 'ru' | 'uz';
 
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'] as const;
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'] as const;
 
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'en';
@@ -89,44 +89,29 @@ const COPY: Record<Lang, CatalogCopy> = {
     price_asc: 'Narx · arzondan',
     price_desc: 'Narx · qimmatdan',
   },
-  uzc: {
-    eyebrow: 'ЭКСКЛЮЗИВ АТИРЛАР',
-    notes: 'Ноталар',
-    brands: 'Брендлар',
-    families: 'Категориялар',
-    genders: 'Жинс',
-    sort: 'Саралаш',
-    all: 'Барчаси',
-    activeTitle: 'Фаол фильтрлар',
-    clearAll: 'Ҳаммасини тозалаш',
-    new: 'Янгилари',
-    popular: 'Машҳурлар',
-    price_asc: 'Нарх · арзондан',
-    price_desc: 'Нарх · қимматдан',
-  },
 };
 
 // Family slug → 4-locale display label. Covers every family the backend emits.
 const FAMILY_LABELS: Record<string, Record<Lang, string>> = {
-  woody:    { en: 'Woody',    ru: 'Древесные',  uz: 'Yogʻochli',  uzc: 'Ёғочли' },
-  floral:   { en: 'Floral',   ru: 'Цветочные',  uz: 'Gulli',      uzc: 'Гулли' },
-  citrus:   { en: 'Citrus',   ru: 'Цитрусовые', uz: 'Sitrus',     uzc: 'Цитрусли' },
-  aromatic: { en: 'Aromatic', ru: 'Ароматные',  uz: 'Xushboʻy',   uzc: 'Хушбўй' },
-  oriental: { en: 'Oriental', ru: 'Восточные',  uz: 'Sharqona',   uzc: 'Шарқона' },
-  green:    { en: 'Green',    ru: 'Зеленые',    uz: 'Yashil',     uzc: 'Яшил' },
-  gourmand: { en: 'Gourmand', ru: 'Гурманские', uz: 'Shirinli',   uzc: 'Ширинли' },
-  smoky:    { en: 'Smoky',    ru: 'Дымные',     uz: 'Tutunli',    uzc: 'Тутунли' },
-  aquatic:  { en: 'Aquatic',  ru: 'Водные',     uz: 'Suvli',      uzc: 'Сувли' },
-  leather:  { en: 'Leather',  ru: 'Кожаные',    uz: 'Charm',      uzc: 'Чарм' },
-  chypre:   { en: 'Chypre',   ru: 'Шипровые',   uz: 'Shipr',      uzc: 'Шипр' },
-  fougere:  { en: 'Fougère',  ru: 'Фужерные',   uz: 'Fujerli',    uzc: 'Фужерли' },
+  woody:    { en: 'Woody',    ru: 'Древесные',  uz: 'Yogʻochli' },
+  floral:   { en: 'Floral',   ru: 'Цветочные',  uz: 'Gulli' },
+  citrus:   { en: 'Citrus',   ru: 'Цитрусовые', uz: 'Sitrus' },
+  aromatic: { en: 'Aromatic', ru: 'Ароматные',  uz: 'Xushboʻy' },
+  oriental: { en: 'Oriental', ru: 'Восточные',  uz: 'Sharqona' },
+  green:    { en: 'Green',    ru: 'Зеленые',    uz: 'Yashil' },
+  gourmand: { en: 'Gourmand', ru: 'Гурманские', uz: 'Shirinli' },
+  smoky:    { en: 'Smoky',    ru: 'Дымные',     uz: 'Tutunli' },
+  aquatic:  { en: 'Aquatic',  ru: 'Водные',     uz: 'Suvli' },
+  leather:  { en: 'Leather',  ru: 'Кожаные',    uz: 'Charm' },
+  chypre:   { en: 'Chypre',   ru: 'Шипровые',   uz: 'Shipr' },
+  fougere:  { en: 'Fougère',  ru: 'Фужерные',   uz: 'Fujerli' },
 };
 
 // Gender values match the DB enum (men/women/unisex).
 const GENDER_LABELS: Record<string, Record<Lang, string>> = {
-  unisex: { en: 'Unisex', ru: 'Унисекс',  uz: 'Uniseks',  uzc: 'Унисекс' },
-  men:    { en: 'Men',    ru: 'Мужские',  uz: 'Erkaklar', uzc: 'Эркаклар' },
-  women:  { en: 'Women',  ru: 'Женские',  uz: 'Ayollar',  uzc: 'Аёллар' },
+  unisex: { en: 'Unisex', ru: 'Унисекс', uz: 'Uniseks' },
+  men:    { en: 'Men',    ru: 'Мужские', uz: 'Erkaklar' },
+  women:  { en: 'Women',  ru: 'Женские', uz: 'Ayollar' },
 };
 
 // "black-tea" → "Black Tea". Used when the API doesn't return a translated name.

@@ -19,7 +19,7 @@ ActiveRecord::Base.transaction do
     s.mail_from_address = 'noreply@labor.local'
     s.default_currency = 'UZS'
     s.supported_currencies = 'UZS'
-    s.supported_locales = 'ru,en,uz,uzc'
+    s.supported_locales = 'ru,en,uz'
     s.default_locale = 'ru'
   end
   # Force UZS on any pre-existing store row that pre-dates the currency

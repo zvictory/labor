@@ -50,19 +50,6 @@ const COPY = {
     missingNotes: 'Notasiz',
     empty: 'Katalog aloqalari hozircha mavjud emas.',
   },
-  uzc: {
-    eyebrow: 'Каталог харитаси',
-    title: 'Атирлар → ноталар, кун/тун',
-    intro:
-      'Атир номларини ноталар ва кун/тун ишлатиш профили билан боғлайдиган жонли Sankey харитаси. Тузилма осон ўқилиши учун брендлар яширилди.',
-    back: 'Каталогга қайтиш',
-    products: 'Атирлар',
-    notes: 'Ноталар',
-    links: 'Атир-нота алоқалари',
-    dayNight: 'Кун/тун',
-    missingNotes: 'Нотасиз',
-    empty: 'Каталог алоқалари ҳозирча мавжуд эмас.',
-  },
 } as const;
 
 type Lang = keyof typeof COPY;

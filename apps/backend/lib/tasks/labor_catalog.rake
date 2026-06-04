@@ -364,7 +364,7 @@ namespace :labor do
     puts "[reslug] DONE in #{elapsed}s  changed=#{changed} unchanged=#{unchanged} collisions_resolved=#{collisions}"
 
     # Mirror the new default-locale slugs into the Mobility translations table
-    # so /en|uz|uzc/product/<slug> keep resolving in all locales.
+    # so /en|uz/product/<slug> keep resolving in all locales.
     Rake::Task['labor:catalog_locales'].invoke
   end
 
@@ -410,12 +410,12 @@ namespace :labor do
     puts "[rename] DONE in #{elapsed}s  changed=#{changed} unchanged=#{unchanged} skipped=#{skipped}"
 
     # Propagate the new name/description into the Mobility translations table
-    # so PDPs render the updated name across en/uz/uzc, not just ru.
+    # so PDPs render the updated name across en/uz, not just ru.
     Rake::Task['labor:catalog_locales'].invoke
   end
 
   # labor:catalog_locales — backfill spree_product_translations and
-  # friendly_id_slugs for every non-default locale (en/uz/uzc), copying
+  # friendly_id_slugs for every non-default locale (en/uz), copying
   # name/slug/description from the canonical spree_products columns.
   #
   # Why: Spree::Product uses Mobility's table backend; the storefront PDP
@@ -426,7 +426,7 @@ namespace :labor do
   desc 'Backfill Mobility product translations + friendly_id_slugs for non-default locales (idempotent)'
   task catalog_locales: :environment do
     started = Time.now
-    target_locales = %w[en uz uzc]
+    target_locales = %w[en uz]
 
     conn = ActiveRecord::Base.connection
     now = Time.current

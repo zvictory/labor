@@ -2,7 +2,7 @@ module Labor
   class CampaignsController < Spree::Admin::BaseController
     before_action :load_campaign, only: %i[show edit update destroy broadcast]
 
-    LOCALES = %w[ru en uz uzc].freeze unless defined?(LOCALES)
+    LOCALES = %w[ru en uz].freeze unless defined?(LOCALES)
 
     def index
       @campaigns = Labor::Campaign.order(created_at: :desc)

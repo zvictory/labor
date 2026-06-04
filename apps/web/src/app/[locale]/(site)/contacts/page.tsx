@@ -2,8 +2,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { PageIntro } from '@/components/page-intro';
 import { locales, type Locale } from '@/i18n/config';
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'];
+type Lang = 'en' | 'ru' | 'uz';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
@@ -51,32 +51,18 @@ const COPY: Record<Lang, Copy> = {
       telegram: 'Telegram',
     },
   },
-  uzc: {
-    eyebrow: 'Алоқа',
-    title: 'Биз билан боғланинг',
-    lead: 'Тошкент марказидаги шоу-рум. Telegramга ёзинг — одатда бир соат ичида жавоб берамиз.',
-    labels: {
-      address: 'Манзил',
-      hours: 'Иш вақти',
-      phone: 'Телефон',
-      email: 'Почта',
-      telegram: 'Telegram',
-    },
-  },
 };
 
 const ADDRESS = {
   ru: 'Ташкент, ул. Шахрисабз, 12, шоурум Labor',
   en: 'Tashkent, 12 Shakhrisabz st., Labor showroom',
   uz: 'Toshkent, Shahrisabz ko‘chasi 12, Labor shou-rumi',
-  uzc: 'Тошкент, Шаҳрисабз кўчаси 12, Labor шоу-руми',
 } as const;
 
 const HOURS = {
   ru: 'Пн–Сб 10:00–21:00 · Вс 12:00–20:00',
   en: 'Mon–Sat 10:00–21:00 · Sun 12:00–20:00',
   uz: 'Du–Sha 10:00–21:00 · Yak 12:00–20:00',
-  uzc: 'Ду–Ша 10:00–21:00 · Як 12:00–20:00',
 } as const;
 
 type Props = { params: Promise<{ locale: Locale }> };

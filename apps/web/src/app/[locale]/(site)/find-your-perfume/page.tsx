@@ -10,9 +10,9 @@ interface Props {
   params: Promise<{ locale: string }>;
 }
 
-type Lang = 'en' | 'ru' | 'uz' | 'uzc';
+type Lang = 'en' | 'ru' | 'uz';
 
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'uzc'] as const;
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'] as const;
 
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'en';
@@ -251,83 +251,6 @@ const COPY: Record<Lang, FinderCopy> = {
       presenceBalanced: 'Reyting va taqilish balansi yaxshi.',
       presenceBold: 'Shleyf uchun kuchliroq materiallar bor.',
       rating: 'Katalogdagi reytingi kuchli.',
-    },
-  },
-  uzc: {
-    eyebrow: 'Атир танлаш',
-    title: 'Услубингизга мос атирни топинг',
-    intro: 'Тўртта саволга жавоб беринг, Labor каталогдан кайфият, вазият ва ифор кучига мос атирларни танлайди.',
-    start: 'Бошлаш',
-    progress: 'Савол {current}/{total}',
-    back: 'Орқага',
-    restart: 'Қайта бошлаш',
-    resultsEyebrow: 'Танловингиз',
-    resultsTitle: 'Аввал синаб кўришга арзийдиган уч атир',
-    resultsIntro: 'Натижалар Labor каталоги ва жавобларингиз асосида ҳисобланди.',
-    match: 'Мослик',
-    view: 'Атирни кўриш',
-    add: 'Саватга',
-    added: 'Қўшилди',
-    emptyTitle: 'Танлов учун каталог керак',
-    emptyBody: 'Ҳозир маҳсулотлар юкланмади. Каталог API ишлаганда қайта уриниб кўринг.',
-    steps: [
-      {
-        key: 'style',
-        eyebrow: 'Услуб',
-        title: 'Бу атир ким учун?',
-        helper: 'Энг яқин йўналишни танланг. Унисекс танловни кенгроқ қолдиради.',
-        choices: [
-          { id: 'unisex', label: 'Эркин', text: 'Ҳар қандай образга мос signature', gender: 'unisex' },
-          { id: 'men', label: 'Эркак', text: 'Тоза, ёғочли, ишончли', gender: 'men' },
-          { id: 'women', label: 'Аёл', text: 'Юмшоқ, ёрқин, гулли', gender: 'women' },
-          { id: 'neutral', label: 'Фарқи йўқ', text: 'Жинс эмас, ноталар муҳим' },
-        ],
-      },
-      {
-        key: 'family',
-        eyebrow: 'Оила',
-        title: 'Қайси дунё сизга яқин?',
-        helper: 'Бу мосликдаги энг кучли сигнал.',
-        choices: [
-          { id: 'woods', label: 'Ёғоч', text: 'Сандал, кедр, тутун, қуруқ оҳанг', families: ['woody', 'leather', 'smoky'] },
-          { id: 'flowers', label: 'Гуллар', text: 'Барглар, боғ ҳавоси, юмшоқлик', families: ['floral', 'green'] },
-          { id: 'fresh', label: 'Fresh', text: 'Цитрус, сув, кўкат, тонг', families: ['citrus', 'aquatic', 'aromatic'] },
-          { id: 'warm', label: 'Илиқ', text: 'Амбра, зиравор, ширинлик, кеч', families: ['oriental', 'gourmand', 'spicy'] },
-        ],
-      },
-      {
-        key: 'occasion',
-        eyebrow: 'Вазият',
-        title: 'Уни кўпроқ қаерда ишлатасиз?',
-        helper: 'Вазият атир оҳангини аниқлайди.',
-        choices: [
-          { id: 'daily', label: 'Ҳар куни', text: 'Офис, кундуз, яқин суҳбат', families: ['citrus', 'green', 'aromatic'], occasion: 'day' },
-          { id: 'evening', label: 'Кечки', text: 'Кечки овқат, учрашув, паст ёруғлик', families: ['amber', 'oriental', 'woody', 'leather'], occasion: 'evening' },
-          { id: 'gift', label: 'Совға', text: 'Ҳаммага ёқимли, силлиқ, хавфсиз', families: ['floral', 'fresh', 'woody'], occasion: 'gift' },
-          { id: 'statement', label: 'Таъсирли', text: 'Эсда қоладиган кириш ва шлейф', families: ['smoky', 'leather', 'oud', 'gourmand'], occasion: 'evening' },
-        ],
-      },
-      {
-        key: 'presence',
-        eyebrow: 'Куч',
-        title: 'Атир қанчалик сезилсин?',
-        helper: 'Натижадан олдин керакли ифор кучини танланг.',
-        choices: [
-          { id: 'quiet', label: 'Сокин', text: 'Тери яқинида, нозик', presence: 'quiet' },
-          { id: 'balanced', label: 'Баланс', text: 'Сезилади, лекин назоратли', presence: 'balanced' },
-          { id: 'bold', label: 'Кучли', text: 'Узоқ турувчи ва ифодали', presence: 'bold' },
-          { id: 'surprise', label: 'Ҳайрат', text: 'Энг яхши мослик ҳал қилсин', presence: 'balanced' },
-        ],
-      },
-    ],
-    reasons: {
-      family: '{family} йўналишига мос.',
-      gender: '{style} услубига мос келади.',
-      occasion: '{occasion} учун яхши.',
-      presenceQuiet: 'Сокин ва осон тақиладиган профиль.',
-      presenceBalanced: 'Рейтинг ва тақилиш баланси яхши.',
-      presenceBold: 'Шлейф учун кучлироқ материаллар бор.',
-      rating: 'Каталог рейтинги кучли.',
     },
   },
 };

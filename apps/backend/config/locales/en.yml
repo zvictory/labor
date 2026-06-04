@@ -30,11 +30,3 @@ uz:
         labor_notes: "Hidlar"
         labor_perfumers: "Parfyumerlar"
       missing_images: "Rasmsiz"
-uzc:
-  spree:
-    admin:
-      tabs:
-        labor_brands: "Брендлар"
-        labor_notes: "Ҳидлар"
-        labor_perfumers: "Парфюмерлар"
-      missing_images: "Расмсиз"
