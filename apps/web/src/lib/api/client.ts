@@ -1,4 +1,7 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3000/api/v2';
+const API_BASE =
+  typeof window === 'undefined'
+    ? `${process.env.INTERNAL_API_URL ?? 'http://localhost:3000'}/api/v2`
+    : `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api'}/v2`;
 
 interface FetchOpts {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | undefined;
