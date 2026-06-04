@@ -7,7 +7,7 @@ WORKDIR /app
 FROM base AS builder
 ENV NODE_ENV=development
 # Copy workspace manifests first for layer-cache friendliness
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json tsconfig.base.json ./
 COPY apps/web/package.json apps/web/
 COPY packages/api-client/package.json packages/api-client/
 COPY packages/i18n/package.json packages/i18n/

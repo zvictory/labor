@@ -4,7 +4,7 @@ WORKDIR /app
 
 # ---- deps + build ----
 FROM base AS builder
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json tsconfig.base.json ./
 COPY apps/bot/package.json apps/bot/
 COPY packages/api-client/package.json packages/api-client/
 COPY packages/i18n/package.json packages/i18n/
