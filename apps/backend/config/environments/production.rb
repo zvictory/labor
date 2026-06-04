@@ -18,6 +18,7 @@ Rails.application.configure do
   config.i18n.fallbacks = true
   config.active_support.report_deprecations = false
 
+  config.assume_ssl = true
   config.force_ssl = ENV.fetch('FORCE_SSL', 'true') == 'true'
 
   config.action_mailer.default_url_options = {
