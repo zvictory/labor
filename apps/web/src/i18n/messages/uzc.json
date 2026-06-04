@@ -40,7 +40,12 @@
     "perfumer": "Парфюмер",
     "year": "Чиқарилган йил",
     "concentration": "Концентрация",
-    "gender": { "label": "Ким учун", "men": "Эркак", "women": "Аёл", "unisex": "Унисекс" },
+    "gender": {
+      "label": "Ким учун",
+      "men": "Эркак",
+      "women": "Аёл",
+      "unisex": "Унисекс"
+    },
     "pyramid": "Ҳид пирамидаси",
     "topNotes": "Юқори ноталар",
     "heartNotes": "Ўрта ноталар",
@@ -49,8 +54,17 @@
     "longevity": "Давомийлиги",
     "sillage": "Из қолдириши",
     "season": "Қачон кийиш",
-    "seasons": { "winter": "Қиш", "spring": "Баҳор", "summer": "Ёз", "autumn": "Куз" },
-    "timeOfDay": { "day": "Кундуз", "evening": "Кеч", "night": "Тун" },
+    "seasons": {
+      "winter": "Қиш",
+      "spring": "Баҳор",
+      "summer": "Ёз",
+      "autumn": "Куз"
+    },
+    "timeOfDay": {
+      "day": "Кундуз",
+      "evening": "Кеч",
+      "night": "Тун"
+    },
     "rating": "Баҳо",
     "ratings": {
       "love": "Яхши кўраман",
@@ -259,13 +273,20 @@
       "cart": "Сават",
       "orders": "Буюртмалар"
     },
-    "home": { "new": "Янги", "all": "Ҳаммаси" },
+    "home": {
+      "new": "Янги",
+      "all": "Ҳаммаси"
+    },
     "cart": {
       "title": "Сават",
       "total": "Жами",
       "checkout": "Расмийлаштириш",
       "remove": "Ўчириш",
-      "empty": { "title": "Сават бўш", "body": "Каталогни очинг ва атир танланг", "cta": "Каталогга" }
+      "empty": {
+        "title": "Сават бўш",
+        "body": "Каталогни очинг ва атир танланг",
+        "cta": "Каталогга"
+      }
     },
     "checkout": {
       "title": "Буюртма",
@@ -275,10 +296,19 @@
       "city": "Шаҳар",
       "street": "Кўча, уй, хонадон",
       "delivery": "Етказиш",
-      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "provider": {
+        "yandex": "Yandex",
+        "express24": "Express24",
+        "bts": "BTS"
+      },
       "eta": "{minutes} дақиқа",
       "payment": "Тўлов",
-      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "Олганда нақд" },
+      "method": {
+        "click": "Click",
+        "payme": "Payme",
+        "uzum": "Uzum",
+        "cod": "Олганда нақд"
+      },
       "promo": "Промокод",
       "promoPlaceholder": "LABOR2026",
       "subtotal": "Маҳсулотлар",
@@ -286,8 +316,12 @@
       "total": "Жами",
       "pay": "Тўлаш",
       "submitting": "Буюртма яратилмоқда…",
-      "quote": { "error": "Етказишни ҳисоблаб бўлмади" },
-      "error": { "generic": "Буюртма бериб бўлмади" }
+      "quote": {
+        "error": "Етказишни ҳисоблаб бўлмади"
+      },
+      "error": {
+        "generic": "Буюртма бериб бўлмади"
+      }
     },
     "orders": {
       "title": "Буюртмаларим",
@@ -303,7 +337,9 @@
         "canceled": "Бекор қилинган"
       }
     },
-    "pdp": { "add": "Саватга" },
+    "pdp": {
+      "add": "Саватга"
+    },
     "localeSwitcher": {
       "label": "Интерфейс тили",
       "names": {
@@ -357,5 +393,12 @@
     "detailNoTracking": "Кузатув рақами берилмаган",
     "loading": "Юкланмоқда…",
     "error": "Маълумотларни юклаб бўлмади"
+  },
+  "wishlist": {
+    "title": "Севимлилар",
+    "clear": "Тозалаш",
+    "loading": "Юкланмоқда…",
+    "empty": "Севимлилар рўйхати бўш.",
+    "browse": "Каталогга ўтиш"
   }
 }

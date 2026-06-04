@@ -5,7 +5,6 @@ WORKDIR /app
 
 # ---- deps + build ----
 FROM base AS builder
-ENV NODE_ENV=development
 # Copy workspace manifests first for layer-cache friendliness
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY apps/web/package.json apps/web/
@@ -13,7 +12,9 @@ COPY packages/api-client/package.json packages/api-client/
 COPY packages/i18n/package.json packages/i18n/
 COPY packages/tg/package.json packages/tg/
 COPY packages/ui/package.json packages/ui/
-RUN npm ci
+# NODE_ENV=development scoped to npm ci so devDeps are installed,
+# but next build runs in production mode (React prod runtime, no dev-mode checks)
+RUN NODE_ENV=development npm ci
 # Copy source after deps are cached
 COPY packages/ packages/
 COPY apps/web apps/web

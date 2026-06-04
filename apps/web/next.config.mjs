@@ -9,11 +9,12 @@ const nextConfig = {
   poweredByHeader: false,
   transpilePackages: ['@labor/api-client'],
   experimental: {
-    serverActions: { allowedOrigins: ['localhost:3001', 'labor.uz', '*.labor.uz'] },
+    serverActions: { allowedOrigins: ['localhost:3001', 'labor.uz', '*.labor.uz', 'laborparfum.com', '*.laborparfum.com'] },
   },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'labor.uz' },
+      { protocol: 'https', hostname: 'laborparfum.com' },
       { protocol: 'http', hostname: 'backend' },
       { protocol: 'http', hostname: 'localhost' },
       { protocol: 'https', hostname: 't.me' },
@@ -46,5 +47,5 @@ const nextConfig = {
 export default withSentryConfig(withNextIntl(nextConfig), {
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  disableLogger: true,
+  bundleSizeOptimizations: { excludeDebugStatements: true },
 });

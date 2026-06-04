@@ -40,7 +40,12 @@
     "perfumer": "Perfumer",
     "year": "Released",
     "concentration": "Concentration",
-    "gender": { "label": "For", "men": "Men", "women": "Women", "unisex": "Unisex" },
+    "gender": {
+      "label": "For",
+      "men": "Men",
+      "women": "Women",
+      "unisex": "Unisex"
+    },
     "pyramid": "Fragrance pyramid",
     "topNotes": "Top notes",
     "heartNotes": "Heart notes",
@@ -49,8 +54,17 @@
     "longevity": "Longevity",
     "sillage": "Sillage",
     "season": "When to wear",
-    "seasons": { "winter": "Winter", "spring": "Spring", "summer": "Summer", "autumn": "Autumn" },
-    "timeOfDay": { "day": "Day", "evening": "Evening", "night": "Night" },
+    "seasons": {
+      "winter": "Winter",
+      "spring": "Spring",
+      "summer": "Summer",
+      "autumn": "Autumn"
+    },
+    "timeOfDay": {
+      "day": "Day",
+      "evening": "Evening",
+      "night": "Night"
+    },
     "rating": "Rating",
     "ratings": {
       "love": "Love",
@@ -259,13 +273,20 @@
       "cart": "Cart",
       "orders": "Orders"
     },
-    "home": { "new": "New arrivals", "all": "All" },
+    "home": {
+      "new": "New arrivals",
+      "all": "All"
+    },
     "cart": {
       "title": "Cart",
       "total": "Total",
       "checkout": "Checkout",
       "remove": "Remove",
-      "empty": { "title": "Cart is empty", "body": "Browse the catalog and add a fragrance", "cta": "Open catalog" }
+      "empty": {
+        "title": "Cart is empty",
+        "body": "Browse the catalog and add a fragrance",
+        "cta": "Open catalog"
+      }
     },
     "checkout": {
       "title": "Checkout",
@@ -275,10 +296,19 @@
       "city": "City",
       "street": "Street, building, apartment",
       "delivery": "Delivery",
-      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "provider": {
+        "yandex": "Yandex",
+        "express24": "Express24",
+        "bts": "BTS"
+      },
       "eta": "{minutes} min",
       "payment": "Payment",
-      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "Cash on delivery" },
+      "method": {
+        "click": "Click",
+        "payme": "Payme",
+        "uzum": "Uzum",
+        "cod": "Cash on delivery"
+      },
       "promo": "Promo code",
       "promoPlaceholder": "LABOR2026",
       "subtotal": "Items",
@@ -286,8 +316,12 @@
       "total": "Total",
       "pay": "Pay",
       "submitting": "Creating order…",
-      "quote": { "error": "Could not calculate delivery" },
-      "error": { "generic": "Could not place order" }
+      "quote": {
+        "error": "Could not calculate delivery"
+      },
+      "error": {
+        "generic": "Could not place order"
+      }
     },
     "orders": {
       "title": "Your orders",
@@ -303,7 +337,9 @@
         "canceled": "Canceled"
       }
     },
-    "pdp": { "add": "Add to cart" },
+    "pdp": {
+      "add": "Add to cart"
+    },
     "localeSwitcher": {
       "label": "Interface language",
       "names": {
@@ -357,5 +393,12 @@
     "detailNoTracking": "No tracking yet",
     "loading": "Loading…",
     "error": "Could not load data"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "clear": "Clear",
+    "loading": "Loading…",
+    "empty": "Your wishlist is empty.",
+    "browse": "Browse catalog"
   }
 }

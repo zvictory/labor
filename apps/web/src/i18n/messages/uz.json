@@ -40,7 +40,12 @@
     "perfumer": "Parfyumer",
     "year": "Chiqarilgan yil",
     "concentration": "Konsentratsiya",
-    "gender": { "label": "Kim uchun", "men": "Erkak", "women": "Ayol", "unisex": "Uniseks" },
+    "gender": {
+      "label": "Kim uchun",
+      "men": "Erkak",
+      "women": "Ayol",
+      "unisex": "Uniseks"
+    },
     "pyramid": "Hid piramidasi",
     "topNotes": "Yuqori notalar",
     "heartNotes": "Oʻrta notalar",
@@ -49,8 +54,17 @@
     "longevity": "Davomiyligi",
     "sillage": "Iz qoldirishi",
     "season": "Qachon kiyish",
-    "seasons": { "winter": "Qish", "spring": "Bahor", "summer": "Yoz", "autumn": "Kuz" },
-    "timeOfDay": { "day": "Kunduz", "evening": "Kech", "night": "Tun" },
+    "seasons": {
+      "winter": "Qish",
+      "spring": "Bahor",
+      "summer": "Yoz",
+      "autumn": "Kuz"
+    },
+    "timeOfDay": {
+      "day": "Kunduz",
+      "evening": "Kech",
+      "night": "Tun"
+    },
     "rating": "Baho",
     "ratings": {
       "love": "Yaxshi koʻraman",
@@ -259,13 +273,20 @@
       "cart": "Savat",
       "orders": "Buyurtmalar"
     },
-    "home": { "new": "Yangi", "all": "Hammasi" },
+    "home": {
+      "new": "Yangi",
+      "all": "Hammasi"
+    },
     "cart": {
       "title": "Savat",
       "total": "Jami",
       "checkout": "Rasmiylashtirish",
       "remove": "O'chirish",
-      "empty": { "title": "Savat bo'sh", "body": "Katalogni oching va atir tanlang", "cta": "Katalogga" }
+      "empty": {
+        "title": "Savat bo'sh",
+        "body": "Katalogni oching va atir tanlang",
+        "cta": "Katalogga"
+      }
     },
     "checkout": {
       "title": "Buyurtma",
@@ -275,10 +296,19 @@
       "city": "Shahar",
       "street": "Ko'cha, uy, xonadon",
       "delivery": "Yetkazish",
-      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "provider": {
+        "yandex": "Yandex",
+        "express24": "Express24",
+        "bts": "BTS"
+      },
       "eta": "{minutes} daqiqa",
       "payment": "To'lov",
-      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "Olganda naqd" },
+      "method": {
+        "click": "Click",
+        "payme": "Payme",
+        "uzum": "Uzum",
+        "cod": "Olganda naqd"
+      },
       "promo": "Promokod",
       "promoPlaceholder": "LABOR2026",
       "subtotal": "Mahsulotlar",
@@ -286,8 +316,12 @@
       "total": "Jami",
       "pay": "To'lash",
       "submitting": "Buyurtma yaratilmoqda…",
-      "quote": { "error": "Yetkazishni hisoblab bo'lmadi" },
-      "error": { "generic": "Buyurtma berib bo'lmadi" }
+      "quote": {
+        "error": "Yetkazishni hisoblab bo'lmadi"
+      },
+      "error": {
+        "generic": "Buyurtma berib bo'lmadi"
+      }
     },
     "orders": {
       "title": "Mening buyurtmalarim",
@@ -303,7 +337,9 @@
         "canceled": "Bekor qilingan"
       }
     },
-    "pdp": { "add": "Savatga" },
+    "pdp": {
+      "add": "Savatga"
+    },
     "localeSwitcher": {
       "label": "Interfeys tili",
       "names": {
@@ -357,5 +393,12 @@
     "detailNoTracking": "Kuzatuv raqami berilmagan",
     "loading": "Yuklanmoqda…",
     "error": "Ma'lumotlarni yuklab bo'lmadi"
+  },
+  "wishlist": {
+    "title": "Sevimlilar",
+    "clear": "Tozalash",
+    "loading": "Yuklanmoqda…",
+    "empty": "Sevimlilar roʻyxati boʻsh.",
+    "browse": "Katalogga oʻtish"
   }
 }

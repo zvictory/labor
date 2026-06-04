@@ -54,8 +54,17 @@
     "longevity": "Стойкость",
     "sillage": "Шлейф",
     "season": "Когда носить",
-    "seasons": { "winter": "Зима", "spring": "Весна", "summer": "Лето", "autumn": "Осень" },
-    "timeOfDay": { "day": "День", "evening": "Вечер", "night": "Ночь" },
+    "seasons": {
+      "winter": "Зима",
+      "spring": "Весна",
+      "summer": "Лето",
+      "autumn": "Осень"
+    },
+    "timeOfDay": {
+      "day": "День",
+      "evening": "Вечер",
+      "night": "Ночь"
+    },
     "rating": "Оценка",
     "ratings": {
       "love": "Люблю",
@@ -264,7 +273,10 @@
       "cart": "Корзина",
       "orders": "Заказы"
     },
-    "home": { "new": "Новинки", "all": "Все" },
+    "home": {
+      "new": "Новинки",
+      "all": "Все"
+    },
     "cart": {
       "title": "Корзина",
       "total": "Итого",
@@ -284,10 +296,19 @@
       "city": "Город",
       "street": "Улица, дом, квартира",
       "delivery": "Способ доставки",
-      "provider": { "yandex": "Yandex", "express24": "Express24", "bts": "BTS" },
+      "provider": {
+        "yandex": "Yandex",
+        "express24": "Express24",
+        "bts": "BTS"
+      },
       "eta": "{minutes} мин",
       "payment": "Оплата",
-      "method": { "click": "Click", "payme": "Payme", "uzum": "Uzum", "cod": "При получении" },
+      "method": {
+        "click": "Click",
+        "payme": "Payme",
+        "uzum": "Uzum",
+        "cod": "При получении"
+      },
       "promo": "Промокод",
       "promoPlaceholder": "LABOR2026",
       "subtotal": "Товары",
@@ -295,8 +316,12 @@
       "total": "К оплате",
       "pay": "Оплатить",
       "submitting": "Создаём заказ…",
-      "quote": { "error": "Не удалось рассчитать доставку" },
-      "error": { "generic": "Не удалось оформить заказ" }
+      "quote": {
+        "error": "Не удалось рассчитать доставку"
+      },
+      "error": {
+        "generic": "Не удалось оформить заказ"
+      }
     },
     "orders": {
       "title": "Мои заказы",
@@ -312,7 +337,9 @@
         "canceled": "Отменён"
       }
     },
-    "pdp": { "add": "В корзину" },
+    "pdp": {
+      "add": "В корзину"
+    },
     "localeSwitcher": {
       "label": "Язык интерфейса",
       "names": {
@@ -366,5 +393,12 @@
     "detailNoTracking": "Трек-номер не назначен",
     "loading": "Загрузка…",
     "error": "Не удалось загрузить данные"
+  },
+  "wishlist": {
+    "title": "Избранное",
+    "clear": "Очистить",
+    "loading": "Загружается…",
+    "empty": "Список избранного пуст.",
+    "browse": "Перейти в каталог"
   }
 }
