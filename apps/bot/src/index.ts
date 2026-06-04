@@ -17,6 +17,11 @@ import { t, type LocaleKey } from './i18n.js';
 import { logger } from './logger.js';
 import { verifyInternalNotifySignature } from './internalNotifyAuth.js';
 
+if (/^placeholder|^changeme/i.test(config.botToken)) {
+  logger.warn('TELEGRAM_BOT_TOKEN is a placeholder — bot disabled until configured');
+  process.exit(0);
+}
+
 const readRawBody = async (req: import('node:http').IncomingMessage): Promise<string> => {
   const chunks: Buffer[] = [];
   for await (const c of req) chunks.push(c as Buffer);

@@ -122,7 +122,7 @@ services:
     build:
       context: ..
       dockerfile: apps/bot/Dockerfile
-    restart: unless-stopped
+    restart: on-failure
     env_file: ../.env
     environment:
       INTERNAL_API_URL: http://backend:3000
