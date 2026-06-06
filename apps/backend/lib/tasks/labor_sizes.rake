@@ -95,21 +95,23 @@ namespace :labor do
             sku = "#{master_sku}-#{size[:ml]}ml"
             ov  = option_values[size[:ml]]
 
-            # Find-or-create variant by deterministic SKU
-            variant = Spree::Variant.where(sku: sku, product: product).first_or_initialize do |v|
-              v.is_master       = false
-              v.track_inventory = false
-            end
+            # Find existing variant by deterministic SKU, or build a new one.
+            # IMPORTANT: option values must be assigned BEFORE save! because Spree
+            # validates `option_values presence: true` on non-master variants.
+            variant = Spree::Variant.find_by(sku: sku, product: product)
 
-            is_new = variant.new_record?
-            variant.save! if is_new
-
-            # Assign option value idempotently
-            unless variant.option_values.include?(ov)
+            if variant.nil?
+              variant = product.variants.build(
+                sku:             sku,
+                is_master:       false,
+                track_inventory: false,
+              )
+              variant.option_value_ids = [ov.id]   # assign before save
+              variant.save!
+              created_variants += 1
+            elsif variant.option_values.exclude?(ov)
               variant.option_values << ov
             end
-
-            created_variants += 1 if is_new
 
             # ── Price ────────────────────────────────────────────────────
             target_price = round1k.call(master_price * size[:fraction])
