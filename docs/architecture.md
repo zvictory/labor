@@ -246,3 +246,5 @@ Do not import from `@labor/ui`, `@labor/i18n`, or `@labor/tg` — they have no s
 | `@labor/{ui,i18n,tg}` | Empty workspaces. Exist as future placeholders only. |
 | uzc locale | Removed in `f9de131`. Backend config and web message files are `ru/en/uz` only. |
 | MoneyInput | Mandated by rule but not yet built. No money `<Input>` component exists anywhere in `apps/web`. |
+| web/bot in compose | `infra/docker-compose.yml` **does** define `web:` and `bot:` services, but they are **production builds** (no HMR). Day-to-day dev runs them on the host via `npm run dev:all`. Only postgres/redis/backend/sidekiq run in Docker during dev. |
+| Starting the stack | `npm run dev:all` (from repo root) — see `CLAUDE.md § Running the stack` and `.claude/skills/run/SKILL.md`. |

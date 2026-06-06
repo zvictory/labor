@@ -31,6 +31,26 @@ It maps every storefront API controller, payment idempotency model, Telegram aut
 Mobility-translated models, rake tasks, web app-router pages, bot handlers, and shared
 packages — all with verified file paths. Saves 3-5 grep round-trips per session.
 
+## Running the stack
+
+**Canonical command:** `npm run dev:all` (from repo root).
+
+What it does: brings up infra (postgres/redis/backend/sidekiq) in Docker, kills any
+stale process on `:3001`/`:8080`, waits for backend readiness, then runs web + bot on
+the host with hot-reload via `turbo run dev --parallel`.
+
+| Process | Port | Notes |
+|---|---|---|
+| Web (Next.js) | `:3001` | `next dev`, HMR |
+| Bot (grammy) | `:8080` | `tsx watch`; mock mode unless `TELEGRAM_BOT_TOKEN` is a real token |
+| Backend (Rails) | `:4000` | Docker container (internal `:3000`) |
+
+Stop web/bot: **Ctrl-C**. Stop Docker infra:
+`docker compose -f infra/docker-compose.yml --env-file .env stop`
+
+⚠ The `web` and `bot` services in `docker-compose.yml` are **production builds** (no HMR).
+Do **not** use `docker compose up web bot` for day-to-day dev — use `npm run dev:all`.
+
 ## Conventions
 
 - Package manager: **npm** (workspaces). Never bun/yarn/pnpm.
