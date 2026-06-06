@@ -66,8 +66,8 @@ export const productSchema = z.object({
   images: z.array(z.object({ url: z.string(), alt: z.string() })),
   description: z.string().nullable().optional(),
   // Present after labor:sizes:generate has been run.
-  // Sorted by ml asc. If absent, product has no size variants yet.
-  sizes: z.array(productSizeSchema).optional(),
+  // Sorted by ml asc. null or absent = no size variants yet.
+  sizes: z.array(productSizeSchema).nullish(),
   fragrance: z.object({
     notes: z.array(fragranceNoteSchema),
     accords: z.array(fragranceAccordSchema),
