@@ -1,5 +1,5 @@
 type LocaleStrings = Record<string, string>;
-type Catalog = Record<'ru' | 'en' | 'uz' | 'uzc', LocaleStrings>;
+type Catalog = Record<'ru' | 'en' | 'uz', LocaleStrings>;
 
 const catalog: Catalog = {
   ru: {
@@ -59,24 +59,6 @@ const catalog: Catalog = {
     'campaign.broadcast': '🎁 *{title}*\n\n{description}\n\n{ends_at} gacha amal qiladi.',
     'unknown': 'Buyruq tushunarsiz. /help yoki mini-ilovani oching.',
   },
-  uzc: {
-    'start.welcome': '*Labor* — Ўзбекистон ниче парфюмерияси.\n\nМини-иловани очинг ёки буйруқлардан фойдаланинг.',
-    'menu.open': '🛍 Labor’ни очиш',
-    'menu.catalog': '🌿 Каталог',
-    'menu.cart': '🛒 Сават',
-    'menu.orders': '📦 Буюртмаларим',
-    'menu.help': 'ℹ️ Ёрдам',
-    'menu.channel': '📢 Каналимиз',
-    'menu.lang': '🌐 Тил',
-    'help.text': 'Labor — ниче парфюмерия. Ўзбекистон бўйлаб етказиб бериш.\n\n• Каталог ва буюртма — мини-иловада\n• Алоқа — @labor_support',
-    'lang.choose': 'Тилни танланг:',
-    'lang.set': 'Тил сақланди: {lang}',
-    'order.paid': '✅ Тўлов қабул қилинди. Буюртма №{number}.\nЖами: {total} UZS',
-    'order.shipped': '📦 №{number} буюртма етказишга узатилди ({provider}).',
-    'order.delivered': '✨ №{number} буюртма етказилди. Иловада шарҳ қолдиринг!',
-    'campaign.broadcast': '🎁 *{title}*\n\n{description}\n\n{ends_at} гача амал қилади.',
-    'unknown': 'Буйруқ тушунарсиз. /help ёки мини-иловани очинг.',
-  },
 };
 
 export type LocaleKey = keyof Catalog;
@@ -89,7 +71,6 @@ export const t = (locale: LocaleKey, key: string, params: Record<string, string 
 export const detectLocale = (lang: string | undefined): LocaleKey => {
   const v = (lang ?? '').toLowerCase();
   if (v.startsWith('en')) return 'en';
-  if (v === 'uz-cyrl' || v === 'uz_cyrl') return 'uzc';
   if (v.startsWith('uz')) return 'uz';
   return 'ru';
 };

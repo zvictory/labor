@@ -7,10 +7,10 @@ Multi-brand fragrance ecommerce for Uzbekistan. Spree (Rails) backend + Next.js 
 | Layer | Tech |
 |---|---|
 | Backend | Rails 7.1 + Spree 5.4 + Postgres 15 + Redis 7 + Sidekiq |
-| Web | Next.js 14 App Router + TS strict + Tailwind + shadcn/ui (new-york) |
+| Web | Next.js 14 App Router + TS strict + Tailwind + shadcn/ui (new-york style; components are feature-organized under `src/components/`, no `components/ui/` dir yet) |
 | Bot | grammy (Node TS) |
 | State | Zustand (client), TanStack Query (server), Zod (schemas), React Hook Form |
-| i18n | next-intl (web), mobility (Rails) — locales: ru, en, uz, uzc |
+| i18n | next-intl (web), mobility (Rails) — locales: ru, en, uz |
 | Currency | UZS only |
 
 ## Repo layout
@@ -24,10 +24,17 @@ docs/plans/
 
 Reference design: `docs/plans/2026-05-21-labor-parfum-design.md`.
 
+## Architecture map
+
+**Read `docs/architecture.md` before grepping for where something lives.**
+It maps every storefront API controller, payment idempotency model, Telegram auth flow,
+Mobility-translated models, rake tasks, web app-router pages, bot handlers, and shared
+packages — all with verified file paths. Saves 3-5 grep round-trips per session.
+
 ## Conventions
 
 - Package manager: **npm** (workspaces). Never bun/yarn/pnpm.
-- Money fields: always `MoneyInput`, never raw `<Input type="number">`.
+- Money fields: always `MoneyInput`, never raw `<Input type="number">`. (Rule is aspirational — `MoneyInput` is not yet implemented in `apps/web`. When adding the first money input, build it per the global rule.)
 - TS strict. No `any`. Use `unknown` + narrowing, or `zod`.
 - Prefer named exports over default exports.
 - Currency: UZS, stored as integer minor units (UZS has no minor unit → 100 sum = 100).
