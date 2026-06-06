@@ -73,7 +73,7 @@ module Labor
       end
 
       def images_payload(product)
-        product.images.map do |img|
+        product.master.images.map do |img|
           { url: rails_blob_url(img.attachment), alt: img.alt.to_s }
         end
       rescue StandardError
