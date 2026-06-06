@@ -298,17 +298,36 @@ def parse_year(soup: BeautifulSoup) -> Optional[int]:
     return int(m.group(0)) if m else None
 
 
+_DISCLAIMER_MARKERS = (
+    "fragrantica is an independent",
+    "fragrantica does not sell",
+    "not endorsed, affiliated",
+    "property of",
+)
+
+
+def _is_disclaimer(txt: str) -> bool:
+    """Return True when txt is a Fragrantica trademark-notice page rather than perfume copy.
+
+    Fragrantica serves only a legal disclaimer for trademark-protected brands (e.g. Chanel).
+    Harvesting that text as the product description pollutes the catalog; this guard rejects it
+    so the field stays empty (and the PDP omits the description block entirely).
+    """
+    low = txt.lower()
+    return "fragrantica" in low and any(m in low for m in _DISCLAIMER_MARKERS)
+
+
 def parse_description(soup: BeautifulSoup) -> str:
     candidates = soup.select('div[itemprop="description"] p, #info p, .perfume-page-info p')
     for p in candidates:
         txt = p.get_text(" ", strip=True)
-        if len(txt) > 120:
+        if len(txt) > 120 and not _is_disclaimer(txt):
             return txt
     # generic fallback — longest <p> on the page
     longest = ""
     for p in soup.find_all("p"):
         txt = p.get_text(" ", strip=True)
-        if len(txt) > len(longest):
+        if len(txt) > len(longest) and not _is_disclaimer(txt):
             longest = txt
     return longest if len(longest) > 120 else ""
 
