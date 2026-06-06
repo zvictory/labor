@@ -1,0 +1,1029 @@
+{
+  "generated_at": "2026-06-06T11:35:00Z",
+  "manifest_total": 427,
+  "unique_fids": 319,
+  "dup_fid_groups": 76,
+  "same_brand_dupe_fids": 55,
+  "cross_brand_suspects": 21,
+  "desc_mismatch_count": 53,
+  "suspects": [
+    {
+      "fid": 22528,
+      "brands": [
+        "hugo boss",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1013,
+          "manifest_name": "Hugo Boss Bottled Unlimited Hugo Boss",
+          "product_slug": "bottled-unlimited",
+          "product_name": "Bottled Unlimited",
+          "db_brand": "hugo boss"
+        },
+        {
+          "product_id": 1428,
+          "manifest_name": "Авто парфюм",
+          "product_slug": "tzd-44196",
+          "product_name": "Авто парфюм",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1413,
+          "manifest_name": "Универсальный парфюм",
+          "product_slug": "boc-27674",
+          "product_name": "Универсальный парфюм",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1440,
+          "manifest_name": "Домашний парфюм",
+          "product_slug": "uew-77664",
+          "product_name": "Домашний парфюм",
+          "db_brand": "hugo boss"
+        }
+      ]
+    },
+    {
+      "fid": 6472,
+      "brands": [
+        "nasomatto",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1486,
+          "manifest_name": "Black Afgano",
+          "product_slug": "black-afgano-2",
+          "product_name": "Black Afgano",
+          "db_brand": "nasomatto"
+        },
+        {
+          "product_id": 1328,
+          "manifest_name": "Black Afgano Nasomatto",
+          "product_slug": "black-afgano",
+          "product_name": "Black Afgano",
+          "db_brand": "nasomatto"
+        },
+        {
+          "product_id": 1145,
+          "manifest_name": "Универсальный парфюм Black Afgano 50 ml",
+          "product_slug": "black-afgano-50-ml",
+          "product_name": "Универсальный парфюм Black Afgano 50 ml",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1241,
+          "manifest_name": "Домашний парфюм Black Afgano 220 ml",
+          "product_slug": "black-afgano-220-ml",
+          "product_name": "Домашний парфюм Black Afgano 220 ml",
+          "db_brand": "nasomatto"
+        }
+      ]
+    },
+    {
+      "fid": 104878,
+      "brands": [
+        "marc-antoine barrois",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1406,
+          "manifest_name": "Ganymede Marc-Antoine Barrois",
+          "product_slug": "ganymede",
+          "product_name": "Ganymede",
+          "db_brand": "marc-antoine barrois"
+        },
+        {
+          "product_id": 1493,
+          "manifest_name": "Ganymede",
+          "product_slug": "ganymede-2",
+          "product_name": "Ganymede",
+          "db_brand": "marc-antoine barrois"
+        },
+        {
+          "product_id": 1424,
+          "manifest_name": "спрей парфбм 50 мл (Ganymede)",
+          "product_slug": "50-ganymede",
+          "product_name": "спрей парфбм 50 мл (Ganymede)",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1142,
+          "manifest_name": "Универсальный парфюм Ganymed 50 ml",
+          "product_slug": "ganymed-50-ml",
+          "product_name": "Универсальный парфюм Ganymed 50 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 62036,
+      "brands": [
+        "giorgio armani",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1207,
+          "manifest_name": "My Way Giorgio Armani",
+          "product_slug": "my-way",
+          "product_name": "My Way",
+          "db_brand": "giorgio armani"
+        },
+        {
+          "product_id": 1143,
+          "manifest_name": "Универсальный парфюм My Way 50 ml",
+          "product_slug": "my-way-50-ml",
+          "product_name": "Универсальный парфюм My Way 50 ml",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1514,
+          "manifest_name": "My Way",
+          "product_slug": "my-way-2",
+          "product_name": "My Way",
+          "db_brand": "giorgio armani"
+        }
+      ]
+    },
+    {
+      "fid": 46066,
+      "brands": [
+        "maison francis kurkdjian",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1198,
+          "manifest_name": "Baccarat Extrait Maison Francis Kurkdjian",
+          "product_slug": "baccarat-extrait-maison",
+          "product_name": "Baccarat Extrait Maison",
+          "db_brand": "maison francis kurkdjian"
+        },
+        {
+          "product_id": 1524,
+          "manifest_name": "Baccarat Rouge 540",
+          "product_slug": "baccarat-rouge-540",
+          "product_name": "Baccarat Rouge 540",
+          "db_brand": "maison francis kurkdjian"
+        },
+        {
+          "product_id": 1269,
+          "manifest_name": "Baccarat Rouge 540 Maison Francis Kurkdjian",
+          "product_slug": "baccarat-rouge-540-maison",
+          "product_name": "Baccarat Rouge 540 Maison",
+          "db_brand": "maison francis kurkdjian"
+        },
+        {
+          "product_id": 1425,
+          "manifest_name": "спрей парфюм 50 мл (Baccarat)",
+          "product_slug": "50-baccarat",
+          "product_name": "спрей парфюм 50 мл (Baccarat)",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1242,
+          "manifest_name": "Домашний парфюм Maison Baccarat 220 ml",
+          "product_slug": "maison-baccarat-220-ml",
+          "product_name": "Домашний парфюм Maison Baccarat 220 ml",
+          "db_brand": "maison francis kurkdjian"
+        }
+      ]
+    },
+    {
+      "fid": 107704,
+      "brands": [
+        "creed",
+        "tiziana terenzi"
+      ],
+      "rows": [
+        {
+          "product_id": 1487,
+          "manifest_name": "Silver Mountain",
+          "product_slug": "silver-mountain",
+          "product_name": "Silver Mountain",
+          "db_brand": "creed"
+        },
+        {
+          "product_id": 1484,
+          "manifest_name": "Gumin",
+          "product_slug": "gumin-2",
+          "product_name": "Gumin",
+          "db_brand": "tiziana terenzi"
+        },
+        {
+          "product_id": 1190,
+          "manifest_name": "Silver Mountain Water Creed",
+          "product_slug": "silver-mountain-water",
+          "product_name": "Silver Mountain Water",
+          "db_brand": "creed"
+        },
+        {
+          "product_id": 1231,
+          "manifest_name": "Gumin Tiziana Terenzi",
+          "product_slug": "gumin",
+          "product_name": "Gumin",
+          "db_brand": "tiziana terenzi"
+        }
+      ]
+    },
+    {
+      "fid": 38497,
+      "brands": [
+        "creed",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1202,
+          "manifest_name": "Aventus for Her Creed",
+          "product_slug": "aventus-for-her",
+          "product_name": "Aventus for Her",
+          "db_brand": "creed"
+        },
+        {
+          "product_id": 1390,
+          "manifest_name": "Aventus Creed",
+          "product_slug": "aventus",
+          "product_name": "Aventus",
+          "db_brand": "creed"
+        },
+        {
+          "product_id": 1159,
+          "manifest_name": "Универсальный парфюм Aventus 50 ml",
+          "product_slug": "aventus-50-ml",
+          "product_name": "Универсальный парфюм Aventus 50 ml",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1239,
+          "manifest_name": "Домашний парфюм Creed Aventus 220 ml",
+          "product_slug": "creed-aventus-220-ml",
+          "product_name": "Домашний парфюм Creed Aventus 220 ml",
+          "db_brand": "creed"
+        }
+      ]
+    },
+    {
+      "fid": 49751,
+      "brands": [
+        "louis vuitton",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1248,
+          "manifest_name": "L’Immensité Louis Vuitton",
+          "product_slug": "l-immensit",
+          "product_name": "L’Immensité",
+          "db_brand": "louis vuitton"
+        },
+        {
+          "product_id": 1538,
+          "manifest_name": "Limmensite",
+          "product_slug": "limmensite",
+          "product_name": "Limmensite",
+          "db_brand": "louis vuitton"
+        },
+        {
+          "product_id": 1158,
+          "manifest_name": "Универсальный парфюм Limmensite 50 ml",
+          "product_slug": "limmensite-50-ml",
+          "product_name": "Универсальный парфюм Limmensite 50 ml",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1236,
+          "manifest_name": "Домашний парфюм Limmensite 220 ml",
+          "product_slug": "limmensite-220-ml",
+          "product_name": "Домашний парфюм Limmensite 220 ml",
+          "db_brand": "louis vuitton"
+        }
+      ]
+    },
+    {
+      "fid": 57887,
+      "brands": [
+        "clive christian",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1249,
+          "manifest_name": "20 Iconic Masculin Clive Christian",
+          "product_slug": "20-iconic-masculin",
+          "product_name": "20 Iconic Masculin",
+          "db_brand": "clive christian"
+        },
+        {
+          "product_id": 1441,
+          "manifest_name": "Спрей парфюм 20",
+          "product_slug": "20",
+          "product_name": "Спрей парфюм 20",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 11775,
+      "brands": [
+        "gucci",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1375,
+          "manifest_name": "Flora by Gucci Eau Fraiche",
+          "product_slug": "flora-by-gucci-eau-fraiche",
+          "product_name": "Flora by Gucci Eau Fraiche",
+          "db_brand": "gucci"
+        },
+        {
+          "product_id": 1162,
+          "manifest_name": "Универсальный парфюм Flora 50 ml",
+          "product_slug": "flora-50-ml",
+          "product_name": "Универсальный парфюм Flora 50 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 53742,
+      "brands": [
+        "histoires de parfums",
+        "thomas kosmala"
+      ],
+      "rows": [
+        {
+          "product_id": 1525,
+          "manifest_name": "N4 Apres l’Amour",
+          "product_slug": "n4-apres-l-amour",
+          "product_name": "N4 Apres l’Amour",
+          "db_brand": "histoires de parfums"
+        },
+        {
+          "product_id": 1182,
+          "manifest_name": "N4 Après l’Amour Thomas Kosmala",
+          "product_slug": "n4-apr-s-l-amour",
+          "product_name": "N4 Après l’Amour",
+          "db_brand": "thomas kosmala"
+        }
+      ]
+    },
+    {
+      "fid": 102772,
+      "brands": [
+        "hermes",
+        "hermès"
+      ],
+      "rows": [
+        {
+          "product_id": 1117,
+          "manifest_name": "Terre d’Hermès Intense",
+          "product_slug": "terre-d-herm-s-intense",
+          "product_name": "Terre d’Hermès Intense",
+          "db_brand": "hermes"
+        },
+        {
+          "product_id": 1372,
+          "manifest_name": "Terre d'Hermès",
+          "product_slug": "terre-d",
+          "product_name": "Terre d'Hermès",
+          "db_brand": "hermès"
+        }
+      ]
+    },
+    {
+      "fid": 3606,
+      "brands": [
+        "escentric molecules",
+        "escentric",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1333,
+          "manifest_name": "Molecule 02 Escentric Molecules",
+          "product_slug": "molecule-02",
+          "product_name": "Molecule 02",
+          "db_brand": "escentric molecules"
+        },
+        {
+          "product_id": 1491,
+          "manifest_name": "Molecule 02",
+          "product_slug": "molecule-02-2",
+          "product_name": "Molecule 02",
+          "db_brand": "escentric"
+        },
+        {
+          "product_id": 1140,
+          "manifest_name": "Универсальный парфюм Molecule 02 50 ml",
+          "product_slug": "molecule-02-50-ml",
+          "product_name": "Универсальный парфюм Molecule 02 50 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 8174,
+      "brands": [
+        "widian",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1469,
+          "manifest_name": "London",
+          "product_slug": "london-2",
+          "product_name": "London",
+          "db_brand": "widian"
+        },
+        {
+          "product_id": 1002,
+          "manifest_name": "London Eye cassette",
+          "product_slug": "london-eye-cassette",
+          "product_name": "London Eye cassette",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 104351,
+      "brands": [
+        "orto parisi",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1230,
+          "manifest_name": "Megamare Orto Parisi",
+          "product_slug": "megamare",
+          "product_name": "Megamare",
+          "db_brand": "orto parisi"
+        },
+        {
+          "product_id": 1138,
+          "manifest_name": "Универсальный парфюм Megamare 50 ml",
+          "product_slug": "megamare-50-ml",
+          "product_name": "Универсальный парфюм Megamare 50 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 51411,
+      "brands": [
+        "tom ford",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1522,
+          "manifest_name": "Lost Cherry",
+          "product_slug": "lost-cherry-4",
+          "product_name": "Lost Cherry",
+          "db_brand": "tom ford"
+        },
+        {
+          "product_id": 1541,
+          "manifest_name": "Tom ford lost cherry",
+          "product_slug": "lost-cherry-5",
+          "product_name": "lost cherry",
+          "db_brand": "tom ford"
+        },
+        {
+          "product_id": 1437,
+          "manifest_name": "Авто парфюм Lost Cherry",
+          "product_slug": "lost-cherry-2",
+          "product_name": "Авто парфюм Lost Cherry",
+          "db_brand": "tom ford"
+        },
+        {
+          "product_id": 1238,
+          "manifest_name": "Домашний парфюм TomFord LostCherry 220 ml",
+          "product_slug": "tomford-lostcherry-220-ml",
+          "product_name": "Домашний парфюм TomFord LostCherry 220 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 96989,
+      "brands": [
+        "roja dove",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1309,
+          "manifest_name": "Elysium Roja Dove",
+          "product_slug": "elysium-roja-dove",
+          "product_name": "Elysium Roja Dove",
+          "db_brand": "roja dove"
+        },
+        {
+          "product_id": 1485,
+          "manifest_name": "Elysium",
+          "product_slug": "elysium",
+          "product_name": "Elysium",
+          "db_brand": "roja dove"
+        },
+        {
+          "product_id": 1163,
+          "manifest_name": "Универсальный парфюм Elysium 50 ml",
+          "product_slug": "elysium-50-ml",
+          "product_name": "Универсальный парфюм Elysium 50 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 116546,
+      "brands": [
+        "tiziana terenzi",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1305,
+          "manifest_name": "Kirke Tiziana Terenzi",
+          "product_slug": "kirke",
+          "product_name": "Kirke",
+          "db_brand": "tiziana terenzi"
+        },
+        {
+          "product_id": 1240,
+          "manifest_name": "Домашний парфюм Kirke 220 ml",
+          "product_slug": "kirke-220-ml",
+          "product_name": "Домашний парфюм Kirke 220 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 68357,
+      "brands": [
+        "louis vuitton",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1264,
+          "manifest_name": "Symphony Louis Vuitton",
+          "product_slug": "symphony",
+          "product_name": "Symphony",
+          "db_brand": "louis vuitton"
+        },
+        {
+          "product_id": 1139,
+          "manifest_name": "Универсальный парфюм Symphony 50 ml",
+          "product_slug": "symphony-50-ml",
+          "product_name": "Универсальный парфюм Symphony 50 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 107353,
+      "brands": [
+        "chanel",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1396,
+          "manifest_name": "Bleu de Chanel",
+          "product_slug": "bleu-de",
+          "product_name": "Bleu de",
+          "db_brand": "chanel"
+        },
+        {
+          "product_id": 1245,
+          "manifest_name": "Домашний парфюм Chanel Bleu 220 ml",
+          "product_slug": "chanel-bleu-220-ml",
+          "product_name": "Домашний парфюм Chanel Bleu 220 ml",
+          "db_brand": "labor"
+        }
+      ]
+    },
+    {
+      "fid": 120377,
+      "brands": [
+        "bvlgari",
+        "labor"
+      ],
+      "rows": [
+        {
+          "product_id": 1403,
+          "manifest_name": "Tygar Bvlgari",
+          "product_slug": "tygar",
+          "product_name": "Tygar",
+          "db_brand": "bvlgari"
+        },
+        {
+          "product_id": 1494,
+          "manifest_name": "Tygar",
+          "product_slug": "tygar-3",
+          "product_name": "Tygar",
+          "db_brand": "bvlgari"
+        },
+        {
+          "product_id": 1146,
+          "manifest_name": "Универсальный парфюм TYGAR 50 ml",
+          "product_slug": "tygar-50-ml",
+          "product_name": "Универсальный парфюм TYGAR 50 ml",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1150,
+          "manifest_name": "Домашний парфюм Tygar 220 ml",
+          "product_slug": "tygar-220-ml",
+          "product_name": "Домашний парфюм Tygar 220 ml",
+          "db_brand": "labor"
+        },
+        {
+          "product_id": 1438,
+          "manifest_name": "Авто парфюм Tygar",
+          "product_slug": "tygar-2",
+          "product_name": "Авто парфюм Tygar",
+          "db_brand": "bvlgari"
+        }
+      ]
+    }
+  ],
+  "desc_mismatches": [
+    {
+      "product_id": 1472,
+      "slug": "erba-pura-2",
+      "db_brand": "xerjoff",
+      "desc_brand": "oakcha",
+      "description_start": "Sarang by Oakcha is a fragrance for women and men. Top notes are Bergamot, Lemon and Orange; middle note is Fruits; base"
+    },
+    {
+      "product_id": 1221,
+      "slug": "hayati",
+      "db_brand": "attar collection",
+      "desc_brand": "glamfume",
+      "description_start": "Keep Calm and Love Sylt 5 by Glamfume is a Floral Fruity fragrance for women and men. Keep Calm and Love Sylt 5 was laun"
+    },
+    {
+      "product_id": 1136,
+      "slug": "ecstasy-collection",
+      "db_brand": "casa tito",
+      "desc_brand": "bibbi paris",
+      "description_start": "Iris Wallpaper by Bibbi Paris is a Floral Fruity fragrance for women and men. Iris Wallpaper was launched in 2023. The n"
+    },
+    {
+      "product_id": 1396,
+      "slug": "bleu-de",
+      "db_brand": "chanel",
+      "desc_brand": "dossier",
+      "description_start": "Citrus Ginger by Dossier is a Citrus Aromatic fragrance for men. Citrus Ginger was launched in 2023. Top notes are Peppe"
+    },
+    {
+      "product_id": 1536,
+      "slug": "aventus-man",
+      "db_brand": "creed",
+      "desc_brand": "verset parfums",
+      "description_start": "Choice by Verset Parfums is a Chypre fragrance for men. Choice was launched in 2021. Top note is Pineapple; middle note "
+    },
+    {
+      "product_id": 1532,
+      "slug": "oud-for-greatness",
+      "db_brand": "initio parfums prives",
+      "desc_brand": "french avenue",
+      "description_start": "Glorious Oud by French Avenue is a Oriental Woody fragrance for women and men. Glorious Oud was launched in 2023. Top no"
+    },
+    {
+      "product_id": 1223,
+      "slug": "molecule-01",
+      "db_brand": "escentric molecules",
+      "desc_brand": "oakcha",
+      "description_start": "Aged Tobacco by Oakcha is a fragrance for women and men. Top notes are Whiskey, Cedar and Vanilla; middle notes are Cori"
+    },
+    {
+      "product_id": 1250,
+      "slug": "french-lover",
+      "db_brand": "frédéric malle",
+      "desc_brand": "frederic malle",
+      "description_start": "French Lover 20 Ans by Frederic Malle is a Woody Spicy fragrance for men. French Lover 20 Ans was launched in 2020. The "
+    },
+    {
+      "product_id": 1316,
+      "slug": "sedley",
+      "db_brand": "parfums de marly",
+      "desc_brand": "fragrance world",
+      "description_start": "Posh Sirius by Fragrance World is a fragrance for women and men. This is a new fragrance. Posh Sirius was launched in 20"
+    },
+    {
+      "product_id": 1230,
+      "slug": "megamare",
+      "db_brand": "orto parisi",
+      "desc_brand": "fragrance world",
+      "description_start": "Aqua Pura by Fragrance World is a Citrus Aromatic fragrance for women and men. Aqua Pura was launched in 2023. Top notes"
+    },
+    {
+      "product_id": 1333,
+      "slug": "molecule-02",
+      "db_brand": "escentric molecules",
+      "desc_brand": "oakcha",
+      "description_start": "Aged Tobacco by Oakcha is a fragrance for women and men. Top notes are Whiskey, Cedar and Vanilla; middle notes are Cori"
+    },
+    {
+      "product_id": 1055,
+      "slug": "molecule-05",
+      "db_brand": "escentric molecules",
+      "desc_brand": "oakcha",
+      "description_start": "Aged Tobacco by Oakcha is a fragrance for women and men. Top notes are Whiskey, Cedar and Vanilla; middle notes are Cori"
+    },
+    {
+      "product_id": 1306,
+      "slug": "l-air-du-desert-marocain",
+      "db_brand": "tauer perfumes",
+      "desc_brand": "fragrance world",
+      "description_start": "Posh Sirius by Fragrance World is a fragrance for women and men. This is a new fragrance. Posh Sirius was launched in 20"
+    },
+    {
+      "product_id": 1487,
+      "slug": "silver-mountain",
+      "db_brand": "creed",
+      "desc_brand": "maison alhambra",
+      "description_start": "Gusta by Maison Alhambra is a Aromatic Aquatic fragrance for women and men. Gusta was launched in 2024. Top notes are Ma"
+    },
+    {
+      "product_id": 1292,
+      "slug": "erba-pura",
+      "db_brand": "xerjoff",
+      "desc_brand": "oakcha",
+      "description_start": "Sarang by Oakcha is a fragrance for women and men. Top notes are Bergamot, Lemon and Orange; middle note is Fruits; base"
+    },
+    {
+      "product_id": 1436,
+      "slug": "hayati-2",
+      "db_brand": "attar collection",
+      "desc_brand": "glamfume",
+      "description_start": "Keep Calm and Love Sylt 5 by Glamfume is a Floral Fruity fragrance for women and men. Keep Calm and Love Sylt 5 was laun"
+    },
+    {
+      "product_id": 1220,
+      "slug": "oud-for-greatness-initio-parfums-prives",
+      "db_brand": "initio parfums prives",
+      "desc_brand": "oakcha",
+      "description_start": "Sweet Addict by Oakcha is a fragrance for women and men. Top notes are Neroli, Rose, Bergamot and Pink Pepper; middle no"
+    },
+    {
+      "product_id": 1246,
+      "slug": "bulgari-aqua-220-ml",
+      "db_brand": "labor",
+      "desc_brand": "laura biagiotti",
+      "description_start": "Biagiotti Due Donna by Laura Biagiotti is a Floral fragrance for women. Biagiotti Due Donna was launched in 2006. The fr"
+    },
+    {
+      "product_id": 1189,
+      "slug": "electric-cherry",
+      "db_brand": "tom ford",
+      "desc_brand": "fragrance world",
+      "description_start": "Cherry Buzz by Fragrance World is a Floral Fruity fragrance for women and men. Cherry Buzz was launched in 2023. Top not"
+    },
+    {
+      "product_id": 1411,
+      "slug": "interlude-man",
+      "db_brand": "amouage",
+      "desc_brand": "fragrance world",
+      "description_start": "Abraaj Valour 50 by Fragrance World is a fragrance for women and men. Abraaj Valour 50 was launched in 2024. Top notes a"
+    },
+    {
+      "product_id": 1435,
+      "slug": "wood-sage-sea-salt-2",
+      "db_brand": "labor",
+      "desc_brand": "jo malone london",
+      "description_start": "Wood Sage & Sea Salt by Jo Malone London is a Aromatic fragrance for women and men. Wood Sage & Sea Salt was launched in"
+    },
+    {
+      "product_id": 1430,
+      "slug": "elixir-des-merveilles",
+      "db_brand": "labor",
+      "desc_brand": "yves rocher",
+      "description_start": "Yria by Yves Rocher is a Floral Fruity fragrance for women. Yria was launched in 2001. The nose behind this fragrance is"
+    },
+    {
+      "product_id": 1334,
+      "slug": "molecule-04",
+      "db_brand": "escentric molecules",
+      "desc_brand": "oakcha",
+      "description_start": "Aged Tobacco by Oakcha is a fragrance for women and men. Top notes are Whiskey, Cedar and Vanilla; middle notes are Cori"
+    },
+    {
+      "product_id": 1471,
+      "slug": "120",
+      "db_brand": "mix",
+      "desc_brand": "liz claiborne",
+      "description_start": "Mambo Mix for Men by Liz Claiborne is a Woody Aromatic fragrance for men. Mambo Mix for Men was launched in 2007. The fr"
+    },
+    {
+      "product_id": 1520,
+      "slug": "electric-cherry-2",
+      "db_brand": "tom ford",
+      "desc_brand": "fragrance world",
+      "description_start": "Cherry Buzz by Fragrance World is a Floral Fruity fragrance for women and men. Cherry Buzz was launched in 2023. Top not"
+    },
+    {
+      "product_id": 1144,
+      "slug": "black-code-50-ml",
+      "db_brand": "labor",
+      "desc_brand": "clinique",
+      "description_start": "Simply Clinique by Clinique is a Oriental Floral fragrance for women. Simply Clinique was launched in 2004. Simply Clini"
+    },
+    {
+      "product_id": 1518,
+      "slug": "afternoon-swim-2",
+      "db_brand": "louis vuitton",
+      "desc_brand": "oakcha",
+      "description_start": "Gypsy Beats by Oakcha is a fragrance for women and men. Top notes are Bergamot, Mandarin and Orange Blossom; middle note"
+    },
+    {
+      "product_id": 1521,
+      "slug": "smoke-cherry",
+      "db_brand": "tom ford",
+      "desc_brand": "oakcha",
+      "description_start": "Sinful Smoke by Oakcha is a fragrance for women and men. Top notes are Sour Cherry and Saffron; middle notes are Leather"
+    },
+    {
+      "product_id": 1321,
+      "slug": "montabaco-verano",
+      "db_brand": "ormonde jayne",
+      "desc_brand": "boadicea the victorious",
+      "description_start": "Aurica by Boadicea the Victorious is a Oriental Woody fragrance for women and men. Aurica was launched in 2020. The nose"
+    },
+    {
+      "product_id": 1175,
+      "slug": "dear-polly",
+      "db_brand": "vilhelm parfumerie",
+      "desc_brand": "la rive",
+      "description_start": "Best by La Rive is a Aromatic fragrance for men. Top notes are Rosemary and Water Notes; middle notes are Sequoia, Woody"
+    },
+    {
+      "product_id": 1243,
+      "slug": "bright-crystal-220-ml",
+      "db_brand": "labor",
+      "desc_brand": "versace",
+      "description_start": "Blue Jeans by Versace is a Aromatic Fougere fragrance for men. Blue Jeans was launched in 1994. The nose behind this fra"
+    },
+    {
+      "product_id": 1342,
+      "slug": "ombre-nomade",
+      "db_brand": "louis vuitton",
+      "desc_brand": "oakcha",
+      "description_start": "Dune Dance by Oakcha is a fragrance for women and men. Top notes are Raspberry and Frankincense; middle notes are Agarwo"
+    },
+    {
+      "product_id": 1214,
+      "slug": "blue-talisman",
+      "db_brand": "ex nihilo",
+      "desc_brand": "fragrance world",
+      "description_start": "Blue Magician by Fragrance World is a Floral Woody Musk fragrance for women and men. This is a new fragrance. Blue Magic"
+    },
+    {
+      "product_id": 1352,
+      "slug": "oud-satin-mood-maison",
+      "db_brand": "maison francis kurkdjian",
+      "desc_brand": "l'artisan parfumeur",
+      "description_start": "Noir Exquis by L'Artisan Parfumeur is a Oriental Vanilla fragrance for women and men. Noir Exquis was launched in 2015. "
+    },
+    {
+      "product_id": 1313,
+      "slug": "the-tragedy-of-lord-george",
+      "db_brand": "penhaligon's",
+      "desc_brand": "roja dove",
+      "description_start": "Oligarch by Roja Dove is a Chypre fragrance for men. Oligarch was launched in 2016. The nose behind this fragrance is Ro"
+    },
+    {
+      "product_id": 1476,
+      "slug": "another-13-2",
+      "db_brand": "le labo",
+      "desc_brand": "oakcha",
+      "description_start": "Parallel by Oakcha is a fragrance for women and men. Top notes are Pear, Citrus and Apple; middle notes are Ambrette, Ja"
+    },
+    {
+      "product_id": 1350,
+      "slug": "another-13",
+      "db_brand": "le labo",
+      "desc_brand": "oakcha",
+      "description_start": "Parallel by Oakcha is a fragrance for women and men. Top notes are Pear, Citrus and Apple; middle notes are Ambrette, Ja"
+    },
+    {
+      "product_id": 1525,
+      "slug": "n4-apres-l-amour",
+      "db_brand": "histoires de parfums",
+      "desc_brand": "thomas kosmala",
+      "description_start": "Après l’Amour by Thomas Kosmala is a Woody Aromatic fragrance for women and men. Après l’Amour was launched in 2018. The"
+    },
+    {
+      "product_id": 1499,
+      "slug": "on-the-beach-2",
+      "db_brand": "louis vuitton",
+      "desc_brand": "escentric molecules",
+      "description_start": "Molecule 01 + Mandarin by Escentric Molecules is a Citrus fragrance for women and men. Molecule 01 + Mandarin was launch"
+    },
+    {
+      "product_id": 1510,
+      "slug": "love-don-t-by-shy",
+      "db_brand": "by kilian",
+      "desc_brand": "oakcha",
+      "description_start": "Sweet Addict by Oakcha is a fragrance for women and men. Top notes are Neroli, Rose, Bergamot and Pink Pepper; middle no"
+    },
+    {
+      "product_id": 1114,
+      "slug": "narcotic-delight-initio-parfums-prives",
+      "db_brand": "initio parfums prives",
+      "desc_brand": "jo malone london",
+      "description_start": "Rose Blush Cologne 2024 by Jo Malone London is a fragrance for women. Rose Blush Cologne 2024 was launched in 2024. Top "
+    },
+    {
+      "product_id": 1035,
+      "slug": "avto-parfum-thomas-kosmala-4",
+      "db_brand": "labor",
+      "desc_brand": "christian provenzano parfums",
+      "description_start": "Iris d'Orient by Christian Provenzano Parfums is a Oriental Floral fragrance for women and men. Iris d'Orient was launch"
+    },
+    {
+      "product_id": 1297,
+      "slug": "tobacco-oud",
+      "db_brand": "tom ford",
+      "desc_brand": "oakcha",
+      "description_start": "Aged Tobacco by Oakcha is a fragrance for women and men. Top notes are Whiskey, Cedar and Vanilla; middle notes are Cori"
+    },
+    {
+      "product_id": 1541,
+      "slug": "lost-cherry-5",
+      "db_brand": "tom ford",
+      "desc_brand": "ensar oud",
+      "description_start": "Hajar Aswad by Ensar Oud is a fragrance for women and men. The fragrance features Floral Notes, Rose, Cedar, Agarwood (O"
+    },
+    {
+      "product_id": 1522,
+      "slug": "lost-cherry-4",
+      "db_brand": "tom ford",
+      "desc_brand": "ensar oud",
+      "description_start": "Hajar Aswad by Ensar Oud is a fragrance for women and men. The fragrance features Floral Notes, Rose, Cedar, Agarwood (O"
+    },
+    {
+      "product_id": 1437,
+      "slug": "lost-cherry-2",
+      "db_brand": "tom ford",
+      "desc_brand": "ensar oud",
+      "description_start": "Hajar Aswad by Ensar Oud is a fragrance for women and men. The fragrance features Floral Notes, Rose, Cedar, Agarwood (O"
+    },
+    {
+      "product_id": 1261,
+      "slug": "bal-d-afrique",
+      "db_brand": "byredo",
+      "desc_brand": "oakcha",
+      "description_start": "Gold Gem by Oakcha is a fragrance for women and men. Top notes are Marigold, Lemon, Neroli and Bergamot; middle notes ar"
+    },
+    {
+      "product_id": 1338,
+      "slug": "tub-reuse-astrale",
+      "db_brand": "maison crivelli",
+      "desc_brand": "boadicea the victorious",
+      "description_start": "Dragon by Boadicea the Victorious is a fragrance for women and men. Dragon was launched in 2024. Top notes are Saffron, "
+    },
+    {
+      "product_id": 1402,
+      "slug": "mojave-ghost",
+      "db_brand": "byredo",
+      "desc_brand": "oakcha",
+      "description_start": "Desert Glass by Oakcha is a fragrance for women and men. Top notes are Ambrette and Sapodilla; middle notes are Violet, "
+    },
+    {
+      "product_id": 1165,
+      "slug": "ecstasy",
+      "db_brand": "casa tito",
+      "desc_brand": "bibbi paris",
+      "description_start": "Iris Wallpaper by Bibbi Paris is a Floral Fruity fragrance for women and men. Iris Wallpaper was launched in 2023. The n"
+    },
+    {
+      "product_id": 1457,
+      "slug": "50",
+      "db_brand": "creation",
+      "desc_brand": "bohoboco",
+      "description_start": "Plum Spray Paint by Bohoboco is a Oriental Spicy fragrance for women and men. This is a new fragrance. Plum Spray Paint "
+    },
+    {
+      "product_id": 1176,
+      "slug": "black-eyes",
+      "db_brand": "never lies",
+      "desc_brand": "blackcliff parfums",
+      "description_start": "Limewood by Blackcliff Parfums is a Aromatic Fougere fragrance for women and men. Limewood was launched in 2021. The nos"
+    },
+    {
+      "product_id": 1025,
+      "slug": "aoud-roja-dove",
+      "db_brand": "roja dove",
+      "desc_brand": "fragrance world",
+      "description_start": "Divin Aoud by Fragrance World is a Oriental Spicy fragrance for women and men. Divin Aoud was launched in 2023. Top note"
+    }
+  ]
+}

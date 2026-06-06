@@ -21,11 +21,15 @@ module Labor
           perfumers: perfumers_payload(product),
           gender: GENDER_MAP[detail&.gender] || 'unisex',
           concentration: detail&.concentration || 'edp',
-          volume_ml: detail&.volume_ml || 0,
+          # volume_ml and price are the 30 ml defaults (or master price when no size
+          # variants exist yet). They remain here for backwards-compat with clients
+          # that haven't adopted the `sizes` array yet.
+          volume_ml: detail&.volume_ml.to_i.positive? ? detail.volume_ml : 30,
           price: product.master.default_price&.amount.to_i,
           currency: 'UZS',
           images: images_payload(product),
           description: product.description.presence,
+          sizes: sizes_payload(product),
           fragrance: {
             notes: notes_payload(product),
             accords: accords_payload(product),
@@ -81,6 +85,35 @@ module Labor
           .map do |pa|
             { id: pa.accord.id, name: pa.accord.name.to_s, weight: pa.weight.to_i, color_hex: pa.accord.color_hex.to_s }
           end
+      end
+
+      # Returns [{variant_id, ml, price}] sorted by ml asc, or nil when the size
+      # OptionType doesn't exist yet (so the field is absent from the JSON until
+      # labor:sizes:generate has been run).
+      def sizes_payload(product)
+        size_ot = Spree::OptionType.find_by(name: 'size')
+        return nil unless size_ot
+
+        ov_by_id = size_ot.option_values.index_by(&:id)
+        return nil if ov_by_id.empty?
+
+        Spree::Variant
+          .where(product: product, is_master: false)
+          .joins(:option_values)
+          .where(spree_option_values: { option_type_id: size_ot.id })
+          .includes(:option_values, :prices)
+          .map do |variant|
+            ml_ov  = variant.option_values.find { |ov| ov.option_type_id == size_ot.id }
+            next unless ml_ov
+
+            ml    = ml_ov.name.to_i   # "10ml" → 10
+            price = variant.prices.find_by(currency: 'UZS')&.amount.to_i || 0
+
+            { variant_id: variant.id, ml: ml, price: price }
+          end
+          .compact
+          .sort_by { |s| s[:ml] }
+          .presence
       end
 
       def similar_payload(product)

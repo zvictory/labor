@@ -10,7 +10,7 @@ import { AggregateBars } from '@/components/pdp/aggregate-bars';
 import { VoteWidget } from '@/components/pdp/vote-widget';
 import { SimilarCarousel } from '@/components/pdp/similar-carousel';
 import { CompareWishButtons } from '@/components/pdp/compare-wish-buttons';
-import { AddToCart } from '@/components/pdp/add-to-cart';
+import { PdpBuyBlock } from '@/components/pdp/pdp-buy-block';
 import { ProductGallery } from '@/components/pdp/product-gallery';
 import { formatRating, formatUzs } from '@/lib/format';
 
@@ -81,9 +81,7 @@ export default async function ProductPage({ params }: Props) {
 
           {product.description && <p className="text-ink-muted dark:text-stone-300 leading-relaxed font-sans text-sm md:text-base">{product.description}</p>}
 
-          <p className="font-sans font-semibold text-3xl text-brass">{formatUzs(product.price, locale)}</p>
-
-          <AddToCart product={product} locale={locale} />
+          <PdpBuyBlock product={product} locale={locale} />
           <CompareWishButtons card={card} />
         </div>
       </div>

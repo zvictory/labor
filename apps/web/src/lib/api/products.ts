@@ -7,6 +7,7 @@ import {
   type ProductCard,
   type ProductDetailResponse,
   type ProductListResponse,
+  type ProductSize,
 } from '@labor/api-client/catalog';
 import type { ZodType } from 'zod';
 
@@ -19,6 +20,7 @@ export type {
   ProductCard,
   ProductDetailResponse,
   ProductListResponse,
+  ProductSize,
 };
 
 const parseApiResponse = <T>(schema: ZodType<T>, value: unknown, label: string): T => {

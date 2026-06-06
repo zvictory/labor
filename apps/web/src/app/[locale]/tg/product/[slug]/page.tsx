@@ -5,9 +5,9 @@ import { getProduct } from '@/lib/api/products';
 import { ApiError } from '@/lib/api/client';
 import { NotesPyramid } from '@/components/pdp/notes-pyramid';
 import { AccordsBars } from '@/components/pdp/accords-bars';
-import { TgAddToCart } from '@/components/tg/tg-add-to-cart';
+import { TgPdpBuyBlock } from '@/components/tg/tg-pdp-buy-block';
 import { TgBackButton } from '@/components/tg/back-button';
-import { formatRating, formatUzs } from '@/lib/format';
+import { formatRating } from '@/lib/format';
 
 interface Props { params: Promise<{ locale: string; slug: string }> }
 
@@ -43,12 +43,10 @@ export default async function TgProductPage({ params }: Props) {
         </p>
       </header>
 
-      <p className="font-serif text-xl">{formatUzs(product.price, locale)}</p>
-
       <AccordsBars accords={product.fragrance.accords} />
       <NotesPyramid notes={product.fragrance.notes} locale={locale} />
 
-      <TgAddToCart product={product} locale={locale} />
+      <TgPdpBuyBlock product={product} locale={locale} />
     </div>
   );
 }

@@ -44,6 +44,14 @@ export const fragranceAccordSchema = z.object({
   color_hex: z.string(),
 });
 
+export const productSizeSchema = z.object({
+  variant_id: z.number().int().positive(),
+  ml: z.number().int().positive(),
+  price: z.number().int().nonnegative(),
+});
+
+export type ProductSize = z.infer<typeof productSizeSchema>;
+
 export const productSchema = z.object({
   id: z.number(),
   slug: z.string(),
@@ -57,6 +65,9 @@ export const productSchema = z.object({
   currency: z.literal('UZS'),
   images: z.array(z.object({ url: z.string(), alt: z.string() })),
   description: z.string().nullable().optional(),
+  // Present after labor:sizes:generate has been run.
+  // Sorted by ml asc. If absent, product has no size variants yet.
+  sizes: z.array(productSizeSchema).optional(),
   fragrance: z.object({
     notes: z.array(fragranceNoteSchema),
     accords: z.array(fragranceAccordSchema),
