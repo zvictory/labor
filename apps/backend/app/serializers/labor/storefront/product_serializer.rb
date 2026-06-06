@@ -25,7 +25,7 @@ module Labor
           # variants exist yet). They remain here for backwards-compat with clients
           # that haven't adopted the `sizes` array yet.
           volume_ml: detail&.volume_ml.to_i.positive? ? detail.volume_ml : 30,
-          price: product.master.default_price&.amount.to_i,
+          price: default_price_uzs(product),
           currency: 'UZS',
           images: images_payload(product),
           description: product.description.presence,
@@ -44,6 +44,19 @@ module Labor
           },
           similar: similar_payload(product)
         }
+      end
+
+      # Returns the 30ml size variant's UZS price, falling back to master's UZS price.
+      # Uses the deterministic SKU suffix set by labor:sizes:generate.
+      # Direct UZS lookup because Spree::Config.currency = "USD" makes default_price nil.
+      def default_price_uzs(product)
+        master_sku = product.master.sku.presence || "product-#{product.id}"
+        v30 = Spree::Variant.find_by(sku: "#{master_sku}-30ml", product: product)
+        if v30
+          price = Spree::Price.find_by(variant: v30, currency: 'UZS')&.amount.to_i
+          return price if price&.positive?
+        end
+        Spree::Price.find_by(variant: product.master, currency: 'UZS')&.amount.to_i || 0
       end
 
       def brand_payload(brand)
@@ -112,6 +125,7 @@ module Labor
             { variant_id: variant.id, ml: ml, price: price }
           end
           .compact
+          .filter { |s| s[:price].positive? }   # skip zero-price sizes (e.g. 10ml of 1,000 UZS item)
           .sort_by { |s| s[:ml] }
           .presence
       end

@@ -29,11 +29,12 @@ namespace :labor do
 
       # ── Products — description ──────────────────────────────────────────
       puts 'Exporting product descriptions…'
-      # Direct SQL is faster and bypasses fallbacks so we see the real locale state.
+      # Spree::Product stores the default (:ru) locale in spree_products.description
+      # (Mobility fallthrough), not in spree_product_translations.
       have_ru = ActiveRecord::Base.connection.execute(
-        "SELECT spree_product_id FROM spree_product_translations " \
-        "WHERE locale='ru' AND description IS NOT NULL AND description != ''"
-      ).map { |r| r['spree_product_id'] }.to_set
+        "SELECT id FROM spree_products " \
+        "WHERE description IS NOT NULL AND description != ''"
+      ).map { |r| r['id'] }.to_set
 
       have_uz = ActiveRecord::Base.connection.execute(
         "SELECT spree_product_id FROM spree_product_translations " \
@@ -254,8 +255,28 @@ namespace :labor do
     desc 'Show translation coverage stats (no DB writes)'
     task stats: :environment do
       puts '=== Translation coverage ==='
+
+      # Spree::Product stores the default (:ru) locale in spree_products.description
+      # directly (Mobility fallthrough), not in spree_product_translations.
+      # All other locales (en/uz) live in spree_product_translations as usual.
+      en_total = ActiveRecord::Base.connection.execute(
+        "SELECT COUNT(DISTINCT spree_product_id) FROM spree_product_translations " \
+        "WHERE locale='en' AND description IS NOT NULL AND description != ''"
+      ).first.values.first.to_i
+
+      ru_cnt = ActiveRecord::Base.connection.execute(
+        "SELECT COUNT(*) FROM spree_products " \
+        "WHERE description IS NOT NULL AND description != ''"
+      ).first.values.first.to_i
+
+      uz_cnt = ActiveRecord::Base.connection.execute(
+        "SELECT COUNT(DISTINCT spree_product_id) FROM spree_product_translations " \
+        "WHERE locale='uz' AND description IS NOT NULL AND description != ''"
+      ).first.values.first.to_i
+
+      puts "#{'product.description'.ljust(25)} | en=#{en_total.to_s.rjust(3)}/#{en_total} | ru=#{ru_cnt.to_s.rjust(3)}/#{en_total} | uz=#{uz_cnt.to_s.rjust(3)}/#{en_total}"
+
       {
-        'product.description' => ['spree_product_translations', 'spree_product_id', 'description'],
         'brand.description'   => ['labor_brand_translations',   'labor_brand_id',   'description'],
         'brand.story'         => ['labor_brand_translations',   'labor_brand_id',   'story'],
         'perfumer.bio'        => ['labor_perfumer_translations', 'labor_perfumer_id','bio'],

@@ -82,9 +82,23 @@ namespace :labor do
             option_type: size_ot,
           ) { |pot| pot.position = 1 }
 
-          master       = product.master
-          master_sku   = master.sku.presence || "product-#{product.id}"
-          master_price = master.default_price&.amount.to_i
+          master     = product.master
+          master_sku = master.sku.presence || "product-#{product.id}"
+
+          # Try the master's own UZS price first (set by catalog import).
+          # Fallback: use the 30ml size variant's UZS price as P (for idempotent re-runs
+          # after the first successful run — the 30ml variant IS the original price P).
+          master_price = Spree::Price.find_by(variant: master, currency: 'UZS')&.amount.to_i
+
+          if master_price.nil? || master_price.zero?
+            ov_30 = option_values[30]
+            v30   = Spree::Variant
+              .joins(:option_values)
+              .where(product: product, is_master: false)
+              .where(spree_option_values: { id: ov_30.id })
+              .first
+            master_price = Spree::Price.find_by(variant: v30, currency: 'UZS')&.amount.to_i if v30
+          end
 
           if master_price.nil? || master_price.zero?
             errors << "#{product.slug}: no master price, skipping"
@@ -120,7 +134,7 @@ namespace :labor do
               variant:  variant,
               currency: 'UZS',
             )
-            if price_rec.amount.to_i != target_price
+            if price_rec.new_record? || price_rec.amount.to_i != target_price
               price_rec.amount = target_price
               price_rec.save!
               updated_prices += 1
