@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Heart, Search, ShoppingBag, User } from 'lucide-react';
 import { LocaleSwitcher } from './locale-switcher';
+import { CartBadge } from './cart-badge';
 
 export function SiteHeader({ locale }: { locale: string }) {
   const t = useTranslations('nav');
@@ -39,6 +40,7 @@ export function SiteHeader({ locale }: { locale: string }) {
           </Link>
           <Link href={href('/cart')} aria-label={t('cart')} className="relative p-2 hover:text-brass">
             <ShoppingBag className="h-5 w-5" />
+            <CartBadge />
           </Link>
         </div>
       </div>
