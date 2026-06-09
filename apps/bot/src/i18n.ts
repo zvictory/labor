@@ -1,5 +1,5 @@
 type LocaleStrings = Record<string, string>;
-type Catalog = Record<'ru' | 'en' | 'uz', LocaleStrings>;
+type Catalog = Record<'ru' | 'en' | 'uz' | 'uzc', LocaleStrings>;
 
 const catalog: Catalog = {
   ru: {
@@ -58,6 +58,24 @@ const catalog: Catalog = {
     'order.delivered': '✨ №{number} buyurtma yetkazildi. Ilovada sharh qoldiring!',
     'campaign.broadcast': '🎁 *{title}*\n\n{description}\n\n{ends_at} gacha amal qiladi.',
     'unknown': 'Buyruq tushunarsiz. /help yoki mini-ilovani oching.',
+  },
+  uzc: {
+    'start.welcome': '*Labor* — Ўзбекистон нише парфюмерияси.\n\nМини-иловани очинг ёки қуйидаги буйруқлардан фойдаланинг.',
+    'menu.open': '🛍 Labor’ни очиш',
+    'menu.catalog': '🌿 Каталог',
+    'menu.cart': '🛒 Сават',
+    'menu.orders': '📦 Буюртмаларим',
+    'menu.help': 'ℹ️ Ёрдам',
+    'menu.channel': '📢 Каналимиз',
+    'menu.lang': '🌐 Тил',
+    'help.text': 'Labor — нише парфюм. Ўзбекистон бўйлаб етказиб бериш.\n\n• Каталог ва буюртма — мини-иловада\n• Алоқа — @labor_support',
+    'lang.choose': 'Тилни танланг:',
+    'lang.set': 'Тил сақланди: {lang}',
+    'order.paid': '✅ Тўлов қабул қилинди. Буюртма №{number}.\nЖами: {total} UZS',
+    'order.shipped': '📦 №{number} буюртма етказишга узатилди ({provider}).',
+    'order.delivered': '✨ №{number} буюртма етказилди. Иловада шарҳ қолдиринг!',
+    'campaign.broadcast': '🎁 *{title}*\n\n{description}\n\n{ends_at} гача амал қилади.',
+    'unknown': 'Буйруқ тушунарсиз. /help ёки мини-иловани очинг.',
   },
 };
 
