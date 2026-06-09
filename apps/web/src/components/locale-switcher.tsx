@@ -20,7 +20,8 @@ export function LocaleSwitcher() {
     } else {
       segments.splice(1, 0, next);
     }
-    router.push(segments.join('/') || `/${next}`);
+    const search = typeof window !== 'undefined' ? window.location.search : '';
+    router.push((segments.join('/') || `/${next}`) + search);
   };
 
   return (

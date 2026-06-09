@@ -194,6 +194,7 @@
     "paymentClick": "Click",
     "paymentPayme": "Payme",
     "paymentUzum": "Uzum",
+    "paymentCod": "Cash on delivery",
     "comment": "Order comment",
     "submit": "Proceed to payment",
     "submitting": "Creating order…",

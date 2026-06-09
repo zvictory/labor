@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import type { ProductCard as Card } from '@/lib/api/products';
 import { formatUzs, formatRating } from '@/lib/format';
 import { getReadableTextColor } from '@/lib/color-contrast';
+import { FallbackImage } from '@/components/fallback-image';
 
 export const ProductCard = ({ product, locale }: { product: Card; locale: string }) => {
   const hasImage = Boolean(product.image);
@@ -11,12 +11,19 @@ export const ProductCard = ({ product, locale }: { product: Card; locale: string
     <Link href={`/${locale}/product/${product.slug}`} className="group block space-y-2">
       <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-stone-50">
         {hasImage ? (
-          <Image
+          <FallbackImage
             src={product.image}
             alt={product.name}
             fill
             sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
             className="object-contain p-4 transition-transform group-hover:scale-105"
+            fallback={
+              <div className="flex h-full w-full items-center justify-center bg-stone-100">
+                <span className="text-xs tracking-widest text-stone-400 uppercase">
+                  {product.brand}
+                </span>
+              </div>
+            }
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-stone-100">

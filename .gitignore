@@ -66,3 +66,8 @@ apps/web/public/products/raw/
 
 # Reference (delete after migration)
 lelabo-clone/
+
+# Local custom folders
+labor_ssh_configs/
+.claude/
+

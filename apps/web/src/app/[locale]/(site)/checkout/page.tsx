@@ -18,7 +18,7 @@ type DeliveryMethod = CheckoutPayload['delivery_method'];
 type PaymentMethod = CheckoutPayload['payment_method'];
 
 const DELIVERY_METHODS: DeliveryMethod[] = ['yandex', 'express24', 'bts'];
-const PAYMENT_METHODS: PaymentMethod[] = ['click', 'payme', 'uzum'];
+const PAYMENT_METHODS: PaymentMethod[] = ['click', 'payme', 'uzum', 'cod'];
 
 const INPUT_CLS =
   'w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-900';
@@ -79,7 +79,11 @@ export default function CheckoutPage() {
       });
       const response = await createCheckout(payload, locale);
       clear();
-      window.location.href = response.payment_url;
+      if (response.payment_method === 'cod' || !response.payment_url) {
+        router.push(`/${locale}/account/orders/${response.order_number}`);
+      } else {
+        window.location.href = response.payment_url;
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : t('errorGeneric');
       setSubmitError(msg);
@@ -191,7 +195,7 @@ export default function CheckoutPage() {
 
         <section className="space-y-3">
           <h2 className={SECTION_TITLE_CLS}>{t('payment')}</h2>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {PAYMENT_METHODS.map((m) => (
               <label
                 key={m}
@@ -207,7 +211,8 @@ export default function CheckoutPage() {
                   `payment${m.charAt(0).toUpperCase()}${m.slice(1)}` as
                     | 'paymentClick'
                     | 'paymentPayme'
-                    | 'paymentUzum',
+                    | 'paymentUzum'
+                    | 'paymentCod',
                 )}
               </label>
             ))}

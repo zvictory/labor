@@ -1,9 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { PageIntro } from '@/components/page-intro';
 import { getPerfumers, type PerfumerSummary } from '@/lib/api/perfumers';
 import { PERFUMER_IMAGES } from './perfumer-image-manifest';
+import { FallbackImage } from '@/components/fallback-image';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -29,24 +29,24 @@ const initialsOf = (name: string): string => {
 
 const PerfumerAvatar = ({ slug, name }: { slug: string; name: string }) => {
   const file = PERFUMER_IMAGES[slug];
-  if (file) {
-    return (
-      <Image
-        src={`/perfumers/${file}`}
-        alt={name}
-        width={160}
-        height={160}
-        className="h-full w-full object-cover"
-        unoptimized={file.endsWith('.svg')}
-      />
-    );
-  }
-  return (
+  const fallback = (
     <div className="from-brass/30 via-brass/15 to-brass/5 dark:from-brass/20 dark:via-brass/10 flex h-full w-full items-center justify-center bg-gradient-to-br dark:to-transparent">
       <span className="text-brass font-serif text-3xl font-medium tracking-wider">
         {initialsOf(name)}
       </span>
     </div>
+  );
+
+  return (
+    <FallbackImage
+      src={file ? `/perfumers/${file}` : null}
+      alt={name}
+      width={160}
+      height={160}
+      className="h-full w-full object-cover"
+      unoptimized={file?.endsWith('.svg')}
+      fallback={fallback}
+    />
   );
 };
 
@@ -80,7 +80,7 @@ export default async function PerfumersPage({ params }: Props) {
           {perfumers.map((p) => (
             <li key={p.slug}>
               <Link
-                href={`/${locale}/perfumers/${p.slug}`}
+                href={`/${locale}/catalog?perfumer=${p.slug}`}
                 className="group bg-bone border-border/80 hover:border-brass/70 relative flex flex-col overflow-hidden rounded-xl border transition-all duration-500 hover:bg-stone-50 hover:shadow-xl dark:bg-[#1A1714]/30 dark:hover:bg-[#1A1714]/60"
               >
                 {/* Product count chip — top-right circle, brass-on-bone */}

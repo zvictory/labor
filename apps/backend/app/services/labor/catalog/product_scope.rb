@@ -35,6 +35,7 @@ module Labor
         rel = rel.joins(:labor_product_notes).where(labor_product_notes: { labor_note_id: note_filter_ids }) if filter_value(:note).present?
         rel = rel.joins(labor_product_notes: :note).where(labor_notes: { family: filter_value(:family) }) if filter_value(:family).present?
         rel = rel.joins(:labor_fragrance_detail).where(labor_product_fragrance_details: { gender: filter_value(:gender) }) if filter_value(:gender).present?
+        rel = rel.joins(labor_product_perfumers: :perfumer).where(labor_perfumers: { slug: filter_value(:perfumer) }) if filter_value(:perfumer).present?
         rel = rel.where('spree_products.name ILIKE ?', "%#{filter_value(:name)}%") if filter_value(:name).present?
         rel.where(id: canonical_product_ids).distinct
       end

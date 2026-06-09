@@ -13,7 +13,7 @@ export const CheckoutPayloadSchema = z.object({
   apt: z.string().trim().optional(),
   comment: z.string().trim().optional(),
   delivery_method: z.enum(['yandex', 'express24', 'bts']),
-  payment_method: z.enum(['click', 'payme', 'uzum']),
+  payment_method: z.enum(['click', 'payme', 'uzum', 'cod']),
   line_items: z
     .array(
       z.object({
@@ -83,13 +83,14 @@ export const createCheckout = async (
       },
     });
 
-    if (!res.data.payment_redirect_url) {
+    // COD legitimately returns null redirect — all other methods must have one.
+    if (parsed.payment_method !== 'cod' && !res.data.payment_redirect_url) {
       throw new Error('checkout response missing payment_redirect_url');
     }
 
     return {
       order_number: res.data.number,
-      payment_url: res.data.payment_redirect_url,
+      payment_url: res.data.payment_redirect_url ?? '',
       payment_method: parsed.payment_method,
     };
   } catch (err: unknown) {

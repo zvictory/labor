@@ -311,7 +311,7 @@
   },
   {
     "product_id": 1164,
-    "fragrantica_id": 92545,
+    "fragrantica_id": 254,
     "name": "Крем парфюмированный Eyphoria"
   },
   {
@@ -701,7 +701,7 @@
   },
   {
     "product_id": 1127,
-    "fragrantica_id": 92545,
+    "fragrantica_id": null,
     "name": "VANORIA Casa Tito"
   },
   {
@@ -756,7 +756,7 @@
   },
   {
     "product_id": 1154,
-    "fragrantica_id": 16450,
+    "fragrantica_id": 15552,
     "name": "More Than Words Xerjoff"
   },
   {
@@ -791,12 +791,12 @@
   },
   {
     "product_id": 1484,
-    "fragrantica_id": 107704,
+    "fragrantica_id": 39130,
     "name": "Gumin"
   },
   {
     "product_id": 1202,
-    "fragrantica_id": 38497,
+    "fragrantica_id": 38498,
     "name": "Aventus for Her Creed"
   },
   {
@@ -901,7 +901,7 @@
   },
   {
     "product_id": 1195,
-    "fragrantica_id": 17786,
+    "fragrantica_id": 19655,
     "name": "Alexandria II Xerjoff"
   },
   {
@@ -1016,7 +1016,7 @@
   },
   {
     "product_id": 1225,
-    "fragrantica_id": 55782,
+    "fragrantica_id": 32191,
     "name": "La Tosca Casa Morati"
   },
   {
@@ -1026,12 +1026,12 @@
   },
   {
     "product_id": 1471,
-    "fragrantica_id": 4201,
+    "fragrantica_id": null,
     "name": "Жидкость для диффузора 120МЛ"
   },
   {
     "product_id": 1250,
-    "fragrantica_id": 126853,
+    "fragrantica_id": 1134,
     "name": "French Lover Frederic Malle"
   },
   {
@@ -1056,7 +1056,7 @@
   },
   {
     "product_id": 1231,
-    "fragrantica_id": 107704,
+    "fragrantica_id": 39130,
     "name": "Gumin Tiziana Terenzi"
   },
   {
@@ -1086,7 +1086,7 @@
   },
   {
     "product_id": 1117,
-    "fragrantica_id": 102772,
+    "fragrantica_id": 50679,
     "name": "Terre d’Hermès Intense"
   },
   {
@@ -1111,7 +1111,7 @@
   },
   {
     "product_id": 1173,
-    "fragrantica_id": 12126,
+    "fragrantica_id": 22126,
     "name": "Gran Ballo Casa Moratti"
   },
   {
@@ -1126,7 +1126,7 @@
   },
   {
     "product_id": 1137,
-    "fragrantica_id": 92545,
+    "fragrantica_id": 254,
     "name": "Casa Tito EUPHORIA Collection"
   },
   {
@@ -1416,12 +1416,12 @@
   },
   {
     "product_id": 1292,
-    "fragrantica_id": 93056,
+    "fragrantica_id": 55157,
     "name": "Erba Pura Xerjoff"
   },
   {
     "product_id": 1108,
-    "fragrantica_id": 92545,
+    "fragrantica_id": 49774,
     "name": "Mefisto Gentiluomo Xerjoff"
   },
   {
@@ -1681,7 +1681,7 @@
   },
   {
     "product_id": 1128,
-    "fragrantica_id": 92545,
+    "fragrantica_id": null,
     "name": "MUSCAVILLA Casa Tito"
   },
   {
@@ -1771,7 +1771,7 @@
   },
   {
     "product_id": 1518,
-    "fragrantica_id": 93000,
+    "fragrantica_id": 53947,
     "name": "Afternoon Swim"
   },
   {
@@ -1861,7 +1861,7 @@
   },
   {
     "product_id": 1002,
-    "fragrantica_id": 8174,
+    "fragrantica_id": null,
     "name": "London Eye cassette"
   },
   {
@@ -1991,7 +1991,7 @@
   },
   {
     "product_id": 1472,
-    "fragrantica_id": 93056,
+    "fragrantica_id": 55157,
     "name": "Erba Pura"
   },
   {
@@ -2026,7 +2026,7 @@
   },
   {
     "product_id": 1243,
-    "fragrantica_id": 637,
+    "fragrantica_id": 632,
     "name": "Домашний парфюм Bright Crystal 220 ml"
   },
   {
@@ -2036,7 +2036,7 @@
   },
   {
     "product_id": 1430,
-    "fragrantica_id": 4016,
+    "fragrantica_id": 1016,
     "name": "Авто парфюм Elixir des Merveilles"
   },
   {
@@ -2066,7 +2066,7 @@
   },
   {
     "product_id": 1246,
-    "fragrantica_id": 1743,
+    "fragrantica_id": 866,
     "name": "Домашний парфюм Bulgari Aqua 220 ml"
   },
   {
@@ -2076,7 +2076,7 @@
   },
   {
     "product_id": 1291,
-    "fragrantica_id": null,
+    "fragrantica_id": 6290,
     "name": "Mefisto Casa Moratti"
   },
   {
@@ -2106,12 +2106,12 @@
   },
   {
     "product_id": 1035,
-    "fragrantica_id": 49454,
+    "fragrantica_id": 53742,
     "name": "Avto Parfum Thomas Kosmala №4"
   },
   {
     "product_id": 1144,
-    "fragrantica_id": 379,
+    "fragrantica_id": 823,
     "name": "Универсальный парфюм Black Code 50 ml"
   },
   {
@@ -2133,5 +2133,180 @@
     "product_id": 1378,
     "fragrantica_id": 112864,
     "name": "Bois Impérial"
+  },
+  {
+    "product_id": 1504,
+    "fragrantica_id": 49752,
+    "name": "Ombre Nomade"
+  },
+  {
+    "product_id": 1357,
+    "fragrantica_id": 68326,
+    "name": "Apple Brandy By"
+  },
+  {
+    "product_id": 1509,
+    "fragrantica_id": 50496,
+    "name": "Kissing Burns 6.4"
+  },
+  {
+    "product_id": 1506,
+    "fragrantica_id": 43632,
+    "name": "Black Phantom"
+  },
+  {
+    "product_id": 1205,
+    "fragrantica_id": 39681,
+    "name": "Good Girl"
+  },
+  {
+    "product_id": 1523,
+    "fragrantica_id": 77057,
+    "name": "Good Girl Gone Bad"
+  },
+  {
+    "product_id": 1006,
+    "fragrantica_id": 25529,
+    "name": "Wood Sage & Sea Salt"
+  },
+  {
+    "product_id": 1348,
+    "fragrantica_id": 53947,
+    "name": "Afternoon Swim"
+  },
+  {
+    "product_id": 1210,
+    "fragrantica_id": 66060,
+    "name": "On The Beach"
+  },
+  {
+    "product_id": 1497,
+    "fragrantica_id": 1825,
+    "name": "Tobacco Vanille"
+  },
+  {
+    "product_id": 1534,
+    "fragrantica_id": 68357,
+    "name": "Symphony"
+  },
+  {
+    "product_id": 1294,
+    "fragrantica_id": 51411,
+    "name": "Lost Cherry"
+  },
+  {
+    "product_id": 1324,
+    "fragrantica_id": 80462,
+    "name": "Hacivat"
+  },
+  {
+    "product_id": 1120,
+    "fragrantica_id": 66825,
+    "name": "Byredo Marijuana"
+  },
+  {
+    "product_id": 1331,
+    "fragrantica_id": 2186,
+    "name": "Montale Chocolate Greedy"
+  },
+  {
+    "product_id": 1112,
+    "fragrantica_id": 62571,
+    "name": "Kajal Lamar"
+  },
+  {
+    "product_id": 1399,
+    "fragrantica_id": 19247,
+    "name": "Byredo 1996 Inez & Vinoodh"
+  },
+  {
+    "product_id": 1318,
+    "fragrantica_id": 90199,
+    "name": "Parfums de Marly Perseus"
+  },
+  {
+    "product_id": 1226,
+    "fragrantica_id": 61523,
+    "name": "Penhaligon's Halfeti Leather"
+  },
+  {
+    "product_id": 1265,
+    "fragrantica_id": 37603,
+    "name": "Nishane Fan Your Flames"
+  },
+  {
+    "product_id": 1256,
+    "fragrantica_id": 93785,
+    "name": "Louis Vuitton LV Lovers"
+  },
+  {
+    "product_id": 1361,
+    "fragrantica_id": 84413,
+    "name": "By Kilian Smoking Hot By"
+  },
+  {
+    "product_id": 1192,
+    "fragrantica_id": 57939,
+    "name": "By Kilian I Don't Need A Prince - Rose de Mai By"
+  },
+  {
+    "product_id": 1012,
+    "fragrantica_id": 1088,
+    "name": "Antonio Banderas Blue Seduction"
+  },
+  {
+    "product_id": 1075,
+    "fragrantica_id": 100897,
+    "name": "Amouage Purpose 50"
+  },
+  {
+    "product_id": 1187,
+    "fragrantica_id": 1849,
+    "name": "Tom Ford Tuscan Leather"
+  },
+  {
+    "product_id": 1539,
+    "fragrantica_id": 102064,
+    "name": "Attar Collection Attar Musc Kashmir"
+  },
+  {
+    "product_id": 1340,
+    "fragrantica_id": 83842,
+    "name": "Maison Crivelli Oud Maracujá"
+  },
+  {
+    "product_id": 1307,
+    "fragrantica_id": 47524,
+    "name": "Stefano Ricci Royal Eagle Sport"
+  },
+  {
+    "product_id": 1011,
+    "fragrantica_id": 29727,
+    "name": "Giorgio Armani Acqua di Gio Profumo"
+  },
+  {
+    "product_id": 1253,
+    "fragrantica_id": 34893,
+    "name": "Tom Ford Soleil Blanc"
+  },
+  {
+    "product_id": 1257,
+    "fragrantica_id": 89720,
+    "name": "Jean Paul Gaultier Le Male Lover"
+  },
+  {
+    "product_id": 1349,
+    "fragrantica_id": 6327,
+    "name": "Le Labo Bergamote 22"
+  },
+  {
+    "product_id": 1367,
+    "fragrantica_id": 72158,
+    "name": "Jean Paul Gaultier Le Beau Le Parfum"
+  },
+  {
+    "product_id": 1454,
+    "fragrantica_id": 51411,
+    "name": "смесь душистых веществ LOST CHERRY"
   }
 ]

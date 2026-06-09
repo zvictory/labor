@@ -50,6 +50,7 @@ export const listProducts = (params: {
   page?: number | undefined;
   brand?: string | undefined;
   note?: string | undefined;
+  perfumer?: string | undefined;
   family?: string | undefined;
   gender?: string | undefined;
   q?: string | undefined;
@@ -59,6 +60,7 @@ export const listProducts = (params: {
   if (params.page) sp.set('page', String(params.page));
   if (params.brand) sp.set('filter[brand]', params.brand);
   if (params.note) sp.set('filter[note]', params.note);
+  if (params.perfumer) sp.set('filter[perfumer]', params.perfumer);
   if (params.family) sp.set('filter[family]', params.family);
   if (params.gender) sp.set('filter[gender]', params.gender);
   if (params.q) sp.set('filter[name]', params.q);

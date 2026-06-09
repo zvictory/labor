@@ -3,8 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { listProducts, type ProductCard as Card } from '@/lib/api/products';
 import { getFilterFacets, type FilterFacets } from '@/lib/api/facets';
+import { getPerfumer } from '@/lib/api/perfumers';
 import { ProductCard } from '@/components/catalog/product-card';
 import { FilterSelect, type FilterOption } from '@/components/catalog/filter-select';
+import { FallbackImage } from '@/components/fallback-image';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -12,6 +14,7 @@ interface Props {
     page?: string;
     brand?: string;
     note?: string;
+    perfumer?: string;
     family?: string;
     gender?: string;
     q?: string;
@@ -30,6 +33,7 @@ interface CatalogCopy {
   eyebrow: string;
   notes: string;
   brands: string;
+  perfumers: string;
   families: string;
   genders: string;
   sort: string;
@@ -48,6 +52,7 @@ const COPY: Record<Lang, CatalogCopy> = {
     eyebrow: 'EXCLUSIVE FRAGRANCES',
     notes: 'Notes',
     brands: 'Brands',
+    perfumers: 'Perfumer',
     families: 'Categories',
     genders: 'Gender',
     sort: 'Sort',
@@ -63,6 +68,7 @@ const COPY: Record<Lang, CatalogCopy> = {
     eyebrow: 'СЕЛЕКТИВНЫЕ АРОМАТЫ',
     notes: 'Ноты',
     brands: 'Бренды',
+    perfumers: 'Парфюмер',
     families: 'Категории',
     genders: 'Пол',
     sort: 'Сортировка',
@@ -78,6 +84,7 @@ const COPY: Record<Lang, CatalogCopy> = {
     eyebrow: 'EKSKLYUZIV ATIRLAR',
     notes: 'Notalar',
     brands: 'Brendlar',
+    perfumers: 'Parfyumer',
     families: 'Kategoriyalar',
     genders: 'Jins',
     sort: 'Saralash',
@@ -140,12 +147,14 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const activeSort = sp.sort ?? 'popular';
   const activeNote = sp.note ?? '';
   const activeBrand = sp.brand ?? '';
+  const activePerfumer = sp.perfumer ?? '';
   const activeFamily = sp.family ?? '';
   const activeGender = sp.gender ?? '';
 
   const preserveParams: Record<string, string | undefined> = {
     brand: sp.brand,
     note: sp.note,
+    perfumer: sp.perfumer,
     family: sp.family,
     gender: sp.gender,
     q: sp.q,
@@ -164,6 +173,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       page,
       brand: sp.brand,
       note: sp.note,
+      perfumer: sp.perfumer,
       family: sp.family,
       gender: sp.gender,
       q: sp.q,
@@ -185,6 +195,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const next = new URLSearchParams();
     if (sp.brand) next.set('brand', sp.brand);
     if (sp.note) next.set('note', sp.note);
+    if (sp.perfumer) next.set('perfumer', sp.perfumer);
     if (sp.family) next.set('family', sp.family);
     if (sp.gender) next.set('gender', sp.gender);
     if (sp.q) next.set('q', sp.q);
@@ -205,6 +216,16 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     ? facets.notes.find((n) => n.slug === activeNote) ?? null
     : null;
 
+  let activePerfumerName = '';
+  if (activePerfumer) {
+    try {
+      const res = await getPerfumer(activePerfumer, locale);
+      activePerfumerName = res.data.name;
+    } catch {
+      activePerfumerName = humanizeSlug(activePerfumer);
+    }
+  }
+
   // Active-filter pills: only render when something is applied.
   const activePills: { key: string; label: string; clearHref: string }[] = [];
   if (activeBrand) {
@@ -221,6 +242,13 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       key: `note:${activeNote}`,
       label: `${copy.notes}: ${n ? noteLabel(n) : humanizeSlug(activeNote)}`,
       clearHref: getLinkHref({ note: undefined }),
+    });
+  }
+  if (activePerfumer) {
+    activePills.push({
+      key: `perfumer:${activePerfumer}`,
+      label: `${copy.perfumers}: ${activePerfumerName}`,
+      clearHref: getLinkHref({ perfumer: undefined }),
     });
   }
   if (activeFamily) {
@@ -258,18 +286,23 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
       {activeNoteFacet && (
         <section className="flex items-center gap-4 border-l-2 border-brass pl-4 py-2">
-          {activeNoteFacet.icon_url && (
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-1 ring-brass/30 shadow-sm">
-              <Image
-                src={activeNoteFacet.icon_url}
-                alt=""
-                aria-hidden
-                fill
-                sizes="56px"
-                className="object-cover"
-              />
-            </div>
-          )}
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-1 ring-brass/30 shadow-sm">
+            <FallbackImage
+              src={activeNoteFacet.icon_url}
+              alt=""
+              aria-hidden
+              fill
+              sizes="56px"
+              className="object-cover"
+              fallback={
+                <div className="h-full w-full rounded-full bg-brass/10 flex items-center justify-center border border-brass/30">
+                  <span className="text-brass font-serif text-sm font-bold">
+                    {activeNoteFacet.name ? activeNoteFacet.name.charAt(0).toUpperCase() : '?'}
+                  </span>
+                </div>
+              }
+            />
+          </div>
           <div className="space-y-0.5">
             <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-brass">
               {copy.notes}
@@ -416,7 +449,7 @@ const pageHref = (
 ): string => {
   const params = new URLSearchParams();
   params.set('page', String(page));
-  for (const k of ['brand', 'note', 'family', 'gender', 'q', 'sort'] as const) {
+  for (const k of ['brand', 'note', 'perfumer', 'family', 'gender', 'q', 'sort'] as const) {
     if (sp[k]) params.set(k, sp[k]!);
   }
   return `/${locale}/catalog?${params.toString()}`;
