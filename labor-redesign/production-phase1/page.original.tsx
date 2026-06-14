@@ -3,11 +3,6 @@ import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { locales, type Locale } from '@/i18n/config';
 import { HeroSlider } from '@/components/home/hero-slider';
-import { FinderBand } from '@/components/home/finder-band';
-import { MoodBrowser } from '@/components/home/mood-browser';
-import { CustomParfumCta } from '@/components/home/custom-parfum-cta';
-import { TrustStrip } from '@/components/home/trust-strip';
-import { TelegramCta } from '@/components/home/telegram-cta';
 import { ProductCard } from '@/components/catalog/product-card';
 import { listProducts, type ProductCard as Card } from '@/lib/api/products';
 
@@ -179,9 +174,6 @@ export default async function HomePage({ params }: Props) {
       {/* Interactive Campaign Hero Slideshow */}
       <HeroSlider slides={slides} />
 
-      {/* Scent finder band (static; links to live /find-your-perfume) */}
-      <FinderBand locale={locale} lang={lang} />
-
       {/* New Arrivals Section */}
       <section className="container py-24 border-b border-border bg-stone-50/50 dark:bg-stone-900/10">
         <div className="mb-12 flex items-baseline justify-between">
@@ -207,9 +199,6 @@ export default async function HomePage({ params }: Props) {
           ))}
         </div>
       </section>
-
-      {/* Shop by mood (static; tiles map to live /catalog?note= slugs) */}
-      <MoodBrowser locale={locale} lang={lang} />
 
       {/* Bestsellers Section */}
       <section className="container py-24 border-b border-border">
@@ -389,16 +378,6 @@ export default async function HomePage({ params }: Props) {
           ))}
         </div>
       </section>
-
-      {/* Custom parfum (static marketing; CTA hands off to Telegram until a
-          backend inquiry flow exists in Phase 2) */}
-      <CustomParfumCta lang={lang} />
-
-      {/* Trust / authenticity (static; delivery card links to live /delivery) */}
-      <TrustStrip locale={locale} lang={lang} />
-
-      {/* Telegram mini-app CTA (static; live bot link) */}
-      <TelegramCta lang={lang} />
     </>
   );
 }
