@@ -1,18 +1,21 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
-// Static marketing section. Mood is not a backend facet, so each mood maps to a
-// real note slug that the live /catalog?note= filter already supports. Gradient
-// tiles only — no images/assets, no external hotlinks.
+// Static marketing section, but backed by REAL catalog data: each mood maps to a
+// real fragrance-note slug (live /catalog?note= filter) and uses the real note
+// image already shipped in public/notes (same assets as the production notes
+// section). No backend call, no placeholder art.
 
 type Lang = 'en' | 'ru' | 'uz';
 
-type Mood = { note: string; gradient: string };
+// note slug must exist in public/notes/<slug>.png AND be a real catalog facet.
+type Mood = { note: string; image: string };
 
 const MOODS: Mood[] = [
-  { note: 'musk', gradient: 'from-stone-700 to-stone-900' },
-  { note: 'rose', gradient: 'from-rose-900 to-stone-900' },
-  { note: 'bergamot', gradient: 'from-emerald-900 to-stone-900' },
-  { note: 'sandalwood', gradient: 'from-amber-900 to-stone-900' },
+  { note: 'musk', image: '/notes/musk.png' },
+  { note: 'rose', image: '/notes/rose.png' },
+  { note: 'bergamot', image: '/notes/bergamot.png' },
+  { note: 'sandalwood', image: '/notes/sandalwood.png' },
 ];
 
 const COPY: Record<Lang, { eyebrow: string; headline: string; sub: string; labels: string[]; subs: string[] }> = {
@@ -59,9 +62,19 @@ export function MoodBrowser({ locale, lang }: { locale: string; lang: Lang }) {
           <Link
             key={m.note}
             href={`/${locale}/catalog?note=${m.note}`}
-            className={`group relative flex aspect-[3/4] flex-col justify-end overflow-hidden border border-border/60 bg-gradient-to-br ${m.gradient} p-5 transition-transform duration-500 hover:-translate-y-1`}
+            aria-label={`${c.labels[i]} — ${c.subs[i]}`}
+            className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden border border-border/60 p-5 transition-colors duration-500 hover:border-brass/60"
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+            <div className="absolute inset-0 z-0">
+              <Image
+                src={m.image}
+                alt={c.labels[i]!}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                className="object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent opacity-85 transition-opacity duration-500 group-hover:opacity-75" />
+            </div>
             <div className="relative z-10">
               <h3 className="font-display text-2xl text-bone">{c.labels[i]}</h3>
               <span className="text-[11px] tracking-wide text-stone-300">{c.subs[i]}</span>
