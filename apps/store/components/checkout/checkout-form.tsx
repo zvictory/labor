@@ -10,6 +10,7 @@ import { useMemo, useState, useTransition } from 'react';
 
 import { UZ_REGIONS } from '@/lib/delivery/uz-regions';
 import { availableMethodsForRegion } from '@/lib/delivery/methods';
+import { DeliveryQuote } from '@/components/checkout/delivery-quote';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { formatUzs } from '@/lib/money';
 import type { Locale } from '@/lib/catalog/locale';
@@ -271,6 +272,18 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
                   <span className="mt-0.5 block text-xs text-ink-muted dark:text-stone-400">
                     {resolveLocaleText(m.description, locale)} · {resolveLocaleText(m.eta, locale)}
                   </span>
+                  {/* Live courier estimate (display-only; charged fee stays
+                      m.baseFee). Shown for the selected in-city courier option. */}
+                  {checked && m.id === 'courier-tashkent' && (
+                    <DeliveryQuote
+                      locale={locale}
+                      region={regionName}
+                      district={district}
+                      address={street}
+                      method={m.id}
+                      fallbackFee={m.baseFee}
+                    />
+                  )}
                 </span>
               </label>
             );

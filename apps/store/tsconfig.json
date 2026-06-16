@@ -33,6 +33,7 @@
     "components/**/*.tsx",
     "scripts/**/*.ts",
     "i18n/**/*.ts",
+    "types/**/*.ts",
     "middleware.ts",
     ".next/types/**/*.ts"
   ],

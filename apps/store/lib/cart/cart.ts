@@ -104,17 +104,149 @@ type CartWithItems = Prisma.CartGetPayload<{ include: typeof cartInclude }>;
 // ── core access ──────────────────────────────────────────────────────────────
 
 /**
+ * Resolve the numeric session userId without a static import of the auth module.
+ *
+ * cart.ts is imported by lib/auth/config.ts (for mergeGuestCartIntoUser); a
+ * static `import { getCurrentUserId } from '@/lib/auth/session'` here would form
+ * a cycle (cart → session → auth → config → cart). A lazy dynamic import keeps
+ * the dependency one-directional at module-eval time. Returns undefined for
+ * guests or if auth isn't available in this context.
+ */
+const resolveSessionUserId = async (): Promise<number | undefined> => {
+  try {
+    const { getCurrentUserId } = await import('@/lib/auth/session');
+    return await getCurrentUserId();
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * Merge the items of `from` into `into`, summing quantities on the unique
+ * (cartId, productId, isSample) key, then delete the now-empty source cart.
+ * Idempotent: a missing/empty source is a no-op. Returns nothing — callers
+ * re-read the destination cart.
+ */
+const mergeCarts = async (fromCartId: number, intoCartId: number): Promise<void> => {
+  if (fromCartId === intoCartId) return;
+
+  const sourceItems = await db.cartItem.findMany({
+    where: { cartId: fromCartId },
+    select: { productId: true, isSample: true, quantity: true },
+  });
+
+  for (const item of sourceItems) {
+    const existing = await db.cartItem.findUnique({
+      where: {
+        cartId_productId_isSample: {
+          cartId: intoCartId,
+          productId: item.productId,
+          isSample: item.isSample,
+        },
+      },
+      select: { id: true, quantity: true },
+    });
+
+    if (existing) {
+      await db.cartItem.update({
+        where: { id: existing.id },
+        data: { quantity: existing.quantity + item.quantity },
+      });
+    } else {
+      await db.cartItem.create({
+        data: {
+          cartId: intoCartId,
+          productId: item.productId,
+          isSample: item.isSample,
+          quantity: item.quantity,
+        },
+      });
+    }
+  }
+
+  // Source cart consumed — drop it (CartItem rows cascade on delete).
+  await db.cart.delete({ where: { id: fromCartId } });
+};
+
+/**
+ * Fold the visitor's current guest cart (resolved from the cookie token) into
+ * `userId`'s cart, summing quantities on the unique key. Called on sign-in
+ * (Auth.js events.signIn) so the basket survives login.
+ *
+ * - If the user has no cart yet, the guest cart is simply re-owned (userId set).
+ * - If both exist, items merge into the user cart and the guest cart is deleted.
+ * - The guest cookie token is left in place; it now resolves (via userId) to the
+ *   user's cart on the next getOrCreateCart, or a fresh guest cart is minted.
+ */
+export const mergeGuestCartIntoUser = async (userId: number): Promise<void> => {
+  const token = await getCartToken();
+
+  const guestCart = token
+    ? await db.cart.findUnique({ where: { token }, select: { id: true, userId: true } })
+    : null;
+
+  const userCart = await db.cart.findFirst({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!guestCart) {
+    return; // nothing to merge
+  }
+
+  // Guest cart already belongs to this user — nothing to do.
+  if (guestCart.userId === userId) {
+    return;
+  }
+
+  if (!userCart) {
+    // No user cart yet: just claim the guest cart for the user.
+    await db.cart.update({ where: { id: guestCart.id }, data: { userId } });
+    return;
+  }
+
+  await mergeCarts(guestCart.id, userCart.id);
+};
+
+/**
  * Resolve the caller's cart, creating one (and setting the cookie) if needed.
  * Returns the cart with its items, each item's product, and the product's first
  * image — ready to project into a CartDTO.
  *
- * TODO(user-merge): when an authenticated session exists, prefer the user's cart
- * and merge any guest cart (matching on productId+isSample, summing quantities)
- * before clearing the guest token.
+ * When an authenticated session exists, the user's cart is preferred: any guest
+ * cart referenced by the cookie token is merged into it first (matching on
+ * productId+isSample, summing quantities), so login never loses the basket.
  */
 export const getOrCreateCart = async (): Promise<CartWithItems> => {
   const token = await getCartToken();
+  const userId = await resolveSessionUserId();
 
+  if (userId !== undefined) {
+    // Authenticated: fold any guest cart in, then prefer the user's cart.
+    await mergeGuestCartIntoUser(userId);
+
+    const userCart = await db.cart.findFirst({
+      where: { userId },
+      include: cartInclude,
+      orderBy: { id: 'asc' },
+    });
+    if (userCart) {
+      return userCart;
+    }
+
+    // No cart at all for this user yet — create one owned by them.
+    const newToken = token ?? randomUUID();
+    const created = await db.cart.create({
+      data: { token: newToken, userId },
+      include: cartInclude,
+    });
+    if (!token) {
+      await setCartToken(newToken);
+    }
+    return created;
+  }
+
+  // Guest path.
   if (token) {
     const existing = await db.cart.findUnique({
       where: { token },

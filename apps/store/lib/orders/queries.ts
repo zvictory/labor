@@ -156,3 +156,39 @@ export async function getOrderByNumber(
 
 /// Alias kept for the confirmation page's "summary" framing — identical shape.
 export const getOrderSummary = getOrderByNumber;
+
+// ── account: a user's order history ───────────────────────────────────────────
+
+/// A compact order row for the account "My orders" list — enough to render the
+/// list and link to the full /orders/[number] page. Money stays integer so'm.
+export interface UserOrderSummary {
+  number: string;
+  status: OrderStatus;
+  paymentStatus: OrderPaymentStatus;
+  total: number;
+  createdAt: Date;
+}
+
+/// All orders belonging to `userId`, newest first, projected for the account
+/// list. Returns [] for users with no orders.
+export async function getUserOrders(userId: number): Promise<UserOrderSummary[]> {
+  const rows = await db.order.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      number: true,
+      status: true,
+      paymentStatus: true,
+      total: true,
+      createdAt: true,
+    },
+  });
+
+  return rows.map((r) => ({
+    number: r.number,
+    status: r.status as OrderStatus,
+    paymentStatus: r.paymentStatus as OrderPaymentStatus,
+    total: r.total,
+    createdAt: r.createdAt,
+  }));
+}

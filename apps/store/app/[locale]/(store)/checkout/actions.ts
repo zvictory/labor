@@ -55,8 +55,8 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
         address: input.address,
       },
       deliveryMethod: input.deliveryMethod,
-      // TODO(auth): pass the real session userId once Auth.js is wired; guest
-      // orders (no userId) are tracked by phone for now.
+      // userId is resolved from the Auth.js session inside createOrderFromCart;
+      // guests (no session) still place orders, tracked by phone.
     });
 
     if (input.payment === 'cod') {

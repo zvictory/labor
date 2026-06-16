@@ -205,6 +205,21 @@ model User {
   updatedAt       DateTime       @updatedAt
 }
 
+/// Short-lived phone OTP challenges for customer sign-in. The plaintext code is
+/// never stored — only a bcrypt hash. Rows are consumed on success (consumedAt)
+/// and expire (~5 min); recent rows also drive issuance rate-limiting.
+model OtpCode {
+  id         Int       @id @default(autoincrement())
+  phone      String
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([phone])
+}
+
 model Vote {
   id        Int      @id @default(autoincrement())
   userId    Int

@@ -25,6 +25,7 @@ import { findRegion } from '@/lib/delivery/uz-regions';
 // summary UI; order creation itself only needs productId/quantity/unitPrice/
 // isSample.) If these names drift, this import is the single point to re-align.
 import { getCart, clearCart } from '@/lib/cart/cart';
+import { getCurrentUserId } from '@/lib/auth/session';
 
 // ── input validation ────────────────────────────────────────────────────────
 
@@ -97,6 +98,11 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
     throw new OrderCreationError('cart_empty', 'Cannot place an order with an empty cart');
   }
 
+  // Associate the order with the signed-in user when one exists. An explicit
+  // `userId` on the input wins (e.g. an admin placing on behalf of someone);
+  // otherwise we read it from the session. Guests fall through to undefined.
+  const userId = parsed.userId ?? (await getCurrentUserId());
+
   const deliveryFee = deliveryFeeFor(parsed.deliveryMethod);
 
   // Recompute subtotal from line snapshots rather than trusting cart.subtotal,
@@ -123,9 +129,9 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
       const order = await db.order.create({
         data: {
           number,
-          // TODO(auth): associate a real session user once Auth.js is wired.
-          // Until then guest orders carry userId = undefined and rely on phone.
-          userId: parsed.userId,
+          // Session user (or explicit override); guest orders carry undefined
+          // and are tracked by phone.
+          userId,
           status: 'pending',
           paymentStatus: 'unpaid',
           total,

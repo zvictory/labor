@@ -137,7 +137,12 @@ export async function markOrderPaid(
   provider: PaymentProvider,
   externalTxnId: string,
 ): Promise<Order | null> {
-  return db.$transaction(async (tx) => {
+  // Track whether THIS call performed the real unpaid -> paid transition (vs. an
+  // idempotent no-op on an already-paid order). Only the real transition fires a
+  // notification, so a retried webhook never double-notifies.
+  let didTransition = false;
+
+  const result = await db.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { number: orderNumber },
       select: { id: true, total: true, status: true, paymentStatus: true },
@@ -159,11 +164,27 @@ export async function markOrderPaid(
 
     const nextStatus = PAYABLE_ORDER_STATUSES.has(order.status) ? 'paid' : order.status;
 
-    return tx.order.update({
+    const updated = await tx.order.update({
       where: { id: order.id },
       data: { paymentStatus: 'paid', status: nextStatus },
     });
+    didTransition = true;
+    return updated;
   });
+
+  // Best-effort, AFTER-commit notification. Lazy import breaks the potential
+  // cycle (notify -> bot/queries -> db). Never let a notify failure escape into
+  // the payment flow, and never re-notify on an idempotent replay.
+  if (didTransition && result) {
+    try {
+      const { notifyOrderPaid } = await import('@/lib/telegram/notify');
+      await notifyOrderPaid(result.number);
+    } catch (err) {
+      console.error('[payment-state] notifyOrderPaid failed:', err);
+    }
+  }
+
+  return result;
 }
 
 /// Cancel the provider payment: Payment.state -> 'canceled'. If the order hasn't

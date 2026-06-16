@@ -13,7 +13,21 @@ Rails-free rebuild of Labor Parfum: **Next.js 15 (App Router) + Prisma + Postgre
 
 ## Phased scope
 
-Delivered so far: **P0** (scaffold + schema + ETL), an early slice of **P1** (storefront on real data — UI ported), **P2** (cart + checkout + order creation), and the **P3 payment order-mutation** wiring. Not built yet: delivery API wiring (P4), Telegram bot/auth/session (P5), admin (P6), cutover (P7).
+Delivered so far: **P0** (scaffold + schema + ETL), an early slice of **P1** (storefront), **P2** (cart + checkout + orders), **P3** (payment order-mutation), **P5** (auth/sessions + Telegram bot + notifications), and a first slice of **P4** (live delivery quotes, display-only). Not built yet: charged dynamic delivery fee + shipment creation (rest of P4), admin (P6), cutover (P7).
+
+### P5 — auth, accounts, Telegram bot (added)
+- **Auth.js (next-auth v5, JWT):** `lib/auth/*` with three credential providers — Telegram Login Widget (find-or-create User by `telegramId`, source of truth), staff email/password (bcrypt vs `passwordHash`, role-gated), and phone OTP. `getCurrentUser()` server helper. New `OtpCode` model (bcrypt-hashed codes, 5-min expiry, rate-limited, attempt ceiling) + `app/api/auth/*`. Account pages: login, overview, my-orders.
+- **Cart/order association:** guest cart merges into the user cart on sign-in (`mergeGuestCartIntoUser`); `createOrderFromCart` attaches `userId` from session. Guests still allowed (phone identity). Cart↔session cycle broken with a lazy import.
+- **Telegram bot (grammy, webhook mode):** `lib/telegram/*` — `/start`, `/help`, `/lang` (updates `preferredLocale`); the webhook route validates the secret-token header. `lib/telegram/webapp-auth.ts` provides the HMAC verifiers consumed by the auth provider. `notifyOrderPaid`/`notifyOrderStatus` send localized order updates to the customer + an optional admin chat — fired from `markOrderPaid` **only on the real paid transition** (idempotent, best-effort, lazy import).
+
+### P4 (partial) — live delivery quotes (added)
+- `lib/delivery/quote.ts` + `app/api/delivery/quote/route.ts` + a `delivery-quote` checkout island: for the in-Tashkent courier option it fetches a live Yandex estimate (region-center-coarse geocode, `TODO` per-address); any failure silently falls back to the method `baseFee`. **Display-only** — the charged fee and order totals remain the method `baseFee`; dynamic charging + shipment creation come later.
+
+### P4/P5 follow-ups (non-blocking)
+- Dependencies `next-auth@5-beta`, `bcryptjs`, `grammy` added to `package.json` (install on the dev machine).
+- New env: `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME`, `TELEGRAM_ADMIN_CHAT_ID`, `TELEGRAM_BOT_USERNAME`, `YANDEX_MARKUP_TYPE/VALUE` (added to `.env.example`).
+- Delivery quote geocoding is city-center-coarse; make it the charged fee + create a Yandex shipment on paid in a later step.
+- Set the Telegram webhook on deploy (`setWebhook` with the secret token); the bot runs in webhook mode (no separate polling process yet).
 
 ### P2 — cart + checkout (added)
 - **Cart:** server-backed via Prisma + an httpOnly guest-cookie token (`labor_cart`). `lib/cart/{cart,actions}.ts`, `app/api/cart/route.ts`, client islands (`add-to-cart`, `cart-count-badge`, `mini-cart`, line controls), `(store)/cart/page.tsx`. Add-to-cart wired into the PDP and product cards; header shows a live count. Sample/decant line = ~8% of price. Subtotal only (delivery added at checkout). No inventory model → no stock checks.
