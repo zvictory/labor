@@ -3,7 +3,9 @@
 // Keeping this in one place lets getCurrentUser() and client `useSession()`
 // share a single typed shape without `any`.
 
-import type { DefaultSession } from 'next-auth';
+// `export {}` makes this file a module so `declare module` below is an augmentation
+// of the real next-auth types, not a replacement of the whole module.
+export {};
 
 declare module 'next-auth' {
   interface Session {
@@ -14,7 +16,11 @@ declare module 'next-auth' {
       role: string;
       /** Preferred UI locale (ru | uz | en). */
       locale: string;
-    } & DefaultSession['user'];
+      // Standard AdapterUser fields surfaced by the base provider.
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
   }
 }
 

@@ -141,8 +141,8 @@ export function CampaignForm({ locale, initial }: Props) {
       ctaLabel: buildLocaleText(cta),
       heroImage: heroImage.trim(),
       active,
-      startsAt: startsAt ? startsAt : null,
-      endsAt: endsAt ? endsAt : null,
+      startsAt: startsAt ? new Date(startsAt) : null,
+      endsAt: endsAt ? new Date(endsAt) : null,
     };
 
     startTransition(async () => {

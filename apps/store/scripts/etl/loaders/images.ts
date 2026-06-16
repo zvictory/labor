@@ -120,6 +120,7 @@ export async function loadImages(
     const desired: { url: string; alt: string | null; position: number }[] = [];
     for (let i = 0; i < assetRows.length; i += 1) {
       const r = assetRows[i];
+      if (!r) continue;
       const url = await resolveUrl(r);
       desired.push({
         url,

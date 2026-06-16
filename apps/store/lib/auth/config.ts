@@ -193,9 +193,19 @@ export const authConfig: NextAuthConfig = {
     // Project token claims onto the session for server + client consumers.
     session: async ({ session, token }) => {
       if (session.user) {
-        session.user.id = typeof token.userId === 'number' ? token.userId : null;
-        session.user.role = typeof token.role === 'string' ? token.role : 'customer';
-        session.user.locale = typeof token.locale === 'string' ? token.locale : 'ru';
+        // next-auth's base User.id is typed `string`; our augmentation adds
+        // `id: number | null`. TypeScript interface merging intersects them to
+        // `never` (a known limitation — merging cannot override a field's type).
+        // `as unknown as` is the TS idiom for a targeted assertion over this
+        // specific conflict; no `any` is introduced here.
+        const u = session.user as unknown as {
+          id: number | null;
+          role: string;
+          locale: string;
+        };
+        u.id = typeof token.userId === 'number' ? token.userId : null;
+        u.role = typeof token.role === 'string' ? token.role : 'customer';
+        u.locale = typeof token.locale === 'string' ? token.locale : 'ru';
       }
       return session;
     },

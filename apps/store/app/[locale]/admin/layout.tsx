@@ -11,6 +11,10 @@ import { SignOutButton } from '@/components/account/sign-out-button';
 // SiteHeader/SiteFooter — the operator console is its own surface. Styling reuses
 // the bone/ink/brass tokens but stays lighter and denser than the storefront.
 
+// requireStaff() reads cookies (via auth()); make the dynamic nature explicit so
+// Next.js never attempts to pre-render admin pages at build time.
+export const dynamic = 'force-dynamic';
+
 type Props = { children: ReactNode; params: Promise<{ locale: string }> };
 
 export default async function AdminLayout({ children, params }: Props) {
