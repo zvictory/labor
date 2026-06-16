@@ -137,7 +137,8 @@ services:
     restart: unless-stopped
     env_file: ../.env
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-labor_dev}
+      # Separate DB from Spree (labor_production) so Prisma never touches Spree tables.
+      DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${STORE_DB:-labor_store}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-https://laborparfum.com}
     depends_on:
       postgres:
