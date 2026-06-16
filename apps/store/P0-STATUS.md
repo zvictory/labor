@@ -13,7 +13,21 @@ Rails-free rebuild of Labor Parfum: **Next.js 15 (App Router) + Prisma + Postgre
 
 ## Phased scope
 
-This delivers **P0 (scaffold + schema + ETL)** plus an early slice of **P1 (storefront on real data)** since the UI was ported in the same pass. Not built yet: cart/checkout (P2), payment order-mutation (P3), delivery wiring (P4), Telegram bot/auth (P5), admin (P6).
+Delivered so far: **P0** (scaffold + schema + ETL), an early slice of **P1** (storefront on real data — UI ported), **P2** (cart + checkout + order creation), and the **P3 payment order-mutation** wiring. Not built yet: delivery API wiring (P4), Telegram bot/auth/session (P5), admin (P6), cutover (P7).
+
+### P2 — cart + checkout (added)
+- **Cart:** server-backed via Prisma + an httpOnly guest-cookie token (`labor_cart`). `lib/cart/{cart,actions}.ts`, `app/api/cart/route.ts`, client islands (`add-to-cart`, `cart-count-badge`, `mini-cart`, line controls), `(store)/cart/page.tsx`. Add-to-cart wired into the PDP and product cards; header shows a live count. Sample/decant line = ~8% of price. Subtotal only (delivery added at checkout). No inventory model → no stock checks.
+- **Checkout/orders:** `(store)/checkout` (uz-regions address, delivery method, summary, payment choice) → `lib/orders/create.createOrderFromCart` (transactional, `LB-YYYYMMDD-XXXXXX` number, snapshots line prices, clears cart) → `lib/payments/initiate.startPayment` builds the Payme/Click redirect. Cash-on-delivery lands on the confirmation page. `(store)/orders/[number]` shows status. Guest checkout (name+phone); `userId` left as a `TODO(auth)`.
+
+### P3 — payment order-mutation (added)
+- `lib/orders/payment-state.ts` — idempotent transitions (`markPaymentAuthorized`, `markOrderPaid`, `markPaymentCanceled`) wrapped in transactions, guarding against double-apply and never rewinding shipped/delivered orders.
+- Filled the `TODO(P3)` blocks in the Payme route (CreateTransaction→authorized, PerformTransaction→paid, CancelTransaction→canceled) and the Click webhook (PREPARE→authorized, COMPLETE→paid/canceled). Verification + idempotent event recording untouched.
+- Provider success-redirect URLs corrected to the real confirmation route `/${locale}/orders/{number}`.
+
+### P2/P3 follow-ups (non-blocking)
+- Auth/session not wired yet → orders are guest (phone identity); add user association + guest-cart merge in P5.
+- Checkout copy is inline tri-lingual with a `TODO(i18n)` to move into a next-intl `checkout` namespace.
+- No `(orders, provider)` DB unique → payment-state uses find-or-create (`findFirst`); fine for one in-flight payment per order.
 
 ## Known reconciliation items (non-blocking, for follow-up)
 

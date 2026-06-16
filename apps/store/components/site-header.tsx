@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Heart, Search, ShoppingBag, User } from 'lucide-react';
 
 import { LocaleSwitcher } from '@/components/locale-switcher';
+import { CartCountBadge } from '@/components/cart/cart-count-badge';
 
 // Site chrome — Labor wordmark in font-display, primary nav, locale switcher and
 // the search/account/wishlist/cart icon rail. Ported from apps/web. Server-safe:
@@ -63,6 +64,7 @@ export function SiteHeader({ locale }: { locale: string }) {
             className="relative p-2 hover:text-brass"
           >
             <ShoppingBag className="h-5 w-5" />
+            <CartCountBadge />
           </Link>
         </div>
       </div>

@@ -15,7 +15,9 @@
 //      On duplicate, replay the stored prior response.
 //   6. Shape the proper Click reply.
 //
-// Order/payment mutation is deferred — see TODO(P3) blocks.
+// Order/payment mutation is delegated to lib/orders/payment-state.ts
+// (markPaymentAuthorized / markOrderPaid / markPaymentCanceled) — transactional
+// and idempotent.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
@@ -27,6 +29,11 @@ import {
   CLICK_ACTION,
   type ClickWebhookBody,
 } from '@/lib/payments/click';
+import {
+  markPaymentAuthorized,
+  markOrderPaid,
+  markPaymentCanceled,
+} from '@/lib/orders/payment-state';
 
 const PROVIDER = 'click';
 
@@ -165,8 +172,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const rec = await recordEvent(click_trans_id, eventType, body, order.id);
     if (rec.duplicate) return NextResponse.json(rec.priorResponse);
 
-    // TODO(P3): mutate order/payment — upsert Payment(provider='click',
-    // externalTxnId=click_trans_id, state='created').
+    // Ensure a Payment row (state 'authorized' — Click has reserved the
+    // payment; COMPLETE confirms it). Idempotent; merchant_trans_id == number.
+    await markPaymentAuthorized(merchant_trans_id, PROVIDER, click_trans_id);
     const response = clickReply({
       clickTransId: click_trans_id,
       merchantTransId: merchant_trans_id,
@@ -186,8 +194,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Negative `error` from Click => payment failed/cancelled.
     if (clickError && Number.parseInt(clickError, 10) < 0) {
-      // TODO(P3): mutate order/payment — cancel order, restore stock,
-      // Payment.state='canceled'.
+      // Click reported failure on COMPLETE — cancel the payment/order.
+      // Refund if it had somehow already been paid. Idempotent.
+      await markPaymentCanceled(merchant_trans_id, PROVIDER, click_trans_id, {
+        refund: order.paymentStatus === 'paid',
+      });
       const response = clickReply({
         clickTransId: click_trans_id,
         merchantTransId: merchant_trans_id,
@@ -199,8 +210,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json(response);
     }
 
-    // TODO(P3): mutate order/payment — set order.paymentStatus='paid',
-    // status='paid', Payment.state='paid' (guard on not-already-paid).
+    // Success on COMPLETE — mark paid: Payment.state='paid', paymentStatus='paid',
+    // status='paid' (if pending/confirmed). Transactional + idempotent.
+    await markOrderPaid(merchant_trans_id, PROVIDER, click_trans_id);
     const response = clickReply({
       clickTransId: click_trans_id,
       merchantTransId: merchant_trans_id,

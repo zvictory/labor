@@ -13,8 +13,9 @@
 //      the JSON-RPC method. On duplicate, return the stored prior response.
 //   6. Shape the proper Payme success/error envelope.
 //
-// Order/payment state mutation is deferred — see the TODO(P3) blocks. Verify +
-// idempotency + response shaping are fully implemented now.
+// Order/payment state mutation is delegated to lib/orders/payment-state.ts
+// (markPaymentAuthorized / markOrderPaid / markPaymentCanceled), which is
+// transactional and idempotent. Verify + idempotency + response shaping here.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
@@ -27,6 +28,11 @@ import {
   PAYME_STATE,
   type PaymeRequest,
 } from '@/lib/payments/payme';
+import {
+  markPaymentAuthorized,
+  markOrderPaid,
+  markPaymentCanceled,
+} from '@/lib/orders/payment-state';
 
 const PROVIDER = 'payme';
 
@@ -160,8 +166,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       if (rec.duplicate) return NextResponse.json(rec.priorResponse);
 
       const createTime = params.time ?? Date.now();
-      // TODO(P3): mutate order/payment — upsert a Payment(provider='payme',
-      // externalTxnId, state='created') row and link it to the order.
+      // Ensure a Payment row exists and mark it authorized (Payme has created the
+      // transaction; perform comes later). Idempotent — re-running won't duplicate.
+      await markPaymentAuthorized(order.number, PROVIDER, externalTxnId);
       const response = paymeResponse(id, {
         create_time: createTime,
         transaction: paymeTxnId,
@@ -192,8 +199,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
 
       const performTime = Date.now();
-      // TODO(P3): mutate order/payment — set order.paymentStatus='paid',
-      // order.status='paid', Payment.state='paid'. Wrap in a transaction.
+      // Mark the order paid: Payment.state='paid', paymentStatus='paid',
+      // status='paid' (if pending/confirmed). Transactional + idempotent.
+      await markOrderPaid(order.number, PROVIDER, externalTxnId);
       const response = paymeResponse(id, {
         transaction: paymeTxnId,
         perform_time: performTime,
@@ -222,8 +230,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         order.paymentStatus === 'paid' ? PAYME_STATE.CANT_CANCELLED : PAYME_STATE.CANCELLED;
       const cancelTime = Date.now();
 
-      // TODO(P3): mutate order/payment — set order.status='canceled',
-      // paymentStatus accordingly, Payment.state='canceled', restore stock.
+      // Cancel the payment: Payment.state='canceled'; order canceled unless
+      // already shipped/delivered; paymentStatus -> 'refunded' if it was paid
+      // (a post-perform cancel == refund). Transactional + idempotent.
+      await markPaymentCanceled(order.number, PROVIDER, externalTxnId, {
+        refund: order.paymentStatus === 'paid',
+      });
       const response = paymeResponse(id, {
         transaction: paymeTxnId,
         cancel_time: cancelTime,

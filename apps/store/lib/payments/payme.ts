@@ -177,7 +177,7 @@ export function createPaymePaymentUrl(params: {
     ac: { order_id: orderNumber },
     a: somToTiyin(amountSom),
     l: locale,
-    c: `${SITE_URL}/${locale}/orders/success?order=${encodeURIComponent(orderNumber)}`,
+    c: `${SITE_URL}/${locale}/orders/${encodeURIComponent(orderNumber)}`,
   };
   const base64 = Buffer.from(JSON.stringify(data)).toString('base64');
   return `${CHECKOUT_URL.replace(/\/$/, '')}/${base64}`;

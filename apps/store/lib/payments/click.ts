@@ -130,7 +130,7 @@ export function createClickPaymentUrl(params: {
     throw new Error('CLICK_SERVICE_ID / CLICK_MERCHANT_ID env vars are not set');
   }
 
-  const returnUrl = `${SITE_URL}/${locale}/orders/success?order=${encodeURIComponent(orderNumber)}`;
+  const returnUrl = `${SITE_URL}/${locale}/orders/${encodeURIComponent(orderNumber)}`;
   const base = 'https://my.click.uz/services/pay';
 
   const query = new URLSearchParams({

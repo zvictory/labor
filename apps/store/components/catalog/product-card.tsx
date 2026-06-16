@@ -4,6 +4,7 @@ import Image from 'next/image';
 import type { ProductCardDTO } from '@/lib/catalog/types';
 import { formatUzs, formatRating } from '@/lib/money';
 import { getReadableTextColor } from '@/components/catalog/color-contrast';
+import { AddToCartIcon } from '@/components/cart/add-to-cart';
 
 // Presentational catalog card. Server-safe (no client hooks). Consumes the new
 // data-access ProductCardDTO directly — `votes_count === 0` hides the rating row,
@@ -18,8 +19,10 @@ export const ProductCard = ({
   const hasImage = Boolean(product.image);
 
   return (
-    <Link href={`/${locale}/product/${product.slug}`} className="group block space-y-2">
-      <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-stone-50">
+    <div className="group relative space-y-2">
+      <AddToCartIcon productId={product.id} locale={locale} />
+      <Link href={`/${locale}/product/${product.slug}`} className="block space-y-2">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-stone-50">
         {hasImage ? (
           <Image
             src={product.image}
@@ -61,6 +64,7 @@ export const ProductCard = ({
         )}
         <span className="font-medium text-stone-900">{formatUzs(product.price, locale)}</span>
       </div>
-    </Link>
+      </Link>
+    </div>
   );
 };

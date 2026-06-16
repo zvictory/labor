@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { ProductCard } from '@/components/catalog/product-card';
+import { AddToCart } from '@/components/cart/add-to-cart';
 import { getReadableTextColor } from '@/components/catalog/color-contrast';
 import { getProduct } from '@/lib/catalog/products';
 import { formatUzs, formatRating } from '@/lib/money';
@@ -178,15 +179,9 @@ export default async function ProductPage({ params }: Props) {
           )}
 
           {/* Actions */}
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-            {/* TODO(P2): wire real cart mutation — no cart layer yet. */}
-            <button
-              type="button"
-              disabled
-              className="inline-flex h-12 flex-1 items-center justify-center bg-ink px-7 text-xs font-semibold uppercase tracking-widest text-bone opacity-90 transition-colors hover:bg-brass disabled:cursor-not-allowed dark:bg-bone dark:text-ink"
-            >
-              {tpdp('cart.add')}
-            </button>
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-start">
+            {/* Cart client island — POSTs /api/cart, sample = ~8% decant. */}
+            <AddToCart productId={product.id} locale={locale} hasSample />
             <a
               href={TELEGRAM_URL}
               className="inline-flex h-12 items-center justify-center gap-2 border border-[#229ED9] px-7 text-xs font-semibold uppercase tracking-widest text-[#1c7fb0] transition-colors hover:bg-[#229ED9] hover:text-white"
