@@ -13,7 +13,18 @@ Rails-free rebuild of Labor Parfum: **Next.js 15 (App Router) + Prisma + Postgre
 
 ## Phased scope
 
-Delivered so far: **P0** (scaffold + schema + ETL), an early slice of **P1** (storefront), **P2** (cart + checkout + orders), **P3** (payment order-mutation), **P5** (auth/sessions + Telegram bot + notifications), and a first slice of **P4** (live delivery quotes, display-only). Not built yet: charged dynamic delivery fee + shipment creation (rest of P4), admin (P6), cutover (P7).
+Delivered so far: **P0** (scaffold + schema + ETL), an early slice of **P1** (storefront), **P2** (cart + checkout + orders), **P3** (payment order-mutation), **P5** (auth/sessions + Telegram bot + notifications), a first slice of **P4** (live delivery quotes, display-only), and **P6** (admin console). Not built yet: charged dynamic delivery fee + shipment creation (rest of P4), provider refunds, cutover (P7).
+
+### P6 — admin console (added)
+- **Shell + guard:** `app/[locale]/admin/*` with a `requireStaff()` guard (`lib/admin/guard.ts`, redirects non-staff/admin to login), admin chrome/nav (separate from the storefront header), and a dashboard (`lib/admin/metrics.ts` — product/order/brand/note/user/campaign counts, orders-by-status, recent orders). Admin UI is ru-primary.
+- **Catalog management:** products table (search + pagination) and a full product editor (per-locale ru/uz/en name/description via tabbed inputs, price, status, gender/concentration, brand, notes pyramid editor, accords-with-weight editor, perfumers, and an image manager that uploads to object storage via `putObject`). Taxonomy CRUD for brands/notes/accords/perfumers with reference-count delete guards. Actions in `lib/admin/catalog-actions.ts`, each `requireStaff` + zod + `revalidatePath`.
+- **Orders management:** orders table with status tabs + search, order detail, and **legal-transition-gated** manual actions (confirm/ship/deliver/cancel) in `lib/admin/order-actions.ts` — idempotent, transactional, and firing `notifyOrderStatus` best-effort. Transition matrix + sync `canTransition` live in `lib/admin/order-transitions.ts`. Payment-driven state stays owned by the untouched `payment-state.ts`.
+- **Campaigns management:** CRUD for campaigns (per-locale title/subtitle/body/cta, active toggle, start/end), slides with image upload, and a featured-products picker (`setCampaignProducts`). This makes the homepage hero/campaigns admin-manageable once the storefront reads them.
+
+### P6 follow-ups (non-blocking)
+- No new dependencies (admin uses plain inputs + `next/image unoptimized`).
+- `cancelOrder` of a paid order leaves `paymentStatus` as-is (`TODO(refund)`); cancel reason isn't persisted (no column).
+- Storefront hero still reads local slides — wire it to the (now-manageable) Campaign data in a later step.
 
 ### P5 — auth, accounts, Telegram bot (added)
 - **Auth.js (next-auth v5, JWT):** `lib/auth/*` with three credential providers — Telegram Login Widget (find-or-create User by `telegramId`, source of truth), staff email/password (bcrypt vs `passwordHash`, role-gated), and phone OTP. `getCurrentUser()` server helper. New `OtpCode` model (bcrypt-hashed codes, 5-min expiry, rate-limited, attempt ceiling) + `app/api/auth/*`. Account pages: login, overview, my-orders.
