@@ -126,6 +126,25 @@ services:
     ports:
       - "3001:3001"
 
+  store:
+    build:
+      context: ..
+      dockerfile: apps/store/Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://laborparfum.com}
+        NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: ${NEXT_PUBLIC_TELEGRAM_BOT_USERNAME:-}
+        NEXT_PUBLIC_MINIAPP_URL: ${NEXT_PUBLIC_MINIAPP_URL:-}
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-labor_dev}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-https://laborparfum.com}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - "3002"
+
   bot:
     build:
       context: ..
@@ -149,7 +168,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
-      - web
+      - store
       - backend
 
 volumes:
