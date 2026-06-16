@@ -6,6 +6,7 @@
   "workspaces": [
     "apps/web",
     "apps/bot",
+    "apps/store",
     "packages/*"
   ],
   "scripts": {

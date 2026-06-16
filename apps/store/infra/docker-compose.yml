@@ -1,0 +1,67 @@
+# Dev-only infra for the Labor store app (apps/store).
+# Brings up Postgres, Redis, and MinIO. The Next.js app + Telegram bot run on
+# the host (npm run dev). NOT for production.
+#
+#   docker compose -f apps/store/infra/docker-compose.yml up -d
+#   docker compose -f apps/store/infra/docker-compose.yml down
+#
+# Credentials here are dev defaults and must match apps/store/.env.
+
+name: labor-store
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: labor-store-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: labor
+      POSTGRES_PASSWORD: labor
+      POSTGRES_DB: labor_store
+    ports:
+      - '5432:5432'
+    volumes:
+      - store_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U labor -d labor_store']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    container_name: labor-store-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - store_redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: labor-store-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - '9000:9000' # S3 API
+      - '9001:9001' # web console
+    volumes:
+      - store_minio_data:/data
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  store_pg_data:
+  store_redis_data:
+  store_minio_data:
