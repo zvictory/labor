@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import { locales, type Locale } from '@/i18n/config';
 import { HeroSlider } from '@/components/home/hero-slider';
@@ -151,6 +153,14 @@ const FAMILY_LABELS: Record<string, Record<string, string>> = {
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+
+  // Redirect mobile users directly to the shop/catalog
+  const reqHeaders = await headers();
+  const userAgent = reqHeaders.get('user-agent') || '';
+  const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
+  if (isMobile) {
+    redirect(`/${locale}/catalog`);
+  }
 
   const t = await getTranslations('home');
   const b = await getTranslations('brand');
