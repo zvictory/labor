@@ -150,6 +150,8 @@ const FAMILY_LABELS: Record<string, Record<string, string>> = {
 
 
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -423,6 +425,4 @@ export default async function HomePage({ params }: Props) {
   );
 }
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+

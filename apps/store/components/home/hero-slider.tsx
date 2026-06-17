@@ -35,6 +35,16 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   };
 
   useEffect(() => {
+    // Client-side mobile redirect backup to bypass static HTML cache
+    const isMobile = /mobile|android|iphone|ipad|phone/i.test(navigator.userAgent);
+    if (isMobile) {
+      const pathSegments = window.location.pathname.split('/');
+      const locale = pathSegments[1] || 'ru';
+      window.location.replace(`/${locale}/catalog`);
+    }
+  }, []);
+
+  useEffect(() => {
     setProgress(0);
   }, [current]);
 
@@ -58,7 +68,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   }, [slides.length]);
 
   return (
-    <div className="relative w-full overflow-hidden border-b border-border bg-[#F4F1EC] dark:bg-[#151311]">
+    <div className="hidden md:block relative w-full overflow-hidden border-b border-border bg-[#F4F1EC] dark:bg-[#151311]">
       <div className="relative flex h-[80vh] min-h-[600px] w-full flex-col md:h-[85vh] md:flex-row">
         
         {/* Left Column: Premium Typography & Olfactive Details (42% width on desktop) */}
