@@ -156,7 +156,11 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (phone.trim().length >= 6) requestCode();
+            if (phone.trim().length >= 6) {
+              const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
+              window.open(`https://t.me/${botUsername}?start=login`, '_blank');
+              setStep('code');
+            }
           }}
           className="space-y-4"
         >
@@ -175,23 +179,9 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
               required
             />
           </div>
-          <div className="flex flex-col gap-3">
-            <button type="submit" disabled={pending || phone.trim().length < 6} className={primaryBtnCls}>
-              {pending ? copy.sending : copy.sendCode}
-            </button>
-            <button
-              type="button"
-              disabled={pending || phone.trim().length < 6}
-              onClick={() => {
-                const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
-                window.open(`https://t.me/${botUsername}?start=login`, '_blank');
-                setStep('code');
-              }}
-              className="inline-flex h-11 w-full items-center justify-center border border-border bg-white px-7 text-xs font-semibold uppercase tracking-widest text-ink transition-colors hover:bg-stone-50 hover:border-brass disabled:cursor-not-allowed disabled:opacity-60 dark:bg-transparent dark:text-bone dark:hover:bg-ink/30"
-            >
-              {copy.telegramCode}
-            </button>
-          </div>
+          <button type="submit" disabled={phone.trim().length < 6} className={primaryBtnCls}>
+            {copy.telegramCode}
+          </button>
         </form>
       ) : (
         <form

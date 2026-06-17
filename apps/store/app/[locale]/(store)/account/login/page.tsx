@@ -3,7 +3,6 @@ import { setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { getCurrentUser } from '@/lib/auth/session';
-import { TelegramLoginButton } from '@/components/account/telegram-login-button';
 import { PhoneOtpForm } from '@/components/account/phone-otp-form';
 import { StaffLoginForm } from '@/components/account/staff-login-form';
 
@@ -26,7 +25,7 @@ const COPY: Record<
 > = {
   ru: {
     title: 'Вход',
-    subtitle: 'Войдите через Telegram или по номеру телефона.',
+    subtitle: 'Войдите с помощью нашего Telegram-бота.',
     telegram: 'Войти через Telegram',
     or: 'или',
     phone: 'Вход по телефону',
@@ -34,7 +33,7 @@ const COPY: Record<
   },
   uz: {
     title: 'Kirish',
-    subtitle: 'Telegram orqali yoki telefon raqami bilan kiring.',
+    subtitle: 'Telegram-botimiz orqali kiring.',
     telegram: 'Telegram orqali kirish',
     or: 'yoki',
     phone: 'Telefon orqali kirish',
@@ -42,7 +41,7 @@ const COPY: Record<
   },
   en: {
     title: 'Sign in',
-    subtitle: 'Sign in with Telegram or your phone number.',
+    subtitle: 'Sign in using our Telegram bot.',
     telegram: 'Sign in with Telegram',
     or: 'or',
     phone: 'Phone sign-in',
@@ -71,28 +70,8 @@ export default async function LoginPage({ params }: Props) {
         <p className="text-sm text-ink-muted dark:text-stone-400">{copy.subtitle}</p>
       </div>
 
-      {/* Telegram */}
-      <section className="mt-10 flex flex-col items-center gap-3">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
-          {copy.telegram}
-        </h2>
-        <TelegramLoginButton locale={locale} />
-      </section>
-
-      {/* Divider */}
-      <div className="my-8 flex items-center gap-4">
-        <span className="h-px flex-1 bg-border" />
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400">
-          {copy.or}
-        </span>
-        <span className="h-px flex-1 bg-border" />
-      </div>
-
       {/* Phone OTP */}
-      <section className="space-y-4">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
-          {copy.phone}
-        </h2>
+      <section className="mt-10 space-y-4">
         <PhoneOtpForm locale={locale} />
       </section>
 
