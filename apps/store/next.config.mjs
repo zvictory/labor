@@ -22,6 +22,11 @@ const nextConfig = {
       // Fragrantica note icons
       { protocol: 'https', hostname: 'fimgs.net' },
       { protocol: 'https', hostname: '**.fimgs.net' },
+      // Production image hosts
+      { protocol: 'https', hostname: 'labor.uz' },
+      { protocol: 'https', hostname: '**.labor.uz' },
+      { protocol: 'https', hostname: 'laborparfum.com' },
+      { protocol: 'https', hostname: '**.laborparfum.com' },
     ],
   },
 };
