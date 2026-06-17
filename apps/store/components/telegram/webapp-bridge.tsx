@@ -11,7 +11,7 @@ export function TelegramWebAppBridge() {
   useEffect(() => {
     // Proactively clean up class on standard browsers before script loads/checks
     const initialTg = (window as any).Telegram?.WebApp;
-    const isInsideTelegramInit = initialTg?.initData && initialTg?.platform !== 'unknown';
+    const isInsideTelegramInit = Boolean(initialTg?.initData && initialTg.initData.includes('hash='));
     const isTgRouteInit = window.location.pathname.split('/').includes('tg');
     if (!isInsideTelegramInit && !isTgRouteInit) {
       document.body.classList.remove('is-telegram-webapp');
@@ -21,8 +21,11 @@ export function TelegramWebAppBridge() {
       const tg = (window as any).Telegram?.WebApp;
       if (!tg) return undefined;
 
-      const isInsideTelegram = Boolean(tg.initData) && tg.platform !== 'unknown';
+      const isInsideTelegram = Boolean(tg.initData && tg.initData.includes('hash='));
       const isTgRoute = window.location.pathname.split('/').includes('tg');
+
+      console.log('[TelegramWebAppBridge] initData present:', Boolean(tg.initData), 'hasHash:', isInsideTelegram, 'isTgRoute:', isTgRoute);
+
       if (!isInsideTelegram && !isTgRoute) {
         document.body.classList.remove('is-telegram-webapp');
         return undefined;
