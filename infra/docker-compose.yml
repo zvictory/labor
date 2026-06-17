@@ -168,6 +168,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/nginx/certs:ro
+      - backend_storage:/usr/share/nginx/html/storage:ro
     depends_on:
       - store
       - backend
