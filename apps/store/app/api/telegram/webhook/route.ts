@@ -36,7 +36,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   try {
     const bot = getBot();
-    if (!bot.botInfo) {
+    let hasBotInfo = false;
+    try {
+      hasBotInfo = !!bot.botInfo;
+    } catch {
+      hasBotInfo = false;
+    }
+    if (!hasBotInfo) {
       await bot.init();
     }
     await bot.handleUpdate(update);
