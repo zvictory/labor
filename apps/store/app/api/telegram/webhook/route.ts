@@ -35,7 +35,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    await getBot().handleUpdate(update);
+    const bot = getBot();
+    if (!bot.botInfo) {
+      await bot.init();
+    }
+    await bot.handleUpdate(update);
   } catch (err) {
     // Never let a handler failure turn into a non-200 (Telegram would retry).
     console.error('[telegram/webhook] handleUpdate failed:', err);
