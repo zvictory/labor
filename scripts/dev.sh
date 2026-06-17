@@ -16,15 +16,39 @@
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# Load root .env variables into the shell environment so that turbo/next dev inherit them.
+eval "$(node -e '
+  const fs = require("fs");
+  if (fs.existsSync(".env")) {
+    fs.readFileSync(".env", "utf8").split(/\r?\n/).forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) return;
+      const idx = trimmed.indexOf("=");
+      if (idx === -1) return;
+      const key = trimmed.slice(0, idx).trim();
+      let val = trimmed.slice(idx + 1).trim();
+      // Remove surrounding quotes if they exist in the .env file
+      if ((val.startsWith(`\"`) && val.endsWith(`\"`)) || (val.startsWith(`\x27`) && val.endsWith(`\x27`))) {
+        val = val.slice(1, -1);
+      }
+      console.log(`export ${key}=${JSON.stringify(val)};`);
+    });
+  }
+')"
+
 
 # ── 1. Docker infra ──────────────────────────────────────────────────────────
 echo "▶ backend stack (docker)…"
-docker compose -f infra/docker-compose.yml --env-file .env up -d \
+COMPOSE_ARGS="-f infra/docker-compose.yml"
+if [ -f infra/docker-compose.override.yml ]; then
+  COMPOSE_ARGS="$COMPOSE_ARGS -f infra/docker-compose.override.yml"
+fi
+docker compose $COMPOSE_ARGS --env-file .env up -d \
   postgres redis backend sidekiq-high sidekiq-low
 
 # ── 2. Free stale dev ports ───────────────────────────────────────────────────
-echo "▶ freeing dev ports 3001 / 8080…"
-for p in 3001 8080; do
+echo "▶ freeing dev ports ${PORT_WEB:-3011} / ${PORT_STORE:-3012} / ${PORT_BOT:-8081}…"
+for p in "${PORT_WEB:-3011}" "${PORT_STORE:-3012}" "${PORT_BOT:-8081}"; do
   lsof -ti tcp:"$p" -sTCP:LISTEN 2>/dev/null | xargs kill 2>/dev/null || true
 done
 

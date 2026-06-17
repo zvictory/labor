@@ -11,6 +11,11 @@ import { getProduct } from '@/lib/catalog/products';
 import { formatUzs, formatRating } from '@/lib/money';
 import type { Gender, ProductNoteDTO } from '@/lib/catalog/types';
 
+import { AccordsBars } from '@/components/pdp/accords-bars';
+import { NotesPyramid } from '@/components/pdp/notes-pyramid';
+import { AggregateBars } from '@/components/pdp/aggregate-bars';
+import { BRAND_LOGOS } from '@/lib/catalog/brands';
+
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
 };
@@ -96,9 +101,22 @@ export default async function ProductPage({ params }: Props) {
             {product.brand_slug ? (
               <Link
                 href={`/${locale}/catalog?brand=${product.brand_slug}`}
-                className="text-xs uppercase tracking-widest text-brass hover:underline"
+                className="inline-flex items-center gap-2 group"
               >
-                {product.brand}
+                {product.brand_slug && BRAND_LOGOS[product.brand_slug] ? (
+                  <div className="relative h-6 w-20 transition-all duration-300 group-hover:opacity-85">
+                    <Image
+                      src={`/brands/${product.brand_slug}.${BRAND_LOGOS[product.brand_slug]}`}
+                      alt={product.brand}
+                      fill
+                      className="object-contain object-left dark:brightness-0 dark:invert"
+                    />
+                  </div>
+                ) : (
+                  <span className="text-xs uppercase tracking-widest text-brass hover:underline">
+                    {product.brand}
+                  </span>
+                )}
               </Link>
             ) : (
               <p className="text-xs uppercase tracking-widest text-ink-muted dark:text-stone-400">
@@ -138,8 +156,18 @@ export default async function ProductPage({ params }: Props) {
             {product.perfumers.length > 0 && (
               <div className="flex items-baseline gap-2">
                 <dt className="text-ink-muted dark:text-stone-400">{tp('perfumer')}:</dt>
-                <dd className="text-ink dark:text-bone">
-                  {product.perfumers.map((p) => p.name).join(', ')}
+                <dd className="text-ink dark:text-bone flex flex-wrap gap-1.5">
+                  {product.perfumers.map((p, idx) => (
+                    <span key={p.slug}>
+                      <Link
+                        href={`/${locale}/catalog?perfumer=${p.slug}`}
+                        className="hover:text-brass hover:underline"
+                      >
+                        {p.name}
+                      </Link>
+                      {idx < product.perfumers.length - 1 && ', '}
+                    </span>
+                  ))}
                 </dd>
               </div>
             )}
@@ -159,9 +187,10 @@ export default async function ProductPage({ params }: Props) {
               </h2>
               <div className="flex flex-wrap gap-2">
                 {product.accords.map((accord) => (
-                  <span
+                  <Link
                     key={accord.name}
-                    className="rounded-full border border-black/5 px-3 py-1 text-xs font-medium uppercase tracking-wide shadow-sm"
+                    href={accord.slug ? `/${locale}/catalog?accord=${accord.slug}` : `/${locale}/catalog`}
+                    className="rounded-full border border-black/5 px-3 py-1 text-xs font-medium uppercase tracking-wide shadow-sm transition-all duration-300 hover:scale-[1.03] hover:brightness-105"
                     style={
                       accord.color_hex
                         ? {
@@ -172,7 +201,7 @@ export default async function ProductPage({ params }: Props) {
                     }
                   >
                     {accord.name}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -192,25 +221,135 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Scent pyramid */}
-      {(product.notes.top.length > 0 ||
-        product.notes.middle.length > 0 ||
-        product.notes.base.length > 0) && (
-        <section className="mt-20 border-t border-border pt-12">
-          <h2 className="mb-8 font-display text-3xl text-ink dark:text-bone">
-            {tpdp('pyramid.title')}
-          </h2>
-          <div className="grid gap-8 md:grid-cols-3">
-            <PyramidLayer title={tpdp('pyramid.top')} notes={product.notes.top} locale={locale} />
-            <PyramidLayer
-              title={tpdp('pyramid.heart')}
-              notes={product.notes.middle}
-              locale={locale}
-            />
-            <PyramidLayer title={tpdp('pyramid.base')} notes={product.notes.base} locale={locale} />
-          </div>
-        </section>
+      {/* Accords & Pyramid visual charts (Fragrantica-style grid) */}
+      <div className="grid gap-12 md:grid-cols-2 mt-20 border-t border-border pt-12">
+        <AccordsBars accords={product.accords} locale={locale} />
+        <NotesPyramid notes={product.notes} locale={locale} />
+      </div>
+
+      {/* Season & Time aggregate voting bars */}
+      {(Object.keys(product.seasons).length > 0 ||
+        Object.keys(product.time).length > 0 ||
+        Object.keys(product.love).length > 0) && (
+        <div className="mt-16 border-t border-border pt-12">
+          <AggregateBars
+            seasons={product.seasons as any}
+            time={product.time as any}
+            love={product.love as any}
+            votesCount={product.votes_count}
+          />
+        </div>
       )}
+
+      {/* Visual Creator Profile & Brand Heritage Block */}
+      <section className="mt-20 border-t border-border pt-16 space-y-12">
+        <div className="text-center max-w-xl mx-auto space-y-2 mb-12">
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+            CREATION & HERITAGE
+          </span>
+          <h2 className="font-display text-3xl text-ink dark:text-bone">
+            Behind the Fragrance
+          </h2>
+          <p className="text-xs uppercase tracking-widest text-stone-400">
+            Learn about the house and creators of this scent
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Brand Profile Card */}
+          <div className="flex flex-col justify-between border border-border bg-stone-50/40 dark:bg-stone-900/5 p-8 rounded-lg space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brass font-bold">
+                  THE FRAGRANCE HOUSE
+                </span>
+                {product.brand_slug && (
+                  <Link
+                    href={`/${locale}/catalog?brand=${product.brand_slug}`}
+                    className="text-xs uppercase tracking-widest text-brass hover:underline"
+                  >
+                    View Collection →
+                  </Link>
+                )}
+              </div>
+              <div className="flex items-center gap-6">
+                {product.brand_slug && BRAND_LOGOS[product.brand_slug] ? (
+                  <div className="relative h-16 w-36 bg-bone rounded border border-border/40 p-2 dark:bg-[#1A1714] overflow-hidden">
+                    <Image
+                      src={`/brands/${product.brand_slug}.${BRAND_LOGOS[product.brand_slug]}`}
+                      alt={product.brand}
+                      fill
+                      className="object-contain p-1 dark:brightness-0 dark:invert"
+                    />
+                  </div>
+                ) : (
+                  <h3 className="font-display text-3xl text-ink dark:text-bone">
+                    {product.brand}
+                  </h3>
+                )}
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium text-ink dark:text-bone">{product.brand}</p>
+                  <p className="text-xs text-ink-muted dark:text-stone-400">Official Distributor</p>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-sm text-ink-muted leading-relaxed dark:text-stone-400">
+              Discover the unique heritage and artisanal craftsmanship of {product.brand}. Every bottle represents an olfactory journey crafted from the finest ingredients, now exclusively curated for our collectors in Uzbekistan.
+            </p>
+          </div>
+
+          {/* Perfumers Profile Card */}
+          <div className="flex flex-col justify-between border border-border bg-stone-50/40 dark:bg-stone-900/5 p-8 rounded-lg space-y-6">
+            <div className="space-y-4">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-brass font-bold">
+                THE NOSE / PERFUMERS
+              </span>
+              
+              {product.perfumers.length > 0 ? (
+                <div className="space-y-4">
+                  {product.perfumers.map((perfumer) => {
+                    return (
+                      <div key={perfumer.slug} className="flex items-center gap-4">
+                        <div className="relative h-16 w-16 overflow-hidden rounded-full border border-border bg-stone-100 shadow-sm shrink-0">
+                          <Image
+                            src={`/perfumers/${perfumer.slug}.jpg`}
+                            alt={perfumer.name}
+                            fill
+                            sizes="64px"
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="font-serif text-lg leading-tight text-ink dark:text-bone">
+                            {perfumer.name}
+                          </h4>
+                          <Link
+                            href={`/${locale}/catalog?perfumer=${perfumer.slug}`}
+                            className="inline-block text-xs uppercase tracking-widest text-brass hover:underline"
+                          >
+                            Explore Scent Portfolio →
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="py-4 text-sm text-ink-muted dark:text-stone-400 italic">
+                  The nose details for this fragrance are currently anonymous or undisclosed.
+                </div>
+              )}
+            </div>
+
+            {product.perfumers.length > 0 && (
+              <p className="text-sm text-ink-muted leading-relaxed dark:text-stone-400">
+                Created by renowned master perfumers, this scent combines traditional methods with contemporary ingredients to deliver a long-lasting, sophisticated experience.
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
 
       {/* Similar products */}
       {product.similar.length > 0 && (

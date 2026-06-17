@@ -1,6 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [".env", ".env.local", "tsconfig.base.json"],
+  "globalPassThroughEnv": [
+    "INTERNAL_API_URL",
+    "PORT_WEB",
+    "PORT_STORE",
+    "PORT_BOT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

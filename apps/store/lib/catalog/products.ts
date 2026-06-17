@@ -22,6 +22,8 @@ export interface ListProductsParams {
   sort?: ProductSort;
   brand?: string;
   note?: string;
+  accord?: string;
+  perfumer?: string;
   family?: string;
   gender?: string;
   q?: string;
@@ -93,7 +95,12 @@ const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
   const fragrance: Prisma.FragranceDetailWhereInput = {};
 
   if (params.brand) {
-    fragrance.brand = { slug: params.brand };
+    fragrance.brand = {
+      slug: {
+        contains: params.brand,
+        mode: 'insensitive',
+      },
+    };
   }
   if (params.gender) {
     fragrance.gender = params.gender;
@@ -115,6 +122,12 @@ const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
       { name: { path: ['uz'], string_contains: params.q } },
       { name: { path: ['en'], string_contains: params.q } },
     ];
+  }
+  if (params.perfumer) {
+    where.perfumers = { some: { perfumer: { slug: params.perfumer } } };
+  }
+  if (params.accord) {
+    where.accords = { some: { accord: { slug: params.accord } } };
   }
 
   return where;
@@ -195,8 +208,13 @@ export const getProduct = async (
           gender: true,
           concentration: true,
           avgRating: true,
+          avgLongevity: true,
+          avgSillage: true,
           votesCount: true,
           reviewsCount: true,
+          loveBreakdown: true,
+          seasonsBreakdown: true,
+          timeBreakdown: true,
           brand: { select: { name: true, slug: true } },
         },
       },
@@ -211,7 +229,7 @@ export const getProduct = async (
         orderBy: { weight: 'desc' },
         select: {
           weight: true,
-          accord: { select: { name: true, colorHex: true } },
+          accord: { select: { slug: true, name: true, colorHex: true } },
         },
       },
       perfumers: {
@@ -240,6 +258,7 @@ export const getProduct = async (
   }
 
   const accords: ProductAccordDTO[] = product.accords.map((pa) => ({
+    slug: pa.accord.slug,
     name: resolveLocaleText(pa.accord.name, locale),
     color_hex: pa.accord.colorHex ?? '',
     weight: pa.weight,
@@ -256,6 +275,13 @@ export const getProduct = async (
 
   const fragrance = product.fragrance;
 
+  const parseBreakdown = (val: any): Record<string, number> => {
+    if (typeof val === 'object' && val !== null) {
+      return val as Record<string, number>;
+    }
+    return {};
+  };
+
   return {
     id: product.id,
     slug: product.slug,
@@ -269,10 +295,15 @@ export const getProduct = async (
     gender: normalizeGender(fragrance?.gender),
     ...(fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
     avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
+    avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
+    avg_sillage: fragrance ? Number(fragrance.avgSillage) : 0,
     votes_count: fragrance ? fragrance.votesCount || fragrance.reviewsCount : 0,
     notes,
     accords,
     perfumers,
     similar,
+    seasons: parseBreakdown(fragrance?.seasonsBreakdown),
+    time: parseBreakdown(fragrance?.timeBreakdown),
+    love: parseBreakdown(fragrance?.loveBreakdown),
   };
 };

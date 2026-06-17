@@ -61,7 +61,7 @@ describe('cart-store', () => {
 
     const updated = useCartStore.getState();
     expect(updated.lines).toHaveLength(1);
-    expect(updated.lines[0].quantity).toBe(5);
+    expect(updated.lines[0]!.quantity).toBe(5);
     expect(updated.total()).toBe(7500000);
   });
 
@@ -80,7 +80,7 @@ describe('cart-store', () => {
     });
 
     store.setQuantity(10, 4);
-    expect(useCartStore.getState().lines[0].quantity).toBe(4);
+    expect(useCartStore.getState().lines[0]!.quantity).toBe(4);
 
     store.setQuantity(10, 0); // Should remove from cart
     expect(useCartStore.getState().lines).toHaveLength(0);

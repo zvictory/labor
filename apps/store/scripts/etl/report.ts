@@ -84,8 +84,7 @@ export async function runReport(): Promise<EntityCount[]> {
   add(
     "productImages",
     await count(
-      "spree_assets a JOIN active_storage_attachments att ON att.record_type = 'Spree::Asset' AND att.record_id = a.id AND att.name = 'attachment'",
-      "a.viewable_type = 'Spree::Product'",
+      "spree_assets a JOIN spree_variants v ON v.id = a.viewable_id AND a.viewable_type = 'Spree::Variant' JOIN active_storage_attachments att ON att.record_type = 'Spree::Asset' AND att.record_id = a.id AND att.name = 'attachment'",
     ),
     await db.productImage.count(),
     "target may be lower: images for deleted products are skipped",

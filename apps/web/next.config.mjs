@@ -9,7 +9,7 @@ const nextConfig = {
   poweredByHeader: false,
   transpilePackages: ['@labor/api-client'],
   experimental: {
-    serverActions: { allowedOrigins: ['localhost:3001', 'labor.uz', '*.labor.uz', 'laborparfum.com', '*.laborparfum.com'] },
+    serverActions: { allowedOrigins: ['localhost:3001', 'localhost:3011', 'labor.uz', '*.labor.uz', 'laborparfum.com', '*.laborparfum.com'] },
   },
   images: {
     remotePatterns: [

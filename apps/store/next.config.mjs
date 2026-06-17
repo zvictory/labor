@@ -19,6 +19,9 @@ const nextConfig = {
       // Telegram (avatars, t.me links)
       { protocol: 'https', hostname: 't.me' },
       { protocol: 'https', hostname: '**.telegram.org' },
+      // Fragrantica note icons
+      { protocol: 'https', hostname: 'fimgs.net' },
+      { protocol: 'https', hostname: '**.fimgs.net' },
     ],
   },
 };

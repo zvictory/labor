@@ -71,3 +71,7 @@ lelabo-clone/
 labor_ssh_configs/
 .claude/
 
+# Store app local storage cache
+apps/store/tmp-storage/
+
+

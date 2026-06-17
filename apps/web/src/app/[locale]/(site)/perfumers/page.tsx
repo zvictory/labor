@@ -44,7 +44,7 @@ const PerfumerAvatar = ({ slug, name }: { slug: string; name: string }) => {
       width={160}
       height={160}
       className="h-full w-full object-cover"
-      unoptimized={file?.endsWith('.svg')}
+      unoptimized={!!file?.endsWith('.svg')}
       fallback={fallback}
     />
   );

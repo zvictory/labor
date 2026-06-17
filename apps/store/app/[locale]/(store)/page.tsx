@@ -12,7 +12,9 @@ import { TrustStrip } from '@/components/home/trust-strip';
 import { TelegramCta } from '@/components/home/telegram-cta';
 import { listProducts } from '@/lib/catalog/products';
 import { getNotes } from '@/lib/catalog/notes';
-import { getBrands } from '@/lib/catalog/brands';
+import { getBrands, BRAND_LOGOS } from '@/lib/catalog/brands';
+import { getFilterFacets } from '@/lib/catalog/facets';
+import { QuickFilter } from '@/components/home/quick-filter';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -41,6 +43,9 @@ type HomeCopy = {
   slide2Tagline: string;
   slide2Headline: string;
   slide2Sub: string;
+  slide3Tagline: string;
+  slide3Headline: string;
+  slide3Sub: string;
 };
 
 const COPY: Record<Lang, HomeCopy> = {
@@ -61,6 +66,10 @@ const COPY: Record<Lang, HomeCopy> = {
     slide2Headline: 'Гармония дикой природы',
     slide2Sub:
       'Откройте для себя нашу древесную коллекцию с нотами мха, влажного кедра и свежих лесных трав.',
+    slide3Tagline: 'ЭЛЕГАНТНЫЙ. ЦВЕТОЧНЫЙ. НИШЕВЫЙ',
+    slide3Headline: 'Лепестки в тумане',
+    slide3Sub:
+      'Окунитесь в наши нежные композиции с белой розой и мускусом, объединяющие изысканные шедевры европейских парфюмерных домов.',
   },
   en: {
     eyebrowNew: 'Just blended',
@@ -79,6 +88,10 @@ const COPY: Record<Lang, HomeCopy> = {
     slide2Headline: 'Harmony of Wild Woods',
     slide2Sub:
       'Explore our curated woody scents featuring deep notes of moss, damp cedar wood, and fresh forest botanicals.',
+    slide3Tagline: 'ELEGANT. FLORAL. NICHE',
+    slide3Headline: 'Petals in the Mist',
+    slide3Sub:
+      'Indulge in our delicate white rose and musk blends, bringing together the absolute finest niche creations of European houses.',
   },
   uz: {
     eyebrowNew: 'Yangi tushganlar',
@@ -97,6 +110,10 @@ const COPY: Record<Lang, HomeCopy> = {
     slide2Headline: 'Yovvoyi tabiat uygʻunligi',
     slide2Sub:
       'Yoʻsin, nam kedr va yangi oʻrmon oʻtlari notalari bilan boyitilgan yogʻoch kolleksiyamizni kashf eting.',
+    slide3Tagline: 'NAFIS. GULLI. EKSKLYUZIV',
+    slide3Headline: 'Tumandagi atirgul barglari',
+    slide3Sub:
+      'Evropa uylarining eng sara eksklyuziv ijod namunalarini birlashtirgan oq atirgul va musk aralashmalarimizdan bahramand bo‘ling.',
   },
 };
 
@@ -114,6 +131,23 @@ const NOTE_FRENCH: Record<string, string> = {
 // surfaces notes that both exist in the catalog (getNotes) AND have art.
 const NOTE_IMAGE_SLUGS = ['sandalwood', 'rose', 'bergamot', 'black-tea', 'vetiver', 'musk'] as const;
 
+const FAMILY_LABELS: Record<string, Record<string, string>> = {
+  woody:    { en: 'Woody',    ru: 'Древесные',  uz: 'Yogʻochli' },
+  floral:   { en: 'Floral',   ru: 'Цветочные',  uz: 'Gulli' },
+  citrus:   { en: 'Citrus',   ru: 'Цитрусовые', uz: 'Sitrus' },
+  aromatic: { en: 'Aromatic', ru: 'Ароматные',  uz: 'Xushboʻy' },
+  oriental: { en: 'Oriental', ru: 'Восточные',  uz: 'Sharqona' },
+  green:    { en: 'Green',    ru: 'Зеленые',    uz: 'Yashil' },
+  gourmand: { en: 'Gourmand', ru: 'Гурманские', uz: 'Shirinli' },
+  smoky:    { en: 'Smoky',    ru: 'Дымные',     uz: 'Tutunli' },
+  aquatic:  { en: 'Aquatic',  ru: 'Водные',     uz: 'Suvli' },
+  leather:  { en: 'Leather',  ru: 'Кожаные',    uz: 'Charm' },
+  chypre:   { en: 'Chypre',   ru: 'Шипровые',   uz: 'Shipr' },
+  fougere:  { en: 'Fougère',  ru: 'Фужерные',   uz: 'Fujerli' },
+};
+
+
+
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -124,12 +158,20 @@ export default async function HomePage({ params }: Props) {
   const c = COPY[lang];
 
   // ── data-access layer: called directly from the RSC, no HTTP hop ──────────────
-  const [newRes, popularRes, notes, brands] = await Promise.all([
+  const [newRes, popularRes, notes, brands, facets] = await Promise.all([
     listProducts({ locale, sort: 'new' }),
     listProducts({ locale, sort: 'popular' }),
     getNotes(locale),
     getBrands(locale),
+    getFilterFacets(locale),
   ]);
+
+  const filterBrands = facets.brands.map((b) => ({ slug: b.slug, name: b.name }));
+  const filterNotes = facets.notes.slice(0, 30).map((n) => ({ slug: n.slug, name: n.name }));
+  const filterFamilies = facets.families.map((f) => ({
+    slug: f.slug,
+    name: FAMILY_LABELS[f.slug]?.[lang] ?? f.slug,
+  }));
 
   // Notes section: intersect catalog notes with the slugs we have art for, keep
   // the curated display order, cap at 6.
@@ -154,20 +196,46 @@ export default async function HomePage({ params }: Props) {
 
   const slides = [
     {
-      image: '/slides/hero.png',
-      tagline: b('tagline'),
-      headline: t('hero.headline'),
-      sub: t('hero.sub'),
-      cta: t('hero.cta'),
-      href: `/${locale}/catalog`,
+      image: '/slides/armani.png', // Armani
+      tagline: 'GIORGIO ARMANI',
+      headline: 'Acqua di Gio Profumo',
+      sub: locale === 'ru'
+        ? 'Глубокий, сложный аромат, рожденный из союза вулканических пород и океанской воды.'
+        : locale === 'uz'
+        ? 'Vulkanik jinslar va okean suvi ittifoqidan tug\'ilgan chuqur, mukammal atir.'
+        : 'A deep, sophisticated fragrance born from volcanic rock and deep ocean waters.',
+      cta: locale === 'ru' ? 'Купить аромат' : locale === 'uz' ? 'Sotib olish' : 'Shop Scent',
+      href: `/${locale}/product/acqua-di-gio-profumo`,
+      scentFamily: locale === 'ru' ? 'Водные • Древесные • Дымные' : locale === 'uz' ? 'Suvli • Yog\'ochli • Tutunli' : 'Aquatic • Woody • Smoky',
+      scentNotes: locale === 'ru' ? ['Морские ноты', 'Ладан', 'Розмарин'] : locale === 'uz' ? ['Dengiz notalari', 'Ladan', 'Rozmarin'] : ['Sea Notes', 'Incense', 'Rosemary'],
     },
     {
-      image: '/slides/woody.png',
-      tagline: c.slide2Tagline,
-      headline: c.slide2Headline,
-      sub: c.slide2Sub,
-      cta: t('hero.cta'),
-      href: `/${locale}/catalog?note=vetiver`,
+      image: '/slides/jomalone.png', // Jo Malone
+      tagline: 'JO MALONE',
+      headline: 'Wood Sage & Sea Salt',
+      sub: locale === 'ru'
+        ? 'Побег от повседневности к ветреному побережью. Свежий воздух с морской солью и брызгами.'
+        : locale === 'uz'
+        ? 'Shamal esadigan dengiz bo\'yiga qochish. Dengiz tuzi va purkagich bilan toza havo.'
+        : 'Escape the everyday along the windswept shore. Waves breaking white, the air fresh with sea salt.',
+      cta: locale === 'ru' ? 'Купить аромат' : locale === 'uz' ? 'Sotib olish' : 'Shop Scent',
+      href: `/${locale}/product/wood-sage-sea-salt`,
+      scentFamily: locale === 'ru' ? 'Ароматические • Морские • Цитрусовые' : locale === 'uz' ? 'Xushbo\'y • Dengiz • Sitrus' : 'Aromatic • Marine • Citrus',
+      scentNotes: locale === 'ru' ? ['Морская соль', 'Шалфей', 'Грейпфрут'] : locale === 'uz' ? ['Dengiz tuzi', 'Shalfej', 'Greypfrut'] : ['Sea Salt', 'Sage', 'Grapefruit'],
+    },
+    {
+      image: '/slides/banderas.png', // Antonio Banderas
+      tagline: 'ANTONIO BANDERAS',
+      headline: 'Blue Seduction',
+      sub: locale === 'ru'
+        ? 'Свежий современный аромат, передающий суть спонтанного соблазнения. Энергичный и искрящийся.'
+        : locale === 'uz'
+        ? 'Sarmast qiluvchi, o\'ziga tortadigan yangi va zamonaviy parfyum.'
+        : 'A fresh, modern scent that captures the essence of spontaneous seduction. Energetic, sparkling, and deeply seductive.',
+      cta: locale === 'ru' ? 'Купить аромат' : locale === 'uz' ? 'Sotib olish' : 'Shop Scent',
+      href: `/${locale}/product/blue-seduction`,
+      scentFamily: locale === 'ru' ? 'Свежие Пряные • Фруктовые • Янтарные' : locale === 'uz' ? 'Oq atirgul • Mevali • Musk' : 'Fresh Spicy • Fruity • Amber',
+      scentNotes: locale === 'ru' ? ['Мята', 'Дыня', 'Капучино'] : locale === 'uz' ? ['Yalpiz', 'Qovun', 'Kapuchino'] : ['Mint', 'Melon', 'Cappuccino'],
     },
   ];
 
@@ -175,6 +243,14 @@ export default async function HomePage({ params }: Props) {
     <>
       {/* Campaign hero slideshow (client island) */}
       <HeroSlider slides={slides} />
+
+      {/* Interactive Quick Filter Section */}
+      <QuickFilter
+        brands={filterBrands}
+        notes={filterNotes}
+        families={filterFamilies}
+        locale={locale}
+      />
 
       {/* Scent finder band (static; links to /find-your-perfume) */}
       <FinderBand locale={locale} lang={lang} />
@@ -288,20 +364,35 @@ export default async function HomePage({ params }: Props) {
 
         {featuredBrands.length > 0 ? (
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {featuredBrands.map((brand) => (
-              <Link
-                key={brand.slug}
-                href={`/${locale}/catalog?brand=${brand.slug}`}
-                className="group flex flex-col items-center justify-center border border-border/80 bg-bone p-8 text-center transition-all duration-300 hover:border-brass/70 hover:bg-stone-50 dark:bg-[#1A1714]/30 dark:hover:bg-[#1A1714]/60"
-              >
-                <span className="mb-4 flex h-16 w-full items-center justify-center font-display text-3xl text-ink transition-colors duration-300 group-hover:text-brass dark:text-bone">
-                  {brand.name}
-                </span>
-                <p className="text-[9px] uppercase tracking-[0.25em] text-ink-muted transition-colors duration-300 group-hover:text-brass dark:text-stone-400">
-                  {brand.country ?? (brand.niche ? 'Niche' : ' ')}
-                </p>
-              </Link>
-            ))}
+            {featuredBrands.map((brand) => {
+              const ext = BRAND_LOGOS[brand.slug];
+              return (
+                <Link
+                  key={brand.slug}
+                  href={`/${locale}/catalog?brand=${brand.slug}`}
+                  className="group flex flex-col items-center justify-center border border-border/80 bg-bone p-8 text-center transition-all duration-300 hover:border-brass/70 hover:bg-stone-50 dark:bg-[#1A1714]/30 dark:hover:bg-[#1A1714]/60"
+                >
+                  <div className="relative mb-4 flex h-16 w-full items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                    {ext ? (
+                      <Image
+                        src={`/brands/${brand.slug}.${ext}`}
+                        alt={brand.name}
+                        fill
+                        sizes="(max-width: 640px) 50vw, 25vw"
+                        className="object-contain dark:brightness-0 dark:invert"
+                      />
+                    ) : (
+                      <span className="font-display text-2xl text-ink transition-colors duration-300 group-hover:text-brass dark:text-bone">
+                        {brand.name}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[9px] uppercase tracking-[0.25em] text-ink-muted transition-colors duration-300 group-hover:text-brass dark:text-stone-400">
+                    {brand.country ?? (brand.niche ? 'Niche' : ' ')}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <p className="py-10 text-center text-sm text-ink-muted dark:text-stone-400">
