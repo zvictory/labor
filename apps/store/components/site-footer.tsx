@@ -33,11 +33,6 @@ export function SiteFooter({ locale }: { locale: string }) {
                 {t('perfumers')}
               </Link>
             </li>
-            <li>
-              <Link href={href('/campaigns')} className="hover:text-brass">
-                {t('campaigns')}
-              </Link>
-            </li>
           </ul>
         </div>
         <div>

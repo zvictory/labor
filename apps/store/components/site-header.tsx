@@ -42,9 +42,6 @@ export function SiteHeader({ locale }: { locale: string }) {
           <Link href={href('/find-your-perfume')} className="hover:text-brass">
             {t('finder')}
           </Link>
-          <Link href={href('/campaigns')} className="hover:text-brass">
-            {t('campaigns')}
-          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
