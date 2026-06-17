@@ -157,8 +157,7 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
           onSubmit={(e) => {
             e.preventDefault();
             if (phone.trim().length >= 6) {
-              const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
-              window.open(`https://t.me/${botUsername}?start=login`, '_blank');
+              window.open(`/${locale}/account/login/telegram-redirect`, '_blank');
               setStep('code');
             }
           }}
