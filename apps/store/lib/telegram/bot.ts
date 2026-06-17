@@ -108,7 +108,23 @@ function registerHandlers(bot: Bot): void {
       });
       return;
     }
-    await ctx.reply(BOT_MESSAGES[locale].start(storeUrl()));
+    const startUrl = `${storeUrl()}/${locale}/tg`;
+    const catalogUrl = `${storeUrl()}/${locale}/tg/catalog`;
+
+    const kb = new InlineKeyboard()
+      .webApp(
+        locale === 'ru' ? '🛍️ Открыть магазин' : locale === 'uz' ? '🛍️ Do‘konni ochish' : '🛍️ Open Store',
+        startUrl
+      )
+      .row()
+      .webApp(
+        locale === 'ru' ? '📖 Каталог' : locale === 'uz' ? '📖 Katalog' : '📖 Catalog',
+        catalogUrl
+      );
+
+    await ctx.reply(BOT_MESSAGES[locale].start(storeUrl()), {
+      reply_markup: kb,
+    });
   });
 
   bot.command('help', async (ctx) => {
