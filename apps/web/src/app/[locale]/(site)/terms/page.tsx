@@ -123,6 +123,11 @@ export default async function TermsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const c = COPY[toLang(locale)];
+  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
+  const sections = c.sections.map((s) => ({
+    ...s,
+    body: s.body.replace('@labor_uz_bot', `@${botUsername}`),
+  }));
 
   return (
     <article className="container max-w-3xl py-4 md:py-6">
@@ -137,7 +142,7 @@ export default async function TermsPage({ params }: Props) {
         }
       />
       <div className="mt-4 space-y-8">
-        {c.sections.map((s) => (
+        {sections.map((s) => (
           <section key={s.heading}>
             <h2 className="font-display text-ink dark:text-bone text-xl">{s.heading}</h2>
             <p className="text-ink-muted mt-2 text-base leading-relaxed dark:text-stone-300">

@@ -7,6 +7,7 @@ export function SiteFooter({ locale }: { locale: string }) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
   const href = (path: string) => `/${locale}${path}`;
+  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
 
   return (
     <footer className="mt-20 border-t border-border bg-bone py-12">
@@ -64,8 +65,8 @@ export function SiteFooter({ locale }: { locale: string }) {
           <h4 className="mb-3 text-xs uppercase tracking-widest text-ink-muted">Telegram</h4>
           <p className="text-sm text-ink-muted">
             Open the mini-app in Telegram:{' '}
-            <a href="https://t.me/labor_uz_bot" className="font-medium text-ink hover:text-brass">
-              @labor_uz_bot
+            <a href={`https://t.me/${botUsername}`} className="font-medium text-ink hover:text-brass">
+              @{botUsername}
             </a>
           </p>
         </div>

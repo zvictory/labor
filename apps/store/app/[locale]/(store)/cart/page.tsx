@@ -14,7 +14,8 @@ const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
-const TELEGRAM_URL = 'https://t.me/labor_uz_bot';
+const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
+const TELEGRAM_URL = `https://t.me/${botUsername}`;
 const ORDER_COPY: Record<Lang, string> = {
   ru: 'Заказать в Telegram',
   en: 'Order on Telegram',
