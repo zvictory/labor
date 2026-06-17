@@ -68,12 +68,14 @@
   }
 }
 
-/* Hide header and footer inside the Telegram Mini App */
-.is-telegram-webapp header,
-.is-telegram-webapp footer,
-.is-telegram-webapp .site-header,
-.is-telegram-webapp .site-footer {
-  display: none !important;
+/* Hide header and footer inside the Telegram Mini App on mobile viewports only */
+@media (max-width: 767px) {
+  .is-telegram-webapp header,
+  .is-telegram-webapp footer,
+  .is-telegram-webapp .site-header,
+  .is-telegram-webapp .site-footer {
+    display: none !important;
+  }
 }
 
 /* Telegram WebApp specific body tweaks for native mobile feel */

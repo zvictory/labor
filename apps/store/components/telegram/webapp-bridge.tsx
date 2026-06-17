@@ -1,18 +1,20 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 
 const TELEGRAM_SCRIPT_SRC = 'https://telegram.org/js/telegram-web-app.js';
 
 export function TelegramWebAppBridge() {
+  const pathname = usePathname();
   const { status: sessionStatus } = useSession();
 
   useEffect(() => {
     // Proactively clean up class on standard browsers before script loads/checks
     const initialTg = (window as any).Telegram?.WebApp;
     const isInsideTelegramInit = Boolean(initialTg?.initData && initialTg.initData.includes('hash='));
-    const isTgRouteInit = window.location.pathname.split('/').includes('tg');
+    const isTgRouteInit = pathname.split('/').includes('tg');
     if (!isInsideTelegramInit && !isTgRouteInit) {
       document.body.classList.remove('is-telegram-webapp');
     }
@@ -22,7 +24,7 @@ export function TelegramWebAppBridge() {
       if (!tg) return undefined;
 
       const isInsideTelegram = Boolean(tg.initData && tg.initData.includes('hash='));
-      const isTgRoute = window.location.pathname.split('/').includes('tg');
+      const isTgRoute = pathname.split('/').includes('tg');
 
       console.log('[TelegramWebAppBridge] initData present:', Boolean(tg.initData), 'hasHash:', isInsideTelegram, 'isTgRoute:', isTgRoute);
 
@@ -91,7 +93,7 @@ export function TelegramWebAppBridge() {
       script.removeEventListener('load', onLoad);
       cleanup?.();
     };
-  }, [sessionStatus]);
+  }, [sessionStatus, pathname]);
 
   return null;
 }
