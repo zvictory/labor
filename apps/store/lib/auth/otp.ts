@@ -97,6 +97,56 @@ export async function verifyOtp(
   phone: string,
   code: string,
 ): Promise<{ userId: number } | null> {
+  if (phone.startsWith('session:')) {
+    const sessionId = phone.replace('session:', '');
+    if (!sessionId) return null;
+
+    const row = await db.otpCode.findFirst({
+      where: {
+        codeHash: { startsWith: `${sessionId}:` },
+        consumedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!row) return null;
+
+    if (row.attempts >= MAX_ATTEMPTS) {
+      await db.otpCode.update({
+        where: { id: row.id },
+        data: { consumedAt: new Date() },
+      });
+      return null;
+    }
+
+    const parts = row.codeHash.split(':');
+    if (parts.length < 2) return null;
+    const bcryptHash = parts.slice(1).join(':');
+
+    const ok = await bcrypt.compare(code, bcryptHash);
+    if (!ok) {
+      await db.otpCode.update({
+        where: { id: row.id },
+        data: { attempts: { increment: 1 } },
+      });
+      return null;
+    }
+
+    await db.otpCode.update({
+      where: { id: row.id },
+      data: { consumedAt: new Date() },
+    });
+
+    const user = await db.user.upsert({
+      where: { phone: row.phone },
+      update: {},
+      create: { phone: row.phone, role: 'customer' },
+      select: { id: true },
+    });
+
+    return { userId: user.id };
+  }
+
   const normalized = normalizePhone(phone);
   if (normalized.length < 6) return null;
 

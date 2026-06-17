@@ -71,6 +71,22 @@ function registerHandlers(bot: Bot): void {
     const locale = await resolveLocale(ctx);
     const match = ctx.match;
     if (match === 'login' || match?.startsWith('login')) {
+      const tgId = ctx.from?.id;
+      if (tgId && match.startsWith('login_')) {
+        const sessionId = match.substring('login_'.length);
+        if (sessionId) {
+          const phoneKey = `pending:${tgId}`;
+          await db.otpCode.deleteMany({ where: { phone: phoneKey } }).catch(() => null);
+          await db.otpCode.create({
+            data: {
+              phone: phoneKey,
+              codeHash: `pending_session:${sessionId}`,
+              expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 min TTL
+            },
+          });
+        }
+      }
+
       const promptText =
         locale === 'ru'
           ? 'Пожалуйста, поделитесь своим номером телефона, чтобы получить код подтверждения для входа:'
@@ -132,6 +148,24 @@ function registerHandlers(bot: Bot): void {
     const normalized = rawPhone.startsWith('+') ? rawPhone : `+${rawPhone}`;
     const tgId = BigInt(ctx.from.id);
 
+    // Retrieve pending session ID if it exists
+    const pendingRow = await db.otpCode.findFirst({
+      where: {
+        phone: `pending:${ctx.from.id}`,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    let sessionId = '';
+    if (pendingRow) {
+      const parts = pendingRow.codeHash.split(':');
+      if (parts[0] === 'pending_session' && parts[1]) {
+        sessionId = parts[1];
+      }
+      await db.otpCode.delete({ where: { id: pendingRow.id } }).catch(() => null);
+    }
+
     // Link telegramId to phone
     let user = await db.user.findFirst({ where: { phone: normalized } });
     if (user) {
@@ -154,7 +188,8 @@ function registerHandlers(bot: Bot): void {
 
     // Generate, hash, and save code
     const code = generateCode();
-    const codeHash = await bcrypt.hash(code, 10);
+    const hash = await bcrypt.hash(code, 10);
+    const codeHash = sessionId ? `${sessionId}:${hash}` : hash;
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
 
     await db.otpCode.create({
