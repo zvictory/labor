@@ -29,6 +29,32 @@ const nextConfig = {
       { protocol: 'https', hostname: '**.laborparfum.com' },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "frame-ancestors 'self' https://telegram.org https://*.telegram.org https://web.telegram.org",
+          },
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/:locale/tg',
+        destination: '/:locale',
+      },
+      {
+        source: '/:locale/tg/:path*',
+        destination: '/:locale/:path*',
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

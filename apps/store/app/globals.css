@@ -67,3 +67,11 @@
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
+
+/* Hide header and footer inside the Telegram Mini App */
+.is-telegram-webapp header,
+.is-telegram-webapp footer,
+.is-telegram-webapp .site-header,
+.is-telegram-webapp .site-footer {
+  display: none !important;
+}

@@ -32,7 +32,7 @@ const requiredMinLength = (key: string, min: number): string => {
 
 export const config = {
   botToken: required('TELEGRAM_BOT_TOKEN'),
-  webappUrl: process.env.TELEGRAM_WEBAPP_URL ?? 'https://labor.uz/ru/tg',
+  webappUrl: process.env.TELEGRAM_WEBAPP_URL ?? process.env.NEXT_PUBLIC_MINIAPP_URL ?? process.env.WEBAPP_URL ?? 'https://laborparfum.com/tg',
   apiBaseUrl: process.env.LABOR_API_BASE_URL ?? 'http://backend:3000/api/v2',
   adminChatId: process.env.TELEGRAM_ADMIN_CHAT_ID,
   defaultLocale: (process.env.DEFAULT_LOCALE ?? 'ru') as 'ru' | 'en' | 'uz' | 'uzc',

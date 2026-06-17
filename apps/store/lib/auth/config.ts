@@ -20,7 +20,7 @@ import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 
 import { db } from '@/lib/db';
-import { verifyTelegramLogin } from '@/lib/telegram/webapp-auth';
+import { verifyTelegramLogin, verifyTelegramWebAppInitData } from '@/lib/telegram/webapp-auth';
 import { verifyOtp, normalizePhone } from '@/lib/auth/otp';
 import { mergeGuestCartIntoUser } from '@/lib/cart/cart';
 
@@ -87,6 +87,45 @@ export const authConfig: NextAuthConfig = {
             // Keep name fresh from Telegram; never clobber an explicit email.
             ...(displayName ? { name: displayName } : {}),
           },
+          create: {
+            telegramId,
+            email: telegramEmail(telegramId),
+            name: displayName,
+            role: 'customer',
+          },
+          select: { id: true, name: true, email: true, role: true, preferredLocale: true },
+        });
+
+        return {
+          id: String(user.id),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          locale: user.preferredLocale,
+        };
+      },
+    }),
+
+    // ── Telegram Mini App (WebApp) ──────────────────────────────────────────
+    Credentials({
+      id: 'telegram-webapp',
+      name: 'Telegram WebApp',
+      credentials: {
+        initData: {},
+      },
+      authorize: async (credentials): Promise<AuthedUser | null> => {
+        const initData = typeof credentials?.initData === 'string' ? credentials.initData : '';
+        if (!initData) return null;
+
+        const result = verifyTelegramWebAppInitData(initData, TELEGRAM_BOT_TOKEN);
+        if (!result.ok || !result.user?.id) return null;
+
+        const telegramId = BigInt(result.user.id);
+        const displayName = result.user.first_name || result.user.username || null;
+
+        const user = await db.user.upsert({
+          where: { telegramId },
+          update: {},
           create: {
             telegramId,
             email: telegramEmail(telegramId),
