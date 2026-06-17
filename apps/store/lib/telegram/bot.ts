@@ -9,8 +9,15 @@
 // from notify.ts) never throws when TELEGRAM_BOT_TOKEN is unset at build time.
 
 import { Bot, InlineKeyboard, type Context } from 'grammy';
+import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db';
 import { BOT_MESSAGES, toBotLocale, type BotLocale } from '@/lib/telegram/messages';
+
+const generateCode = (): string => {
+  const max = 10 ** 6;
+  const n = Math.floor(Math.random() * max);
+  return n.toString().padStart(6, '0');
+};
 
 let cachedBot: Bot | null = null;
 let cachedToken: string | null = null;
@@ -62,6 +69,29 @@ function langKeyboard(): InlineKeyboard {
 function registerHandlers(bot: Bot): void {
   bot.command('start', async (ctx) => {
     const locale = await resolveLocale(ctx);
+    const match = ctx.match;
+    if (match === 'login' || match?.startsWith('login')) {
+      const promptText =
+        locale === 'ru'
+          ? 'Пожалуйста, поделитесь своим номером телефона, чтобы получить код подтверждения для входа:'
+          : locale === 'uz'
+          ? 'Kirish tasdiqlash kodini olish uchun telefon raqamingizni yuboring:'
+          : 'Please share your phone number to receive the login verification code:';
+      const btnText =
+        locale === 'ru'
+          ? '📱 Поделиться номером'
+          : locale === 'uz'
+          ? '📱 Raqamni yuborish'
+          : '📱 Share Number';
+      await ctx.reply(promptText, {
+        reply_markup: {
+          keyboard: [[{ text: btnText, request_contact: true }]],
+          one_time_keyboard: true,
+          resize_keyboard: true,
+        },
+      });
+      return;
+    }
     await ctx.reply(BOT_MESSAGES[locale].start(storeUrl()));
   });
 
@@ -84,6 +114,65 @@ function registerHandlers(bot: Bot): void {
     }
     await ctx.answerCallbackQuery();
     await ctx.reply(BOT_MESSAGES[next].langSet);
+  });
+
+  bot.on('message:contact', async (ctx) => {
+    const locale = await resolveLocale(ctx);
+    const contact = ctx.message.contact;
+    if (!contact || contact.user_id !== ctx.from?.id) {
+      await ctx.reply(
+        locale === 'ru'
+          ? 'Ошибка: можно отправлять только свой собственный контакт.'
+          : 'Error: you can only share your own contact.'
+      );
+      return;
+    }
+
+    const rawPhone = contact.phone_number;
+    const normalized = rawPhone.startsWith('+') ? rawPhone : `+${rawPhone}`;
+    const tgId = BigInt(ctx.from.id);
+
+    // Link telegramId to phone
+    let user = await db.user.findFirst({ where: { phone: normalized } });
+    if (user) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { telegramId: tgId },
+      });
+    } else {
+      await db.user.upsert({
+        where: { telegramId: tgId },
+        update: { phone: normalized },
+        create: {
+          telegramId: tgId,
+          phone: normalized,
+          email: `tg_${ctx.from.id}@labor.local`,
+          role: 'customer',
+        },
+      });
+    }
+
+    // Generate, hash, and save code
+    const code = generateCode();
+    const codeHash = await bcrypt.hash(code, 10);
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+
+    await db.otpCode.create({
+      data: {
+        phone: normalized,
+        codeHash,
+        expiresAt,
+      },
+    });
+
+    const replyText =
+      locale === 'ru'
+        ? `Ваш код подтверждения для входа: *${code}*\n\nВведите этот код на сайте.`
+        : locale === 'uz'
+        ? `Kirish tasdiqlash kodingiz: *${code}*\n\nUshbu kodni saytga kiriting.`
+        : `Your login verification code is: *${code}*\n\nEnter this code on the website.`;
+
+    await ctx.reply(replyText, { parse_mode: 'Markdown' });
   });
 
   // Fallback for any unmatched text message.

@@ -28,55 +28,59 @@ const COPY: Record<
     errPhone: string;
     errCode: string;
     errGeneric: string;
+    telegramCode: string;
   }
 > = {
   ru: {
     phoneLabel: 'Номер телефона',
     phonePlaceholder: '+998 90 123 45 67',
-    codeLabel: 'Код из SMS',
+    codeLabel: 'Код подтверждения',
     codePlaceholder: '123456',
-    sendCode: 'Получить код',
+    sendCode: 'Получить код по SMS',
     sending: 'Отправляем…',
     verify: 'Войти',
     verifying: 'Проверяем…',
     changePhone: 'Изменить номер',
-    sentHint: 'Мы отправили код в SMS.',
+    sentHint: 'Мы отправили код. Проверьте ваши SMS или Telegram-бота.',
     errRate: 'Слишком много запросов. Попробуйте позже.',
     errPhone: 'Введите корректный номер.',
     errCode: 'Неверный или просроченный код.',
     errGeneric: 'Что-то пошло не так. Попробуйте снова.',
+    telegramCode: 'Получить код в Telegram',
   },
   uz: {
     phoneLabel: 'Telefon raqami',
     phonePlaceholder: '+998 90 123 45 67',
-    codeLabel: 'SMS kodi',
+    codeLabel: 'Tasdiqlash kodi',
     codePlaceholder: '123456',
-    sendCode: 'Kod olish',
+    sendCode: 'SMS orqali kod olish',
     sending: 'Yuborilmoqda…',
     verify: 'Kirish',
     verifying: 'Tekshirilmoqda…',
     changePhone: 'Raqamni o‘zgartirish',
-    sentHint: 'Kodni SMS orqali yubordik.',
+    sentHint: 'Kodni yubordik. SMS yoki Telegram-botingizni tekshiring.',
     errRate: 'Juda ko‘p so‘rov. Birozdan keyin urinib ko‘ring.',
     errPhone: 'To‘g‘ri raqam kiriting.',
     errCode: 'Kod noto‘g‘ri yoki muddati o‘tgan.',
     errGeneric: 'Xatolik yuz berdi. Qayta urinib ko‘ring.',
+    telegramCode: 'Telegram orqali kod olish',
   },
   en: {
     phoneLabel: 'Phone number',
     phonePlaceholder: '+998 90 123 45 67',
-    codeLabel: 'SMS code',
+    codeLabel: 'Verification code',
     codePlaceholder: '123456',
-    sendCode: 'Send code',
+    sendCode: 'Send code via SMS',
     sending: 'Sending…',
     verify: 'Sign in',
     verifying: 'Verifying…',
     changePhone: 'Change number',
-    sentHint: 'We sent a code by SMS.',
+    sentHint: 'We sent a verification code. Check your SMS or Telegram bot.',
     errRate: 'Too many requests. Please try again later.',
     errPhone: 'Enter a valid phone number.',
     errCode: 'Invalid or expired code.',
     errGeneric: 'Something went wrong. Please try again.',
+    telegramCode: 'Get code on Telegram',
   },
 };
 
@@ -171,9 +175,23 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
               required
             />
           </div>
-          <button type="submit" disabled={pending || phone.trim().length < 6} className={primaryBtnCls}>
-            {pending ? copy.sending : copy.sendCode}
-          </button>
+          <div className="flex flex-col gap-3">
+            <button type="submit" disabled={pending || phone.trim().length < 6} className={primaryBtnCls}>
+              {pending ? copy.sending : copy.sendCode}
+            </button>
+            <button
+              type="button"
+              disabled={pending || phone.trim().length < 6}
+              onClick={() => {
+                const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
+                window.open(`https://t.me/${botUsername}?start=login`, '_blank');
+                setStep('code');
+              }}
+              className="inline-flex h-11 w-full items-center justify-center border border-border bg-white px-7 text-xs font-semibold uppercase tracking-widest text-ink transition-colors hover:bg-stone-50 hover:border-brass disabled:cursor-not-allowed disabled:opacity-60 dark:bg-transparent dark:text-bone dark:hover:bg-ink/30"
+            >
+              {copy.telegramCode}
+            </button>
+          </div>
         </form>
       ) : (
         <form
