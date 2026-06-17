@@ -9,9 +9,24 @@ export function TelegramWebAppBridge() {
   const { status: sessionStatus } = useSession();
 
   useEffect(() => {
+    // Proactively clean up class on standard browsers before script loads/checks
+    const initialTg = (window as any).Telegram?.WebApp;
+    const isInsideTelegramInit = initialTg?.initData && initialTg?.platform !== 'unknown';
+    const isTgRouteInit = window.location.pathname.split('/').includes('tg');
+    if (!isInsideTelegramInit && !isTgRouteInit) {
+      document.body.classList.remove('is-telegram-webapp');
+    }
+
     const handleWebApp = () => {
       const tg = (window as any).Telegram?.WebApp;
       if (!tg) return undefined;
+
+      const isInsideTelegram = Boolean(tg.initData) && tg.platform !== 'unknown';
+      const isTgRoute = window.location.pathname.split('/').includes('tg');
+      if (!isInsideTelegram && !isTgRoute) {
+        document.body.classList.remove('is-telegram-webapp');
+        return undefined;
+      }
 
       tg.ready();
       tg.expand();
@@ -42,6 +57,7 @@ export function TelegramWebAppBridge() {
       }
 
       return () => {
+        document.body.classList.remove('is-telegram-webapp');
         tg.offEvent('themeChanged', applyTheme);
         tg.offEvent('viewportChanged', applyTheme);
       };
@@ -50,7 +66,7 @@ export function TelegramWebAppBridge() {
     let cleanup: (() => void) | undefined;
 
     const tg = (window as any).Telegram?.WebApp;
-    if (tg?.initData) {
+    if (tg) {
       cleanup = handleWebApp();
       return () => cleanup?.();
     }
