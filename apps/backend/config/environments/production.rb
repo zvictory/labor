@@ -15,7 +15,7 @@ Rails.application.configure do
   config.log_level = ENV.fetch('RAILS_LOG_LEVEL', 'info')
 
   config.action_mailer.perform_caching = false
-  config.i18n.fallbacks = true
+  config.i18n.fallbacks = { uz: [:ru, :en], en: [:ru], ru: [:en] }
   config.active_support.report_deprecations = false
 
   config.assume_ssl = true
