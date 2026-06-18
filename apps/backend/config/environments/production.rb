@@ -6,7 +6,7 @@ Rails.application.configure do
   config.eager_load = true
   config.consider_all_requests_local = false
 
-  config.cache_store = :redis_cache_store, { url: ENV.fetch('REDIS_URL') }
+  config.cache_store = :redis_cache_store, { url: ENV.fetch('REDIS_URL', 'redis://redis:6379/0') }
   config.action_controller.perform_caching = true
 
   config.active_storage.service = ENV.fetch('STORAGE_SERVICE', 'amazon').to_sym
