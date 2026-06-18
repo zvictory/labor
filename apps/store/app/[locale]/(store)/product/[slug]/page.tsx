@@ -63,56 +63,18 @@ export default async function ProductPage({ params }: Props) {
   const gallery = product.images.length > 0 ? product.images : [product.image].filter(Boolean);
 
   return (
-    <div className="container py-6 md:py-16 space-y-6 lg:space-y-0">
-      {/* Mobile Title Block: Brand + Title + Price + Rating (hidden on desktop) */}
-      <div className="space-y-3 lg:hidden">
-        {product.brand_slug ? (
-          <Link
-            href={`/${locale}/catalog?brand=${product.brand_slug}`}
-            className="inline-flex items-center gap-2 group"
-          >
-            {product.brand_slug && BRAND_LOGOS[product.brand_slug] ? (
-              <div className="relative h-5 w-16 transition-all duration-300 group-hover:opacity-85">
-                <Image
-                  src={`/brands/${product.brand_slug}.${BRAND_LOGOS[product.brand_slug]}`}
-                  alt={product.brand}
-                  fill
-                  className="object-contain object-left dark:brightness-0 dark:invert"
-                />
-              </div>
-            ) : (
-              <span className="text-xs uppercase tracking-widest text-brass hover:underline font-bold">
-                {product.brand}
-              </span>
-            )}
-          </Link>
-        ) : (
-          <p className="text-xs uppercase tracking-widest text-ink-muted dark:text-stone-400 font-bold">
-            {product.brand}
-          </p>
-        )}
-        <h1 className="font-display text-3xl tracking-tight text-ink dark:text-bone leading-tight">
-          {product.name}
+    <div className="container py-6 md:py-16 space-y-8">
+      {/* Centered Scent Title Block (Fragrantica Style) */}
+      <header className="text-center space-y-1 pb-6 border-b border-stone-200/50 dark:border-stone-850">
+        <h1 className="font-display text-4xl tracking-tight text-ink dark:text-bone md:text-5xl lg:text-6xl leading-tight">
+          {product.name} {product.brand}
         </h1>
-        <div className="flex items-baseline justify-between border-b border-stone-200/50 pb-2 dark:border-stone-850">
-          <p className="text-xl font-medium text-brass">
-            {formatUzs(product.price, locale)}
-            {product.volume_ml && (
-              <span className="ml-2 text-xs text-stone-400 font-sans font-normal lowercase">
-                / {product.volume_ml} {mlCopy[lang]}
-              </span>
-            )}
-          </p>
-          {product.votes_count > 0 && (
-            <span className="flex items-center gap-1 text-xs text-ink-muted dark:text-stone-400">
-              <span className="text-amber-500">★</span>
-              {formatRating(product.avg_rating)}
-              <span className="text-stone-400">({product.votes_count})</span>
-            </span>
-          )}
-        </div>
-      </div>
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        <p className="text-sm font-semibold lowercase tracking-widest text-[#229ED9]">
+          {genderLabel[product.gender].toLowerCase()}
+        </p>
+      </header>
+
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-start">
         {/* Gallery */}
         <div className="space-y-4">
           <div className="relative aspect-[4/3] max-h-[320px] sm:max-h-[400px] lg:aspect-[3/4] lg:max-h-none overflow-hidden rounded-lg bg-stone-50">
@@ -153,57 +115,69 @@ export default async function ProductPage({ params }: Props) {
 
         {/* Detail */}
         <div className="space-y-6">
-          <div className="hidden lg:block space-y-2">
-            {product.brand_slug ? (
-              <Link
-                href={`/${locale}/catalog?brand=${product.brand_slug}`}
-                className="inline-flex items-center gap-2 group"
-              >
-                {product.brand_slug && BRAND_LOGOS[product.brand_slug] ? (
-                  <div className="relative h-6 w-20 transition-all duration-300 group-hover:opacity-85">
-                    <Image
-                      src={`/brands/${product.brand_slug}.${BRAND_LOGOS[product.brand_slug]}`}
-                      alt={product.brand}
-                      fill
-                      className="object-contain object-left dark:brightness-0 dark:invert"
-                    />
-                  </div>
-                ) : (
-                  <span className="text-xs uppercase tracking-widest text-brass hover:underline font-bold">
-                    {product.brand}
-                  </span>
-                )}
-              </Link>
-            ) : (
-              <p className="text-xs uppercase tracking-widest text-ink-muted dark:text-stone-400">
-                {product.brand}
-              </p>
-            )}
-            <h1 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
-              {product.name}
-            </h1>
-            <div className="flex items-center gap-4 pt-1">
-              {product.votes_count > 0 && (
-                <span className="flex items-center gap-1 text-sm text-ink-muted dark:text-stone-400">
-                  <span className="text-amber-500">★</span>
-                  {formatRating(product.avg_rating)}
-                  <span className="text-stone-400">· {product.votes_count}</span>
-                </span>
+          {/* Brand Info (Fragrantica-style top right aligned, next to gallery button) */}
+          <div className="flex items-start justify-end gap-4 border-b border-stone-100 pb-4 dark:border-stone-900 w-full">
+            <div className="flex flex-col items-end space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-wider text-stone-400 font-medium">brand</p>
+                  {product.brand_slug ? (
+                    <Link
+                      href={`/${locale}/catalog?brand=${product.brand_slug}`}
+                      className="text-sm font-semibold text-ink dark:text-bone hover:underline"
+                    >
+                      {product.brand}
+                    </Link>
+                  ) : (
+                    <span className="text-sm font-semibold text-ink dark:text-bone">{product.brand}</span>
+                  )}
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                </div>
+              </div>
+              
+              {product.brand_slug && BRAND_LOGOS[product.brand_slug] && (
+                <div className="relative h-10 w-28 transition-all duration-300 hover:opacity-85">
+                  <Image
+                    src={`/brands/${product.brand_slug}.${BRAND_LOGOS[product.brand_slug]}`}
+                    alt={product.brand}
+                    fill
+                    className="object-contain object-right dark:brightness-0 dark:invert"
+                  />
+                </div>
               )}
             </div>
           </div>
 
-          <p className="hidden lg:block text-2xl font-medium text-ink dark:text-bone">
-            {formatUzs(product.price, locale)}
-            {product.volume_ml && (
-              <span className="ml-2 text-sm text-stone-400 font-sans font-normal">
-                / {product.volume_ml} {mlCopy[lang]}
-              </span>
+          {/* Accords Bars (Main Accords) */}
+          <AccordsBars accords={product.accords} locale={locale} />
+
+          {/* Divider */}
+          <div className="border-t border-stone-100 dark:border-stone-900 pt-4" />
+
+          {/* Price & Rating block */}
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <p className="text-2xl font-medium text-brass">
+              {formatUzs(product.price, locale)}
+              {product.volume_ml && (
+                <span className="ml-2 text-sm text-stone-400 font-sans font-normal lowercase">
+                  / {product.volume_ml} {mlCopy[lang]}
+                </span>
+              )}
+            </p>
+
+            {product.votes_count > 0 && (
+              <div className="flex items-center gap-1 text-sm text-ink-muted dark:text-stone-400">
+                <span className="text-amber-500">★</span>
+                <span className="font-semibold text-ink dark:text-bone">{formatRating(product.avg_rating)}</span>
+                <span className="text-stone-400">({product.votes_count} votes)</span>
+              </div>
             )}
-          </p>
+          </div>
 
           {/* Attributes */}
-          <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
+          <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm pt-2">
             <div className="flex items-baseline gap-2">
               <dt className="text-ink-muted dark:text-stone-400">{tp('gender.label')}:</dt>
               <dd className="text-ink dark:text-bone">{genderLabel[product.gender]}</dd>
@@ -235,41 +209,13 @@ export default async function ProductPage({ params }: Props) {
           </dl>
 
           {product.description && (
-            <p className="max-w-prose text-sm leading-relaxed text-ink-muted dark:text-stone-400">
+            <p className="max-w-prose text-sm leading-relaxed text-ink-muted dark:text-stone-400 pt-2">
               {product.description}
             </p>
           )}
 
-          {/* Accords */}
-          {product.accords.length > 0 && (
-            <div className="space-y-3">
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
-                {tpdp('accords.title')}
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {product.accords.map((accord) => (
-                  <Link
-                    key={accord.name}
-                    href={accord.slug ? `/${locale}/catalog?accord=${accord.slug}` : `/${locale}/catalog`}
-                    className="rounded-full border border-black/5 px-3 py-1 text-xs font-medium uppercase tracking-wide shadow-sm transition-all duration-300 hover:scale-[1.03] hover:brightness-105"
-                    style={
-                      accord.color_hex
-                        ? {
-                            backgroundColor: accord.color_hex,
-                            color: getReadableTextColor(accord.color_hex),
-                          }
-                        : undefined
-                    }
-                  >
-                    {accord.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Actions */}
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-start">
+          <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:items-start border-t border-stone-100 dark:border-stone-900">
             {/* Cart client island — POSTs /api/cart, sample = ~8% decant. */}
             <AddToCart productId={product.id} locale={locale} hasSample />
             <a
@@ -282,9 +228,8 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Accords & Pyramid visual charts (Fragrantica-style grid) */}
-      <div className="grid gap-12 md:grid-cols-2 mt-20 border-t border-border pt-12">
-        <AccordsBars accords={product.accords} locale={locale} />
+      {/* Scent Pyramid visual chart (Fragrantica-style, centered at bottom) */}
+      <div className="mt-20 border-t border-border pt-12 max-w-4xl mx-auto">
         <NotesPyramid notes={product.notes} locale={locale} />
       </div>
 

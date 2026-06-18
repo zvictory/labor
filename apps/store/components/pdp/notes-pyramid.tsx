@@ -22,7 +22,7 @@ export const NotesPyramid = ({ notes, locale }: Props) => {
   return (
     <section className="space-y-5" aria-labelledby="pyramid-heading">
       <h2 id="pyramid-heading" className="font-serif text-2xl tracking-tight">{t('title')}</h2>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
         {LAYERS.map(({ key, langKey }) => {
           const group = notes[key];
           return (
@@ -31,14 +31,14 @@ export const NotesPyramid = ({ notes, locale }: Props) => {
               {group.length === 0 ? (
                 <p className="text-xs text-stone-400">—</p>
               ) : (
-                <ul className="flex flex-col gap-3">
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:flex md:flex-col md:gap-3">
                   {group.map((n) => {
                     const slug = n.slug || n.name.toLowerCase().replace(/\s+/g, '-');
                     return (
                       <li key={n.slug} className="flex items-center gap-3">
                         <Link
                           href={`/${locale}/catalog?note=${slug}`}
-                          className="group flex items-center gap-3"
+                          className="group flex items-center gap-3 w-full"
                           aria-label={n.name}
                         >
                           <div
@@ -60,7 +60,9 @@ export const NotesPyramid = ({ notes, locale }: Props) => {
                               </span>
                             )}
                           </div>
-                          <span className="text-sm font-medium text-stone-700 leading-tight">{n.name}</span>
+                          <span className="text-xs font-medium text-stone-700 leading-tight dark:text-stone-300 group-hover:text-brass transition-colors truncate">
+                            {n.name}
+                          </span>
                         </Link>
                       </li>
                     );

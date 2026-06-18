@@ -108,7 +108,7 @@ export function SiteHeader({ locale }: { locale: string }) {
           <Link
             href={href('/cart')}
             aria-label={t('cart')}
-            className="relative flex h-11 w-11 items-center justify-center hover:text-brass"
+            className="relative hidden md:flex h-11 w-11 items-center justify-center hover:text-brass"
           >
             <ShoppingBag className="h-5 w-5" />
             <CartCountBadge />

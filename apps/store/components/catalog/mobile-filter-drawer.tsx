@@ -146,6 +146,17 @@ export function MobileFilterDrawer({
     };
   }, [isFilterOpen]);
 
+  // Subscribe to header filter trigger event
+  useEffect(() => {
+    const handleOpenFilter = () => {
+      setIsFilterOpen(true);
+    };
+    window.addEventListener('open-catalog-filter', handleOpenFilter);
+    return () => {
+      window.removeEventListener('open-catalog-filter', handleOpenFilter);
+    };
+  }, []);
+
   const sortOptions = [
     { value: 'popular', label: copy.popular },
     { value: 'new', label: copy.newest },
