@@ -238,7 +238,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12 space-y-6">
-      <header className="space-y-1">
+      <header className="hidden md:block space-y-1">
         <span className="text-[10px] uppercase tracking-[0.3em] text-brass font-bold">
           {copy.eyebrow}
         </span>

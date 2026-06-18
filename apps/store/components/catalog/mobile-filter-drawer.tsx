@@ -68,6 +68,7 @@ export function MobileFilterDrawer({
 
   // Accordion sections state
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    sort: false,
     brand: false,
     note: false,
     family: true,
@@ -165,7 +166,7 @@ export function MobileFilterDrawer({
   return (
     <>
       {/* Mobile Sticky Utility Bar */}
-      <div className="sticky top-16 z-30 flex items-center justify-between border-b border-stone-200/80 bg-white/95 px-4 py-3 backdrop-blur-md dark:border-stone-800/80 dark:bg-stone-950/95 md:hidden">
+      <div className="sticky top-16 z-30 flex items-center justify-between border-b border-stone-200/80 bg-white/95 px-4 py-3 backdrop-blur-md dark:border-stone-800/80 dark:bg-stone-950/95 hidden">
         <span className="font-mono text-xs font-semibold text-stone-500 uppercase tracking-wider">
           {copy.foundCount.replace('{count}', String(totalCount))}
         </span>
@@ -264,6 +265,38 @@ export function MobileFilterDrawer({
 
           {/* Accordion List Body */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+            {/* SORT ACCORDION */}
+            <div className="border-b border-stone-100 pb-4 dark:border-stone-900">
+              <button
+                onClick={() => toggleSection('sort')}
+                className="flex w-full items-center justify-between py-2 text-xs font-bold uppercase tracking-widest text-stone-800 dark:text-stone-200"
+              >
+                <span>{copy.sort}</span>
+                {openSections.sort ? <ChevronUp className="h-4 w-4 text-stone-400" /> : <ChevronDown className="h-4 w-4 text-stone-400" />}
+              </button>
+              {openSections.sort && (
+                <div className="mt-3 space-y-1 animate-in fade-in duration-200">
+                  {sortOptions.map((opt) => {
+                    const isSelected = currentFilters.sort === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => handleSortChange(opt.value)}
+                        className={`flex w-full items-center justify-between rounded-lg py-2 px-3 text-xs font-semibold uppercase tracking-widest transition-colors ${
+                          isSelected
+                            ? 'bg-brass/10 text-brass dark:bg-brass/20 font-bold'
+                            : 'hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300'
+                        }`}
+                      >
+                        <span>{opt.label}</span>
+                        {isSelected && <Check className="h-4 w-4 stroke-[3]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             {/* GENDER ACCORDION */}
             <div className="border-b border-stone-100 pb-4 dark:border-stone-900">
               <button

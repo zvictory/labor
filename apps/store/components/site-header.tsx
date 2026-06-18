@@ -1,18 +1,45 @@
+'use client';
+
+import { Suspense } from 'react';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Heart, Search, ShoppingBag, User } from 'lucide-react';
+import { Heart, Search, ShoppingBag, User, SlidersHorizontal } from 'lucide-react';
 
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
 
-// Site chrome — Labor wordmark in font-display, primary nav, locale switcher and
-// the search/account/wishlist/cart icon rail. Ported from apps/web. Server-safe:
-// useTranslations works in RSC under NextIntlClientProvider; only LocaleSwitcher
-// is a client island. All links are locale-prefixed.
+function HeaderFilterButton() {
+  const searchParams = useSearchParams();
+  const activeFiltersCount = ['brand', 'note', 'family', 'gender'].filter((p) => searchParams.get(p)).length;
+
+  return (
+    <button
+      onClick={() => window.dispatchEvent(new CustomEvent('open-catalog-filter'))}
+      aria-label="Filters"
+      className="flex md:hidden h-11 w-11 items-center justify-center hover:text-brass relative"
+    >
+      <SlidersHorizontal className="h-5 w-5" />
+      {activeFiltersCount > 0 && (
+        <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brass px-1 text-[9px] font-bold leading-none text-bone animate-in zoom-in-50 duration-200">
+          {activeFiltersCount}
+        </span>
+      )}
+    </button>
+  );
+}
+
 export function SiteHeader({ locale }: { locale: string }) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
   const href = (path: string) => `/${locale}${path}`;
+
+  const pathname = usePathname();
+  const isCatalogPage = pathname.endsWith('/catalog');
+
+  const handleFilterClick = () => {
+    window.dispatchEvent(new CustomEvent('open-catalog-filter'));
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
@@ -52,9 +79,32 @@ export function SiteHeader({ locale }: { locale: string }) {
           <Link href={href('/account')} aria-label={t('account')} className="hidden md:flex p-2 hover:text-brass">
             <User className="h-5 w-5" />
           </Link>
-          <Link href={href('/wishlist')} aria-label={t('wishlist')} className="flex h-11 w-11 items-center justify-center hover:text-brass">
-            <Heart className="h-5 w-5" />
-          </Link>
+          {isCatalogPage ? (
+            <>
+              <Suspense fallback={
+                <button aria-label="Filters" className="flex md:hidden h-11 w-11 items-center justify-center hover:text-brass relative">
+                  <SlidersHorizontal className="h-5 w-5" />
+                </button>
+              }>
+                <HeaderFilterButton />
+              </Suspense>
+              <Link
+                href={href('/wishlist')}
+                aria-label={t('wishlist')}
+                className="hidden md:flex h-11 w-11 items-center justify-center hover:text-brass"
+              >
+                <Heart className="h-5 w-5" />
+              </Link>
+            </>
+          ) : (
+            <Link
+              href={href('/wishlist')}
+              aria-label={t('wishlist')}
+              className="flex h-11 w-11 items-center justify-center hover:text-brass"
+            >
+              <Heart className="h-5 w-5" />
+            </Link>
+          )}
           <Link
             href={href('/cart')}
             aria-label={t('cart')}
