@@ -16,7 +16,7 @@ export function SiteHeader({ locale }: { locale: string }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="container flex h-20 items-center justify-between gap-6 transition-all duration-300 md:h-24">
+      <div className="container flex h-16 items-center justify-between gap-6 transition-all duration-300 md:h-24">
         <Link
           href={href('')}
           className="flex select-none items-baseline gap-2 transition-opacity hover:opacity-90"
@@ -44,21 +44,21 @@ export function SiteHeader({ locale }: { locale: string }) {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 md:gap-3">
           <LocaleSwitcher />
-          <Link href={href('/search')} aria-label={t('search')} className="p-2 hover:text-brass">
+          <Link href={href('/search')} aria-label={t('search')} className="hidden md:flex p-2 hover:text-brass">
             <Search className="h-5 w-5" />
           </Link>
-          <Link href={href('/account')} aria-label={t('account')} className="p-2 hover:text-brass">
+          <Link href={href('/account')} aria-label={t('account')} className="hidden md:flex p-2 hover:text-brass">
             <User className="h-5 w-5" />
           </Link>
-          <Link href={href('/wishlist')} aria-label={t('wishlist')} className="p-2 hover:text-brass">
+          <Link href={href('/wishlist')} aria-label={t('wishlist')} className="flex h-11 w-11 items-center justify-center hover:text-brass">
             <Heart className="h-5 w-5" />
           </Link>
           <Link
             href={href('/cart')}
             aria-label={t('cart')}
-            className="relative p-2 hover:text-brass"
+            className="relative flex h-11 w-11 items-center justify-center hover:text-brass"
           >
             <ShoppingBag className="h-5 w-5" />
             <CartCountBadge />

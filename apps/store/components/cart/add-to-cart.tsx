@@ -80,7 +80,7 @@ export function AddToCartIcon({ productId, locale }: { productId: number; locale
       title={ADD_COPY[lang]}
       disabled={pending}
       onClick={() => add(false)}
-      className="absolute bottom-2 right-2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-bone shadow-md transition-colors hover:bg-brass disabled:opacity-60 dark:bg-bone dark:text-ink"
+      className="absolute bottom-2 right-2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-stone-200/80 bg-white/95 text-stone-700 shadow-sm transition-all duration-300 hover:border-brass hover:bg-brass hover:text-white disabled:opacity-60 dark:border-stone-800 dark:bg-stone-900/90 dark:text-stone-300 dark:hover:bg-brass dark:hover:text-bone"
     >
       <ShoppingBag className="h-4 w-4" />
     </button>

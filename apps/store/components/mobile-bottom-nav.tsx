@@ -86,7 +86,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 h-16 w-full border-t border-stone-200/80 bg-white/90 backdrop-blur-md dark:border-stone-800/80 dark:bg-stone-900/90 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 h-[calc(64px+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] w-full border-t border-stone-200/80 bg-white/90 backdrop-blur-md dark:border-stone-800/80 dark:bg-stone-900/90 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] md:hidden">
       <div className="flex h-full items-stretch justify-around px-2">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -99,21 +99,24 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
+              className={`relative flex flex-1 flex-col items-center justify-center gap-1 transition-colors ${
                 isActive
-                  ? 'text-brass dark:text-brass-300'
+                  ? 'text-brass dark:text-brass-300 animate-in fade-in duration-300'
                   : 'text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300'
               }`}
             >
+              {isActive && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-brass rounded-full" />
+              )}
               <div className="relative flex items-center justify-center">
                 <Icon className="h-5 w-5 stroke-[2]" />
                 {item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brass px-1 text-[9px] font-bold leading-none text-bone animate-in zoom-in-50 duration-200">
+                  <span className="absolute -right-2 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-brass px-0.5 text-[8px] font-bold leading-none text-bone animate-in zoom-in-50 duration-200">
                     {item.badge > 99 ? '99+' : item.badge}
                   </span>
                 )}
               </div>
-              <span className="text-[9px] font-medium uppercase tracking-wider">
+              <span className="text-[10px] font-medium uppercase tracking-wider">
                 {item.label}
               </span>
             </Link>

@@ -34,7 +34,7 @@ export function CartCountBadge() {
   if (count <= 0) return null;
 
   return (
-    <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brass px-1 text-[10px] font-bold leading-none text-bone">
+    <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brass px-1 text-[9px] font-bold leading-none text-bone">
       {count > 99 ? '99+' : count}
     </span>
   );

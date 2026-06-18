@@ -7,6 +7,7 @@ import { ProductCard } from '@/components/catalog/product-card';
 import { listProducts, type ProductSort } from '@/lib/catalog/products';
 import { getFilterFacets } from '@/lib/catalog/facets';
 import { FilterSelect, type FilterOption } from '@/components/catalog/filter-select';
+import { MobileFilterDrawer } from '@/components/catalog/mobile-filter-drawer';
 import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 
@@ -251,6 +252,39 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         </div>
       </header>
 
+      {/* Mobile-Native Filter Drawer & Sticky Utility Bar */}
+      <MobileFilterDrawer
+        locale={locale}
+        facets={facets}
+        currentFilters={{ brand, note, family, gender, sort }}
+        preserve={active}
+        totalCount={meta.total}
+        familyLabels={Object.fromEntries(
+          facets.families.map((f) => [f.slug, FAMILY_LABELS[f.slug]?.[lang] ?? f.slug])
+        )}
+        genderLabels={Object.fromEntries(
+          facets.genders.map((g) => [g.slug, GENDER_LABELS[g.slug]?.[lang] ?? g.slug])
+        )}
+        copy={{
+          brands: copy.brands,
+          notes: copy.notes,
+          families: copy.families,
+          genders: copy.genders,
+          sort: copy.sort,
+          clearAll: copy.clearAll,
+          apply: locale === 'ru' ? 'Применить' : locale === 'uz' ? 'Tasdiqlash' : 'Apply',
+          close: locale === 'ru' ? 'Закрыть' : locale === 'uz' ? 'Yopish' : 'Close',
+          all: copy.all,
+          foundCount: locale === 'ru' ? 'Найдено: {count}' : locale === 'uz' ? '{count} ta mahsulot' : '{count} products',
+          searchPlaceholder: locale === 'ru' ? 'Поиск...' : locale === 'uz' ? 'Qidiruv...' : 'Search...',
+          sortBy: locale === 'ru' ? 'Фильтры' : locale === 'uz' ? 'Filtrlar' : 'Filters',
+          popular: SORT_COPY[lang].popular,
+          newest: SORT_COPY[lang].new,
+          priceAsc: SORT_COPY[lang].price_asc,
+          priceDesc: SORT_COPY[lang].price_desc,
+        }}
+      />
+
       {/* Premium Active Note Banner (Fragrantica-style) */}
       {activeNoteFacet && (
         <section className="flex items-center gap-4 border-l-2 border-brass bg-stone-50/50 p-4 dark:bg-stone-900/10">
@@ -307,8 +341,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      {/* Dropdown Filters Selector Panel */}
-      <div className="border-y border-border/85 py-6">
+      {/* Dropdown Filters Selector Panel - Desktop Only */}
+      <div className="hidden md:block border-y border-border/85 py-6">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           <FilterSelect
             label={copy.brands}
