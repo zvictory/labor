@@ -95,6 +95,7 @@ export interface ProductDetailDTO {
   images: string[];
   gender: Gender;
   concentration?: string;
+  volume_ml?: number | null;
   avg_rating: number;
   avg_longevity: number;
   avg_sillage: number;

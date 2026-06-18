@@ -15,6 +15,7 @@ import { AccordsBars } from '@/components/pdp/accords-bars';
 import { NotesPyramid } from '@/components/pdp/notes-pyramid';
 import { AggregateBars } from '@/components/pdp/aggregate-bars';
 import { BRAND_LOGOS } from '@/lib/catalog/brands';
+import { PdpStickyBar } from '@/components/pdp/pdp-sticky-bar';
 
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -53,14 +54,68 @@ export default async function ProductPage({ params }: Props) {
     unisex: tp('gender.unisex'),
   };
 
+  const mlCopy: Record<Lang, string> = {
+    ru: 'мл',
+    uz: 'ml',
+    en: 'ml',
+  };
+
   const gallery = product.images.length > 0 ? product.images : [product.image].filter(Boolean);
 
   return (
-    <div className="container py-10 md:py-16">
+    <div className="container py-6 md:py-16 space-y-6 lg:space-y-0">
+      {/* Mobile Title Block: Brand + Title + Price + Rating (hidden on desktop) */}
+      <div className="space-y-3 lg:hidden">
+        {product.brand_slug ? (
+          <Link
+            href={`/${locale}/catalog?brand=${product.brand_slug}`}
+            className="inline-flex items-center gap-2 group"
+          >
+            {product.brand_slug && BRAND_LOGOS[product.brand_slug] ? (
+              <div className="relative h-5 w-16 transition-all duration-300 group-hover:opacity-85">
+                <Image
+                  src={`/brands/${product.brand_slug}.${BRAND_LOGOS[product.brand_slug]}`}
+                  alt={product.brand}
+                  fill
+                  className="object-contain object-left dark:brightness-0 dark:invert"
+                />
+              </div>
+            ) : (
+              <span className="text-xs uppercase tracking-widest text-brass hover:underline font-bold">
+                {product.brand}
+              </span>
+            )}
+          </Link>
+        ) : (
+          <p className="text-xs uppercase tracking-widest text-ink-muted dark:text-stone-400 font-bold">
+            {product.brand}
+          </p>
+        )}
+        <h1 className="font-display text-3xl tracking-tight text-ink dark:text-bone leading-tight">
+          {product.name}
+        </h1>
+        <div className="flex items-baseline justify-between border-b border-stone-200/50 pb-2 dark:border-stone-850">
+          <p className="text-xl font-medium text-brass">
+            {formatUzs(product.price, locale)}
+            {product.volume_ml && (
+              <span className="ml-2 text-xs text-stone-400 font-sans font-normal lowercase">
+                / {product.volume_ml} {mlCopy[lang]}
+              </span>
+            )}
+          </p>
+          {product.votes_count > 0 && (
+            <span className="flex items-center gap-1 text-xs text-ink-muted dark:text-stone-400">
+              <span className="text-amber-500">★</span>
+              {formatRating(product.avg_rating)}
+              <span className="text-stone-400">({product.votes_count})</span>
+            </span>
+          )}
+        </div>
+      </div>
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         {/* Gallery */}
         <div className="space-y-4">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-stone-50">
+          <div className="relative aspect-[4/3] max-h-[320px] sm:max-h-[400px] lg:aspect-[3/4] lg:max-h-none overflow-hidden rounded-lg bg-stone-50">
             {gallery[0] ? (
               <Image
                 src={gallery[0]}
@@ -98,7 +153,7 @@ export default async function ProductPage({ params }: Props) {
 
         {/* Detail */}
         <div className="space-y-6">
-          <div className="space-y-2">
+          <div className="hidden lg:block space-y-2">
             {product.brand_slug ? (
               <Link
                 href={`/${locale}/catalog?brand=${product.brand_slug}`}
@@ -114,7 +169,7 @@ export default async function ProductPage({ params }: Props) {
                     />
                   </div>
                 ) : (
-                  <span className="text-xs uppercase tracking-widest text-brass hover:underline">
+                  <span className="text-xs uppercase tracking-widest text-brass hover:underline font-bold">
                     {product.brand}
                   </span>
                 )}
@@ -138,8 +193,13 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </div>
 
-          <p className="text-2xl font-medium text-ink dark:text-bone">
+          <p className="hidden lg:block text-2xl font-medium text-ink dark:text-bone">
             {formatUzs(product.price, locale)}
+            {product.volume_ml && (
+              <span className="ml-2 text-sm text-stone-400 font-sans font-normal">
+                / {product.volume_ml} {mlCopy[lang]}
+              </span>
+            )}
           </p>
 
           {/* Attributes */}
@@ -365,6 +425,15 @@ export default async function ProductPage({ params }: Props) {
           </div>
         </section>
       )}
+      <PdpStickyBar
+        productId={product.id}
+        slug={product.slug}
+        name={product.name}
+        brand={product.brand}
+        price={product.price}
+        image={product.image}
+        locale={locale}
+      />
     </div>
   );
 }

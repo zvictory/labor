@@ -207,6 +207,7 @@ export const getProduct = async (
         select: {
           gender: true,
           concentration: true,
+          volumeMl: true,
           avgRating: true,
           avgLongevity: true,
           avgSillage: true,
@@ -294,6 +295,7 @@ export const getProduct = async (
     images: product.images.map((img) => img.url),
     gender: normalizeGender(fragrance?.gender),
     ...(fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
+    volume_ml: fragrance?.volumeMl ?? null,
     avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
     avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
     avg_sillage: fragrance ? Number(fragrance.avgSillage) : 0,
