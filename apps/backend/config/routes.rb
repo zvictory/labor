@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       get    'admin/login',  to: '/spree/admin/user_sessions#new',     as: :admin_login
       post   'admin/login',  to: '/spree/admin/user_sessions#create',  as: :admin_login_post
       delete 'admin/logout', to: '/spree/admin/user_sessions#destroy', as: :admin_logout
+      get    'admin/logout', to: '/spree/admin/user_sessions#destroy', as: :admin_logout_get
     end
 
     namespace :admin do
