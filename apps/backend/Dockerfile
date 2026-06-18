@@ -35,7 +35,7 @@ COPY . .
 
 # Spree 5.4 admin uses tailwindcss-ruby (standalone binary, no Node).
 # SECRET_KEY_BASE_DUMMY lets us precompile without a real secret.
-RUN SECRET_KEY_BASE_DUMMY=1 \
+RUN SECRET_KEY_BASE_DUMMY=1 AWS_REGION=us-east-1 STORAGE_SERVICE=local \
     bundle exec rails assets:precompile
 
 RUN groupadd -r rails && useradd -r -g rails -d /app rails \
