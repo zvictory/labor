@@ -28,7 +28,10 @@ const COPY: Record<
       { title: 'Только оригинал', body: 'Прямые поставки и проверка подлинности каждой партии.' },
       { title: 'Доставка по UZ', body: 'Ташкент в день заказа, регионы — 2–4 дня.' },
       { title: 'Оплата как удобно', body: 'Payme, Click, картой или наличными при получении.' },
-      { title: 'Пробники и помощь', body: 'Возьмите декант, спросите в Telegram — поможем выбрать.' },
+      {
+        title: 'Пробники и помощь',
+        body: 'Возьмите декант, спросите в Telegram — поможем выбрать.',
+      },
     ],
   },
   en: {
@@ -51,7 +54,10 @@ const COPY: Record<
       },
       { title: 'UZ boʻylab yetkazish', body: 'Toshkentda shu kuni, viloyatlarga 2–4 kun.' },
       { title: 'Qulay toʻlov', body: 'Payme, Click, karta yoki yetkazishda naqd.' },
-      { title: 'Namuna va yordam', body: 'Dekant oling, Telegramda soʻrang — tanlashga yordam beramiz.' },
+      {
+        title: 'Namuna va yordam',
+        body: 'Dekant oling, Telegramda soʻrang — tanlashga yordam beramiz.',
+      },
     ],
   },
 };
@@ -60,12 +66,12 @@ export function TrustStrip({ locale, lang }: { locale: string; lang: Lang }) {
   const c = COPY[lang];
 
   return (
-    <section className="container border-b border-border py-24">
+    <section className="border-border container border-b py-24">
       <div className="mb-12 space-y-1">
-        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <span className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
           {c.eyebrow}
         </span>
-        <h2 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">{c.headline}</h2>
+        <h2 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{c.headline}</h2>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -74,23 +80,23 @@ export function TrustStrip({ locale, lang }: { locale: string; lang: Lang }) {
           const href = ITEMS[i]!.href;
           const inner = (
             <>
-              <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-md bg-brass-50 text-brass dark:bg-ink/40">
+              <span className="bg-brass-50 text-brass dark:bg-ink/40 mb-4 inline-flex h-11 w-11 items-center justify-center rounded-md">
                 <Icon className="h-5 w-5" />
               </span>
-              <h3 className="text-base font-medium text-ink dark:text-bone">{card.title}</h3>
-              <p className="mt-1.5 text-sm text-ink-muted dark:text-stone-400">{card.body}</p>
+              <h3 className="text-ink dark:text-bone text-base font-medium">{card.title}</h3>
+              <p className="text-ink-muted mt-1.5 text-sm dark:text-stone-400">{card.body}</p>
             </>
           );
           return href ? (
             <Link
               key={card.title}
               href={`/${locale}${href}`}
-              className="border border-border bg-bone p-6 transition-colors hover:border-brass/60 dark:bg-ink/20"
+              className="border-border bg-bone hover:border-foreground dark:bg-ink/20 border p-6 transition-colors"
             >
               {inner}
             </Link>
           ) : (
-            <div key={card.title} className="border border-border bg-bone p-6 dark:bg-ink/20">
+            <div key={card.title} className="border-border bg-bone dark:bg-ink/20 border p-6">
               {inner}
             </div>
           );

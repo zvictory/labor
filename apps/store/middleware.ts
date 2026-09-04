@@ -1,13 +1,29 @@
 import createMiddleware from 'next-intl/middleware';
-import { locales, defaultLocale } from '@/i18n/config';
+import { NextRequest, NextResponse } from 'next/server';
 
-export default createMiddleware({
+import { locales, defaultLocale } from '@/i18n/config';
+import { getLegacyLocaleRedirect } from '@/i18n/legacy-locale-redirect';
+
+const handleI18n = createMiddleware({
   locales,
   defaultLocale,
   localePrefix: 'always',
-  localeDetection: true,
+  localeDetection: false,
 });
 
+export default function middleware(request: NextRequest) {
+  const redirectPath = getLegacyLocaleRedirect(request.nextUrl.pathname, request.nextUrl.search);
+
+  if (redirectPath) {
+    return NextResponse.redirect(new URL(redirectPath, request.url));
+  }
+
+  return handleI18n(request);
+}
+
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|favicon.ico|robots.txt|sitemap.xml|fonts|.*\\..*).*)'],
+  matcher: [
+    '/(ru|uz|uzc)(/.*)?',
+    '/((?!api|_next|_vercel|favicon.ico|robots.txt|sitemap.xml|fonts|.*\\..*).*)',
+  ],
 };

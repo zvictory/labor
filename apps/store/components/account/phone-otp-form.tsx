@@ -80,14 +80,13 @@ const COPY: Record<
   },
 };
 
-const toLang = (locale: string): Lang =>
-  locale === 'uz' || locale === 'en' ? locale : 'ru';
+const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
 const fieldCls =
   'h-11 w-full rounded-md border border-border bg-white px-3 text-sm text-ink ' +
-  'outline-none transition-colors focus:border-brass dark:bg-ink/40 dark:text-bone';
+  'transition-colors focus:border-foreground dark:bg-ink/40 dark:text-bone';
 const labelCls =
-  'mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
+  'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
 const primaryBtnCls =
   'inline-flex h-11 w-full items-center justify-center bg-ink px-7 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass disabled:cursor-not-allowed disabled:opacity-60 dark:bg-bone dark:text-ink';
 
@@ -171,7 +170,11 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
               required
             />
           </div>
-          <button type="submit" disabled={pending || phone.trim().length < 6} className={primaryBtnCls}>
+          <button
+            type="submit"
+            disabled={pending || phone.trim().length < 6}
+            className={primaryBtnCls}
+          >
             {pending ? copy.sending : copy.sendCode}
           </button>
         </form>
@@ -183,7 +186,7 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
           }}
           className="space-y-4"
         >
-          <p className="text-xs text-ink-muted dark:text-stone-400">{copy.sentHint}</p>
+          <p className="text-ink-muted text-xs dark:text-stone-400">{copy.sentHint}</p>
           <div>
             <label htmlFor="otp-code" className={labelCls}>
               {copy.codeLabel}
@@ -200,7 +203,11 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
               required
             />
           </div>
-          <button type="submit" disabled={pending || code.trim().length < 4} className={primaryBtnCls}>
+          <button
+            type="submit"
+            disabled={pending || code.trim().length < 4}
+            className={primaryBtnCls}
+          >
             {pending ? copy.verifying : copy.verify}
           </button>
           <button
@@ -210,7 +217,7 @@ export function PhoneOtpForm({ locale }: { locale: string }) {
               setCode('');
               setError(null);
             }}
-            className="text-xs text-ink-muted underline-offset-2 hover:underline dark:text-stone-400"
+            className="text-ink-muted text-xs underline-offset-2 hover:underline dark:text-stone-400"
           >
             {copy.changePhone}
           </button>

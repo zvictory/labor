@@ -9,13 +9,7 @@ import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { getDeliveryMethod } from '@/lib/delivery/methods';
 
-export type OrderStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'paid'
-  | 'shipped'
-  | 'delivered'
-  | 'canceled';
+export type OrderStatus = 'pending' | 'confirmed' | 'paid' | 'shipped' | 'delivered' | 'canceled';
 export type OrderPaymentStatus = 'unpaid' | 'paid' | 'refunded';
 export type PaymentState = 'created' | 'authorized' | 'paid' | 'canceled';
 
@@ -142,10 +136,7 @@ function toDTO(order: OrderRow, locale: string): OrderDTO {
 }
 
 /// Fetch a localized OrderDTO by its public number, or null if not found.
-export async function getOrderByNumber(
-  number: string,
-  locale: string,
-): Promise<OrderDTO | null> {
+export async function getOrderByNumber(number: string, locale: string): Promise<OrderDTO | null> {
   const order = await db.order.findUnique({
     where: { number },
     select: orderSelect,

@@ -18,24 +18,25 @@
 // Env:  SPREE_DATABASE_URL (source, read-only), DATABASE_URL (target),
 //       MIGRATE_BLOBS (true|false), PUBLIC_HOST (legacy blob host).
 
-import { db } from "@/lib/db";
-import { closePool, query } from "./source";
-import { loadBrands } from "./loaders/brands";
-import { loadNotes } from "./loaders/notes";
-import { loadAccords } from "./loaders/accords";
-import { loadPerfumers } from "./loaders/perfumers";
-import { loadProducts } from "./loaders/products";
-import { loadFragranceDetails } from "./loaders/fragranceDetails";
-import { loadProductNotes } from "./loaders/productNotes";
-import { loadProductAccords } from "./loaders/productAccords";
-import { loadProductPerfumers } from "./loaders/productPerfumers";
-import { loadProductSimilars } from "./loaders/productSimilars";
-import { loadImages } from "./loaders/images";
-import { loadUsers } from "./loaders/users";
-import { loadVotes } from "./loaders/votes";
-import { loadWishlist } from "./loaders/wishlist";
-import { loadCampaigns } from "./loaders/campaigns";
-import { runReport } from "./report";
+import { db } from '@/lib/db';
+import { closePool, query } from './source';
+import { loadBrands } from './loaders/brands';
+import { loadNotes } from './loaders/notes';
+import { loadAccords } from './loaders/accords';
+import { loadPerfumers } from './loaders/perfumers';
+import { loadProducts } from './loaders/products';
+import { loadFragranceDetails } from './loaders/fragranceDetails';
+import { loadProductNotes } from './loaders/productNotes';
+import { loadProductAccords } from './loaders/productAccords';
+import { loadProductPerfumers } from './loaders/productPerfumers';
+import { loadProductSimilars } from './loaders/productSimilars';
+import { loadImages } from './loaders/images';
+import { loadUsers } from './loaders/users';
+import { loadVotes } from './loaders/votes';
+import { loadWishlist } from './loaders/wishlist';
+import { loadCampaigns } from './loaders/campaigns';
+import { runReport } from './report';
+import { reportTaxonomyMediaFailures, type TaxonomyMediaFailure } from './media';
 
 /**
  * Build old labor_brands.id -> new Brand.id by combining the slug->newId map
@@ -45,9 +46,7 @@ import { runReport } from "./report";
 async function buildBrandOldIdMap(
   brandSlugToNewId: Map<string, number>,
 ): Promise<Map<number, number>> {
-  const rows = await query<{ id: string; slug: string }>(
-    `SELECT id, slug FROM labor_brands`,
-  );
+  const rows = await query<{ id: string; slug: string }>(`SELECT id, slug FROM labor_brands`);
   const map = new Map<number, number>();
   for (const r of rows) {
     const newId = brandSlugToNewId.get(r.slug);
@@ -57,13 +56,15 @@ async function buildBrandOldIdMap(
 }
 
 async function main(): Promise<void> {
-  console.log("=== Labor Parfum ETL: Spree -> Prisma ===");
+  console.log('=== Labor Parfum ETL: Spree -> Prisma ===');
   const startedAt = Date.now();
 
   try {
+    const taxonomyMediaFailures: TaxonomyMediaFailure[] = [];
+
     // 1. Reference catalog entities.
-    const brandSlugToId = await loadBrands();
-    const noteSlugToId = await loadNotes();
+    const brandSlugToId = await loadBrands(taxonomyMediaFailures);
+    const noteSlugToId = await loadNotes(taxonomyMediaFailures);
     const accordSlugToId = await loadAccords();
     const perfumerSlugToId = await loadPerfumers();
 
@@ -92,6 +93,7 @@ async function main(): Promise<void> {
 
     // 7. Verification report.
     await runReport();
+    reportTaxonomyMediaFailures(taxonomyMediaFailures);
 
     const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
     console.log(`\n=== ETL complete in ${seconds}s ===`);
@@ -105,6 +107,6 @@ async function main(): Promise<void> {
 main()
   .then(() => process.exit(0))
   .catch((err: unknown) => {
-    console.error("[etl] FAILED:", err);
+    console.error('[etl] FAILED:', err);
     process.exit(1);
   });

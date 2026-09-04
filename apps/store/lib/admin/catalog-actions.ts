@@ -73,8 +73,7 @@ const revalidateAdmin = (path: string): void => {
   revalidatePath(`/[locale]${path}`, 'page');
 };
 
-const firstZodError = (err: z.ZodError): string =>
-  err.issues[0]?.message ?? 'invalid input';
+const firstZodError = (err: z.ZodError): string => err.issues[0]?.message ?? 'invalid input';
 
 // ── Product ─────────────────────────────────────────────────────────────────────
 
@@ -97,9 +96,7 @@ export type UpsertProductInput = z.input<typeof upsertProductSchema>;
  * concentration). On create, the FragranceDetail is created alongside; on update
  * it is upserted so legacy products lacking one get backfilled.
  */
-export async function upsertProduct(
-  input: UpsertProductInput,
-): Promise<ActionResult> {
+export async function upsertProduct(input: UpsertProductInput): Promise<ActionResult> {
   await requireStaff();
 
   const parsed = upsertProductSchema.safeParse(input);
@@ -120,8 +117,8 @@ export async function upsertProduct(
         where: { id: v.id },
         data: {
           slug: v.slug,
-          name: v.name,
-          description: v.description as Prisma.InputJsonValue,
+          name: JSON.stringify(v.name),
+          description: v.description ? JSON.stringify(v.description) : undefined,
           status: v.status,
           price: v.price,
           fragrance: {
@@ -135,8 +132,8 @@ export async function upsertProduct(
       const created = await db.product.create({
         data: {
           slug: v.slug,
-          name: v.name,
-          description: v.description as Prisma.InputJsonValue,
+          name: JSON.stringify(v.name),
+          description: v.description ? JSON.stringify(v.description) : undefined,
           status: v.status,
           price: v.price,
           fragrance: { create: fragranceData },
@@ -172,9 +169,7 @@ const setProductNotesSchema = z.object({
 export type SetProductNotesInput = z.input<typeof setProductNotesSchema>;
 
 /** Replace the full set of a product's notes (delete-all + recreate, in a txn). */
-export async function setProductNotes(
-  input: SetProductNotesInput,
-): Promise<ActionResult> {
+export async function setProductNotes(input: SetProductNotesInput): Promise<ActionResult> {
   await requireStaff();
 
   const parsed = setProductNotesSchema.safeParse(input);
@@ -226,9 +221,7 @@ const setProductAccordsSchema = z.object({
 export type SetProductAccordsInput = z.input<typeof setProductAccordsSchema>;
 
 /** Replace the full set of a product's accords (delete-all + recreate). */
-export async function setProductAccords(
-  input: SetProductAccordsInput,
-): Promise<ActionResult> {
+export async function setProductAccords(input: SetProductAccordsInput): Promise<ActionResult> {
   await requireStaff();
 
   const parsed = setProductAccordsSchema.safeParse(input);
@@ -267,9 +260,7 @@ const setProductPerfumersSchema = z.object({
 export type SetProductPerfumersInput = z.input<typeof setProductPerfumersSchema>;
 
 /** Replace the full set of a product's credited perfumers. */
-export async function setProductPerfumers(
-  input: SetProductPerfumersInput,
-): Promise<ActionResult> {
+export async function setProductPerfumers(input: SetProductPerfumersInput): Promise<ActionResult> {
   await requireStaff();
 
   const parsed = setProductPerfumersSchema.safeParse(input);
@@ -512,7 +503,7 @@ export async function upsertNote(input: UpsertNoteInput): Promise<ActionResult> 
 
   const data = {
     slug: v.slug,
-    name: v.name,
+    name: JSON.stringify(v.name),
     family: v.family && v.family.length > 0 ? v.family : null,
     iconUrl: v.iconUrl && v.iconUrl.length > 0 ? v.iconUrl : null,
   };
@@ -569,7 +560,7 @@ export async function upsertAccord(input: UpsertAccordInput): Promise<ActionResu
 
   const data = {
     slug: v.slug,
-    name: v.name,
+    name: JSON.stringify(v.name),
     colorHex: v.colorHex && v.colorHex.length > 0 ? v.colorHex : null,
   };
 

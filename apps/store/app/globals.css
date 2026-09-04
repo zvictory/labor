@@ -3,58 +3,70 @@
 
 @layer base {
   :root {
-    /* Le Labo-inspired warm-neutral palette */
-    --background: 39 33% 97%; /* #FAF8F4 bone */
-    --foreground: 24 14% 9%; /* #1A1714 ink */
+    /* Brandbook Edition 02 palette. 70/20/10 by AREA, not by element.
+       Base is Raw Off-White, not graphite: the shop stays white brick and wood
+       (D1 row 7 paints exactly one wall), so a graphite-first site would not
+       match the room anyone actually walks into. Graphite is the OBJECT colour
+       here — type, frames, buttons. */
 
-    --card: 0 0% 100%;
-    --card-foreground: 24 14% 9%;
+    --background: 42 31% 94%; /* #F4F1EA Raw Off-White */
+    --foreground: 0 0% 7%; /* #121212 Deep Graphite — 16.6:1 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 24 14% 9%;
+    /* Cards are framed by a hairline, never raised off the page. */
+    --card: 42 31% 94%;
+    --card-foreground: 0 0% 7%;
 
-    --primary: 24 14% 9%; /* near-black */
-    --primary-foreground: 39 33% 97%;
+    --popover: 42 31% 94%;
+    --popover-foreground: 0 0% 7%;
 
-    --secondary: 36 19% 90%;
-    --secondary-foreground: 24 14% 9%;
+    --primary: 0 0% 7%; /* every action button is graphite */
+    --primary-foreground: 42 31% 94%;
 
-    --muted: 36 19% 90%;
-    --muted-foreground: 30 8% 38%; /* #6B6258 */
+    --secondary: 42 20% 88%;
+    --secondary-foreground: 0 0% 7%;
 
-    --accent: 30 32% 41%; /* #8B6F47 brass */
-    --accent-foreground: 39 33% 97%;
+    --muted: 42 20% 88%;
+    /* #4A4B4D, ~7.8:1. NOT #8C8D91 — that measures 2.9:1 on off-white and
+       fails WCAG AA for text (D4). */
+    --muted-foreground: 220 2% 30%;
 
-    --destructive: 0 56% 39%; /* #9B2C2C */
-    --destructive-foreground: 39 33% 97%;
+    /* Amber is a FILL that carries graphite text (11:1). Amber text on
+       off-white measures 1.5:1 and is never used. One amber block per page. */
+    --accent: 35 41% 75%; /* #D9C3A5 */
+    --accent-foreground: 0 0% 7%;
 
-    --border: 30 12% 85%;
-    --input: 30 12% 85%;
-    --ring: 30 32% 41%;
+    --destructive: 0 45% 38%;
+    --destructive-foreground: 42 31% 94%;
 
-    --radius: 0.25rem;
+    --border: 42 20% 83%; /* #DDD8CC hairline */
+    --input: 42 20% 83%;
+    --ring: 0 0% 7%;
+
+    /* Laboratory language: labels, tables, tick scales. Nothing is rounded. */
+    --radius: 0rem;
   }
 
   .dark {
-    --background: 24 14% 9%;
-    --foreground: 39 33% 97%;
-    --card: 24 14% 12%;
-    --card-foreground: 39 33% 97%;
-    --popover: 24 14% 12%;
-    --popover-foreground: 39 33% 97%;
-    --primary: 39 33% 97%;
-    --primary-foreground: 24 14% 9%;
-    --secondary: 24 8% 18%;
-    --secondary-foreground: 39 33% 97%;
-    --muted: 24 8% 18%;
-    --muted-foreground: 30 10% 65%;
-    --accent: 30 32% 50%;
-    --accent-foreground: 24 14% 9%;
-    --destructive: 0 56% 50%;
-    --destructive-foreground: 39 33% 97%;
-    --border: 24 8% 22%;
-    --input: 24 8% 22%;
-    --ring: 30 32% 50%;
+    /* Not a second brand — the same system after closing time. */
+    --background: 0 0% 7%;
+    --foreground: 42 31% 94%;
+    --card: 0 0% 7%;
+    --card-foreground: 42 31% 94%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 42 31% 94%;
+    --primary: 42 31% 94%;
+    --primary-foreground: 0 0% 7%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 42 31% 94%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 228 2% 56%; /* #8C8D91 clears AA on graphite */
+    --accent: 35 41% 75%;
+    --accent-foreground: 0 0% 7%;
+    --destructive: 0 45% 50%;
+    --destructive-foreground: 42 31% 94%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 42 31% 94%;
   }
 }
 
@@ -64,6 +76,34 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+  /* Prices and codes line up in columns — the shop's A5 price card, on screen. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Headings moved from Story Script to Archivo, which needs weight and tighter
+     tracking to hold at display sizes. Set once here rather than adding two
+     classes to ~35 headings. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+
+  /* One focus ring for the whole storefront.
+     In a system with no shadow and no radius, focus is the state that vanishes
+     first — and it was missing everywhere. Set here rather than as a class on
+     every control, for the same reason radius and shadow are set in the config:
+     the rule then holds without anyone having to remember it. Zero-specificity
+     :where() so a component can still override deliberately. */
+  :where(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid hsl(var(--foreground));
+    outline-offset: 2px;
   }
 }

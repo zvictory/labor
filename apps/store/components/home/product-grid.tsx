@@ -28,18 +28,18 @@ export function ProductGrid({
   className?: string;
 }) {
   return (
-    <section className={`container border-b border-border py-24 ${className ?? ''}`}>
+    <section className={`border-border container border-b py-24 ${className ?? ''}`}>
       <div className="mb-12 flex items-baseline justify-between">
         <div className="space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+          <span className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             {eyebrow}
           </span>
-          <h2 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">{title}</h2>
+          <h2 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{title}</h2>
         </div>
         {viewAllLabel && viewAllHref && (
           <Link
             href={viewAllHref}
-            className="group flex items-center gap-1 text-xs uppercase tracking-widest text-ink-muted transition-all hover:text-brass dark:text-stone-400"
+            className="group text-ink-muted hover:text-foreground flex items-center gap-1 text-xs tracking-widest uppercase transition-all dark:text-stone-400"
           >
             {viewAllLabel}
             <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -54,7 +54,7 @@ export function ProductGrid({
           ))}
         </div>
       ) : (
-        <p className="py-10 text-center text-sm text-ink-muted dark:text-stone-400">{emptyLabel}</p>
+        <p className="text-ink-muted py-10 text-center text-sm dark:text-stone-400">{emptyLabel}</p>
       )}
     </section>
   );

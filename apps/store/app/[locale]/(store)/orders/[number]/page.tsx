@@ -4,11 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
-import {
-  getOrderByNumber,
-  type OrderStatus,
-  type OrderPaymentStatus,
-} from '@/lib/orders/queries';
+import { getOrderByNumber, type OrderStatus, type OrderPaymentStatus } from '@/lib/orders/queries';
 
 type Props = {
   params: Promise<{ locale: Locale; number: string }>;
@@ -75,7 +71,7 @@ const COPY: Record<
     deliveryFee: 'Yetkazib berish',
     total: 'Jami',
     free: 'Bepul',
-    track: "Buyurtma holatini Telegram-botimizda kuzating.",
+    track: 'Buyurtma holatini Telegram-botimizda kuzating.',
     statusLabel: {
       pending: 'Kutilmoqda',
       confirmed: 'Tasdiqlandi',
@@ -127,30 +123,26 @@ export default async function OrderConfirmationPage({ params }: Props) {
     <div className="container max-w-3xl py-12 md:py-16">
       {/* Header */}
       <div className="space-y-2 text-center">
-        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <p className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
           {copy.orderNo}: {order.number}
         </p>
-        <h1 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
-          {copy.thanks}
-        </h1>
+        <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{copy.thanks}</h1>
       </div>
 
       {/* Status badges */}
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <span className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-1.5 text-sm">
+        <span className="border-border inline-flex items-center gap-2 border px-4 py-1.5 text-sm">
           <span className="text-ink-muted dark:text-stone-400">{copy.status}:</span>
-          <span className="font-medium text-ink dark:text-bone">
+          <span className="text-ink dark:text-bone font-medium">
             {copy.statusLabel[order.status]}
           </span>
         </span>
-        <span className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-1.5 text-sm">
+        <span className="border-border inline-flex items-center gap-2 border px-4 py-1.5 text-sm">
           <span className="text-ink-muted dark:text-stone-400">{copy.payment}:</span>
           <span
             className={
               'font-medium ' +
-              (order.paymentStatus === 'paid'
-                ? 'text-green-700'
-                : 'text-ink dark:text-bone')
+              (order.paymentStatus === 'paid' ? 'text-green-700' : 'text-ink dark:text-bone')
             }
           >
             {copy.paymentLabel[order.paymentStatus]}
@@ -161,10 +153,10 @@ export default async function OrderConfirmationPage({ params }: Props) {
 
       {/* Items */}
       <section className="mt-12 space-y-4">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
           {copy.items}
         </h2>
-        <ul className="divide-y divide-border rounded-xl border border-border">
+        <ul className="divide-border border-border divide-y rounded-xl border">
           {order.items.map((it) => (
             <li
               key={`${it.productId}-${it.isSample ? 'sample' : 'full'}`}
@@ -172,13 +164,13 @@ export default async function OrderConfirmationPage({ params }: Props) {
             >
               <Link
                 href={`/${locale}/product/${it.slug}`}
-                className="text-ink hover:text-brass dark:text-bone"
+                className="text-ink dark:text-bone hover:underline hover:underline-offset-4"
               >
                 {it.name}
                 {it.isSample ? ' · sample' : ''}
                 <span className="text-ink-muted dark:text-stone-400"> × {it.quantity}</span>
               </Link>
-              <span className="whitespace-nowrap font-medium text-ink dark:text-bone">
+              <span className="text-ink dark:text-bone font-medium whitespace-nowrap">
                 {formatUzs(it.lineTotal, locale)}
               </span>
             </li>
@@ -187,13 +179,13 @@ export default async function OrderConfirmationPage({ params }: Props) {
       </section>
 
       {/* Totals */}
-      <section className="mt-6 space-y-2 rounded-xl border border-border bg-stone-50/50 p-5 dark:bg-ink/30">
+      <section className="border-border dark:bg-ink/30 mt-6 space-y-2 rounded-xl border bg-stone-50/50 p-5">
         <Row label={copy.subtotal} value={formatUzs(order.subtotal, locale)} />
         <Row
           label={`${copy.deliveryFee}${order.deliveryMethodLabel ? ` · ${order.deliveryMethodLabel}` : ''}`}
           value={order.deliveryFee > 0 ? formatUzs(order.deliveryFee, locale) : copy.free}
         />
-        <div className="flex items-center justify-between border-t border-border pt-3 text-lg font-medium text-ink dark:text-bone">
+        <div className="border-border text-ink dark:text-bone flex items-center justify-between border-t pt-3 text-lg font-medium">
           <span>{copy.total}</span>
           <span>{formatUzs(order.total, locale)}</span>
         </div>
@@ -202,32 +194,32 @@ export default async function OrderConfirmationPage({ params }: Props) {
       {/* Delivery + contact */}
       <section className="mt-8 grid gap-6 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+          <h3 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             {copy.delivery}
           </h3>
-          <p className="text-sm text-ink dark:text-bone">
+          <p className="text-ink dark:text-bone text-sm">
             {[order.region, order.district, order.address].filter(Boolean).join(', ')}
           </p>
           {order.deliveryMethodLabel && (
-            <p className="text-xs text-ink-muted dark:text-stone-400">
+            <p className="text-ink-muted text-xs dark:text-stone-400">
               {order.deliveryMethodLabel}
             </p>
           )}
         </div>
         <div className="space-y-1.5">
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+          <h3 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             {copy.contact}
           </h3>
-          {order.phone && <p className="text-sm text-ink dark:text-bone">{order.phone}</p>}
+          {order.phone && <p className="text-ink dark:text-bone text-sm">{order.phone}</p>}
         </div>
       </section>
 
       {/* Telegram tracking note */}
-      <div className="mt-10 rounded-xl border border-[#229ED9]/40 bg-[#229ED9]/5 p-5 text-center">
-        <p className="text-sm text-ink dark:text-bone">{copy.track}</p>
+      <div className="border-border mt-10 border p-5 text-center">
+        <p className="text-ink dark:text-bone text-sm">{copy.track}</p>
         <a
           href={TELEGRAM_URL}
-          className="mt-3 inline-flex h-10 items-center justify-center gap-2 border border-[#229ED9] px-6 text-xs font-semibold uppercase tracking-widest text-[#1c7fb0] transition-colors hover:bg-[#229ED9] hover:text-white"
+          className="border-foreground text-foreground hover:bg-foreground hover:text-background mt-3 inline-flex h-10 items-center justify-center gap-2 border px-6 text-xs font-semibold tracking-[0.18em] uppercase transition-colors"
         >
           Telegram
         </a>
@@ -238,7 +230,7 @@ export default async function OrderConfirmationPage({ params }: Props) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between text-sm text-ink-muted dark:text-stone-400">
+    <div className="text-ink-muted flex items-center justify-between text-sm dark:text-stone-400">
       <span>{label}</span>
       <span>{value}</span>
     </div>

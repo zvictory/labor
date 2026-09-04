@@ -48,17 +48,17 @@ export function MoodBrowser({ locale, lang }: { locale: string; lang: Lang }) {
   const c = COPY[lang];
 
   return (
-    <section className="container border-b border-border py-24">
+    <section className="border-border container border-b py-24">
       <div className="mb-12 flex items-baseline justify-between gap-6">
         <div className="space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+          <span className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             {c.eyebrow}
           </span>
-          <h2 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
+          <h2 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">
             {c.headline}
           </h2>
         </div>
-        <p className="hidden max-w-xs text-sm text-ink-muted dark:text-stone-400 md:block">
+        <p className="text-ink-muted hidden max-w-xs text-sm md:block dark:text-stone-400">
           {c.sub}
         </p>
       </div>
@@ -69,21 +69,24 @@ export function MoodBrowser({ locale, lang }: { locale: string; lang: Lang }) {
             key={m.note}
             href={`/${locale}/catalog?note=${m.note}`}
             aria-label={`${c.labels[i]} — ${c.subs[i]}`}
-            className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden border border-border/60 p-5 transition-colors duration-500 hover:border-brass/60"
+            className="group border-border hover:border-foreground focus-visible:outline-graphite dark:focus-visible:outline-offwhite flex flex-col border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
           >
-            <div className="absolute inset-0 z-0">
+            {/* The photograph sits inside the frame, not behind the type. A
+                scrim over an image is the one texture the shop has nowhere. */}
+            <div className="border-border relative aspect-[4/3] w-full border-b">
               <Image
                 src={m.image}
-                alt={c.labels[i]!}
+                alt=""
                 fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+                sizes="(max-width: 1024px) 50vw, 25vw"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent opacity-85 transition-opacity duration-500 group-hover:opacity-75" />
             </div>
-            <div className="relative z-10">
-              <h3 className="font-display text-2xl text-bone">{c.labels[i]}</h3>
-              <span className="text-[11px] tracking-wide text-stone-300">{c.subs[i]}</span>
+            <div className="flex flex-col gap-1 p-4">
+              <h3 className="text-lg font-semibold tracking-[-0.01em]">{c.labels[i]}</h3>
+              <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase">
+                {c.subs[i]}
+              </span>
             </div>
           </Link>
         ))}

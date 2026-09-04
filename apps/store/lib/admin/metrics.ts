@@ -45,29 +45,21 @@ export interface AdminMetrics {
  * with no rows, so the dashboard can iterate ORDER_STATUSES without guarding undefined.
  */
 export async function getAdminMetrics(): Promise<AdminMetrics> {
-  const [
-    products,
-    orders,
-    brands,
-    notes,
-    users,
-    campaigns,
-    statusGroups,
-    recentOrders,
-  ] = await Promise.all([
-    db.product.count(),
-    db.order.count(),
-    db.brand.count(),
-    db.note.count(),
-    db.user.count(),
-    db.campaign.count(),
-    db.order.groupBy({ by: ['status'], _count: { _all: true } }),
-    db.order.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 8,
-      select: { id: true, number: true, status: true, total: true, createdAt: true },
-    }),
-  ]);
+  const [products, orders, brands, notes, users, campaigns, statusGroups, recentOrders] =
+    await Promise.all([
+      db.product.count(),
+      db.order.count(),
+      db.brand.count(),
+      db.note.count(),
+      db.user.count(),
+      db.campaign.count(),
+      db.order.groupBy({ by: ['status'], _count: { _all: true } }),
+      db.order.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 8,
+        select: { id: true, number: true, status: true, total: true, createdAt: true },
+      }),
+    ]);
 
   const ordersByStatus = ORDER_STATUSES.reduce(
     (acc, status) => {

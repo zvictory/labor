@@ -41,7 +41,7 @@ export async function loadPerfumers(): Promise<Map<string, number>> {
     const id = Number(p.id);
     const bio = collapseLocaleJson(null, bios.get(id) ?? []);
 
-    const data = { name: p.name, country: p.country, bio: bio ?? undefined };
+    const data = { name: p.name, country: p.country, bio: bio ? JSON.stringify(bio) : undefined };
 
     const saved = await db.perfumer.upsert({
       where: { slug: p.slug },

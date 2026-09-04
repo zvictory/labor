@@ -41,7 +41,7 @@ export async function loadAccords(): Promise<Map<string, number>> {
     const id = Number(a.id);
     const name = collapseRequiredLocaleJson(a.name, names.get(id) ?? [], a.slug);
 
-    const data = { name, colorHex: a.color_hex };
+    const data = { name: JSON.stringify(name), colorHex: a.color_hex };
 
     const saved = await db.accord.upsert({
       where: { slug: a.slug },

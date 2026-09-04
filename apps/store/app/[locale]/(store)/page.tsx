@@ -3,8 +3,7 @@ import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { locales, type Locale } from '@/i18n/config';
-import { HeroSlider } from '@/components/home/hero-slider';
-import { FinderBand } from '@/components/home/finder-band';
+import { Hero } from '@/components/home/hero';
 import { MoodBrowser } from '@/components/home/mood-browser';
 import { ProductGrid } from '@/components/home/product-grid';
 import { CustomParfumCta } from '@/components/home/custom-parfum-cta';
@@ -21,82 +20,53 @@ const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
-// Section eyebrows + "view all" labels + slide-2 copy, per locale. Component-local
-// (not in next-intl catalogs) to match the apps/web homepage convention. NOTE the
-// second product grid is labelled "Popular" (sourced from sort:'popular'), NOT
-// "Bestsellers" — there is no bestseller signal in the data-access layer yet.
+// Section eyebrows + "view all" labels, per locale. Component-local (not in
+// next-intl catalogs) to match the apps/web homepage convention.
 type HomeCopy = {
   eyebrowNew: string;
-  eyebrowPopular: string;
-  titlePopular: string;
   eyebrowNotes: string;
   eyebrowBrands: string;
   emptyProducts: string;
   emptyNotes: string;
   emptyBrands: string;
   viewAllNew: string;
-  viewAllPopular: string;
   viewAllNotes: string;
   viewAllBrands: string;
-  slide2Tagline: string;
-  slide2Headline: string;
-  slide2Sub: string;
 };
 
 const COPY: Record<Lang, HomeCopy> = {
   ru: {
     eyebrowNew: 'Свежие поступления',
-    eyebrowPopular: 'Популярное',
-    titlePopular: 'Популярное',
     eyebrowNotes: 'Парфюмерные ингредиенты',
     eyebrowBrands: 'Официальный дистрибьютор',
     emptyProducts: 'Скоро здесь появятся ароматы',
     emptyNotes: 'Ноты скоро появятся',
     emptyBrands: 'Бренды скоро появятся',
     viewAllNew: 'Все новинки',
-    viewAllPopular: 'Смотреть все',
     viewAllNotes: 'Все ноты',
     viewAllBrands: 'Все бренды',
-    slide2Tagline: 'СВЕЖИЙ. ЛЕСНОЙ. ЧИСТЫЙ',
-    slide2Headline: 'Гармония дикой природы',
-    slide2Sub:
-      'Откройте для себя нашу древесную коллекцию с нотами мха, влажного кедра и свежих лесных трав.',
   },
   en: {
     eyebrowNew: 'Just blended',
-    eyebrowPopular: 'Most loved',
-    titlePopular: 'Popular',
     eyebrowNotes: 'Olfactive pyramid',
     eyebrowBrands: 'Niche houses',
     emptyProducts: 'Fragrances are on their way',
     emptyNotes: 'Notes coming soon',
     emptyBrands: 'Brands coming soon',
     viewAllNew: 'View all',
-    viewAllPopular: 'View all',
     viewAllNotes: 'Browse notes',
     viewAllBrands: 'All brands',
-    slide2Tagline: 'FRESH. WOODY. PURE',
-    slide2Headline: 'Harmony of Wild Woods',
-    slide2Sub:
-      'Explore our curated woody scents featuring deep notes of moss, damp cedar wood, and fresh forest botanicals.',
   },
   uz: {
     eyebrowNew: 'Yangi tushganlar',
-    eyebrowPopular: 'Ommabop',
-    titlePopular: 'Ommabop',
     eyebrowNotes: 'Parfyumeriya ingredientlari',
     eyebrowBrands: 'Rasmiy distribyutor',
     emptyProducts: 'Tez orada hidlar paydo boʻladi',
     emptyNotes: 'Notalar tez orada',
     emptyBrands: 'Brendlar tez orada',
     viewAllNew: 'Barcha yangiliklar',
-    viewAllPopular: 'Barchasini koʻrish',
     viewAllNotes: 'Barcha notalar',
     viewAllBrands: 'Barcha brendlar',
-    slide2Tagline: 'TOZA. OʻRMON. YANGI',
-    slide2Headline: 'Yovvoyi tabiat uygʻunligi',
-    slide2Sub:
-      'Yoʻsin, nam kedr va yangi oʻrmon oʻtlari notalari bilan boyitilgan yogʻoch kolleksiyamizni kashf eting.',
   },
 };
 
@@ -112,7 +82,14 @@ const NOTE_FRENCH: Record<string, string> = {
 
 // Slugs we ship art for under public/notes/<slug>.png. The notes section only
 // surfaces notes that both exist in the catalog (getNotes) AND have art.
-const NOTE_IMAGE_SLUGS = ['sandalwood', 'rose', 'bergamot', 'black-tea', 'vetiver', 'musk'] as const;
+const NOTE_IMAGE_SLUGS = [
+  'sandalwood',
+  'rose',
+  'bergamot',
+  'black-tea',
+  'vetiver',
+  'musk',
+] as const;
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
@@ -124,12 +101,18 @@ export default async function HomePage({ params }: Props) {
   const c = COPY[lang];
 
   // ── data-access layer: called directly from the RSC, no HTTP hop ──────────────
-  const [newRes, popularRes, notes, brands] = await Promise.all([
+  const [newRes, notes, brands] = await Promise.all([
     listProducts({ locale, sort: 'new' }),
-    listProducts({ locale, sort: 'popular' }),
     getNotes(locale),
     getBrands(locale),
   ]);
+
+  // "Few things visible at once." The shop's island carries 84 testers in seven
+  // blocks; the home page carries twelve. Depth still exists — it sits behind
+  // "view all", the way the archive drawers sit under the island. The catalog
+  // page keeps its full PAGE_SIZE: that is a filtered, sequential surface where
+  // quantity is coverage, not noise.
+  const HOME_GRID = 12;
 
   // Notes section: intersect catalog notes with the slugs we have art for, keep
   // the curated display order, cap at 6.
@@ -152,73 +135,47 @@ export default async function HomePage({ params }: Props) {
     .sort((x, y) => Number(y.niche ?? false) - Number(x.niche ?? false))
     .slice(0, 8);
 
-  const slides = [
-    {
-      image: '/slides/hero.png',
-      tagline: b('tagline'),
-      headline: t('hero.headline'),
-      sub: t('hero.sub'),
-      cta: t('hero.cta'),
-      href: `/${locale}/catalog`,
-    },
-    {
-      image: '/slides/woody.png',
-      tagline: c.slide2Tagline,
-      headline: c.slide2Headline,
-      sub: c.slide2Sub,
-      cta: t('hero.cta'),
-      href: `/${locale}/catalog?note=vetiver`,
-    },
-  ];
-
   return (
     <>
-      {/* Campaign hero slideshow (client island) */}
-      <HeroSlider slides={slides} />
-
-      {/* Scent finder band (static; links to /find-your-perfume) */}
-      <FinderBand locale={locale} lang={lang} />
+      {/* One object, one sentence, one action — no slideshow, no client island */}
+      <Hero
+        image="/slides/hero.png"
+        tagline={b('tagline')}
+        headline={t('hero.headline')}
+        sub={t('hero.sub')}
+        cta={t('hero.cta')}
+        href={`/${locale}/catalog`}
+        code={`LABOR / ${locale.toUpperCase()} — ${HOME_GRID} SELECTED`}
+      />
 
       {/* New arrivals — listProducts({ sort:'new' }) */}
       <ProductGrid
         eyebrow={c.eyebrowNew}
         title={t('sections.newArrivals')}
-        products={newRes.data}
+        products={newRes.data.slice(0, HOME_GRID)}
         locale={locale}
         viewAllLabel={c.viewAllNew}
         viewAllHref={`/${locale}/catalog?sort=new`}
         emptyLabel={c.emptyProducts}
-        className="bg-stone-50/50 dark:bg-stone-900/10"
       />
 
       {/* Shop by mood (static; tiles map to live /catalog?note= slugs) */}
       <MoodBrowser locale={locale} lang={lang} />
 
-      {/* Popular — listProducts({ sort:'popular' }) (NOT "Bestsellers") */}
-      <ProductGrid
-        eyebrow={c.eyebrowPopular}
-        title={c.titlePopular}
-        products={popularRes.data}
-        locale={locale}
-        viewAllLabel={c.viewAllPopular}
-        viewAllHref={`/${locale}/catalog?sort=popular`}
-        emptyLabel={c.emptyProducts}
-      />
-
       {/* Fragrance notes — getNotes(locale) ∩ shipped art */}
-      <section className="container border-b border-border bg-stone-50/50 py-24 dark:bg-stone-900/10">
+      <section className="border-border container border-b bg-stone-50/50 py-24 dark:bg-stone-900/10">
         <div className="mb-12 flex items-baseline justify-between">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+            <span className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
               {c.eyebrowNotes}
             </span>
-            <h2 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
+            <h2 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">
               {t('sections.byNotes')}
             </h2>
           </div>
           <Link
             href={`/${locale}/notes`}
-            className="group flex items-center gap-1 text-xs uppercase tracking-widest text-ink-muted transition-all hover:text-brass dark:text-stone-400"
+            className="group text-ink-muted hover:text-foreground flex items-center gap-1 text-xs tracking-widest uppercase transition-all dark:text-stone-400"
           >
             {c.viewAllNotes}
             <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -231,27 +188,26 @@ export default async function HomePage({ params }: Props) {
               <Link
                 key={note.slug}
                 href={`/${locale}/catalog?note=${note.slug}`}
-                className="group relative flex aspect-[3/4] cursor-pointer flex-col justify-end overflow-hidden border border-border/60 p-5 transition-colors duration-500 hover:border-brass/60"
+                className="group border-border hover:border-foreground focus-visible:outline-graphite dark:focus-visible:outline-offwhite flex flex-col border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
               >
-                <div className="absolute inset-0 z-0">
+                {/* Ingredient inside the frame, name below it — the same card
+                    the product grid uses, so the page keeps one surface. */}
+                <div className="border-border relative aspect-square w-full border-b">
                   <Image
                     src={note.image}
-                    alt={note.name}
+                    alt=""
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                    className="scale-100 object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
+                    className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1714] via-[#1A1714]/40 to-transparent opacity-85 transition-opacity duration-500 group-hover:opacity-75" />
                 </div>
-                <div className="relative z-10 flex flex-col text-left">
-                  <span className="mb-1 font-mono text-[8px] font-bold uppercase tracking-[0.25em] text-[#8B6F47] dark:text-[#A88B5B]">
+                <div className="flex flex-col gap-1 p-3">
+                  <span className="text-muted-foreground text-micro font-mono tracking-[0.2em] uppercase">
                     {note.french}
                   </span>
-                  <span className="font-mono text-sm font-bold uppercase tracking-wider text-bone transition-colors duration-300 group-hover:text-brass">
-                    {note.name}
-                  </span>
+                  <span className="text-sm font-semibold tracking-[-0.01em]">{note.name}</span>
                   {note.family && (
-                    <span className="mt-1 translate-y-2 text-[9px] tracking-wide text-stone-400 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase">
                       {note.family}
                     </span>
                   )}
@@ -260,7 +216,7 @@ export default async function HomePage({ params }: Props) {
             ))}
           </div>
         ) : (
-          <p className="py-10 text-center text-sm text-ink-muted dark:text-stone-400">
+          <p className="text-ink-muted py-10 text-center text-sm dark:text-stone-400">
             {c.emptyNotes}
           </p>
         )}
@@ -270,16 +226,16 @@ export default async function HomePage({ params }: Props) {
       <section className="container py-24">
         <div className="mb-12 flex items-baseline justify-between">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+            <span className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
               {c.eyebrowBrands}
             </span>
-            <h2 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
+            <h2 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">
               {t('sections.byBrand')}
             </h2>
           </div>
           <Link
             href={`/${locale}/brands`}
-            className="group flex items-center gap-1 text-xs uppercase tracking-widest text-ink-muted transition-all hover:text-brass dark:text-stone-400"
+            className="group text-ink-muted hover:text-foreground flex items-center gap-1 text-xs tracking-widest uppercase transition-all dark:text-stone-400"
           >
             {c.viewAllBrands}
             <span className="transition-transform group-hover:translate-x-1">→</span>
@@ -292,19 +248,19 @@ export default async function HomePage({ params }: Props) {
               <Link
                 key={brand.slug}
                 href={`/${locale}/catalog?brand=${brand.slug}`}
-                className="group flex flex-col items-center justify-center border border-border/80 bg-bone p-8 text-center transition-all duration-300 hover:border-brass/70 hover:bg-stone-50 dark:bg-[#1A1714]/30 dark:hover:bg-[#1A1714]/60"
+                className="group border-border/80 bg-bone hover:border-foreground dark:bg-graphite/30 dark:hover:bg-graphite/60 flex flex-col items-center justify-center border p-8 text-center transition-all duration-300 hover:bg-stone-50"
               >
-                <span className="mb-4 flex h-16 w-full items-center justify-center font-display text-3xl text-ink transition-colors duration-300 group-hover:text-brass dark:text-bone">
+                <span className="font-display text-ink group- dark:text-bone mb-4 flex h-16 w-full items-center justify-center text-3xl transition-colors duration-300 hover:underline hover:underline-offset-4">
                   {brand.name}
                 </span>
-                <p className="text-[9px] uppercase tracking-[0.25em] text-ink-muted transition-colors duration-300 group-hover:text-brass dark:text-stone-400">
+                <p className="text-muted-foreground group-hover:text-foreground text-micro font-mono tracking-[0.2em] uppercase transition-colors">
                   {brand.country ?? (brand.niche ? 'Niche' : ' ')}
                 </p>
               </Link>
             ))}
           </div>
         ) : (
-          <p className="py-10 text-center text-sm text-ink-muted dark:text-stone-400">
+          <p className="text-ink-muted py-10 text-center text-sm dark:text-stone-400">
             {c.emptyBrands}
           </p>
         )}

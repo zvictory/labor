@@ -12,13 +12,20 @@
 //
 // Idempotent: upsert by `slug`. Returns slug->newId map.
 
-import { db } from "@/lib/db";
+import { db } from '@/lib/db';
+import {
+  migrateTaxonomyMedia,
+  reportTaxonomyMediaFailures,
+  type TaxonomyMediaFailure,
+} from '../media';
 import {
   collapseLocaleJson,
   collapseRequiredLocaleJson,
   fetchTranslations,
   query,
-} from "../source";
+} from '../source';
+
+const MIGRATE_BLOBS = process.env.MIGRATE_BLOBS === 'true';
 
 interface NoteRow {
   id: string;
@@ -28,7 +35,9 @@ interface NoteRow {
   icon_url: string | null;
 }
 
-export async function loadNotes(): Promise<Map<string, number>> {
+export async function loadNotes(
+  mediaFailures?: TaxonomyMediaFailure[],
+): Promise<Map<string, number>> {
   const notes = await query<NoteRow>(
     `SELECT id, slug, name, family, icon_url
        FROM labor_notes
@@ -36,26 +45,45 @@ export async function loadNotes(): Promise<Map<string, number>> {
   );
 
   const ids = notes.map((n) => Number(n.id));
-  const names = await fetchTranslations("labor_note_translations", "labor_note_id", "name", ids);
+  const names = await fetchTranslations('labor_note_translations', 'labor_note_id', 'name', ids);
   const descriptions = await fetchTranslations(
-    "labor_note_translations",
-    "labor_note_id",
-    "description",
+    'labor_note_translations',
+    'labor_note_id',
+    'description',
     ids,
   );
 
   const slugToId = new Map<string, number>();
+  const failures = mediaFailures ?? [];
 
   for (const n of notes) {
     const id = Number(n.id);
     const name = collapseRequiredLocaleJson(n.name, names.get(id) ?? [], n.slug);
     const description = collapseLocaleJson(null, descriptions.get(id) ?? []);
+    let iconUrl = n.icon_url;
+    if (n.icon_url?.trim()) {
+      try {
+        iconUrl = await migrateTaxonomyMedia({
+          kind: 'notes',
+          slug: n.slug,
+          sourceUrl: n.icon_url,
+          migrateBlobs: MIGRATE_BLOBS,
+        });
+      } catch (error: unknown) {
+        failures.push({
+          kind: 'notes',
+          slug: n.slug,
+          url: n.icon_url,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
 
     const data = {
-      name,
-      description: description ?? undefined,
+      name: JSON.stringify(name),
+      description: description ? JSON.stringify(description) : undefined,
       family: n.family,
-      iconUrl: n.icon_url,
+      iconUrl,
     };
 
     const saved = await db.note.upsert({
@@ -68,5 +96,6 @@ export async function loadNotes(): Promise<Map<string, number>> {
   }
 
   console.log(`[notes] upserted ${slugToId.size} notes`);
+  if (!mediaFailures) reportTaxonomyMediaFailures(failures);
   return slugToId;
 }

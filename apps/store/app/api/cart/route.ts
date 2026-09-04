@@ -15,8 +15,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
 import { getCart, addItem, updateItem, removeItem, type CartDTO } from '@/lib/cart/cart';
 
-const isLocale = (value: string): value is Locale =>
-  (locales as readonly string[]).includes(value);
+const isLocale = (value: string): value is Locale => (locales as readonly string[]).includes(value);
 
 const resolveLocale = (req: NextRequest): Locale => {
   const param = req.nextUrl.searchParams.get('locale');

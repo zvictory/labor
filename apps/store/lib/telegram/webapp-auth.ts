@@ -39,10 +39,7 @@ function dataCheckString(entries: Iterable<[string, string]>): string {
 /// Verify a Telegram Login Widget payload.
 /// Login Widget key derivation: secret = SHA256(botToken) (raw bytes).
 /// Returns false for any missing/invalid hash rather than throwing.
-export function verifyTelegramLogin(
-  data: Record<string, string>,
-  botToken: string,
-): boolean {
+export function verifyTelegramLogin(data: Record<string, string>, botToken: string): boolean {
   const hash = data.hash;
   if (!hash || !botToken) return false;
 

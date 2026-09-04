@@ -6,7 +6,13 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { addItem, updateItem, removeItem, type AddItemOptions, type CartDTO } from '@/lib/cart/cart';
+import {
+  addItem,
+  updateItem,
+  removeItem,
+  type AddItemOptions,
+  type CartDTO,
+} from '@/lib/cart/cart';
 
 const revalidateCart = (revalidate?: string): void => {
   // The cart page is locale-prefixed; revalidate the layout tree so every

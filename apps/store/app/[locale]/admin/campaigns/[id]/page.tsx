@@ -35,7 +35,7 @@ export default async function AdminCampaignEditPage({ params }: Props) {
   if (!campaign) notFound();
 
   const base = `/${locale}/admin/campaigns`;
-  const sectionTitleCls = 'text-[10px] font-bold uppercase tracking-[0.3em] text-brass';
+  const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
 
   // Inline server actions for the top-bar controls.
   async function toggleActive() {
@@ -54,20 +54,20 @@ export default async function AdminCampaignEditPage({ params }: Props) {
         <div className="space-y-2">
           <Link
             href={base}
-            className="text-xs text-ink-muted underline-offset-4 hover:text-brass hover:underline dark:text-stone-400"
+            className="text-ink-muted hover:text-foreground text-xs underline-offset-4 hover:underline dark:text-stone-400"
           >
             ← Все кампании
           </Link>
-          <h1 className="font-display text-3xl text-ink dark:text-bone">
+          <h1 className="font-display text-ink dark:text-bone text-3xl">
             {campaign.title.ru || campaign.slug}
           </h1>
-          <p className="text-sm text-ink-muted dark:text-stone-400">/{campaign.slug}</p>
+          <p className="text-ink-muted text-sm dark:text-stone-400">/{campaign.slug}</p>
         </div>
         <div className="flex gap-2">
           <form action={toggleActive}>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center border border-border px-4 text-xs font-semibold uppercase tracking-widest text-ink hover:border-brass dark:text-bone"
+              className="border-border text-ink hover:border-foreground dark:text-bone inline-flex h-10 items-center justify-center border px-4 text-xs font-semibold tracking-widest uppercase"
             >
               {campaign.active ? 'Скрыть' : 'Активировать'}
             </button>
@@ -75,7 +75,7 @@ export default async function AdminCampaignEditPage({ params }: Props) {
           <form action={remove}>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center border border-rose-300 px-4 text-xs font-semibold uppercase tracking-widest text-rose-700 hover:bg-rose-50"
+              className="inline-flex h-10 items-center justify-center border border-rose-300 px-4 text-xs font-semibold tracking-widest text-rose-700 uppercase hover:bg-rose-50"
             >
               Удалить
             </button>
@@ -86,7 +86,7 @@ export default async function AdminCampaignEditPage({ params }: Props) {
       {/* Core fields */}
       <section className="space-y-4">
         <h2 className={sectionTitleCls}>Параметры</h2>
-        <div className="rounded-xl border border-border bg-background p-6">
+        <div className="border-border bg-background rounded-xl border p-6">
           <CampaignForm
             locale={locale}
             initial={{
@@ -114,7 +114,7 @@ export default async function AdminCampaignEditPage({ params }: Props) {
       {/* Featured products */}
       <section className="space-y-4">
         <h2 className={sectionTitleCls}>Товары кампании</h2>
-        <div className="rounded-xl border border-border bg-background p-6">
+        <div className="border-border bg-background rounded-xl border p-6">
           <FeaturedProducts
             campaignId={campaign.id}
             locale={locale}

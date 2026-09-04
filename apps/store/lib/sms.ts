@@ -19,7 +19,10 @@ interface EskizSendResponse {
   message?: string;
 }
 
-function credentialsConfigured(email: string | undefined, password: string | undefined): email is string {
+function credentialsConfigured(
+  email: string | undefined,
+  password: string | undefined,
+): email is string {
   return Boolean(email && password && !email.includes('example.com'));
 }
 

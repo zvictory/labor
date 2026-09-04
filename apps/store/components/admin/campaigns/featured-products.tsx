@@ -30,12 +30,7 @@ interface Props {
   searchAction: (q: string) => Promise<PickerProduct[]>;
 }
 
-export function FeaturedProducts({
-  campaignId,
-  locale,
-  initialSelected,
-  searchAction,
-}: Props) {
+export function FeaturedProducts({ campaignId, locale, initialSelected, searchAction }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [selected, setSelected] = useState<PickerProduct[]>(initialSelected);
@@ -96,14 +91,12 @@ export function FeaturedProducts({
     <div className="space-y-5">
       {/* Selected list */}
       {selected.length === 0 ? (
-        <p className="text-sm text-ink-muted dark:text-stone-400">
-          Товары не выбраны.
-        </p>
+        <p className="text-ink-muted text-sm dark:text-stone-400">Товары не выбраны.</p>
       ) : (
-        <ul className="divide-y divide-border rounded-xl border border-border">
+        <ul className="divide-border border-border divide-y rounded-xl border">
           {selected.map((p, i) => (
             <li key={p.id} className="flex items-center gap-3 px-3 py-2.5">
-              <span className="w-6 text-center text-xs text-ink-muted dark:text-stone-400">
+              <span className="text-ink-muted w-6 text-center text-xs dark:text-stone-400">
                 {i + 1}
               </span>
               {p.image ? (
@@ -113,14 +106,14 @@ export function FeaturedProducts({
                   width={40}
                   height={40}
                   unoptimized
-                  className="h-10 w-10 rounded border border-border object-cover"
+                  className="border-border h-10 w-10 rounded border object-cover"
                 />
               ) : (
-                <div className="h-10 w-10 rounded border border-dashed border-border" />
+                <div className="border-border h-10 w-10 rounded border border-dashed" />
               )}
-              <span className="flex-1 truncate text-sm text-ink dark:text-bone">
+              <span className="text-ink dark:text-bone flex-1 truncate text-sm">
                 {p.name}
-                <span className="ml-2 text-xs text-ink-muted dark:text-stone-400">
+                <span className="text-ink-muted ml-2 text-xs dark:text-stone-400">
                   {formatUzs(p.price, locale)}
                 </span>
               </span>
@@ -129,7 +122,7 @@ export function FeaturedProducts({
                   type="button"
                   onClick={() => move(i, -1)}
                   disabled={i === 0}
-                  className="rounded px-2 py-1 text-xs text-ink-muted hover:text-brass disabled:opacity-30 dark:text-stone-400"
+                  className="text-ink-muted hover:text-foreground rounded px-2 py-1 text-xs disabled:opacity-30 dark:text-stone-400"
                   aria-label="Вверх"
                 >
                   ↑
@@ -138,7 +131,7 @@ export function FeaturedProducts({
                   type="button"
                   onClick={() => move(i, 1)}
                   disabled={i === selected.length - 1}
-                  className="rounded px-2 py-1 text-xs text-ink-muted hover:text-brass disabled:opacity-30 dark:text-stone-400"
+                  className="text-ink-muted hover:text-foreground rounded px-2 py-1 text-xs disabled:opacity-30 dark:text-stone-400"
                   aria-label="Вниз"
                 >
                   ↓
@@ -161,7 +154,7 @@ export function FeaturedProducts({
       <div className="space-y-2">
         <div className="flex gap-2">
           <input
-            className="h-10 flex-1 rounded-md border border-border bg-white px-3 text-sm text-ink outline-none focus:border-brass dark:bg-ink/40 dark:text-bone"
+            className="border-border text-ink focus:border-foreground dark:bg-ink/40 dark:text-bone h-10 flex-1 rounded-md border bg-white px-3 text-sm"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -176,17 +169,17 @@ export function FeaturedProducts({
             type="button"
             onClick={() => void runSearch()}
             disabled={searching}
-            className="inline-flex h-10 items-center justify-center border border-border px-4 text-xs font-semibold uppercase tracking-widest text-ink hover:border-brass disabled:opacity-50 dark:text-bone"
+            className="border-border text-ink hover:border-foreground dark:text-bone inline-flex h-10 items-center justify-center border px-4 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
           >
             {searching ? '…' : 'Найти'}
           </button>
         </div>
         {results.length > 0 && (
-          <ul className="max-h-72 divide-y divide-border overflow-auto rounded-xl border border-border">
+          <ul className="divide-border border-border max-h-72 divide-y overflow-auto rounded-xl border">
             {results.map((p) => (
               <li
                 key={p.id}
-                className="flex items-center gap-3 px-3 py-2.5 hover:bg-ink/[0.03] dark:hover:bg-bone/[0.04]"
+                className="hover:bg-ink/[0.03] dark:hover:bg-bone/[0.04] flex items-center gap-3 px-3 py-2.5"
               >
                 {p.image ? (
                   <Image
@@ -195,18 +188,16 @@ export function FeaturedProducts({
                     width={36}
                     height={36}
                     unoptimized
-                    className="h-9 w-9 rounded border border-border object-cover"
+                    className="border-border h-9 w-9 rounded border object-cover"
                   />
                 ) : (
-                  <div className="h-9 w-9 rounded border border-dashed border-border" />
+                  <div className="border-border h-9 w-9 rounded border border-dashed" />
                 )}
-                <span className="flex-1 truncate text-sm text-ink dark:text-bone">
-                  {p.name}
-                </span>
+                <span className="text-ink dark:text-bone flex-1 truncate text-sm">{p.name}</span>
                 <button
                   type="button"
                   onClick={() => add(p)}
-                  className="rounded-md border border-border px-3 py-1 text-xs text-ink hover:border-brass dark:text-bone"
+                  className="border-border text-ink hover:border-foreground dark:text-bone rounded-md border px-3 py-1 text-xs"
                 >
                   Добавить
                 </button>
@@ -223,7 +214,7 @@ export function FeaturedProducts({
         type="button"
         onClick={onSave}
         disabled={pending}
-        className="inline-flex h-10 items-center justify-center bg-ink px-5 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass disabled:opacity-50 dark:bg-bone dark:text-ink"
+        className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-10 items-center justify-center px-5 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
       >
         {pending ? 'Сохранение…' : 'Сохранить товары'}
       </button>

@@ -132,10 +132,7 @@ export async function deliverOrder(number: string): Promise<OrderActionResult> {
  * money has not actually been returned yet. `reason` is accepted for the audit
  * trail / operator note but is not persisted (no column exists on Order).
  */
-export async function cancelOrder(
-  number: string,
-  reason?: string,
-): Promise<OrderActionResult> {
+export async function cancelOrder(number: string, reason?: string): Promise<OrderActionResult> {
   const parsedReason = reasonSchema.safeParse(reason);
   if (!parsedReason.success) {
     return { ok: false, error: 'invalid_reason' };

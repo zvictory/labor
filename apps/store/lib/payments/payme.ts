@@ -64,7 +64,11 @@ export const PAYME_ERRORS = {
   },
   TRANSACTION_NOT_FOUND: {
     code: -31003,
-    message: { uz: 'Tranzaksiya topilmadi', ru: 'Транзакция не найдена', en: 'Transaction not found' },
+    message: {
+      uz: 'Tranzaksiya topilmadi',
+      ru: 'Транзакция не найдена',
+      en: 'Transaction not found',
+    },
   },
   TRANSACTION_ALREADY_CANCELLED: {
     code: -31007,
@@ -151,7 +155,11 @@ export function paymeResponse(
 export function paymeError(
   id: number | string | null,
   error: { code: number; message: LocalizedMessage | string },
-): { jsonrpc: '2.0'; id: number | string | null; error: { code: number; message: LocalizedMessage | string } } {
+): {
+  jsonrpc: '2.0';
+  id: number | string | null;
+  error: { code: number; message: LocalizedMessage | string };
+} {
   return { jsonrpc: '2.0', id, error };
 }
 

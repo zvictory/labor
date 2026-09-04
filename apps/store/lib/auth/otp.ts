@@ -28,7 +28,10 @@ const RATE_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_MAX_IN_WINDOW = 3;
 
 export class OtpError extends Error {
-  constructor(public readonly code: string, message?: string) {
+  constructor(
+    public readonly code: string,
+    message?: string,
+  ) {
     super(message ?? code);
     this.name = 'OtpError';
   }
@@ -93,10 +96,7 @@ export async function requestOtp(phone: string): Promise<void> {
  * null on any failure (no such code, expired, mismatch, attempts exhausted) —
  * callers should not distinguish these to avoid leaking which step failed.
  */
-export async function verifyOtp(
-  phone: string,
-  code: string,
-): Promise<{ userId: number } | null> {
+export async function verifyOtp(phone: string, code: string): Promise<{ userId: number } | null> {
   const normalized = normalizePhone(phone);
   if (normalized.length < 6) return null;
 

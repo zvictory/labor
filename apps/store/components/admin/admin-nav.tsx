@@ -44,7 +44,7 @@ export function AdminNav({ locale }: { locale: string }) {
             className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
               active
                 ? 'bg-ink text-bone dark:bg-bone dark:text-ink'
-                : 'text-ink-muted hover:bg-ink/5 hover:text-ink dark:text-stone-400 dark:hover:bg-bone/10 dark:hover:text-bone'
+                : 'text-ink-muted hover:bg-ink/5 hover:text-ink dark:hover:bg-bone/10 dark:hover:text-bone dark:text-stone-400'
             }`}
           >
             <Icon className="h-4 w-4 shrink-0" />

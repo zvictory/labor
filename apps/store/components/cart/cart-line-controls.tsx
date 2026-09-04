@@ -42,13 +42,13 @@ export function CartLineControls({
 
   return (
     <div className="flex items-center gap-4">
-      <div className="inline-flex items-center rounded border border-border">
+      <div className="border-border inline-flex items-center rounded border">
         <button
           type="button"
           aria-label="decrease"
           disabled={pending}
           onClick={() => setQty(quantity - 1)}
-          className="px-2.5 py-1.5 hover:text-brass disabled:opacity-50"
+          className="px-2.5 py-1.5 hover:underline hover:underline-offset-4 disabled:opacity-50"
         >
           <Minus className="h-3.5 w-3.5" />
         </button>
@@ -58,7 +58,7 @@ export function CartLineControls({
           aria-label="increase"
           disabled={pending}
           onClick={() => setQty(quantity + 1)}
-          className="px-2.5 py-1.5 hover:text-brass disabled:opacity-50"
+          className="px-2.5 py-1.5 hover:underline hover:underline-offset-4 disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
         </button>

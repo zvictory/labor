@@ -44,14 +44,7 @@ const ETA_LABEL: Record<Locale, (min: number) => string> = {
   en: (min) => `≈ ${min} min en route`,
 };
 
-export function DeliveryQuote({
-  locale,
-  region,
-  district,
-  address,
-  method,
-  fallbackFee,
-}: Props) {
+export function DeliveryQuote({ locale, region, district, address, method, fallbackFee }: Props) {
   const [quote, setQuote] = useState<QuoteResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -100,17 +93,17 @@ export function DeliveryQuote({
   const eta = quote?.etaMinutes;
 
   return (
-    <div className="mt-3 flex items-baseline justify-between gap-3 rounded-md border border-dashed border-brass/40 bg-brass/5 px-3 py-2">
-      <span className="text-[10px] font-semibold uppercase tracking-widest text-brass">
+    <div className="border-brass/40 bg-brass/5 mt-3 flex items-baseline justify-between gap-3 rounded-md border border-dashed px-3 py-2">
+      <span className="text-micro text-brass font-semibold tracking-widest uppercase">
         {ESTIMATE_LABEL[locale]}
-        {loading && <span className="ml-1.5 animate-pulse text-ink-muted">…</span>}
+        {loading && <span className="text-ink-muted ml-1.5 animate-pulse">…</span>}
       </span>
       <span className="text-right">
-        <span className="text-sm font-medium text-ink dark:text-bone">
+        <span className="text-ink dark:text-bone text-sm font-medium">
           {formatUzs(fee, locale)}
         </span>
         {isLive && typeof eta === 'number' && (
-          <span className="mt-0.5 block text-[11px] text-ink-muted dark:text-stone-400">
+          <span className="text-label text-ink-muted mt-0.5 block dark:text-stone-400">
             {ETA_LABEL[locale](eta)}
           </span>
         )}

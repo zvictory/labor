@@ -70,14 +70,14 @@ export async function loadFragranceDetails(
       gender: r.gender,
       concentration: r.concentration,
       releaseYear: r.release_year,
-      avgRating: r.avg_rating,
-      avgLongevity: r.avg_longevity,
-      avgSillage: r.avg_sillage,
+      avgRating: parseFloat(r.avg_rating) || 0,
+      avgLongevity: parseFloat(r.avg_longevity) || 0,
+      avgSillage: parseFloat(r.avg_sillage) || 0,
       reviewsCount: r.reviews_count,
       discontinued: r.discontinued,
-      loveBreakdown: (r.love_breakdown ?? {}) as object,
-      seasonsBreakdown: (r.seasons_breakdown ?? {}) as object,
-      timeBreakdown: (r.time_breakdown ?? {}) as object,
+      loveBreakdown: JSON.stringify(r.love_breakdown ?? {}),
+      seasonsBreakdown: JSON.stringify(r.seasons_breakdown ?? {}),
+      timeBreakdown: JSON.stringify(r.time_breakdown ?? {}),
     };
 
     await db.fragranceDetail.upsert({

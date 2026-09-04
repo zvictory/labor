@@ -69,10 +69,10 @@ export function CampaignForm({ locale, initial }: Props) {
   const [endsAt, setEndsAt] = useState(initial?.endsAt ?? '');
 
   const fieldCls =
-    'h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-brass dark:bg-ink/40 dark:text-bone';
+    'h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink transition-colors focus:border-foreground dark:bg-ink/40 dark:text-bone';
   const labelCls =
-    'mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
-  const sectionTitleCls = 'text-[10px] font-bold uppercase tracking-[0.3em] text-brass';
+    'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
+  const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
 
   function localeRow(
     id: string,
@@ -180,10 +180,10 @@ export function CampaignForm({ locale, initial }: Props) {
             />
           </div>
           <div className="flex items-end">
-            <label className="flex cursor-pointer items-center gap-2 text-sm text-ink dark:text-bone">
+            <label className="text-ink dark:text-bone flex cursor-pointer items-center gap-2 text-sm">
               <input
                 type="checkbox"
-                className="h-4 w-4 accent-brass"
+                className="accent-brass h-4 w-4"
                 checked={active}
                 onChange={(e) => setActive(e.target.checked)}
               />
@@ -269,7 +269,7 @@ export function CampaignForm({ locale, initial }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex h-11 items-center justify-center bg-ink px-7 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass disabled:cursor-not-allowed disabled:opacity-50 dark:bg-bone dark:text-ink"
+        className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-11 items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         {pending ? 'Сохранение…' : initial?.id ? 'Сохранить' : 'Создать кампанию'}
       </button>

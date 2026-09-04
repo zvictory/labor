@@ -40,12 +40,12 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-medium text-ink">Продукты</h1>
-          <p className="text-sm text-ink-muted">{meta.total} всего</p>
+          <h1 className="text-ink text-xl font-medium">Продукты</h1>
+          <p className="text-ink-muted text-sm">{meta.total} всего</p>
         </div>
         <Link
           href={`/${locale}/admin/catalog/new`}
-          className="h-10 rounded-md bg-ink px-5 text-xs font-semibold uppercase tracking-widest text-bone leading-10 hover:bg-brass"
+          className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-5 text-xs leading-10 font-semibold tracking-widest uppercase"
         >
           Новый продукт
         </Link>
@@ -57,19 +57,19 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
           name="q"
           defaultValue={q}
           placeholder="Поиск по названию или slug…"
-          className="h-10 w-full max-w-sm rounded-md border border-border bg-white px-3 text-sm text-ink outline-none focus:border-brass"
+          className="border-border text-ink focus:border-foreground h-10 w-full max-w-sm rounded-md border bg-white px-3 text-sm"
         />
         <button
           type="submit"
-          className="h-10 rounded-md border border-border px-5 text-sm text-ink hover:border-brass"
+          className="border-border text-ink hover:border-foreground h-10 rounded-md border px-5 text-sm"
         >
           Найти
         </button>
       </form>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
+      <div className="border-border overflow-x-auto rounded-lg border">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-border bg-secondary/50 text-[11px] uppercase tracking-widest text-ink-muted">
+          <thead className="border-border bg-secondary/50 text-label text-ink-muted border-b tracking-widest uppercase">
             <tr>
               <th className="px-4 py-3 font-semibold">Фото</th>
               <th className="px-4 py-3 font-semibold">Название</th>
@@ -82,15 +82,15 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-ink-muted">
+                <td colSpan={6} className="text-ink-muted px-4 py-8 text-center">
                   Ничего не найдено
                 </td>
               </tr>
             ) : (
               data.map((p) => (
-                <tr key={p.id} className="border-b border-border last:border-0">
+                <tr key={p.id} className="border-border border-b last:border-0">
                   <td className="px-4 py-2">
-                    <div className="h-12 w-12 overflow-hidden rounded border border-border bg-secondary">
+                    <div className="border-border bg-secondary h-12 w-12 overflow-hidden rounded border">
                       {p.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={p.image} alt="" className="h-full w-full object-cover" />
@@ -100,18 +100,18 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
                   <td className="px-4 py-3">
                     <Link
                       href={`/${locale}/admin/catalog/${p.id}`}
-                      className="font-medium text-ink hover:text-brass"
+                      className="text-ink font-medium hover:underline hover:underline-offset-4"
                     >
                       {p.name || p.slug}
                     </Link>
-                    <div className="text-xs text-ink-muted">{p.slug}</div>
+                    <div className="text-ink-muted text-xs">{p.slug}</div>
                   </td>
-                  <td className="px-4 py-3 text-ink-muted">{p.brand || '—'}</td>
-                  <td className="px-4 py-3 text-ink">{formatUzs(p.price, locale)}</td>
+                  <td className="text-ink-muted px-4 py-3">{p.brand || '—'}</td>
+                  <td className="text-ink px-4 py-3">{formatUzs(p.price, locale)}</td>
                   <td className="px-4 py-3">
                     <span
                       className={
-                        'rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ' +
+                        'text-micro rounded px-2 py-1 font-bold tracking-wider uppercase ' +
                         (STATUS_BADGE[p.status] ?? 'bg-secondary text-ink-muted')
                       }
                     >
@@ -142,7 +142,7 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
             {meta.page > 1 && (
               <Link
                 href={buildHref(meta.page - 1)}
-                className="rounded-md border border-border px-4 py-2 text-ink hover:border-brass"
+                className="border-border text-ink hover:border-foreground rounded-md border px-4 py-2"
               >
                 Назад
               </Link>
@@ -150,7 +150,7 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
             {meta.page < meta.totalPages && (
               <Link
                 href={buildHref(meta.page + 1)}
-                className="rounded-md border border-border px-4 py-2 text-ink hover:border-brass"
+                className="border-border text-ink hover:border-foreground rounded-md border px-4 py-2"
               >
                 Вперёд
               </Link>

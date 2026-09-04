@@ -53,9 +53,9 @@ const buildLocaleText = (s: LocaleState): { ru: string; uz?: string; en?: string
 });
 
 const fieldCls =
-  'h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-brass dark:bg-ink/40 dark:text-bone';
+  'h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink transition-colors focus:border-foreground dark:bg-ink/40 dark:text-bone';
 const labelCls =
-  'mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
+  'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
 
 export function SlideEditor({ campaignId, slides }: Props) {
   return (
@@ -134,7 +134,7 @@ function SlideCard({ campaignId, slide }: { campaignId: number; slide: SlideInit
   }
 
   return (
-    <div className="rounded-xl border border-border p-4">
+    <div className="border-border rounded-xl border p-4">
       <div className="flex items-start gap-4">
         <div className="shrink-0">
           {imageUrl ? (
@@ -144,10 +144,10 @@ function SlideCard({ campaignId, slide }: { campaignId: number; slide: SlideInit
               width={120}
               height={80}
               unoptimized
-              className="h-20 w-32 rounded-md border border-border object-cover"
+              className="border-border h-20 w-32 rounded-md border object-cover"
             />
           ) : (
-            <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed border-border text-xs text-ink-muted dark:text-stone-400">
+            <div className="border-border text-ink-muted flex h-20 w-32 items-center justify-center rounded-md border border-dashed text-xs dark:text-stone-400">
               нет фото
             </div>
           )}
@@ -165,15 +165,25 @@ function SlideCard({ campaignId, slide }: { campaignId: number; slide: SlideInit
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="mt-2 w-full rounded-md border border-border px-2 py-1 text-xs text-ink hover:border-brass disabled:opacity-50 dark:text-bone"
+            className="border-border text-ink hover:border-foreground dark:text-bone mt-2 w-full rounded-md border px-2 py-1 text-xs disabled:opacity-50"
           >
             {uploading ? 'Загрузка…' : 'Загрузить'}
           </button>
         </div>
 
         <div className="flex-1 space-y-3">
-          <LocaleRow id={`slide-${slide.id}-title`} legend="Заголовок" value={title} setValue={setTitle} />
-          <LocaleRow id={`slide-${slide.id}-sub`} legend="Подзаголовок" value={subtitle} setValue={setSubtitle} />
+          <LocaleRow
+            id={`slide-${slide.id}-title`}
+            legend="Заголовок"
+            value={title}
+            setValue={setTitle}
+          />
+          <LocaleRow
+            id={`slide-${slide.id}-sub`}
+            legend="Подзаголовок"
+            value={subtitle}
+            setValue={setSubtitle}
+          />
           <LocaleRow id={`slide-${slide.id}-cta`} legend="CTA" value={cta} setValue={setCta} />
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="sm:col-span-2">
@@ -206,7 +216,7 @@ function SlideCard({ campaignId, slide }: { campaignId: number; slide: SlideInit
           type="button"
           onClick={onSave}
           disabled={pending}
-          className="inline-flex h-9 items-center justify-center bg-ink px-4 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass disabled:opacity-50 dark:bg-bone dark:text-ink"
+          className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-9 items-center justify-center px-4 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
         >
           Сохранить
         </button>
@@ -214,7 +224,7 @@ function SlideCard({ campaignId, slide }: { campaignId: number; slide: SlideInit
           type="button"
           onClick={onDelete}
           disabled={pending}
-          className="inline-flex h-9 items-center justify-center border border-rose-300 px-4 text-xs font-semibold uppercase tracking-widest text-rose-700 hover:bg-rose-50 disabled:opacity-50"
+          className="inline-flex h-9 items-center justify-center border border-rose-300 px-4 text-xs font-semibold tracking-widest text-rose-700 uppercase hover:bg-rose-50 disabled:opacity-50"
         >
           Удалить
         </button>
@@ -223,13 +233,7 @@ function SlideCard({ campaignId, slide }: { campaignId: number; slide: SlideInit
   );
 }
 
-function NewSlideCard({
-  campaignId,
-  nextPosition,
-}: {
-  campaignId: number;
-  nextPosition: number;
-}) {
+function NewSlideCard({ campaignId, nextPosition }: { campaignId: number; nextPosition: number }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -247,13 +251,13 @@ function NewSlideCard({
   }
 
   return (
-    <div className="rounded-xl border border-dashed border-border p-4 text-center">
+    <div className="border-border rounded-xl border border-dashed p-4 text-center">
       {error && <p className="mb-2 text-sm text-red-700">{error}</p>}
       <button
         type="button"
         onClick={onCreate}
         disabled={pending}
-        className="inline-flex h-9 items-center justify-center px-4 text-xs font-semibold uppercase tracking-widest text-ink hover:text-brass disabled:opacity-50 dark:text-bone"
+        className="text-ink dark:text-bone inline-flex h-9 items-center justify-center px-4 text-xs font-semibold tracking-widest uppercase hover:underline hover:underline-offset-4 disabled:opacity-50"
       >
         {pending ? '…' : '+ Добавить слайд'}
       </button>
@@ -274,7 +278,7 @@ function LocaleRow({
 }) {
   return (
     <div>
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-[0.25em] text-brass">
+      <span className="text-micro text-brass mb-1 block font-bold tracking-[0.25em] uppercase">
         {legend}
       </span>
       <div className="grid gap-2 sm:grid-cols-3">

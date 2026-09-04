@@ -9,12 +9,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import {
-  confirmOrder,
-  shipOrder,
-  deliverOrder,
-  cancelOrder,
-} from '@/lib/admin/order-actions';
+import { confirmOrder, shipOrder, deliverOrder, cancelOrder } from '@/lib/admin/order-actions';
 import {
   canTransition,
   type AdminOrderStatus,
@@ -70,7 +65,7 @@ export function OrderStatusActions({ number, status }: Props) {
 
   if (available.length === 0) {
     return (
-      <p className="text-xs text-ink-muted dark:text-stone-400">
+      <p className="text-ink-muted text-xs dark:text-stone-400">
         Нет доступных действий (заказ в конечном статусе).
       </p>
     );
@@ -112,7 +107,7 @@ export function OrderStatusActions({ number, status }: Props) {
               onClick={() => dispatch(key)}
               disabled={pending}
               className={
-                'inline-flex h-10 items-center justify-center px-5 text-xs font-semibold uppercase tracking-widest transition-colors disabled:cursor-not-allowed disabled:opacity-50 ' +
+                'inline-flex h-10 items-center justify-center px-5 text-xs font-semibold tracking-widest uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 ' +
                 (def.danger
                   ? 'border border-rose-300 text-rose-700 hover:bg-rose-50'
                   : 'bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink')

@@ -15,14 +15,12 @@ interface StatCardProps {
 export function StatCard({ label, value, hint, href }: StatCardProps) {
   const body = (
     <>
-      <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brass">
-        {label}
-      </span>
-      <span className="mt-2 font-display text-4xl leading-none text-ink dark:text-bone">
+      <span className="text-micro text-brass font-bold tracking-[0.25em] uppercase">{label}</span>
+      <span className="font-display text-ink dark:text-bone mt-2 text-4xl leading-none">
         {value}
       </span>
       {hint ? (
-        <span className="mt-2 text-xs text-ink-muted dark:text-stone-400">{hint}</span>
+        <span className="text-ink-muted mt-2 text-xs dark:text-stone-400">{hint}</span>
       ) : null}
     </>
   );
@@ -32,7 +30,7 @@ export function StatCard({ label, value, hint, href }: StatCardProps) {
 
   if (href) {
     return (
-      <Link href={href} className={`${className} hover:border-brass`}>
+      <Link href={href} className={`${className} hover:border-foreground`}>
         {body}
       </Link>
     );

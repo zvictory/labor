@@ -40,7 +40,7 @@ export function PerfumersEditor({ productId, options, initialPerfumerIds }: Prop
   return (
     <div className="space-y-4">
       {options.length === 0 ? (
-        <p className="text-xs text-ink-muted">Парфюмеры не созданы.</p>
+        <p className="text-ink-muted text-xs">Парфюмеры не созданы.</p>
       ) : (
         <div className="grid max-h-60 grid-cols-2 gap-1.5 overflow-y-auto sm:grid-cols-3">
           {options.map((o) => {
@@ -52,7 +52,7 @@ export function PerfumersEditor({ productId, options, initialPerfumerIds }: Prop
                   'flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ' +
                   (checked
                     ? 'border-brass bg-brass/5 text-ink'
-                    : 'border-border text-ink-muted hover:border-brass/50')
+                    : 'border-border text-ink-muted hover:border-foreground')
                 }
               >
                 <input
@@ -73,11 +73,11 @@ export function PerfumersEditor({ productId, options, initialPerfumerIds }: Prop
           type="button"
           onClick={save}
           disabled={saving}
-          className="h-10 rounded-md bg-ink px-6 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass disabled:opacity-50"
+          className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-6 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
         >
           {saving ? 'Сохранение…' : 'Сохранить парфюмеров'}
         </button>
-        {msg && <span className="text-xs text-ink-muted">{msg}</span>}
+        {msg && <span className="text-ink-muted text-xs">{msg}</span>}
       </div>
     </div>
   );

@@ -33,18 +33,20 @@ export function TelegramCta({ lang }: { lang: Lang }) {
 
   return (
     <section className="container py-20">
-      <div className="flex flex-col items-start gap-6 bg-[#229ED9] p-10 text-white md:flex-row md:items-center md:justify-between md:p-12">
+      <div className="border-border flex flex-col items-start gap-6 border p-10 md:flex-row md:items-center md:justify-between md:p-12">
         <div>
-          <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/85">
+          <span className="text-muted-foreground text-micro flex items-center gap-2 font-mono tracking-[0.28em] uppercase">
             <Send className="h-3.5 w-3.5" />
             {c.eyebrow}
           </span>
-          <h2 className="mt-3 font-display text-3xl text-white md:text-4xl">{c.headline}</h2>
-          <p className="mt-2 max-w-xl text-sm text-white/90">{c.sub}</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.02em] md:text-4xl">
+            {c.headline}
+          </h2>
+          <p className="text-muted-foreground mt-2 max-w-xl text-sm">{c.sub}</p>
         </div>
         <a
           href={TELEGRAM_URL}
-          className="group inline-flex h-12 shrink-0 items-center gap-2 bg-white px-7 text-xs font-semibold uppercase tracking-widest text-[#1c7fb0] transition-transform duration-300 hover:translate-x-1"
+          className="group bg-foreground text-background inline-flex h-12 shrink-0 items-center gap-2 px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-transform duration-300 hover:translate-x-1"
         >
           {c.cta}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

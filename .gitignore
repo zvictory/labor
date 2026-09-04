@@ -71,3 +71,13 @@ lelabo-clone/
 labor_ssh_configs/
 .claude/
 
+
+# apps/store — local-only artifacts
+# The SQLite dev database and the 131 MB of bottle photographs mirrored from
+# production are both reproducible: `scripts/import-prod.ts` rebuilds the DB and
+# `scripts/mirror-prod-images.ts` re-downloads the images. Neither belongs in
+# git. Brand logos and perfumer portraits are small enough to keep.
+apps/store/prisma/dev.db
+apps/store/prisma/*.db-journal
+apps/store/public/products/
+apps/store/design-shots/

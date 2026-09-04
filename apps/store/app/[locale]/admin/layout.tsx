@@ -26,18 +26,18 @@ export default async function AdminLayout({ children, params }: Props) {
   const roleLabel = admin ? 'Администратор' : 'Сотрудник';
 
   return (
-    <div className="flex min-h-screen flex-col bg-bone text-ink dark:bg-ink dark:text-bone md:flex-row">
+    <div className="bg-bone text-ink dark:bg-ink dark:text-bone flex min-h-screen flex-col md:flex-row">
       {/* Sidebar */}
-      <aside className="flex shrink-0 flex-col border-b border-border md:w-64 md:border-b-0 md:border-r">
+      <aside className="border-border flex shrink-0 flex-col border-b md:w-64 md:border-r md:border-b-0">
         <div className="flex items-center justify-between px-5 py-5">
           <Link
             href={`/${locale}/admin`}
             className="flex items-baseline gap-2 transition-opacity hover:opacity-90"
           >
-            <span className="font-display text-2xl leading-none text-ink dark:text-bone">
+            <span className="font-display text-ink dark:text-bone text-2xl leading-none">
               Labor
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+            <span className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
               Admin
             </span>
           </Link>
@@ -47,19 +47,17 @@ export default async function AdminLayout({ children, params }: Props) {
           <AdminNav locale={locale} />
         </div>
 
-        <div className="border-t border-border px-5 py-4">
+        <div className="border-border border-t px-5 py-4">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-ink dark:text-bone">
-                {displayName}
-              </p>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brass">
+              <p className="text-ink dark:text-bone truncate text-sm font-medium">{displayName}</p>
+              <p className="text-micro text-brass font-bold tracking-[0.2em] uppercase">
                 {roleLabel}
               </p>
             </div>
             <Link
               href={`/${locale}`}
-              className="shrink-0 text-xs text-ink-muted underline-offset-4 hover:text-brass hover:underline dark:text-stone-400"
+              className="text-ink-muted hover:text-foreground shrink-0 text-xs underline-offset-4 hover:underline dark:text-stone-400"
             >
               На сайт
             </Link>

@@ -28,23 +28,21 @@ export default async function AdminCampaignsPage({ params }: Props) {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="font-display text-3xl text-ink dark:text-bone">Кампании</h1>
-        <p className="mt-1 text-sm text-ink-muted dark:text-stone-400">
-          Всего: {campaigns.length}
-        </p>
+        <h1 className="font-display text-ink dark:text-bone text-3xl">Кампании</h1>
+        <p className="text-ink-muted mt-1 text-sm dark:text-stone-400">Всего: {campaigns.length}</p>
       </header>
 
       {/* Existing campaigns */}
       <section className="space-y-3">
         {campaigns.length === 0 ? (
-          <p className="rounded-xl border border-border bg-background p-8 text-center text-sm text-ink-muted dark:text-stone-400">
+          <p className="border-border bg-background text-ink-muted rounded-xl border p-8 text-center text-sm dark:text-stone-400">
             Кампаний пока нет.
           </p>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-border">
+          <div className="border-border overflow-x-auto rounded-xl border">
             <table className="w-full min-w-[640px] text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-[11px] font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400">
+                <tr className="border-border text-label text-ink-muted border-b text-left font-semibold tracking-widest uppercase dark:text-stone-400">
                   <th className="px-4 py-3">Заголовок</th>
                   <th className="px-4 py-3">Slug</th>
                   <th className="px-4 py-3">Слайды</th>
@@ -53,27 +51,25 @@ export default async function AdminCampaignsPage({ params }: Props) {
                   <th className="px-4 py-3">Обновлено</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-border divide-y">
                 {campaigns.map((c) => (
                   <tr
                     key={c.id}
-                    className="transition-colors hover:bg-ink/[0.03] dark:hover:bg-bone/[0.04]"
+                    className="hover:bg-ink/[0.03] dark:hover:bg-bone/[0.04] transition-colors"
                   >
                     <td className="px-4 py-3">
                       <Link
                         href={`${base}/${c.id}`}
-                        className="font-medium text-ink hover:text-brass dark:text-bone"
+                        className="text-ink dark:text-bone font-medium hover:underline hover:underline-offset-4"
                       >
                         {c.title || '(без названия)'}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-ink-muted dark:text-stone-400">
-                      {c.slug}
-                    </td>
-                    <td className="px-4 py-3 text-ink-muted dark:text-stone-400">
+                    <td className="text-ink-muted px-4 py-3 dark:text-stone-400">{c.slug}</td>
+                    <td className="text-ink-muted px-4 py-3 dark:text-stone-400">
                       {c.slidesCount}
                     </td>
-                    <td className="px-4 py-3 text-ink-muted dark:text-stone-400">
+                    <td className="text-ink-muted px-4 py-3 dark:text-stone-400">
                       {c.productsCount}
                     </td>
                     <td className="px-4 py-3">
@@ -88,7 +84,7 @@ export default async function AdminCampaignsPage({ params }: Props) {
                         {c.active ? 'Активна' : 'Скрыта'}
                       </span>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-ink-muted dark:text-stone-400">
+                    <td className="text-ink-muted px-4 py-3 whitespace-nowrap dark:text-stone-400">
                       {formatDate(c.updatedAt)}
                     </td>
                   </tr>
@@ -100,11 +96,9 @@ export default async function AdminCampaignsPage({ params }: Props) {
       </section>
 
       {/* New campaign */}
-      <section className="space-y-4 border-t border-border pt-8">
-        <h2 className="font-display text-2xl text-ink dark:text-bone">
-          Новая кампания
-        </h2>
-        <div className="rounded-xl border border-border bg-background p-6">
+      <section className="border-border space-y-4 border-t pt-8">
+        <h2 className="font-display text-ink dark:text-bone text-2xl">Новая кампания</h2>
+        <div className="border-border bg-background rounded-xl border p-6">
           <CampaignForm locale={locale} />
         </div>
       </section>

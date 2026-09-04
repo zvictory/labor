@@ -27,12 +27,12 @@ export function LocaleSwitcher() {
 
   return (
     <label className="relative inline-flex items-center gap-1 text-sm">
-      <Globe className="h-4 w-4 text-ink-muted" aria-hidden />
+      <Globe className="text-ink-muted h-4 w-4" aria-hidden />
       <select
         aria-label="Language"
         value={locale}
         onChange={(e) => switchTo(e.target.value as Locale)}
-        className="cursor-pointer appearance-none bg-transparent pr-2 font-medium uppercase tracking-wider focus:outline-none"
+        className="focus: cursor-pointer appearance-none bg-transparent pr-2 font-medium tracking-wider uppercase"
       >
         {locales.map((l) => (
           <option key={l} value={l}>

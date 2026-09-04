@@ -51,8 +51,7 @@ export function AccordsEditor({ productId, options, initial }: Props) {
   const setWeight = (accordId: number, weight: number) =>
     setRows(rows.map((r) => (r.accordId === accordId ? { ...r, weight } : r)));
 
-  const removeRow = (accordId: number) =>
-    setRows(rows.filter((r) => r.accordId !== accordId));
+  const removeRow = (accordId: number) => setRows(rows.filter((r) => r.accordId !== accordId));
 
   const save = async () => {
     setSaving(true);
@@ -65,22 +64,22 @@ export function AccordsEditor({ productId, options, initial }: Props) {
   return (
     <div className="space-y-4">
       {rows.length === 0 ? (
-        <p className="text-xs text-ink-muted">Аккорды не добавлены.</p>
+        <p className="text-ink-muted text-xs">Аккорды не добавлены.</p>
       ) : (
         <ul className="space-y-2">
           {rows.map((r) => (
             <li
               key={r.accordId}
-              className="flex items-center gap-3 rounded-md border border-border bg-white px-3 py-2"
+              className="border-border flex items-center gap-3 rounded-md border bg-white px-3 py-2"
             >
-              <span className="w-40 truncate text-sm text-ink">{labelOf(r.accordId)}</span>
+              <span className="text-ink w-40 truncate text-sm">{labelOf(r.accordId)}</span>
               <input
                 type="range"
                 min={0}
                 max={100}
                 value={r.weight}
                 onChange={(e) => setWeight(r.accordId, Number(e.target.value))}
-                className="flex-1 accent-brass"
+                className="accent-brass flex-1"
                 aria-label={`Вес: ${labelOf(r.accordId)}`}
               />
               <input
@@ -91,12 +90,12 @@ export function AccordsEditor({ productId, options, initial }: Props) {
                 onChange={(e) =>
                   setWeight(r.accordId, Math.max(0, Math.min(100, Number(e.target.value) || 0)))
                 }
-                className="w-16 rounded-md border border-border bg-white px-2 py-1 text-sm text-ink"
+                className="border-border text-ink w-16 rounded-md border bg-white px-2 py-1 text-sm"
               />
               <button
                 type="button"
                 onClick={() => removeRow(r.accordId)}
-                className="px-1 text-destructive hover:opacity-70"
+                className="text-destructive px-1 hover:opacity-70"
                 aria-label="Удалить"
               >
                 ✕
@@ -106,11 +105,11 @@ export function AccordsEditor({ productId, options, initial }: Props) {
         </ul>
       )}
 
-      <div className="flex items-end gap-2 border-t border-border pt-4">
-        <label className="flex flex-1 flex-col text-[11px] uppercase tracking-widest text-ink-muted">
+      <div className="border-border flex items-end gap-2 border-t pt-4">
+        <label className="text-label text-ink-muted flex flex-1 flex-col tracking-widest uppercase">
           Аккорд
           <select
-            className="mt-1 h-9 rounded-md border border-border bg-white px-2 text-sm text-ink"
+            className="border-border text-ink mt-1 h-9 rounded-md border bg-white px-2 text-sm"
             value={addAccordId}
             onChange={(e) => setAddAccordId(e.target.value ? Number(e.target.value) : '')}
           >
@@ -125,7 +124,7 @@ export function AccordsEditor({ productId, options, initial }: Props) {
         <button
           type="button"
           onClick={addAccord}
-          className="h-9 rounded-md bg-secondary px-4 text-sm font-medium text-ink hover:bg-brass/15"
+          className="bg-secondary text-ink hover:bg-brass/15 h-9 rounded-md px-4 text-sm font-medium"
         >
           Добавить
         </button>
@@ -136,11 +135,11 @@ export function AccordsEditor({ productId, options, initial }: Props) {
           type="button"
           onClick={save}
           disabled={saving}
-          className="h-10 rounded-md bg-ink px-6 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass disabled:opacity-50"
+          className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-6 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
         >
           {saving ? 'Сохранение…' : 'Сохранить аккорды'}
         </button>
-        {msg && <span className="text-xs text-ink-muted">{msg}</span>}
+        {msg && <span className="text-ink-muted text-xs">{msg}</span>}
       </div>
     </div>
   );

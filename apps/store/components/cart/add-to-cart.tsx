@@ -19,6 +19,8 @@ const ADD_COPY: Record<Lang, string> = {
   uz: 'Savatga',
   en: 'Add to cart',
 };
+// The size is part of the label. "Sample" beside a product that is itself a
+// 10 ml sample says nothing; "Sample · 2 ml" is a choice a customer can make.
 const SAMPLE_COPY: Record<Lang, string> = {
   ru: 'Пробник',
   uz: 'Namuna',
@@ -35,8 +37,7 @@ const ERROR_COPY: Record<Lang, string> = {
   en: 'Could not add to cart',
 };
 
-const toLang = (locale: string): Lang =>
-  locale === 'uz' || locale === 'en' ? locale : 'ru';
+const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
 function useAddToCart(productId: number, locale: string) {
   const [pending, startTransition] = useTransition();
@@ -80,9 +81,9 @@ export function AddToCartIcon({ productId, locale }: { productId: number; locale
       title={ADD_COPY[lang]}
       disabled={pending}
       onClick={() => add(false)}
-      className="absolute bottom-2 right-2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink text-bone shadow-md transition-colors hover:bg-brass disabled:opacity-60 dark:bg-bone dark:text-ink"
+      className="border-hairline bg-background text-foreground hover:bg-foreground hover:text-background dark:border-gunmetal inline-flex h-8 w-8 items-center justify-center border transition-colors disabled:opacity-60"
     >
-      <ShoppingBag className="h-4 w-4" />
+      <ShoppingBag className="h-3.5 w-3.5" />
     </button>
   );
 }
@@ -91,10 +92,14 @@ export function AddToCart({
   productId,
   locale,
   hasSample = false,
+  volumeMl,
+  sampleMl,
 }: {
   productId: number;
   locale: string;
   hasSample?: boolean;
+  volumeMl?: number | null;
+  sampleMl?: number;
 }) {
   const lang = toLang(locale);
   const { pending, toast, add } = useAddToCart(productId, locale);
@@ -106,18 +111,20 @@ export function AddToCart({
           type="button"
           disabled={pending}
           onClick={() => add(false)}
-          className="inline-flex h-12 flex-1 items-center justify-center bg-ink px-7 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass disabled:cursor-not-allowed disabled:opacity-70 dark:bg-bone dark:text-ink"
+          className="bg-foreground text-background inline-flex h-12 flex-1 items-center justify-center px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {ADD_COPY[lang]}
+          {volumeMl ? <span className="ml-2 font-mono opacity-70">· {volumeMl} ml</span> : null}
         </button>
         {hasSample && (
           <button
             type="button"
             disabled={pending}
             onClick={() => add(true)}
-            className="inline-flex h-12 items-center justify-center border border-ink px-7 text-xs font-semibold uppercase tracking-widest text-ink transition-colors hover:border-brass hover:text-brass disabled:cursor-not-allowed disabled:opacity-70 dark:border-bone dark:text-bone"
+            className="border-foreground text-foreground hover:bg-foreground hover:text-background inline-flex h-12 items-center justify-center border px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-70"
           >
             {SAMPLE_COPY[lang]}
+            {sampleMl ? <span className="ml-2 font-mono opacity-70">· {sampleMl} ml</span> : null}
           </button>
         )}
       </div>

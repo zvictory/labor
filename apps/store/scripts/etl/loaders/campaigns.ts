@@ -143,10 +143,10 @@ export async function loadCampaigns(
     const active = c.status === "active";
 
     const data = {
-      title,
-      subtitle: subtitle ?? undefined,
-      body: body ?? undefined,
-      ctaLabel: ctaLabel ?? undefined,
+      title: JSON.stringify(title),
+      subtitle: subtitle ? JSON.stringify(subtitle) : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+      ctaLabel: ctaLabel ? JSON.stringify(ctaLabel) : undefined,
       active,
     };
 
@@ -164,14 +164,16 @@ export async function loadCampaigns(
     if (campaignSlides.length > 0) {
       for (const s of campaignSlides) {
         const sid = Number(s.id);
+        const st = collapseLocaleJson(null, slideTitles.get(sid) ?? []);
+        const ss = collapseLocaleJson(null, slideSubtitles.get(sid) ?? []);
+        const sc = collapseLocaleJson(null, slideCtas.get(sid) ?? []);
         await db.campaignSlide.create({
           data: {
             campaignId: campaign.id,
             imageUrl: s.image_url,
-            title: collapseLocaleJson(null, slideTitles.get(sid) ?? []) ?? undefined,
-            subtitle:
-              collapseLocaleJson(null, slideSubtitles.get(sid) ?? []) ?? undefined,
-            ctaLabel: collapseLocaleJson(null, slideCtas.get(sid) ?? []) ?? undefined,
+            title: st ? JSON.stringify(st) : undefined,
+            subtitle: ss ? JSON.stringify(ss) : undefined,
+            ctaLabel: sc ? JSON.stringify(sc) : undefined,
             position: s.position,
           },
         });

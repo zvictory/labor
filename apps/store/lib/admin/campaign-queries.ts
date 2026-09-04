@@ -202,12 +202,7 @@ export async function searchProductsForPicker(
       status: 'active',
       ...(query
         ? {
-            OR: [
-              { name: { path: ['ru'], string_contains: query } },
-              { name: { path: ['uz'], string_contains: query } },
-              { name: { path: ['en'], string_contains: query } },
-              { slug: { contains: query, mode: 'insensitive' } },
-            ],
+            OR: [{ name: { contains: query } }, { slug: { contains: query } }],
           }
         : {}),
     },

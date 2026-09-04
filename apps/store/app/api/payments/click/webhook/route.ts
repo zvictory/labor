@@ -56,7 +56,7 @@ async function recordEvent(
       provider: PROVIDER,
       externalTxnId,
       eventType,
-      payload: payload as object,
+      payload: JSON.stringify(payload),
       orderId: orderId ?? undefined,
       status: 'received',
     },

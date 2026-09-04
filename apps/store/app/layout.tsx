@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { robotoSlab, storyScript } from '@/lib/fonts';
+import { archivo, jetbrainsMono, newsreader, storyScript } from '@/lib/fonts';
 import './globals.css';
 
 export const metadata = {
@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       suppressHydrationWarning
-      className={`${robotoSlab.variable} ${storyScript.variable}`}
+      className={`${archivo.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${storyScript.variable}`}
     >
       <body className="font-sans">{children}</body>
     </html>

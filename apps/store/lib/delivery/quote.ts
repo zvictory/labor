@@ -53,9 +53,7 @@ function markupFromEnv(): { type: 'NONE' | 'FIXED' | 'PERCENT'; value: number } 
  *
  * Never throws: callers can treat the result as always-present.
  */
-export async function getDeliveryEstimate(
-  input: DeliveryEstimateInput,
-): Promise<DeliveryEstimate> {
+export async function getDeliveryEstimate(input: DeliveryEstimateInput): Promise<DeliveryEstimate> {
   const method = getDeliveryMethod(input.method);
   // Unknown method id: nothing to quote, nothing sensible to charge. 0 fee,
   // 'method' source keeps the contract (best-effort, no throw).

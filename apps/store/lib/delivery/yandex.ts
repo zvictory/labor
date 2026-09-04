@@ -119,7 +119,11 @@ export async function getYandexQuote(
         },
       ],
       route_points: [
-        { id: 1, coordinates: [config.warehouseLng, config.warehouseLat], fullname: config.warehouseAddress },
+        {
+          id: 1,
+          coordinates: [config.warehouseLng, config.warehouseLat],
+          fullname: config.warehouseAddress,
+        },
         { id: 2, coordinates: [destination.lng, destination.lat], fullname: destination.address },
       ],
       requirements: { taxi_class: 'courier' },

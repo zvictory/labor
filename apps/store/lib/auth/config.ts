@@ -82,13 +82,13 @@ export const authConfig: NextAuthConfig = {
           null;
 
         const user = await db.user.upsert({
-          where: { telegramId },
+          where: { telegramId: String(telegramId) },
           update: {
             // Keep name fresh from Telegram; never clobber an explicit email.
             ...(displayName ? { name: displayName } : {}),
           },
           create: {
-            telegramId,
+            telegramId: String(telegramId),
             email: telegramEmail(telegramId),
             name: displayName,
             role: 'customer',

@@ -55,8 +55,8 @@ export async function loadVotes(
       longevity: r.longevity,
       sillage: r.sillage,
       loveLevel: r.love_level,
-      seasons: (r.seasons ?? []) as object,
-      timeOfDay: (r.time_of_day ?? []) as object,
+      seasons: JSON.stringify(r.seasons ?? []),
+      timeOfDay: JSON.stringify(r.time_of_day ?? []),
     };
 
     await db.vote.upsert({

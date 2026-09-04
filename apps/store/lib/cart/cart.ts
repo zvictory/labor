@@ -15,20 +15,24 @@ import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
+import { PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
 
 export const CART_COOKIE = 'labor_cart';
 
 // One year — guest carts persist across visits.
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-const SAMPLE_PRICE_RATIO = 0.08;
+// Sizes are priced by volume, not as a fraction of something else.
+//
+// This used to be `price * 0.08`, calibrated when a listing meant a full
+// bottle: 8% of a 50 ml bottle is about the 4 ml a tester holds. The catalogue
+// now lists 10 ml decants, so the same fraction silently became 0.8 ml — a
+// single wearing — at 12 800 UZS. Priced from millilitres instead, the number
+// cannot drift again when the listed size changes.
 
-/**
- * Unit price for a cart line. A sample/decant costs ~8% of the full price,
- * rounded to whole UZS minor units; a full bottle costs the product price.
- */
+/** Unit price for a cart line: the 2 ml tester, or the listed decant. */
 export const lineUnitPrice = (product: { price: number }, isSample: boolean): number =>
-  isSample ? Math.round(product.price * SAMPLE_PRICE_RATIO) : product.price;
+  isSample ? SAMPLE_ML * PRICE_PER_ML : product.price;
 
 // ── cookie helpers ──────────────────────────────────────────────────────────
 
@@ -266,10 +270,7 @@ export const getOrCreateCart = async (): Promise<CartWithItems> => {
   return created;
 };
 
-const toCartLine = (
-  item: CartWithItems['items'][number],
-  locale: string,
-): CartLineDTO => {
+const toCartLine = (item: CartWithItems['items'][number], locale: string): CartLineDTO => {
   const unitPrice = lineUnitPrice(item.product, item.isSample);
   return {
     id: item.id,
@@ -294,10 +295,45 @@ const projectCart = (cart: CartWithItems, locale: string): CartDTO => {
   };
 };
 
-/** Read-only cart projection for the given locale. Creates a cart if needed. */
+/**
+ * Cart projection for the given locale, creating the cart if there is none.
+ *
+ * Only safe where a cookie may be written: route handlers and server actions.
+ * A Server Component render must use `readCart` — see below.
+ */
 export const getCart = async (locale: string): Promise<CartDTO> => {
   const cart = await getOrCreateCart();
   return projectCart(cart, locale);
+};
+
+const EMPTY_CART: CartDTO = { items: [], itemCount: 0, subtotal: 0 };
+
+/**
+ * Read the cart without ever writing.
+ *
+ * `getOrCreateCart` mints a cart and calls `setCartToken`, and Next 15 throws
+ * when a Server Component render sets a cookie — so /cart and /checkout were
+ * returning 500 to every visitor who did not already hold the cookie, minting
+ * an orphan Cart row on each attempt (37 rows, 0 items). Reading is enough for
+ * a render: a visitor with no cart has an empty one, and the cart is created by
+ * the first POST /api/cart, which is allowed to write.
+ */
+export const readCart = async (locale: string): Promise<CartDTO> => {
+  const userId = await resolveSessionUserId();
+  const token = await getCartToken();
+
+  const cart =
+    userId !== undefined
+      ? await db.cart.findFirst({
+          where: { userId },
+          include: cartInclude,
+          orderBy: { id: 'asc' },
+        })
+      : token
+        ? await db.cart.findUnique({ where: { token }, include: cartInclude })
+        : null;
+
+  return cart ? projectCart(cart, locale) : EMPTY_CART;
 };
 
 // ── mutations ─────────────────────────────────────────────────────────────────

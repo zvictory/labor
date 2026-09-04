@@ -14,8 +14,7 @@ const LABEL: Record<Lang, string> = {
   en: 'Sign out',
 };
 
-const toLang = (locale: string): Lang =>
-  locale === 'uz' || locale === 'en' ? locale : 'ru';
+const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
 export function SignOutButton({ locale }: { locale: string }) {
   const [pending, startTransition] = useTransition();
@@ -30,7 +29,7 @@ export function SignOutButton({ locale }: { locale: string }) {
           await signOut({ callbackUrl: `/${locale}` });
         })
       }
-      className="inline-flex h-11 items-center justify-center border border-ink px-6 text-xs font-semibold uppercase tracking-widest text-ink transition-colors hover:border-brass hover:text-brass disabled:cursor-not-allowed disabled:opacity-60 dark:border-bone dark:text-bone"
+      className="border-ink text-ink hover:border-foreground dark:border-bone dark:text-bone inline-flex h-11 items-center justify-center border px-6 text-xs font-semibold tracking-widest uppercase transition-colors hover:underline hover:underline-offset-4 disabled:cursor-not-allowed disabled:opacity-60"
     >
       {LABEL[lang]}
     </button>

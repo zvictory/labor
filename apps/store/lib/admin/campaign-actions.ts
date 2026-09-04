@@ -95,16 +95,12 @@ export async function upsertCampaign(
   }
   const v = parsed.data;
 
-  // title: ru already validated non-empty; normalize to drop empty uz/en keys.
-  // normalizeLocaleText can't return null here because ru is guaranteed non-empty.
-  const title = normalizeLocaleText(v.title) ?? { ru: v.title.ru.trim() };
-
   const data = {
     slug: v.slug,
-    title,
-    subtitle: normalizeLocaleText(v.subtitle) ?? undefined,
-    body: normalizeLocaleText(v.body) ?? undefined,
-    ctaLabel: normalizeLocaleText(v.ctaLabel) ?? undefined,
+    title: JSON.stringify(v.title),
+    subtitle: v.subtitle ? JSON.stringify(v.subtitle) : undefined,
+    body: v.body ? JSON.stringify(v.body) : undefined,
+    ctaLabel: v.ctaLabel ? JSON.stringify(v.ctaLabel) : undefined,
     heroImage: v.heroImage ? v.heroImage : null,
     ...(v.active !== undefined ? { active: v.active } : {}),
     startsAt: v.startsAt ?? null,
@@ -197,9 +193,9 @@ export async function upsertSlide(
   const data = {
     imageUrl: v.imageUrl ? v.imageUrl : null,
     linkUrl: v.linkUrl ? v.linkUrl : null,
-    title: normalizeLocaleText(v.title) ?? undefined,
-    subtitle: normalizeLocaleText(v.subtitle) ?? undefined,
-    ctaLabel: normalizeLocaleText(v.ctaLabel) ?? undefined,
+    title: v.title ? JSON.stringify(v.title) : undefined,
+    subtitle: v.subtitle ? JSON.stringify(v.subtitle) : undefined,
+    ctaLabel: v.ctaLabel ? JSON.stringify(v.ctaLabel) : undefined,
     ...(v.position !== undefined ? { position: v.position } : {}),
   };
 
@@ -224,10 +220,7 @@ const deleteSlideSchema = z.object({
 });
 
 /** Delete a slide. campaignId is required so we can revalidate the edit page. */
-export async function deleteSlide(
-  id: number,
-  campaignId: number,
-): Promise<CampaignActionResult> {
+export async function deleteSlide(id: number, campaignId: number): Promise<CampaignActionResult> {
   await requireStaff();
   const parsed = deleteSlideSchema.safeParse({ id, campaignId });
   if (!parsed.success) return { ok: false, error: 'invalid_id' };
@@ -341,7 +334,6 @@ export async function setCampaignProducts(
             productId,
             position: index,
           })),
-          skipDuplicates: true,
         });
       }
     });

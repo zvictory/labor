@@ -4,7 +4,7 @@
 // every consumer.
 
 /// Per-locale text. ru is required; uz/en optional with ru fallback.
-export type LocaleText = { ru: string; uz?: string; en?: string };
+export type LocaleText = { ru: string; uz?: string; uzc?: string; en?: string };
 
 /// Pyramid layer of a fragrance note.
 export type PyramidLayer = 'top' | 'middle' | 'base';
@@ -22,6 +22,9 @@ export interface ProductCardDTO {
   image: string;
   avg_rating: number;
   votes_count: number;
+  concentration?: string | null;
+  /** Decant size. The shop sells by volume, so the price is meaningless without it. */
+  volume_ml?: number | null;
   top_accord?: { name: string; color_hex: string } | null;
 }
 
@@ -29,27 +32,33 @@ export interface ProductCardDTO {
 export interface NoteDTO {
   slug: string;
   name: string;
+  image?: string;
   family?: string;
   color_hex?: string;
   icon_url?: string;
   product_count: number;
+  description?: string;
 }
 
 /// Brand as surfaced on browse pages.
 export interface BrandDTO {
   slug: string;
   name: string;
+  image?: string;
   country?: string;
   niche?: boolean;
   product_count: number;
+  description?: string;
 }
 
 /// Perfumer as surfaced on browse pages.
 export interface PerfumerDTO {
   slug: string;
   name: string;
+  image?: string;
   country?: string;
   product_count: number;
+  bio?: string;
 }
 
 /// A note within a product detail's pyramid (lighter than NoteDTO — no counts).
@@ -94,7 +103,11 @@ export interface ProductDetailDTO {
   images: string[];
   gender: Gender;
   concentration?: string;
+  volume_ml?: number | null;
   avg_rating: number;
+  /** Imported averages on a 0-10 scale — shown as ticks in the full record. */
+  avg_longevity: number;
+  avg_sillage: number;
   votes_count: number;
   notes: NotePyramidDTO;
   accords: ProductAccordDTO[];

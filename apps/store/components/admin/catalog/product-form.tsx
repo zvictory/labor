@@ -43,19 +43,16 @@ const GENDERS = [
   { value: 'women', label: 'Женский' },
 ];
 
-const labelCls =
-  'mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-ink-muted';
+const labelCls = 'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted';
 const fieldCls =
   'h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink ' +
-  'outline-none transition-colors focus:border-brass';
+  'transition-colors focus:border-foreground';
 
 export function ProductForm({ locale, brands, initial }: Props) {
   const router = useRouter();
   const [slug, setSlug] = useState(initial?.slug ?? '');
   const [name, setName] = useState<LocaleText>(initial?.name ?? { ru: '' });
-  const [description, setDescription] = useState<LocaleText>(
-    initial?.description ?? { ru: '' },
-  );
+  const [description, setDescription] = useState<LocaleText>(initial?.description ?? { ru: '' });
   const [status, setStatus] = useState(initial?.status ?? 'draft');
   const [price, setPrice] = useState<string>(String(initial?.price ?? 0));
   const [gender, setGender] = useState(initial?.gender ?? 'unisex');
@@ -208,16 +205,16 @@ export function ProductForm({ locale, brands, initial }: Props) {
       </div>
 
       {error && (
-        <p className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm text-destructive">
+        <p className="border-destructive/30 bg-destructive/5 text-destructive rounded-md border px-4 py-2 text-sm">
           {error}
         </p>
       )}
-      {okMsg && <p className="text-sm text-brass">{okMsg}</p>}
+      {okMsg && <p className="text-brass text-sm">{okMsg}</p>}
 
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex h-11 items-center justify-center rounded-md bg-ink px-8 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass disabled:opacity-50"
+        className="bg-ink text-bone hover:bg-brass inline-flex h-11 items-center justify-center rounded-md px-8 text-xs font-semibold tracking-widest uppercase transition-colors disabled:opacity-50"
       >
         {pending ? 'Сохранение…' : initial ? 'Сохранить' : 'Создать продукт'}
       </button>

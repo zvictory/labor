@@ -8,13 +8,13 @@
 // per-locale rows. The collapse helper below turns those rows into a
 // `{ ru, uz, en }` JSON object with the base column as the `ru` fallback.
 
-import { Pool, type QueryResultRow } from "pg";
+import { Pool, type QueryResultRow } from 'pg';
 
 const SPREE_DATABASE_URL = process.env.SPREE_DATABASE_URL;
 
 if (!SPREE_DATABASE_URL) {
   throw new Error(
-    "ETL source: SPREE_DATABASE_URL is required (read-only legacy Spree DB connection string).",
+    'ETL source: SPREE_DATABASE_URL is required (read-only legacy Spree DB connection string).',
   );
 }
 
@@ -57,11 +57,11 @@ export async function closePool(): Promise<void> {
 
 // ───────────────────────── i18n collapse helpers ─────────────────────────
 
-export const LOCALES = ["ru", "uz", "en"] as const;
+export const LOCALES = ['ru', 'uz', 'uzc', 'en'] as const;
 export type Locale = (typeof LOCALES)[number];
 
 /** Per-locale JSON shape stored on the target row. `ru` is required by the schema. */
-export type LocaleJson = { ru: string; uz?: string; en?: string };
+export type LocaleJson = { ru: string; uz?: string; uzc?: string; en?: string };
 
 /** A translation side-table row: one (locale -> value) pair for one parent. */
 export interface TranslationRow {
@@ -85,12 +85,12 @@ export function collapseLocaleJson(
 ): LocaleJson | null {
   const byLocale = new Map<string, string>();
   for (const row of rows) {
-    const v = (row.value ?? "").trim();
+    const v = (row.value ?? '').trim();
     if (v) byLocale.set(row.locale, v);
   }
 
-  const baseValue = (base ?? "").trim();
-  const ru = byLocale.get("ru") ?? baseValue;
+  const baseValue = (base ?? '').trim();
+  const ru = byLocale.get('ru') ?? baseValue;
 
   // No text at all → null (let the column be NULL).
   if (!ru && byLocale.size === 0) return null;
@@ -98,12 +98,14 @@ export function collapseLocaleJson(
   const result: LocaleJson = { ru: ru || baseValue };
   if (!result.ru) {
     // ru is required by the schema; fall back to any available locale.
-    result.ru = byLocale.get("uz") ?? byLocale.get("en") ?? "";
+    result.ru = byLocale.get('uz') ?? byLocale.get('en') ?? '';
   }
 
-  const uz = byLocale.get("uz");
-  const en = byLocale.get("en");
+  const uz = byLocale.get('uz');
+  const uzc = byLocale.get('uzc');
+  const en = byLocale.get('en');
   if (uz) result.uz = uz;
+  if (uzc) result.uzc = uzc;
   if (en) result.en = en;
 
   return result;

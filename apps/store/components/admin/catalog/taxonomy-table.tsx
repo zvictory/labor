@@ -49,11 +49,10 @@ interface Props {
   emptyValues: RowValues;
 }
 
-const labelCls =
-  'mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-ink-muted';
+const labelCls = 'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted';
 const fieldCls =
   'h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink ' +
-  'outline-none transition-colors focus:border-brass';
+  'transition-colors focus:border-foreground';
 
 function FieldInput({
   field,
@@ -76,7 +75,7 @@ function FieldInput({
   }
   if (field.kind === 'boolean') {
     return (
-      <label className="flex items-center gap-2 text-sm text-ink">
+      <label className="text-ink flex items-center gap-2 text-sm">
         <input
           type="checkbox"
           className="accent-brass"
@@ -91,7 +90,7 @@ function FieldInput({
     <div>
       <span className={labelCls}>
         {field.label}
-        {field.required && <span className="ml-1 text-destructive">*</span>}
+        {field.required && <span className="text-destructive ml-1">*</span>}
       </span>
       <input
         type="text"
@@ -111,14 +110,7 @@ function renderCell(field: FieldDef, value: string | boolean | LocaleText): stri
   return typeof value === 'string' ? value : '';
 }
 
-export function TaxonomyTable({
-  title,
-  fields,
-  rows,
-  onSubmit,
-  onDelete,
-  emptyValues,
-}: Props) {
+export function TaxonomyTable({ title, fields, rows, onSubmit, onDelete, emptyValues }: Props) {
   const [editingId, setEditingId] = useState<number | 'new' | null>(null);
   const [draft, setDraft] = useState<RowValues>(emptyValues);
   const [error, setError] = useState<string | null>(null);
@@ -165,19 +157,19 @@ export function TaxonomyTable({
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-medium text-ink">{title}</h1>
+        <h1 className="text-ink text-xl font-medium">{title}</h1>
         <button
           type="button"
           onClick={startNew}
-          className="h-10 rounded-md bg-ink px-5 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass"
+          className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-5 text-xs font-semibold tracking-widest uppercase"
         >
           Добавить
         </button>
       </div>
 
       {editingId !== null && (
-        <div className="space-y-4 rounded-lg border border-brass/40 bg-brass/5 p-5">
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <div className="border-brass/40 bg-brass/5 space-y-4 rounded-lg border p-5">
+          <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             {editingId === 'new' ? 'Новая запись' : 'Редактирование'}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -185,25 +177,28 @@ export function TaxonomyTable({
               <FieldInput
                 key={f.key}
                 field={f}
-                value={draft[f.key] ?? (f.kind === 'localeText' ? { ru: '' } : f.kind === 'boolean' ? false : '')}
+                value={
+                  draft[f.key] ??
+                  (f.kind === 'localeText' ? { ru: '' } : f.kind === 'boolean' ? false : '')
+                }
                 onChange={(v) => setField(f.key, v)}
               />
             ))}
           </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <p className="text-destructive text-sm">{error}</p>}
           <div className="flex gap-2">
             <button
               type="button"
               onClick={submit}
               disabled={pending}
-              className="h-10 rounded-md bg-ink px-6 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass disabled:opacity-50"
+              className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-6 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
             >
               {pending ? 'Сохранение…' : 'Сохранить'}
             </button>
             <button
               type="button"
               onClick={cancel}
-              className="h-10 rounded-md border border-border px-6 text-sm text-ink-muted hover:text-ink"
+              className="border-border text-ink-muted hover:text-ink h-10 rounded-md border px-6 text-sm"
             >
               Отмена
             </button>
@@ -211,13 +206,11 @@ export function TaxonomyTable({
         </div>
       )}
 
-      {error && editingId === null && (
-        <p className="text-sm text-destructive">{error}</p>
-      )}
+      {error && editingId === null && <p className="text-destructive text-sm">{error}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-border">
+      <div className="border-border overflow-x-auto rounded-lg border">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-border bg-secondary/50 text-[11px] uppercase tracking-widest text-ink-muted">
+          <thead className="border-border bg-secondary/50 text-label text-ink-muted border-b tracking-widest uppercase">
             <tr>
               {columns.map((c) => (
                 <th key={c.key} className="px-4 py-3 font-semibold">
@@ -231,19 +224,21 @@ export function TaxonomyTable({
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + 2} className="px-4 py-6 text-center text-ink-muted">
+                <td colSpan={columns.length + 2} className="text-ink-muted px-4 py-6 text-center">
                   Пусто
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
-                <tr key={row.id} className="border-b border-border last:border-0">
+                <tr key={row.id} className="border-border border-b last:border-0">
                   {columns.map((c) => (
-                    <td key={c.key} className="px-4 py-3 text-ink">
-                      {c.kind === 'color' && typeof row.values[c.key] === 'string' && row.values[c.key] ? (
+                    <td key={c.key} className="text-ink px-4 py-3">
+                      {c.kind === 'color' &&
+                      typeof row.values[c.key] === 'string' &&
+                      row.values[c.key] ? (
                         <span className="inline-flex items-center gap-2">
                           <span
-                            className="inline-block h-4 w-4 rounded-full border border-border"
+                            className="border-border inline-block h-4 w-4 rounded-full border"
                             style={{ backgroundColor: String(row.values[c.key]) }}
                           />
                           {String(row.values[c.key])}
@@ -253,12 +248,12 @@ export function TaxonomyTable({
                       )}
                     </td>
                   ))}
-                  <td className="px-4 py-3 text-ink-muted">{row.productCount}</td>
+                  <td className="text-ink-muted px-4 py-3">{row.productCount}</td>
                   <td className="px-4 py-3 text-right">
                     <button
                       type="button"
                       onClick={() => startEdit(row)}
-                      className="mr-3 text-brass hover:underline"
+                      className="text-brass mr-3 hover:underline"
                     >
                       Изм.
                     </button>

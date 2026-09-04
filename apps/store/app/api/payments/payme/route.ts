@@ -84,7 +84,7 @@ async function recordEvent(
       provider: PROVIDER,
       externalTxnId,
       eventType,
-      payload: payload as object,
+      payload: JSON.stringify(payload),
       orderId: orderId ?? undefined,
       status: 'received',
     },
@@ -117,7 +117,9 @@ async function storeResponse(
 export async function POST(req: NextRequest): Promise<NextResponse> {
   // 1. Auth.
   if (!verifyPaymeAuth(req.headers.get('Authorization'))) {
-    return NextResponse.json(paymeError(null, PAYME_ERRORS.INSUFFICIENT_PRIVILEGE), { status: 403 });
+    return NextResponse.json(paymeError(null, PAYME_ERRORS.INSUFFICIENT_PRIVILEGE), {
+      status: 403,
+    });
   }
 
   // 2. Parse JSON-RPC.

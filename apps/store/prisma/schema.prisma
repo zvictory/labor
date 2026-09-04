@@ -1,19 +1,13 @@
-// Labor Parfum — Prisma schema for the Next.js 15 + Postgres rebuild.
-// Mirrors the existing Spree/Labor data model (verified against apps/backend/db/schema.rb)
-// so the ETL in scripts/etl/ maps 1:1. Translatable text uses per-locale JSON
-// ({ ru, uz, en }, ru required). Money is INTEGER UZS minor units (so'm).
+// Labor Parfum — Prisma schema for SQLite standalone execution.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
-
-/// Per-locale text helper shape (stored as Json): { "ru": "...", "uz": "...", "en": "..." }
-/// ru is required; uz/en optional with ru fallback (mirrors Mobility fallbacks uz->ru, en->ru).
 
 // ───────────────────────── Catalog ─────────────────────────
 
@@ -21,15 +15,14 @@ model Brand {
   id          Int               @id @default(autoincrement())
   slug        String            @unique
   name        String
-  // i18n text
-  description Json? // { ru, uz, en }
-  story       Json?
+  description String?           // JSON string { ru, uz, en }
+  story       String?
   country     String?
   foundedYear Int?
   website     String?
   niche       Boolean           @default(false)
   active      Boolean           @default(true)
-  logoUrl     String? // not present in Spree; null until brand logos exist
+  logoUrl     String?
   products    FragranceDetail[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
@@ -40,32 +33,30 @@ model Brand {
 model Note {
   id           Int           @id @default(autoincrement())
   slug         String        @unique
-  name         Json // { ru, uz, en }
-  description  Json?
+  name         String        // JSON string { ru, uz, en }
+  description  String?
   family       String?
   iconUrl      String?
   productNotes ProductNote[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-
-  @@index([family])
 }
 
 model Accord {
-  id             Int             @id @default(autoincrement())
-  slug           String          @unique
-  name           Json // { ru, uz, en }
-  colorHex       String?
+  id            Int             @id @default(autoincrement())
+  slug          String          @unique
+  name          String          // JSON string { ru, uz, en }
+  colorHex      String?
   productAccords ProductAccord[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model Perfumer {
   id               Int               @id @default(autoincrement())
   slug             String            @unique
   name             String
-  bio              Json? // { ru, uz, en }
+  bio              String?           // JSON string { ru, uz, en }
   country          String?
   productPerfumers ProductPerfumer[]
   createdAt        DateTime          @default(now())
@@ -73,29 +64,26 @@ model Perfumer {
 }
 
 model Product {
-  id            Int               @id @default(autoincrement())
-  slug          String            @unique
-  name          Json // { ru, uz, en } (ru required)
-  description   Json?
-  status        String            @default("active") // active | draft | archived
-  availableOn   DateTime?
-  // money: integer UZS minor units
-  price         Int               @default(0)
-  // relations
-  fragrance     FragranceDetail?
-  notes         ProductNote[]
-  accords       ProductAccord[]
-  perfumers     ProductPerfumer[]
-  images        ProductImage[]
-  similarsFrom  ProductSimilar[]  @relation("similarFrom")
-  similarsTo    ProductSimilar[]  @relation("similarTo")
-  cartItems     CartItem[]
-  orderItems    OrderItem[]
-  votes         Vote[]
-  wishlistItems WishlistItem[]
-  campaigns     CampaignProduct[]
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  id               Int               @id @default(autoincrement())
+  slug             String            @unique
+  name             String            // JSON string { ru, uz, en }
+  description      String?
+  status           String            @default("active")
+  price            Int               // UZS minor units
+  fragrance        FragranceDetail?
+  notes            ProductNote[]
+  accords          ProductAccord[]
+  perfumers        ProductPerfumer[]
+  similarsFrom     ProductSimilar[]  @relation("similarFrom")
+  similarsTo       ProductSimilar[]  @relation("similarTo")
+  images           ProductImage[]
+  votes            Vote[]
+  wishlistItems    WishlistItem[]
+  orderItems       OrderItem[]
+  cartItems        CartItem[]
+  campaignProducts CampaignProduct[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   @@index([status])
 }
@@ -106,49 +94,49 @@ model FragranceDetail {
   product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   brandId          Int?
   brand            Brand?   @relation(fields: [brandId], references: [id])
-  gender           String   @default("unisex") // men | women | unisex
+  gender           String   @default("unisex")
   concentration    String?
   releaseYear      Int?
   volumeMl         Int?
-  avgRating        Decimal  @default(0) @db.Decimal(3, 2)
-  avgLongevity     Decimal  @default(0) @db.Decimal(3, 2)
-  avgSillage       Decimal  @default(0) @db.Decimal(3, 2)
-  reviewsCount     Int      @default(0)
+  avgRating        Float    @default(0)
+  avgLongevity     Float    @default(0)
+  avgSillage       Float    @default(0)
   votesCount       Int      @default(0)
+  reviewsCount     Int      @default(0)
   discontinued     Boolean  @default(false)
-  loveBreakdown    Json     @default("{}")
-  seasonsBreakdown Json     @default("{}")
-  timeBreakdown    Json     @default("{}")
+  loveBreakdown    String   @default("{}")
+  seasonsBreakdown String   @default("{}")
+  timeBreakdown    String   @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@index([brandId])
   @@index([gender])
-  @@index([avgRating])
 }
 
 model ProductNote {
-  id           Int     @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   productId    Int
-  product      Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   noteId       Int
-  note         Note    @relation(fields: [noteId], references: [id])
-  pyramidLayer String // top | middle | base
-  position     Int     @default(0)
+  note         Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  pyramidLayer String   @default("top")
+  position     Int      @default(0)
 
   @@unique([productId, noteId, pyramidLayer])
   @@index([noteId])
 }
 
 model ProductAccord {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   productId Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   accordId  Int
-  accord    Accord  @relation(fields: [accordId], references: [id])
-  weight    Int     @default(50)
+  accord    Accord   @relation(fields: [accordId], references: [id], onDelete: Cascade)
+  weight    Int      @default(50)
 
   @@unique([productId, accordId])
   @@index([accordId])
-  @@index([productId, weight])
 }
 
 model ProductPerfumer {
@@ -156,7 +144,7 @@ model ProductPerfumer {
   productId  Int
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   perfumerId Int
-  perfumer   Perfumer @relation(fields: [perfumerId], references: [id])
+  perfumer   Perfumer @relation(fields: [perfumerId], references: [id], onDelete: Cascade)
 
   @@unique([productId, perfumerId])
   @@index([perfumerId])
@@ -168,20 +156,20 @@ model ProductSimilar {
   product   Product  @relation("similarFrom", fields: [productId], references: [id], onDelete: Cascade)
   similarId Int
   similar   Product  @relation("similarTo", fields: [similarId], references: [id], onDelete: Cascade)
-  score     Decimal? @db.Decimal(5, 4)
-  source    String   @default("computed")
+  score     Float?
+  source    String   @default("curated")
 
   @@unique([productId, similarId])
   @@index([similarId])
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   productId Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String // object-storage URL (migrated from ActiveStorage)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
   alt       String?
-  position  Int     @default(0)
+  position  Int      @default(0)
 
   @@index([productId])
 }
@@ -190,13 +178,13 @@ model ProductImage {
 
 model User {
   id              Int            @id @default(autoincrement())
-  telegramId      BigInt?        @unique // SOURCE OF TRUTH for Telegram users
-  email           String?        @unique // may be synthesized tg_{id}@labor.local
+  telegramId      String?        @unique
+  email           String?        @unique
   phone           String?        @unique
   name            String?
-  preferredLocale String         @default("ru") // ru | uz | en
-  role            String         @default("customer") // customer | staff | admin
-  passwordHash    String? // staff only
+  preferredLocale String         @default("ru")
+  role            String         @default("customer")
+  passwordHash    String?
   carts           Cart[]
   orders          Order[]
   votes           Vote[]
@@ -205,9 +193,6 @@ model User {
   updatedAt       DateTime       @updatedAt
 }
 
-/// Short-lived phone OTP challenges for customer sign-in. The plaintext code is
-/// never stored — only a bcrypt hash. Rows are consumed on success (consumedAt)
-/// and expire (~5 min); recent rows also drive issuance rate-limiting.
 model OtpCode {
   id         Int       @id @default(autoincrement())
   phone      String
@@ -230,8 +215,8 @@ model Vote {
   longevity Int?
   sillage   Int?
   loveLevel String?
-  seasons   Json     @default("[]")
-  timeOfDay Json     @default("[]")
+  seasons   String   @default("[]")
+  timeOfDay String   @default("[]")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -257,7 +242,7 @@ model Cart {
   id        Int        @id @default(autoincrement())
   userId    Int?
   user      User?      @relation(fields: [userId], references: [id])
-  token     String     @unique // guest cart token
+  token     String     @unique
   items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -266,14 +251,15 @@ model Cart {
 }
 
 model CartItem {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   cartId    Int
-  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
-  quantity  Int     @default(1)
-  // optional decant/sample flag from the prototype
-  isSample  Boolean @default(false)
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  isSample  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([cartId, productId, isSample])
   @@index([productId])
@@ -284,18 +270,21 @@ model Order {
   number         String                @unique
   userId         Int?
   user           User?                 @relation(fields: [userId], references: [id])
-  status         String                @default("pending") // pending|confirmed|paid|shipped|delivered|canceled
-  paymentStatus  String                @default("unpaid") // unpaid|paid|refunded
-  total          Int                   @default(0) // UZS minor units
-  // shipping snapshot
-  region         String?
+  customerName   String
+  customerPhone  String
+  customerEmail  String?
+  address        String
+  region         String
   district       String?
-  address        String?
-  phone          String?
-  deliveryMethod String?
+  deliveryMethod String
+  deliveryFee    Int                   @default(0)
+  total          Int
+  status         String                @default("pending")
+  paymentMethod  String
+  paymentStatus  String                @default("unpaid")
   items          OrderItem[]
   payments       Payment[]
-  webhookEvents  PaymentWebhookEvent[]
+  webhooks       PaymentWebhookEvent[]
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
 
@@ -311,7 +300,7 @@ model OrderItem {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int     @default(1)
-  unitPrice Int // UZS minor units, snapshot
+  unitPrice Int
   isSample  Boolean @default(false)
 
   @@index([orderId])
@@ -322,25 +311,24 @@ model Payment {
   id            Int      @id @default(autoincrement())
   orderId       Int
   order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  provider      String // payme | click | uzum
+  provider      String
   externalTxnId String?
-  amount        Int // UZS minor units
-  state         String   @default("created") // created|authorized|paid|canceled
+  amount        Int
+  state         String   @default("created")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@index([orderId])
 }
 
-/// Idempotency ledger — preserves the Spree labor_payment_webhook_events pattern.
 model PaymentWebhookEvent {
   id            Int       @id @default(autoincrement())
   provider      String
   externalTxnId String
   eventType     String
-  payload       Json      @default("{}")
-  response      Json      @default("{}")
-  status        String    @default("received") // received|processed|failed
+  payload       String    @default("{}")
+  response      String    @default("{}")
+  status        String    @default("received")
   errorMessage  String?
   processedAt   DateTime?
   orderId       Int?
@@ -357,10 +345,10 @@ model PaymentWebhookEvent {
 model Campaign {
   id        Int               @id @default(autoincrement())
   slug      String            @unique
-  title     Json // { ru, uz, en }
-  subtitle  Json?
-  body      Json?
-  ctaLabel  Json?
+  title     String            // JSON string { ru, uz, en }
+  subtitle  String?
+  body      String?
+  ctaLabel  String?
   heroImage String?
   active    Boolean           @default(true)
   startsAt  DateTime?
@@ -379,9 +367,9 @@ model CampaignSlide {
   campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   imageUrl   String?
   linkUrl    String?
-  title      Json?
-  subtitle   Json?
-  ctaLabel   Json?
+  title      String?
+  subtitle   String?
+  ctaLabel   String?
   position   Int      @default(0)
 
   @@index([campaignId])

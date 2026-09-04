@@ -2,68 +2,79 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import type { ProductCardDTO } from '@/lib/catalog/types';
-import { formatUzs, formatRating } from '@/lib/money';
-import { getReadableTextColor } from '@/components/catalog/color-contrast';
+import { formatUzs } from '@/lib/money';
+import { TickScale } from '@/components/catalog/tick-scale';
 import { AddToCartIcon } from '@/components/cart/add-to-cart';
 
-// Presentational catalog card. Server-safe (no client hooks). Consumes the new
-// data-access ProductCardDTO directly — `votes_count === 0` hides the rating row,
-// and `top_accord` renders a contrast-corrected color badge.
-export const ProductCard = ({
-  product,
-  locale,
-}: {
-  product: ProductCardDTO;
-  locale: string;
-}) => {
+// The screen form of the shop's 24 × 32 mm tester label: code line, name,
+// accord, tick scale, price. Same four rows, same order, same mono face — so
+// the bottle a customer picks up off the island and the card they open on their
+// phone are recognisably the same object.
+//
+// Gone on purpose: the coloured accord badge (70/20/10), the star rating (p.29
+// forbids a rating widget without real reviews — intensity is shown as ticks
+// instead), rounded corners and the shadow (nothing on a laboratory label is
+// raised or rounded).
+
+export const ProductCard = ({ product, locale }: { product: ProductCardDTO; locale: string }) => {
   const hasImage = Boolean(product.image);
+  const codeLine = [
+    product.brand,
+    product.concentration,
+    product.volume_ml ? `${product.volume_ml} ml` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
-    <div className="group relative space-y-2">
-      <AddToCartIcon productId={product.id} locale={locale} />
-      <Link href={`/${locale}/product/${product.slug}`} className="block space-y-2">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-stone-50">
-        {hasImage ? (
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
-            className="object-contain p-4 transition-transform group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-stone-100">
-            <span className="text-xs uppercase tracking-widest text-stone-400">
-              {product.brand}
+    <div className="group border-hairline bg-background hover:border-graphite dark:border-gunmetal dark:hover:border-offwhite relative border transition-colors duration-200">
+      <div className="absolute top-3 right-3 z-10">
+        <AddToCartIcon productId={product.id} locale={locale} />
+      </div>
+
+      <Link href={`/${locale}/product/${product.slug}`} className="block">
+        <div className="border-hairline dark:border-gunmetal relative aspect-[3/4] w-full overflow-hidden border-b">
+          {hasImage ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
+              className="object-contain p-6 mix-blend-multiply dark:mix-blend-normal"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
+                {product.brand}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2 p-4">
+          <p className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase">
+            {codeLine}
+          </p>
+
+          <p className="line-clamp-1 text-sm font-semibold tracking-[-0.01em]">{product.name}</p>
+
+          <p className="text-muted-foreground text-label font-mono leading-4">
+            {product.top_accord?.name ?? ' '}
+          </p>
+
+          <TickScale value={product.avg_rating} label="Intensity" size="sm" className="pt-0.5" />
+
+          {/* Two cells that must never break mid-value: at 2-up on a phone the
+              row folds into two clean lines instead of splitting the price. */}
+          <div className="border-hairline dark:border-gunmetal flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t pt-2 font-mono">
+            <span className="text-muted-foreground text-micro tracking-[0.12em] whitespace-nowrap uppercase">
+              {product.votes_count > 0 ? `${product.votes_count} votes` : 'In store'}
+            </span>
+            <span className="text-foreground text-sm font-semibold whitespace-nowrap">
+              {formatUzs(product.price, locale)}
             </span>
           </div>
-        )}
-        {product.top_accord && (
-          <span
-            className="absolute left-2 top-2 rounded-full border border-black/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest shadow-sm"
-            style={{
-              backgroundColor: product.top_accord.color_hex,
-              color: getReadableTextColor(product.top_accord.color_hex),
-            }}
-          >
-            {product.top_accord.name}
-          </span>
-        )}
-      </div>
-      <p className="text-xs uppercase tracking-widest text-stone-500">{product.brand}</p>
-      <p className="text-sm leading-tight text-stone-900">{product.name}</p>
-      <div className="flex items-center justify-between text-xs">
-        {product.votes_count > 0 ? (
-          <span className="flex items-center gap-1 text-stone-600">
-            <span className="text-amber-500">★</span>
-            {formatRating(product.avg_rating)}
-            <span className="text-stone-400">· {product.votes_count}</span>
-          </span>
-        ) : (
-          <span />
-        )}
-        <span className="font-medium text-stone-900">{formatUzs(product.price, locale)}</span>
-      </div>
+        </div>
       </Link>
     </div>
   );

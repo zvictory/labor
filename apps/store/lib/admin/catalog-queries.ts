@@ -73,12 +73,7 @@ export const listAdminProducts = async (
 
   const where: Prisma.ProductWhereInput = {};
   if (q) {
-    where.OR = [
-      { slug: { contains: q, mode: 'insensitive' } },
-      { name: { path: ['ru'], string_contains: q } },
-      { name: { path: ['uz'], string_contains: q } },
-      { name: { path: ['en'], string_contains: q } },
-    ];
+    where.OR = [{ slug: { contains: q } }, { name: { contains: q } }];
   }
 
   const [total, rows] = await Promise.all([

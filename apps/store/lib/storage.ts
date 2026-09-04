@@ -47,7 +47,8 @@ function resolvePublicBase(): string {
   if (explicit) return explicit.replace(/\/$/, '');
   const { endPoint, port, useSSL } = resolveConnection();
   const scheme = useSSL ? 'https' : 'http';
-  const hostPort = (useSSL && port === 443) || (!useSSL && port === 80) ? endPoint : `${endPoint}:${port}`;
+  const hostPort =
+    (useSSL && port === 443) || (!useSSL && port === 80) ? endPoint : `${endPoint}:${port}`;
   return `${scheme}://${hostPort}/${BUCKET}`;
 }
 

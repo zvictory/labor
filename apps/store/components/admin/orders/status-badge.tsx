@@ -39,9 +39,7 @@ const baseCls =
 
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {
   return (
-    <span className={`${baseCls} ${ORDER_STATUS_CLASS[status]}`}>
-      {ORDER_STATUS_LABEL[status]}
-    </span>
+    <span className={`${baseCls} ${ORDER_STATUS_CLASS[status]}`}>{ORDER_STATUS_LABEL[status]}</span>
   );
 }
 

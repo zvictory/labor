@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
-import { getCart } from '@/lib/cart/cart';
+import { readCart } from '@/lib/cart/cart';
 import { formatUzs } from '@/lib/money';
 import { CartLineControls } from '@/components/cart/cart-line-controls';
 
@@ -30,22 +30,22 @@ export default async function CartPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const cart = await getCart(locale);
+  const cart = await readCart(locale);
   const t = await getTranslations('cart');
   const lang = toLang(locale);
 
   return (
     <div className="container py-10 md:py-16">
-      <h1 className="mb-8 font-display text-4xl text-ink dark:text-bone md:text-5xl">
+      <h1 className="font-display text-ink dark:text-bone mb-8 text-4xl md:text-5xl">
         {t('title')}
       </h1>
 
       {cart.items.length === 0 ? (
         <div className="flex flex-col items-start gap-4 py-10">
-          <p className="text-lg text-ink-muted dark:text-stone-400">{t('empty')}</p>
+          <p className="text-ink-muted text-lg dark:text-stone-400">{t('empty')}</p>
           <Link
             href={`/${locale}/catalog`}
-            className="inline-flex h-12 items-center justify-center bg-ink px-7 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass dark:bg-bone dark:text-ink"
+            className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors"
           >
             {t('emptyCta')}
           </Link>
@@ -53,7 +53,7 @@ export default async function CartPage({ params }: Props) {
       ) : (
         <div className="grid gap-12 lg:grid-cols-[1fr_22rem]">
           {/* Line items */}
-          <ul className="divide-y divide-border border-y border-border">
+          <ul className="divide-border border-border divide-y border-y">
             {cart.items.map((line) => (
               <li key={line.id} className="flex gap-4 py-6">
                 <Link
@@ -74,26 +74,26 @@ export default async function CartPage({ params }: Props) {
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       {line.brand && (
-                        <p className="text-xs uppercase tracking-widest text-stone-500">
+                        <p className="text-xs tracking-widest text-stone-500 uppercase">
                           {line.brand}
                         </p>
                       )}
                       <Link
                         href={`/${locale}/product/${line.slug}`}
-                        className="text-base text-ink hover:text-brass dark:text-bone"
+                        className="text-ink dark:text-bone text-base hover:underline hover:underline-offset-4"
                       >
                         {line.name}
                       </Link>
                       {line.isSample && (
-                        <span className="ml-2 inline-block rounded bg-stone-100 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+                        <span className="text-micro ml-2 inline-block rounded bg-stone-100 px-1.5 py-0.5 tracking-wide text-stone-600 uppercase dark:bg-stone-800 dark:text-stone-300">
                           {SAMPLE_COPY[lang]}
                         </span>
                       )}
-                      <p className="mt-1 text-sm text-ink-muted dark:text-stone-400">
+                      <p className="text-ink-muted mt-1 text-sm dark:text-stone-400">
                         {formatUzs(line.unitPrice, locale)}
                       </p>
                     </div>
-                    <span className="whitespace-nowrap text-base font-medium text-ink dark:text-bone">
+                    <span className="text-ink dark:text-bone text-base font-medium whitespace-nowrap">
                       {formatUzs(line.lineTotal, locale)}
                     </span>
                   </div>
@@ -111,23 +111,23 @@ export default async function CartPage({ params }: Props) {
           </ul>
 
           {/* Summary */}
-          <aside className="h-fit space-y-5 rounded-lg border border-border p-6">
+          <aside className="border-border h-fit space-y-5 rounded-lg border p-6">
             <div className="flex items-center justify-between text-sm">
               <span className="text-ink-muted dark:text-stone-400">{t('subtotal')}</span>
-              <span className="font-medium text-ink dark:text-bone">
+              <span className="text-ink dark:text-bone font-medium">
                 {formatUzs(cart.subtotal, locale)}
               </span>
             </div>
             <p className="text-xs text-stone-400">{/* delivery added at checkout */}</p>
             <Link
               href={`/${locale}/checkout`}
-              className="inline-flex h-12 w-full items-center justify-center bg-ink text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass dark:bg-bone dark:text-ink"
+              className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center text-xs font-semibold tracking-widest uppercase transition-colors"
             >
               {t('proceed')}
             </Link>
             <a
               href={TELEGRAM_URL}
-              className="inline-flex h-12 w-full items-center justify-center gap-2 border border-[#229ED9] text-xs font-semibold uppercase tracking-widest text-[#1c7fb0] transition-colors hover:bg-[#229ED9] hover:text-white"
+              className="border-foreground text-foreground hover:bg-foreground hover:text-background inline-flex h-12 w-full items-center justify-center gap-2 border text-xs font-semibold tracking-[0.18em] uppercase transition-colors"
             >
               {ORDER_COPY[lang]}
             </a>

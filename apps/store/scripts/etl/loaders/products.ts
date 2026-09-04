@@ -129,10 +129,9 @@ export async function loadProducts(): Promise<ProductMaps> {
     const price = priceMap.get(id) ?? 0;
 
     const data = {
-      name,
-      description: description ?? undefined,
+      name: JSON.stringify(name),
+      description: description ? JSON.stringify(description) : undefined,
       status: p.status,
-      availableOn: p.available_on,
       price,
     };
 

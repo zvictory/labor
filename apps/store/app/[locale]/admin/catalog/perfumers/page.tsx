@@ -3,11 +3,7 @@
 
 import { requireStaff } from '@/lib/admin/guard';
 import { listAdminPerfumers } from '@/lib/admin/catalog-queries';
-import {
-  upsertPerfumer,
-  deletePerfumer,
-  type ActionResult,
-} from '@/lib/admin/catalog-actions';
+import { upsertPerfumer, deletePerfumer, type ActionResult } from '@/lib/admin/catalog-actions';
 import {
   TaxonomyTable,
   type FieldDef,

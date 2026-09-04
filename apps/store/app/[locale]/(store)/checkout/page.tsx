@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
-import { getCart } from '@/lib/cart/cart';
+import { readCart } from '@/lib/cart/cart';
 import { CheckoutForm, type CheckoutCopy } from '@/components/checkout/checkout-form';
 
 type Props = {
@@ -139,7 +139,7 @@ export default async function CheckoutPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const cart = await getCart(locale);
+  const cart = await readCart(locale);
   if (!cart || cart.items.length === 0) {
     redirect(`/${locale}/cart`);
   }
@@ -149,7 +149,7 @@ export default async function CheckoutPage({ params }: Props) {
 
   return (
     <div className="container py-10 md:py-16">
-      <h1 className="mb-10 font-display text-4xl text-ink dark:text-bone md:text-5xl">
+      <h1 className="font-display text-ink dark:text-bone mb-10 text-4xl md:text-5xl">
         {copy.heading}
       </h1>
 
@@ -160,8 +160,8 @@ export default async function CheckoutPage({ params }: Props) {
         </div>
 
         {/* Order summary */}
-        <aside className="order-1 h-fit space-y-6 rounded-xl border border-border bg-stone-50/50 p-6 lg:order-2 dark:bg-ink/30">
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <aside className="border-border dark:bg-ink/30 order-1 h-fit space-y-6 rounded-xl border bg-stone-50/50 p-6 lg:order-2">
+          <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             {copy.summary}
           </h2>
           <ul className="space-y-4">
@@ -172,17 +172,17 @@ export default async function CheckoutPage({ params }: Props) {
               >
                 <span className="text-ink dark:text-bone">
                   <span className="block leading-tight">{line.name}</span>
-                  <span className="text-xs text-ink-muted dark:text-stone-400">
+                  <span className="text-ink-muted text-xs dark:text-stone-400">
                     {line.isSample ? '· sample' : ''} × {line.quantity}
                   </span>
                 </span>
-                <span className="whitespace-nowrap font-medium text-ink dark:text-bone">
+                <span className="text-ink dark:text-bone font-medium whitespace-nowrap">
                   {formatUzs(line.unitPrice * line.quantity, locale)}
                 </span>
               </li>
             ))}
           </ul>
-          <div className="flex items-center justify-between border-t border-border pt-4 text-sm text-ink-muted dark:text-stone-400">
+          <div className="border-border text-ink-muted flex items-center justify-between border-t pt-4 text-sm dark:text-stone-400">
             <span>{copy.summary}</span>
             <span>{formatUzs(cart.subtotal, locale)}</span>
           </div>

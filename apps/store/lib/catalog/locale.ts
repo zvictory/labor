@@ -20,6 +20,21 @@ const pick = (record: Record<string, unknown>, key: string): string | undefined 
  */
 export const resolveLocaleText = (value: unknown, locale: string): string => {
   if (typeof value === 'string') {
+    if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
+      try {
+        const parsed = JSON.parse(value);
+        if (isLocaleRecord(parsed)) {
+          return (
+            pick(parsed, locale) ??
+            (locale === 'uzc' ? pick(parsed, 'uz') : undefined) ??
+            pick(parsed, DEFAULT_LOCALE) ??
+            ''
+          );
+        }
+      } catch (e) {
+        // Ignore and return raw string
+      }
+    }
     return value;
   }
 
@@ -27,5 +42,10 @@ export const resolveLocaleText = (value: unknown, locale: string): string => {
     return '';
   }
 
-  return pick(value, locale) ?? pick(value, DEFAULT_LOCALE) ?? '';
+  return (
+    pick(value, locale) ??
+    (locale === 'uzc' ? pick(value, 'uz') : undefined) ??
+    pick(value, DEFAULT_LOCALE) ??
+    ''
+  );
 };

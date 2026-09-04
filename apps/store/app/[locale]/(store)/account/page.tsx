@@ -9,8 +9,7 @@ import { SignOutButton } from '@/components/account/sign-out-button';
 type Props = { params: Promise<{ locale: Locale }> };
 
 type Lang = 'ru' | 'uz' | 'en';
-const toLang = (locale: string): Lang =>
-  locale === 'uz' || locale === 'en' ? locale : 'ru';
+const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
 const COPY: Record<
   Lang,
@@ -83,15 +82,13 @@ export default async function AccountPage({ params }: Props) {
   return (
     <div className="container max-w-2xl py-12 md:py-16">
       <div className="flex items-start justify-between gap-4">
-        <h1 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
-          {copy.title}
-        </h1>
+        <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{copy.title}</h1>
         <SignOutButton locale={locale} />
       </div>
 
       {/* Profile */}
-      <section className="mt-10 space-y-3 rounded-xl border border-border p-6">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+      <section className="border-border mt-10 space-y-3 rounded-xl border p-6">
+        <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
           {copy.profile}
         </h2>
         <Row label={copy.name} value={user.name ?? copy.notSet} />
@@ -107,11 +104,9 @@ export default async function AccountPage({ params }: Props) {
       <section className="mt-6">
         <Link
           href={`/${locale}/account/orders`}
-          className="flex items-center justify-between rounded-xl border border-border p-6 transition-colors hover:border-brass"
+          className="border-border hover:border-foreground flex items-center justify-between rounded-xl border p-6 transition-colors"
         >
-          <span className="text-sm font-medium text-ink dark:text-bone">
-            {copy.ordersLink}
-          </span>
+          <span className="text-ink dark:text-bone text-sm font-medium">{copy.ordersLink}</span>
           <span className="text-brass">→</span>
         </Link>
       </section>
@@ -123,7 +118,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 text-sm">
       <span className="text-ink-muted dark:text-stone-400">{label}</span>
-      <span className="font-medium text-ink dark:text-bone">{value}</span>
+      <span className="text-ink dark:text-bone font-medium">{value}</span>
     </div>
   );
 }

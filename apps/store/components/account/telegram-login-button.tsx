@@ -22,8 +22,7 @@ const COPY: Record<Lang, { unavailable: string; signingIn: string }> = {
   en: { unavailable: 'Telegram sign-in is temporarily unavailable', signingIn: 'Signing in…' },
 };
 
-const toLang = (locale: string): Lang =>
-  locale === 'uz' || locale === 'en' ? locale : 'ru';
+const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
 // The widget posts a flat record of string-ish values.
 type TelegramUser = Record<string, string | number>;
@@ -77,16 +76,14 @@ export function TelegramLoginButton({ locale }: { locale: string }) {
   }, [botUsername, locale]);
 
   if (!botUsername) {
-    return (
-      <p className="text-xs text-ink-muted dark:text-stone-400">{COPY[lang].unavailable}</p>
-    );
+    return <p className="text-ink-muted text-xs dark:text-stone-400">{COPY[lang].unavailable}</p>;
   }
 
   return (
     <div className="flex flex-col items-start gap-2">
       <div ref={containerRef} />
       {signingIn && (
-        <p className="text-xs text-ink-muted dark:text-stone-400">{COPY[lang].signingIn}</p>
+        <p className="text-ink-muted text-xs dark:text-stone-400">{COPY[lang].signingIn}</p>
       )}
     </div>
   );

@@ -285,9 +285,7 @@ export const UZ_REGIONS: Region[] = [
 /// Look up a region by its uz or ru name (case-insensitive).
 export function findRegion(name: string): Region | undefined {
   const n = name.trim().toLowerCase();
-  return UZ_REGIONS.find(
-    (r) => r.name_uz.toLowerCase() === n || r.name_ru.toLowerCase() === n,
-  );
+  return UZ_REGIONS.find((r) => r.name_uz.toLowerCase() === n || r.name_ru.toLowerCase() === n);
 }
 
 /// True for the Tashkent-city region (drives the courier-tashkent method).

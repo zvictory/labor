@@ -23,8 +23,7 @@ export const BOT_MESSAGES: Record<BotLocale, BotStrings> = {
   ru: {
     start: (url) =>
       `Добро пожаловать в Labor Parfum!\n\nОткройте каталог и оформите заказ:\n${url}\n\nКоманды: /help — помощь, /lang — сменить язык.`,
-    help:
-      'Labor Parfum — бот.\n\n/start — открыть магазин\n/lang — сменить язык (ru/uz/en)\n/help — это сообщение\n\nУведомления о статусе заказа приходят сюда автоматически.',
+    help: 'Labor Parfum — бот.\n\n/start — открыть магазин\n/lang — сменить язык (ru/uz/en)\n/help — это сообщение\n\nУведомления о статусе заказа приходят сюда автоматически.',
     langPrompt: 'Выберите язык:',
     langSet: 'Язык переключён на русский.',
     fallback: 'Не понял команду. Наберите /help для списка команд.',
@@ -32,8 +31,7 @@ export const BOT_MESSAGES: Record<BotLocale, BotStrings> = {
   uz: {
     start: (url) =>
       `Labor Parfum’ga xush kelibsiz!\n\nKatalogni oching va buyurtma bering:\n${url}\n\nBuyruqlar: /help — yordam, /lang — tilni almashtirish.`,
-    help:
-      'Labor Parfum — bot.\n\n/start — do‘konni ochish\n/lang — tilni almashtirish (ru/uz/en)\n/help — ushbu xabar\n\nBuyurtma holati haqida bildirishnomalar bu yerga avtomatik keladi.',
+    help: 'Labor Parfum — bot.\n\n/start — do‘konni ochish\n/lang — tilni almashtirish (ru/uz/en)\n/help — ushbu xabar\n\nBuyurtma holati haqida bildirishnomalar bu yerga avtomatik keladi.',
     langPrompt: 'Tilni tanlang:',
     langSet: 'Til o‘zbek tiliga o‘zgartirildi.',
     fallback: 'Buyruq tushunilmadi. Buyruqlar ro‘yxati uchun /help.',
@@ -41,8 +39,7 @@ export const BOT_MESSAGES: Record<BotLocale, BotStrings> = {
   en: {
     start: (url) =>
       `Welcome to Labor Parfum!\n\nBrowse the catalog and place an order:\n${url}\n\nCommands: /help — help, /lang — change language.`,
-    help:
-      'Labor Parfum bot.\n\n/start — open the store\n/lang — change language (ru/uz/en)\n/help — this message\n\nOrder status notifications arrive here automatically.',
+    help: 'Labor Parfum bot.\n\n/start — open the store\n/lang — change language (ru/uz/en)\n/help — this message\n\nOrder status notifications arrive here automatically.',
     langPrompt: 'Choose a language:',
     langSet: 'Language switched to English.',
     fallback: 'Unknown command. Type /help for the list of commands.',

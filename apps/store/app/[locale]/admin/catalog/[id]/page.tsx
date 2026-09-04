@@ -26,7 +26,8 @@ interface PageProps {
 }
 
 const sectionCls = 'rounded-lg border border-border bg-white p-6';
-const sectionTitleCls = 'mb-4 text-[10px] font-bold uppercase tracking-[0.3em] text-brass';
+const sectionTitleCls =
+  'mb-4 text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
 
 export default async function AdminProductEditPage({ params }: PageProps) {
   await requireStaff();
@@ -43,7 +44,7 @@ export default async function AdminProductEditPage({ params }: PageProps) {
           <h2 className={sectionTitleCls}>Основное</h2>
           <ProductForm locale={locale} brands={brands} />
         </div>
-        <p className="text-sm text-ink-muted">
+        <p className="text-ink-muted text-sm">
           Ноты, аккорды, парфюмеры и изображения станут доступны после создания продукта.
         </p>
       </div>
@@ -140,8 +141,8 @@ export default async function AdminProductEditPage({ params }: PageProps) {
 
 function Breadcrumb({ locale, label }: { locale: string; label: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-ink-muted">
-      <Link href={`/${locale}/admin/catalog`} className="hover:text-brass">
+    <div className="text-ink-muted flex items-center gap-2 text-sm">
+      <Link href={`/${locale}/admin/catalog`} className="hover:underline hover:underline-offset-4">
         Продукты
       </Link>
       <span>/</span>

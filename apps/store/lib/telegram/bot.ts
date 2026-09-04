@@ -28,7 +28,7 @@ async function resolveLocale(ctx: Context): Promise<BotLocale> {
   if (tgId != null) {
     const user = await db.user
       .findUnique({
-        where: { telegramId: BigInt(tgId) },
+        where: { telegramId: String(tgId) },
         select: { preferredLocale: true },
       })
       .catch(() => null);
@@ -40,7 +40,7 @@ async function resolveLocale(ctx: Context): Promise<BotLocale> {
 /// Persist a chosen locale onto the User row matched by telegramId. Upserts so a
 /// /lang before the auth flow has created the user still records the preference.
 async function persistLocale(telegramId: number, locale: BotLocale): Promise<void> {
-  const tgId = BigInt(telegramId);
+  const tgId = String(telegramId);
   await db.user.upsert({
     where: { telegramId: tgId },
     update: { preferredLocale: locale },

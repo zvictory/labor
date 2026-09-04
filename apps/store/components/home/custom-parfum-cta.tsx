@@ -39,20 +39,20 @@ export function CustomParfumCta({ lang }: { lang: Lang }) {
   const c = COPY[lang];
 
   return (
-    <section className="bg-gradient-to-br from-ink to-brass-900 text-bone">
+    <section className="bg-graphite text-offwhite">
       <div className="container grid gap-12 py-24 md:grid-cols-2 md:items-center">
         <div>
-          <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-brass-300">
+          <span className="text-accent text-micro flex items-center gap-2 font-mono tracking-[0.28em] uppercase">
             <Droplets className="h-3.5 w-3.5" />
             {c.eyebrow}
           </span>
-          <h2 className="mt-4 font-display text-4xl leading-tight text-bone md:text-5xl">
+          <h2 className="font-display text-bone mt-4 text-4xl leading-tight md:text-5xl">
             {c.headline}
           </h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-stone-300">{c.sub}</p>
           <a
             href={TELEGRAM_URL}
-            className="group mt-8 inline-flex h-12 items-center gap-2 bg-brass px-7 text-xs font-semibold uppercase tracking-widest text-bone transition-all duration-300 hover:bg-brass-400 hover:text-ink"
+            className="group bg-accent text-accent-foreground mt-8 inline-flex h-12 items-center gap-2 px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-opacity duration-300 hover:opacity-85"
           >
             {c.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -61,7 +61,7 @@ export function CustomParfumCta({ lang }: { lang: Lang }) {
         <ol className="space-y-5">
           {c.steps.map((s, i) => (
             <li key={s} className="flex items-start gap-4">
-              <span className="font-display text-2xl text-brass-300">
+              <span className="font-display text-brass-300 text-2xl">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="pt-1 text-sm text-stone-200">{s}</span>

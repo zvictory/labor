@@ -40,14 +40,14 @@ export function LocaleTextInput({
 
   const fieldCls =
     'w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-ink ' +
-    'outline-none transition-colors focus:border-brass';
+    'transition-colors focus:border-foreground';
 
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
+        <span className="text-label text-ink-muted font-semibold tracking-widest uppercase">
           {label}
-          {ruRequired && <span className="ml-1 text-destructive">*</span>}
+          {ruRequired && <span className="text-destructive ml-1">*</span>}
         </span>
         <div className="flex gap-1" role="tablist">
           {LOCALES.map((loc) => {
@@ -60,7 +60,7 @@ export function LocaleTextInput({
                 aria-selected={active === loc}
                 onClick={() => setActive(loc)}
                 className={
-                  'rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider transition-colors ' +
+                  'text-micro rounded px-2 py-0.5 font-bold tracking-wider uppercase transition-colors ' +
                   (active === loc
                     ? 'bg-ink text-bone'
                     : filled

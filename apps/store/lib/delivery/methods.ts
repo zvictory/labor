@@ -50,7 +50,11 @@ export const DELIVERY_METHODS: Record<DeliveryMethodId, DeliveryMethod> = {
   },
   regional: {
     id: 'regional',
-    label: { ru: 'Доставка по регионам', uz: 'Viloyatlarga yetkazib berish', en: 'Regional delivery' },
+    label: {
+      ru: 'Доставка по регионам',
+      uz: 'Viloyatlarga yetkazib berish',
+      en: 'Regional delivery',
+    },
     description: {
       ru: 'Доставка в другие регионы Узбекистана',
       uz: "O'zbekistonning boshqa viloyatlariga yetkazish",

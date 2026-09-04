@@ -75,17 +75,13 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
   );
 
   const districts = region?.districts ?? [];
-  const methods = useMemo(
-    () => availableMethodsForRegion(regionName || null),
-    [regionName],
-  );
+  const methods = useMemo(() => availableMethodsForRegion(regionName || null), [regionName]);
 
   const selectedMethod = methods.find((m) => m.id === deliveryMethod);
   const deliveryFee = selectedMethod?.baseFee ?? 0;
   const total = subtotal + deliveryFee;
 
-  const regionLabel = (r: (typeof UZ_REGIONS)[number]) =>
-    locale === 'ru' ? r.name_ru : r.name_uz;
+  const regionLabel = (r: (typeof UZ_REGIONS)[number]) => (locale === 'ru' ? r.name_ru : r.name_uz);
   const districtLabel = (d: { name_uz: string; name_ru: string }) =>
     locale === 'ru' ? d.name_ru : d.name_uz;
 
@@ -131,11 +127,10 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
 
   const fieldCls =
     'h-11 w-full rounded-md border border-border bg-white px-3 text-sm text-ink ' +
-    'outline-none transition-colors focus:border-brass dark:bg-ink/40 dark:text-bone';
+    'transition-colors focus:border-foreground dark:bg-ink/40 dark:text-bone';
   const labelCls =
-    'mb-1.5 block text-[11px] font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
-  const sectionTitleCls =
-    'text-[10px] font-bold uppercase tracking-[0.3em] text-brass';
+    'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
+  const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
 
   return (
     <form onSubmit={onSubmit} className="space-y-10">
@@ -247,29 +242,27 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
                 key={m.id}
                 className={
                   'flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ' +
-                  (checked
-                    ? 'border-brass bg-brass/5'
-                    : 'border-border hover:border-brass/50')
+                  (checked ? 'border-brass bg-brass/5' : 'border-border hover:border-foreground')
                 }
               >
                 <input
                   type="radio"
                   name="deliveryMethod"
-                  className="mt-1 accent-brass"
+                  className="accent-brass mt-1"
                   value={m.id}
                   checked={checked}
                   onChange={() => setDeliveryMethod(m.id)}
                 />
                 <span className="flex-1">
                   <span className="flex items-baseline justify-between gap-3">
-                    <span className="text-sm font-medium text-ink dark:text-bone">
+                    <span className="text-ink dark:text-bone text-sm font-medium">
                       {resolveLocaleText(m.label, locale)}
                     </span>
-                    <span className="text-sm font-medium text-ink dark:text-bone">
+                    <span className="text-ink dark:text-bone text-sm font-medium">
                       {m.baseFee > 0 ? formatUzs(m.baseFee, locale) : copy.free}
                     </span>
                   </span>
-                  <span className="mt-0.5 block text-xs text-ink-muted dark:text-stone-400">
+                  <span className="text-ink-muted mt-0.5 block text-xs dark:text-stone-400">
                     {resolveLocaleText(m.description, locale)} · {resolveLocaleText(m.eta, locale)}
                   </span>
                   {/* Live courier estimate (display-only; charged fee stays
@@ -289,7 +282,7 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
             );
           })}
           {regionName.length === 0 && (
-            <p className="text-xs text-ink-muted dark:text-stone-400">{copy.selectRegion}</p>
+            <p className="text-ink-muted text-xs dark:text-stone-400">{copy.selectRegion}</p>
           )}
         </div>
       </section>
@@ -307,7 +300,7 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
                   'flex cursor-pointer items-center justify-center rounded-lg border p-4 text-sm font-medium transition-colors ' +
                   (checked
                     ? 'border-brass bg-brass/5 text-ink dark:text-bone'
-                    : 'border-border text-ink-muted hover:border-brass/50 dark:text-stone-400')
+                    : 'border-border text-ink-muted hover:border-foreground dark:text-stone-400')
                 }
               >
                 <input
@@ -326,12 +319,12 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
       </section>
 
       {/* Totals */}
-      <section className="space-y-2 border-t border-border pt-6">
-        <div className="flex items-center justify-between text-sm text-ink-muted dark:text-stone-400">
+      <section className="border-border space-y-2 border-t pt-6">
+        <div className="text-ink-muted flex items-center justify-between text-sm dark:text-stone-400">
           <span>{copy.deliveryFeeLabel}</span>
           <span>{deliveryFee > 0 ? formatUzs(deliveryFee, locale) : copy.free}</span>
         </div>
-        <div className="flex items-center justify-between text-lg font-medium text-ink dark:text-bone">
+        <div className="text-ink dark:text-bone flex items-center justify-between text-lg font-medium">
           <span>{copy.totalLabel}</span>
           <span>{formatUzs(total, locale)}</span>
         </div>
@@ -346,7 +339,7 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
       <button
         type="submit"
         disabled={!canSubmit || isPending}
-        className="inline-flex h-12 w-full items-center justify-center bg-ink px-7 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass disabled:cursor-not-allowed disabled:opacity-50 dark:bg-bone dark:text-ink"
+        className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isPending ? copy.submitting : copy.submit}
       </button>

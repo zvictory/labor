@@ -11,11 +11,7 @@ import type { Prisma } from '@prisma/client';
 import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { getDeliveryMethod } from '@/lib/delivery/methods';
-import type {
-  OrderStatus,
-  OrderPaymentStatus,
-  PaymentState,
-} from '@/lib/orders/queries';
+import type { OrderStatus, OrderPaymentStatus, PaymentState } from '@/lib/orders/queries';
 
 export const ADMIN_ORDERS_PAGE_SIZE = 20;
 
@@ -62,10 +58,7 @@ function buildOrdersWhere(params: ListAdminOrdersParams): Prisma.OrderWhereInput
 
   const q = params.q?.trim();
   if (q) {
-    where.OR = [
-      { number: { contains: q, mode: 'insensitive' } },
-      { phone: { contains: q, mode: 'insensitive' } },
-    ];
+    where.OR = [{ number: { contains: q } }, { customerPhone: { contains: q } }];
   }
 
   return where;
@@ -94,7 +87,7 @@ export async function listAdminOrders(
         status: true,
         paymentStatus: true,
         total: true,
-        phone: true,
+        customerPhone: true,
         createdAt: true,
         items: { select: { quantity: true } },
       },
@@ -106,7 +99,7 @@ export async function listAdminOrders(
     status: r.status as OrderStatus,
     paymentStatus: r.paymentStatus as OrderPaymentStatus,
     total: r.total,
-    phone: r.phone,
+    phone: r.customerPhone,
     itemsCount: r.items.reduce((sum, it) => sum + it.quantity, 0),
     createdAt: r.createdAt,
   }));
@@ -179,7 +172,7 @@ export async function getAdminOrder(
       region: true,
       district: true,
       address: true,
-      phone: true,
+      customerPhone: true,
       deliveryMethod: true,
       createdAt: true,
       user: { select: { name: true } },
@@ -231,7 +224,7 @@ export async function getAdminOrder(
     deliveryFee,
     total: order.total,
     customerName: order.user?.name ?? null,
-    phone: order.phone,
+    phone: order.customerPhone,
     region: order.region,
     district: order.district,
     address: order.address,

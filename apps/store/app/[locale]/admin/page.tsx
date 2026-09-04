@@ -30,8 +30,8 @@ export default async function AdminDashboardPage({ params }: Props) {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">Обзор</h1>
-        <p className="mt-2 text-sm text-ink-muted dark:text-stone-400">
+        <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">Обзор</h1>
+        <p className="text-ink-muted mt-2 text-sm dark:text-stone-400">
           Сводка по каталогу и заказам Labor Parfum.
         </p>
       </header>
@@ -48,19 +48,16 @@ export default async function AdminDashboardPage({ params }: Props) {
 
       {/* Orders by status */}
       <section className="space-y-4">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
           Заказы по статусу
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {ORDER_STATUSES.map((status) => (
-            <div
-              key={status}
-              className="rounded-lg border border-border bg-background px-4 py-3"
-            >
-              <p className="text-xs text-ink-muted dark:text-stone-400">
+            <div key={status} className="border-border bg-background rounded-lg border px-4 py-3">
+              <p className="text-ink-muted text-xs dark:text-stone-400">
                 {STATUS_LABELS[status] ?? status}
               </p>
-              <p className="mt-1 font-display text-2xl text-ink dark:text-bone">
+              <p className="font-display text-ink dark:text-bone mt-1 text-2xl">
                 {ordersByStatus[status]}
               </p>
             </div>
@@ -71,26 +68,26 @@ export default async function AdminDashboardPage({ params }: Props) {
       {/* Recent orders */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+          <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
             Последние заказы
           </h2>
           <Link
             href={`${adminBase}/orders`}
-            className="text-xs text-ink-muted underline-offset-4 hover:text-brass hover:underline dark:text-stone-400"
+            className="text-ink-muted hover:text-foreground text-xs underline-offset-4 hover:underline dark:text-stone-400"
           >
             Все заказы →
           </Link>
         </div>
 
         {recentOrders.length === 0 ? (
-          <p className="rounded-xl border border-border bg-background px-5 py-8 text-center text-sm text-ink-muted dark:text-stone-400">
+          <p className="border-border bg-background text-ink-muted rounded-xl border px-5 py-8 text-center text-sm dark:text-stone-400">
             Заказов пока нет.
           </p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-border bg-background">
+          <div className="border-border bg-background overflow-hidden rounded-xl border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-[10px] uppercase tracking-[0.2em] text-ink-muted dark:text-stone-400">
+                <tr className="border-border text-micro text-ink-muted border-b text-left tracking-[0.2em] uppercase dark:text-stone-400">
                   <th className="px-4 py-3 font-semibold">Номер</th>
                   <th className="px-4 py-3 font-semibold">Статус</th>
                   <th className="px-4 py-3 text-right font-semibold">Сумма</th>
@@ -100,20 +97,20 @@ export default async function AdminDashboardPage({ params }: Props) {
                 {recentOrders.map((order) => (
                   <tr
                     key={order.id}
-                    className="border-b border-border last:border-b-0 transition-colors hover:bg-ink/[0.03] dark:hover:bg-bone/[0.04]"
+                    className="border-border hover:bg-ink/[0.03] dark:hover:bg-bone/[0.04] border-b transition-colors last:border-b-0"
                   >
-                    <td className="px-4 py-3 font-medium text-ink dark:text-bone">
+                    <td className="text-ink dark:text-bone px-4 py-3 font-medium">
                       <Link
                         href={`${adminBase}/orders/${order.id}`}
-                        className="hover:text-brass"
+                        className="hover:underline hover:underline-offset-4"
                       >
                         {order.number}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-ink-muted dark:text-stone-400">
+                    <td className="text-ink-muted px-4 py-3 dark:text-stone-400">
                       {STATUS_LABELS[order.status] ?? order.status}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium tabular-nums text-ink dark:text-bone">
+                    <td className="text-ink dark:text-bone px-4 py-3 text-right font-medium tabular-nums">
                       {formatUzs(order.total, locale)}
                     </td>
                   </tr>

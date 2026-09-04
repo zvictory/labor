@@ -86,8 +86,7 @@ export function verifyClickSign(params: {
 
   if (!SECRET_KEY || !signString) return false;
 
-  const prepareSegment =
-    action === String(CLICK_ACTION.COMPLETE) ? (merchantPrepareId ?? '') : '';
+  const prepareSegment = action === String(CLICK_ACTION.COMPLETE) ? (merchantPrepareId ?? '') : '';
 
   const raw =
     `${clickTransId}${serviceId}${SECRET_KEY}${merchantTransId}` +

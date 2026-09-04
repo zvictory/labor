@@ -8,11 +8,7 @@
 
 import { useState, useTransition, useRef } from 'react';
 
-import {
-  addProductImage,
-  removeProductImage,
-  reorderImages,
-} from '@/lib/admin/catalog-actions';
+import { addProductImage, removeProductImage, reorderImages } from '@/lib/admin/catalog-actions';
 
 export interface ManagedImage {
   id: number;
@@ -89,7 +85,7 @@ export function ImageManager({ productId, images }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="inline-flex h-10 cursor-pointer items-center rounded-md bg-secondary px-4 text-sm font-medium text-ink hover:bg-brass/15">
+        <label className="bg-secondary text-ink hover:bg-brass/15 inline-flex h-10 cursor-pointer items-center rounded-md px-4 text-sm font-medium">
           {pending ? 'Загрузка…' : 'Загрузить изображение'}
           <input
             ref={fileRef}
@@ -105,22 +101,22 @@ export function ImageManager({ productId, images }: Props) {
             type="button"
             onClick={saveOrder}
             disabled={pending}
-            className="h-10 rounded-md bg-ink px-4 text-xs font-semibold uppercase tracking-widest text-bone hover:bg-brass disabled:opacity-50"
+            className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-4 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
           >
             Сохранить порядок
           </button>
         )}
-        {msg && <span className="text-xs text-ink-muted">{msg}</span>}
+        {msg && <span className="text-ink-muted text-xs">{msg}</span>}
       </div>
 
       {order.length === 0 ? (
-        <p className="text-xs text-ink-muted">Изображений нет.</p>
+        <p className="text-ink-muted text-xs">Изображений нет.</p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {order.map((img, i) => (
             <li
               key={img.id}
-              className="group relative overflow-hidden rounded-md border border-border bg-white"
+              className="group border-border relative overflow-hidden rounded-md border bg-white"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -129,17 +125,17 @@ export function ImageManager({ productId, images }: Props) {
                 className="aspect-square w-full object-cover"
               />
               {i === 0 && (
-                <span className="absolute left-1 top-1 rounded bg-ink/80 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-bone">
+                <span className="bg-ink/80 text-micro text-bone absolute top-1 left-1 rounded px-1.5 py-0.5 font-bold tracking-wider uppercase">
                   Главное
                 </span>
               )}
-              <div className="flex items-center justify-between border-t border-border px-1.5 py-1">
+              <div className="border-border flex items-center justify-between border-t px-1.5 py-1">
                 <div className="flex gap-1">
                   <button
                     type="button"
                     onClick={() => move(i, -1)}
                     disabled={i === 0 || pending}
-                    className="px-1 text-ink-muted hover:text-ink disabled:opacity-30"
+                    className="text-ink-muted hover:text-ink px-1 disabled:opacity-30"
                     aria-label="Влево"
                   >
                     ←
@@ -148,7 +144,7 @@ export function ImageManager({ productId, images }: Props) {
                     type="button"
                     onClick={() => move(i, 1)}
                     disabled={i === order.length - 1 || pending}
-                    className="px-1 text-ink-muted hover:text-ink disabled:opacity-30"
+                    className="text-ink-muted hover:text-ink px-1 disabled:opacity-30"
                     aria-label="Вправо"
                   >
                     →
@@ -158,7 +154,7 @@ export function ImageManager({ productId, images }: Props) {
                   type="button"
                   onClick={() => onRemove(img.id)}
                   disabled={pending}
-                  className="px-1 text-destructive hover:opacity-70 disabled:opacity-30"
+                  className="text-destructive px-1 hover:opacity-70 disabled:opacity-30"
                   aria-label="Удалить"
                 >
                   ✕
