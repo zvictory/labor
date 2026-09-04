@@ -1,0 +1,78 @@
+import { useTranslations } from 'next-intl';
+import type { NotePyramidDTO } from '@/lib/catalog/types';
+import Link from 'next/link';
+import Image from 'next/image';
+
+interface Props {
+  notes: NotePyramidDTO;
+  locale: string;
+}
+
+type Layer = 'top' | 'middle' | 'base';
+const TILE_PX = 64;
+const LAYERS: { key: Layer; langKey: string }[] = [
+  { key: 'top', langKey: 'top' },
+  { key: 'middle', langKey: 'heart' },
+  { key: 'base', langKey: 'base' },
+];
+
+export const NotesPyramid = ({ notes, locale }: Props) => {
+  const t = useTranslations('pdp.pyramid');
+
+  return (
+    <section className="space-y-5" aria-labelledby="pyramid-heading">
+      <h2 id="pyramid-heading" className="font-serif text-2xl tracking-tight">{t('title')}</h2>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
+        {LAYERS.map(({ key, langKey }) => {
+          const group = notes[key];
+          return (
+            <div key={key}>
+              <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-stone-500">{t(langKey)}</p>
+              {group.length === 0 ? (
+                <p className="text-xs text-stone-400">—</p>
+              ) : (
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:flex md:flex-col md:gap-3">
+                  {group.map((n) => {
+                    const slug = n.slug || n.name.toLowerCase().replace(/\s+/g, '-');
+                    return (
+                      <li key={n.slug} className="flex items-center gap-3">
+                        <Link
+                          href={`/${locale}/catalog?note=${slug}`}
+                          className="group flex items-center gap-3 w-full"
+                          aria-label={n.name}
+                        >
+                          <div
+                            className="relative shrink-0 overflow-hidden rounded-xl border border-stone-200/60 bg-stone-50 shadow-sm transition group-hover:shadow-md group-hover:scale-[1.03]"
+                            style={{ width: TILE_PX, height: TILE_PX }}
+                          >
+                            {n.icon_url ? (
+                              <Image
+                                src={n.icon_url}
+                                alt={n.name}
+                                fill
+                                sizes={`${TILE_PX}px`}
+                                className="object-cover"
+                                unoptimized
+                              />
+                            ) : (
+                              <span className="absolute inset-0 flex items-center justify-center text-sm uppercase tracking-tight text-stone-400">
+                                {n.name.slice(0, 2)}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs font-medium text-stone-700 leading-tight dark:text-stone-300 group-hover:text-brass transition-colors truncate">
+                            {n.name}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};

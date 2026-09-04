@@ -35,7 +35,41 @@ const nextConfig = {
       // Telegram (avatars, t.me links)
       { protocol: 'https', hostname: 't.me' },
       { protocol: 'https', hostname: '**.telegram.org' },
+      // Fragrantica note icons
+      { protocol: 'https', hostname: 'fimgs.net' },
+      { protocol: 'https', hostname: '**.fimgs.net' },
+      // Production image hosts
+      { protocol: 'https', hostname: 'labor.uz' },
+      { protocol: 'https', hostname: '**.labor.uz' },
+      { protocol: 'https', hostname: 'laborparfum.com' },
+      { protocol: 'https', hostname: '**.laborparfum.com' },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "frame-ancestors 'self' https://telegram.org https://*.telegram.org https://web.telegram.org",
+          },
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/:locale/tg',
+        destination: '/:locale',
+      },
+      {
+        source: '/:locale/tg/:path*',
+        destination: '/:locale/:path*',
+      },
+    ];
   },
 };
 

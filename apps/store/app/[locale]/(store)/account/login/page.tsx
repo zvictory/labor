@@ -3,14 +3,14 @@ import { setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { getCurrentUser } from '@/lib/auth/session';
-import { TelegramLoginButton } from '@/components/account/telegram-login-button';
 import { PhoneOtpForm } from '@/components/account/phone-otp-form';
 import { StaffLoginForm } from '@/components/account/staff-login-form';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
 type Lang = 'ru' | 'uz' | 'en';
-const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
+const toLang = (locale: string): Lang =>
+  locale === 'uz' || locale === 'en' ? locale : 'ru';
 
 const COPY: Record<
   Lang,
@@ -25,7 +25,7 @@ const COPY: Record<
 > = {
   ru: {
     title: 'Вход',
-    subtitle: 'Войдите через Telegram или по номеру телефона.',
+    subtitle: 'Войдите с помощью нашего Telegram-бота.',
     telegram: 'Войти через Telegram',
     or: 'или',
     phone: 'Вход по телефону',
@@ -33,7 +33,7 @@ const COPY: Record<
   },
   uz: {
     title: 'Kirish',
-    subtitle: 'Telegram orqali yoki telefon raqami bilan kiring.',
+    subtitle: 'Telegram-botimiz orqali kiring.',
     telegram: 'Telegram orqali kirish',
     or: 'yoki',
     phone: 'Telefon orqali kirish',
@@ -41,7 +41,7 @@ const COPY: Record<
   },
   en: {
     title: 'Sign in',
-    subtitle: 'Sign in with Telegram or your phone number.',
+    subtitle: 'Sign in using our Telegram bot.',
     telegram: 'Sign in with Telegram',
     or: 'or',
     phone: 'Phone sign-in',
@@ -64,38 +64,20 @@ export default async function LoginPage({ params }: Props) {
   return (
     <div className="container max-w-md py-12 md:py-16">
       <div className="space-y-2 text-center">
-        <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{copy.title}</h1>
-        <p className="text-ink-muted text-sm dark:text-stone-400">{copy.subtitle}</p>
-      </div>
-
-      {/* Telegram */}
-      <section className="mt-10 flex flex-col items-center gap-3">
-        <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-          {copy.telegram}
-        </h2>
-        <TelegramLoginButton locale={locale} />
-      </section>
-
-      {/* Divider */}
-      <div className="my-8 flex items-center gap-4">
-        <span className="bg-border h-px flex-1" />
-        <span className="text-micro text-ink-muted font-semibold tracking-widest uppercase dark:text-stone-400">
-          {copy.or}
-        </span>
-        <span className="bg-border h-px flex-1" />
+        <h1 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
+          {copy.title}
+        </h1>
+        <p className="text-sm text-ink-muted dark:text-stone-400">{copy.subtitle}</p>
       </div>
 
       {/* Phone OTP */}
-      <section className="space-y-4">
-        <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-          {copy.phone}
-        </h2>
+      <section className="mt-10 space-y-4">
         <PhoneOtpForm locale={locale} />
       </section>
 
       {/* Staff (subtle) */}
-      <details className="border-border mt-12 border-t pt-6">
-        <summary className="text-micro text-ink-muted hover:text-foreground cursor-pointer font-semibold tracking-widest uppercase dark:text-stone-400">
+      <details className="mt-12 border-t border-border pt-6">
+        <summary className="cursor-pointer text-[10px] font-semibold uppercase tracking-widest text-ink-muted hover:text-brass dark:text-stone-400">
           {copy.staff}
         </summary>
         <div className="mt-4">

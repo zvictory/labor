@@ -1,18 +1,19 @@
 /**
- * One-way mirror: production catalog (Postgres) -> local dev database (SQLite).
+ * One-way mirror: production catalog -> local dev database.
  *
  * Reads the JSONL dump produced from labor_store on the prod host and replaces
  * the local catalog wholesale. Only catalog tables travel; User, Order, Cart,
  * Payment and OtpCode stay on the server.
  *
- * Postgres `jsonb` columns arrive as objects and are stored as JSON strings —
- * `resolveLocaleText` in lib/catalog/locale.ts reads either shape.
+ * Both ends are Postgres, so `jsonb` columns travel as objects and are written
+ * back as objects. (An earlier revision of this script targeted a local SQLite
+ * database and flattened them to strings; that divergence is gone.)
  *
  * Usage: npx tsx scripts/import-prod.ts <dump-dir>
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, type Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -25,12 +26,26 @@ const read = (table: string): Record<string, unknown>[] =>
     .filter((l) => l.trim().length > 0)
     .map((l) => JSON.parse(l) as Record<string, unknown>);
 
-/** jsonb -> the String column Prisma/SQLite expects; plain strings pass through. */
+/** Plain String columns. */
 const text = (v: unknown): string | null => {
   if (v === null || v === undefined) return null;
   return typeof v === 'string' ? v : JSON.stringify(v);
 };
 const textReq = (v: unknown): string => text(v) ?? '';
+
+/** jsonb columns: objects pass through, a serialised object is re-parsed. */
+const json = (v: unknown): Prisma.InputJsonValue | undefined => {
+  if (v === null || v === undefined) return undefined;
+  if (typeof v === 'string') {
+    try {
+      return JSON.parse(v) as Prisma.InputJsonValue;
+    } catch {
+      return v;
+    }
+  }
+  return v as Prisma.InputJsonValue;
+};
+const jsonReq = (v: unknown): Prisma.InputJsonValue => json(v) ?? {};
 const date = (v: unknown): Date => (typeof v === 'string' ? new Date(v) : new Date());
 const num = (v: unknown, fallback = 0): number => (typeof v === 'number' ? v : fallback);
 const int = (v: unknown): number | null => (typeof v === 'number' ? Math.round(v) : null);
@@ -61,8 +76,8 @@ async function main() {
       id: r.id as number,
       slug: r.slug as string,
       name: textReq(r.name),
-      description: text(r.description),
-      story: text(r.story),
+      description: json(r.description),
+      story: json(r.story),
       country: (r.country as string) ?? null,
       foundedYear: int(r.foundedYear),
       website: (r.website as string) ?? null,
@@ -78,8 +93,8 @@ async function main() {
     data: read('Note').map((r) => ({
       id: r.id as number,
       slug: r.slug as string,
-      name: textReq(r.name),
-      description: text(r.description),
+      name: jsonReq(r.name),
+      description: json(r.description),
       family: (r.family as string) ?? null,
       iconUrl: (r.iconUrl as string) ?? null,
       createdAt: date(r.createdAt),
@@ -91,7 +106,7 @@ async function main() {
     data: read('Accord').map((r) => ({
       id: r.id as number,
       slug: r.slug as string,
-      name: textReq(r.name),
+      name: jsonReq(r.name),
       colorHex: (r.colorHex as string) ?? null,
       createdAt: date(r.createdAt),
       updatedAt: date(r.updatedAt),
@@ -103,20 +118,19 @@ async function main() {
       id: r.id as number,
       slug: r.slug as string,
       name: textReq(r.name),
-      bio: text(r.bio),
+      bio: json(r.bio),
       country: (r.country as string) ?? null,
       createdAt: date(r.createdAt),
       updatedAt: date(r.updatedAt),
     })),
   });
 
-  // `availableOn` exists on prod but not in the SQLite schema — dropped here.
   await prisma.product.createMany({
     data: read('Product').map((r) => ({
       id: r.id as number,
       slug: r.slug as string,
-      name: textReq(r.name),
-      description: text(r.description),
+      name: jsonReq(r.name),
+      description: json(r.description),
       status: (r.status as string) ?? 'active',
       price: num(r.price),
       createdAt: date(r.createdAt),
@@ -139,9 +153,9 @@ async function main() {
       votesCount: num(r.votesCount),
       reviewsCount: num(r.reviewsCount),
       discontinued: Boolean(r.discontinued),
-      loveBreakdown: textReq(r.loveBreakdown) || '{}',
-      seasonsBreakdown: textReq(r.seasonsBreakdown) || '{}',
-      timeBreakdown: textReq(r.timeBreakdown) || '{}',
+      loveBreakdown: jsonReq(r.loveBreakdown),
+      seasonsBreakdown: jsonReq(r.seasonsBreakdown),
+      timeBreakdown: jsonReq(r.timeBreakdown),
       createdAt: new Date(),
       updatedAt: new Date(),
     })),

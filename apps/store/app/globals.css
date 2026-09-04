@@ -107,3 +107,29 @@
     outline-offset: 2px;
   }
 }
+
+/* Hide header and footer inside the Telegram Mini App on mobile viewports only */
+@media (max-width: 767px) {
+  .is-telegram-webapp header,
+  .is-telegram-webapp footer,
+  .is-telegram-webapp .site-header,
+  .is-telegram-webapp .site-footer {
+    display: none !important;
+  }
+}
+
+/* Telegram WebApp specific body tweaks for native mobile feel */
+body.is-telegram-webapp {
+  overflow-x: hidden;
+  overscroll-behavior-y: none; /* Disables container bounce on mobile app viewports */
+  background-color: var(--tg-bg, hsl(var(--background)));
+  color: var(--tg-text, hsl(var(--foreground)));
+}
+
+/* Map Telegram color scheme toggle */
+html[data-tg-scheme="dark"] {
+  color-scheme: dark;
+}
+html[data-tg-scheme="light"] {
+  color-scheme: light;
+}

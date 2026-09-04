@@ -43,7 +43,7 @@ export default async function TgProductPage({ params }: Props) {
         </p>
       </header>
 
-      <AccordsBars accords={product.fragrance.accords} />
+      <AccordsBars accords={product.fragrance.accords} locale={locale} />
       <NotesPyramid notes={product.fragrance.notes} locale={locale} />
 
       <TgPdpBuyBlock product={product} locale={locale} />

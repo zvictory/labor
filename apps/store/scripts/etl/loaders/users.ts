@@ -51,7 +51,7 @@ export async function loadUsers(): Promise<Map<number, number>> {
 
   for (const u of users) {
     const oldId = Number(u.id);
-    const telegramId = u.telegram_id ? String(u.telegram_id) : null;
+    const telegramId = u.telegram_id !== null ? BigInt(u.telegram_id) : null;
     const email = u.email && u.email.trim() ? u.email.trim() : null;
 
     if (telegramId === null && email === null) {

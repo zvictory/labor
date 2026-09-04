@@ -5,7 +5,8 @@ import { Send, ArrowRight } from 'lucide-react';
 
 type Lang = 'en' | 'ru' | 'uz';
 
-const TELEGRAM_URL = 'https://t.me/labor_uz_bot';
+const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
+const TELEGRAM_URL = `https://t.me/${botUsername}`;
 
 const COPY: Record<Lang, { eyebrow: string; headline: string; sub: string; cta: string }> = {
   ru: {

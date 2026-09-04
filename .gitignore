@@ -81,3 +81,7 @@ apps/store/prisma/dev.db
 apps/store/prisma/*.db-journal
 apps/store/public/products/
 apps/store/design-shots/
+
+# Store app local storage cache
+apps/store/tmp-storage/
+

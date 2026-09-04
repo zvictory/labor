@@ -22,8 +22,9 @@ export interface ListProductsParams {
   sort?: ProductSort;
   brand?: string;
   note?: string;
-  family?: string;
+  accord?: string;
   perfumer?: string;
+  family?: string;
   gender?: string;
   q?: string;
   page?: number;
@@ -48,11 +49,13 @@ const cardSelect = {
   },
   fragrance: {
     select: {
-      concentration: true,
-      volumeMl: true,
       avgRating: true,
       votesCount: true,
       reviewsCount: true,
+      // The card's code line reads `brand · concentration · volume`, the same
+      // three fields the paper tester label carries.
+      concentration: true,
+      volumeMl: true,
       brand: { select: { name: true } },
     },
   },
@@ -98,7 +101,12 @@ const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
   const fragrance: Prisma.FragranceDetailWhereInput = {};
 
   if (params.brand) {
-    fragrance.brand = { slug: params.brand };
+    fragrance.brand = {
+      slug: {
+        contains: params.brand,
+        mode: 'insensitive',
+      },
+    };
   }
   if (params.gender) {
     fragrance.gender = params.gender;
@@ -113,11 +121,19 @@ const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
     if (params.family) noteFilter.family = params.family;
     where.notes = { some: { note: noteFilter } };
   }
+  if (params.q) {
+    // name is per-locale JSON; match across stored locale strings.
+    where.OR = [
+      { name: { path: ['ru'], string_contains: params.q } },
+      { name: { path: ['uz'], string_contains: params.q } },
+      { name: { path: ['en'], string_contains: params.q } },
+    ];
+  }
   if (params.perfumer) {
     where.perfumers = { some: { perfumer: { slug: params.perfumer } } };
   }
-  if (params.q) {
-    where.name = { contains: params.q };
+  if (params.accord) {
+    where.accords = { some: { accord: { slug: params.accord } } };
   }
 
   return where;
@@ -137,65 +153,26 @@ const buildOrderBy = (sort: ProductSort | undefined): Prisma.ProductOrderByWithR
   }
 };
 
-import fullCatalog from '@/lib/catalog/full-catalog.json';
-
-const getFallbackProducts = (params: ListProductsParams): ListProductsResult => {
-  let list = fullCatalog.products as ProductCardDTO[];
-
-  if (params.brand) {
-    const brandSlug = params.brand.toLowerCase();
-    list = list.filter((p) => p.brand.toLowerCase().replace(/[^a-z0-9]+/g, '-') === brandSlug);
-  }
-  if (params.q) {
-    const q = params.q.toLowerCase();
-    list = list.filter(
-      (p) => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q),
-    );
-  }
-  if (params.sort) {
-    if (params.sort === 'price_asc') list = [...list].sort((a, b) => a.price - b.price);
-    else if (params.sort === 'price_desc') list = [...list].sort((a, b) => b.price - a.price);
-    else if (params.sort === 'popular')
-      list = [...list].sort((a, b) => b.avg_rating - a.avg_rating);
-  }
-
-  const page = Math.max(1, params.page ?? 1);
-  const total = list.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const data = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  return { data, meta: { total, totalPages } };
-};
-
 export const listProducts = async (params: ListProductsParams): Promise<ListProductsResult> => {
-  try {
-    const page = Math.max(1, params.page ?? 1);
-    const where = buildWhere(params);
-    const orderBy = buildOrderBy(params.sort);
+  const page = Math.max(1, params.page ?? 1);
+  const where = buildWhere(params);
+  const orderBy = buildOrderBy(params.sort);
 
-    const [total, rows] = await Promise.all([
-      db.product.count({ where }),
-      db.product.findMany({
-        where,
-        orderBy,
-        skip: (page - 1) * PAGE_SIZE,
-        take: PAGE_SIZE,
-        select: cardSelect,
-      }),
-    ]);
+  const [total, rows] = await Promise.all([
+    db.product.count({ where }),
+    db.product.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      select: cardSelect,
+    }),
+  ]);
 
-    if (rows.length === 0) {
-      return getFallbackProducts(params);
-    }
-
-    return {
-      data: rows.map((row) => toProductCard(row, params.locale)),
-      meta: { total, totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)) },
-    };
-  } catch (err) {
-    console.error('[catalog/products] DB query failed:', err);
-    return getFallbackProducts(params);
-  }
+  return {
+    data: rows.map((row) => toProductCard(row, params.locale)),
+    meta: { total, totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)) },
+  };
 };
 
 // ── product detail ─────────────────────────────────────────────────────────────
@@ -220,143 +197,121 @@ export const getProduct = async (
   slug: string,
   locale: string,
 ): Promise<ProductDetailDTO | null> => {
-  try {
-    const product = await db.product.findUnique({
-      where: { slug },
-      select: {
-        id: true,
-        slug: true,
-        name: true,
-        description: true,
-        price: true,
-        images: {
-          orderBy: { position: 'asc' },
-          select: { url: true },
-        },
-        fragrance: {
-          select: {
-            gender: true,
-            concentration: true,
-            volumeMl: true,
-            avgRating: true,
-            avgLongevity: true,
-            avgSillage: true,
-            votesCount: true,
-            reviewsCount: true,
-            brand: { select: { name: true, slug: true } },
-          },
-        },
-        notes: {
-          orderBy: { position: 'asc' },
-          select: {
-            pyramidLayer: true,
-            note: { select: { slug: true, name: true, family: true, iconUrl: true } },
-          },
-        },
-        accords: {
-          orderBy: { weight: 'desc' },
-          select: {
-            weight: true,
-            accord: { select: { name: true, colorHex: true } },
-          },
-        },
-        perfumers: {
-          select: {
-            perfumer: { select: { slug: true, name: true } },
-          },
-        },
-        similarsFrom: {
-          orderBy: { score: 'desc' },
-          select: {
-            similar: { select: cardSelect },
-          },
+  const product = await db.product.findUnique({
+    where: { slug },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      description: true,
+      price: true,
+      images: {
+        orderBy: { position: 'asc' },
+        select: { url: true },
+      },
+      fragrance: {
+        select: {
+          gender: true,
+          concentration: true,
+          volumeMl: true,
+          avgRating: true,
+          avgLongevity: true,
+          avgSillage: true,
+          votesCount: true,
+          reviewsCount: true,
+          loveBreakdown: true,
+          seasonsBreakdown: true,
+          timeBreakdown: true,
+          brand: { select: { name: true, slug: true } },
         },
       },
-    });
+      notes: {
+        orderBy: { position: 'asc' },
+        select: {
+          pyramidLayer: true,
+          note: { select: { slug: true, name: true, family: true, iconUrl: true } },
+        },
+      },
+      accords: {
+        orderBy: { weight: 'desc' },
+        select: {
+          weight: true,
+          accord: { select: { slug: true, name: true, colorHex: true } },
+        },
+      },
+      perfumers: {
+        select: {
+          perfumer: { select: { slug: true, name: true } },
+        },
+      },
+      similarsFrom: {
+        orderBy: { score: 'desc' },
+        select: {
+          similar: { select: cardSelect },
+        },
+      },
+    },
+  });
 
-    if (product) {
-      const notes: NotePyramidDTO = { top: [], middle: [], base: [] };
-      for (const pn of product.notes) {
-        if (isPyramidLayer(pn.pyramidLayer)) {
-          notes[pn.pyramidLayer].push(toProductNote(pn.note, locale));
-        }
-      }
+  if (!product) {
+    return null;
+  }
 
-      const accords: ProductAccordDTO[] = product.accords.map((pa) => ({
-        name: resolveLocaleText(pa.accord.name, locale),
-        color_hex: pa.accord.colorHex ?? '',
-        weight: pa.weight,
-      }));
-
-      const perfumers: ProductPerfumerDTO[] = product.perfumers.map((pp) => ({
-        slug: pp.perfumer.slug,
-        name: pp.perfumer.name,
-      }));
-
-      const similar: ProductCardDTO[] = product.similarsFrom.map((ps) =>
-        toProductCard(ps.similar, locale),
-      );
-
-      const fragrance = product.fragrance;
-
-      return {
-        id: product.id,
-        slug: product.slug,
-        name: resolveLocaleText(product.name, locale),
-        description: resolveLocaleText(product.description, locale),
-        brand: fragrance?.brand ? fragrance.brand.name : '',
-        ...(fragrance?.brand ? { brand_slug: fragrance.brand.slug } : {}),
-        price: product.price,
-        image: product.images[0]?.url ?? '',
-        images: product.images.map((img) => img.url),
-        gender: normalizeGender(fragrance?.gender),
-        ...(fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
-        volume_ml: fragrance?.volumeMl ?? null,
-        avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
-        avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
-        avg_sillage: fragrance ? Number(fragrance.avgSillage) : 0,
-        votes_count: fragrance ? fragrance.votesCount || fragrance.reviewsCount : 0,
-        notes,
-        accords,
-        perfumers,
-        similar,
-      };
+  const notes: NotePyramidDTO = { top: [], middle: [], base: [] };
+  for (const pn of product.notes) {
+    if (isPyramidLayer(pn.pyramidLayer)) {
+      notes[pn.pyramidLayer].push(toProductNote(pn.note, locale));
     }
-  } catch (err) {
-    console.error('[catalog/products] getProduct DB query failed:', err);
   }
 
-  // Fallback lookup in 542 full-catalog products enriched with Fragrantica data
-  const found = (fullCatalog.products as any[]).find((p) => p.slug === slug);
-  if (found) {
-    return {
-      id: found.id,
-      slug: found.slug,
-      name: found.name,
-      description:
-        found.description ||
-        `${found.name} by ${found.brand} — signature fragrance from the Labor catalog.`,
-      brand: found.brand,
-      brand_slug: found.brand_slug || found.brand.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      price: found.price,
-      image: found.image,
-      images: found.images || [found.image],
-      gender: normalizeGender(found.gender),
-      concentration: found.concentration || 'Eau de Parfum',
-      avg_rating: found.avg_rating || 4.5,
-      avg_longevity: found.avg_longevity || 0,
-      avg_sillage: found.avg_sillage || 0,
-      votes_count: found.votes_count || 50,
-      notes: found.notes || {
-        top: [{ slug: 'bergamot', name: 'Bergamot', color_hex: '#e6b800' }],
-        middle: [{ slug: 'rose', name: 'Rose', color_hex: '#c98b93' }],
-        base: [{ slug: 'sandalwood', name: 'Sandalwood', color_hex: '#6b4f3a' }],
-      },
-      accords: found.accords || [{ name: 'Woody', color_hex: '#6b4f3a', weight: 85 }],
-      perfumers: found.perfumers || [{ slug: 'house-perfumer', name: 'In-House Team' }],
-      similar: (fullCatalog.products as any[]).slice(0, 4),
-    };
-  }
+  const accords: ProductAccordDTO[] = product.accords.map((pa) => ({
+    slug: pa.accord.slug,
+    name: resolveLocaleText(pa.accord.name, locale),
+    color_hex: pa.accord.colorHex ?? '',
+    weight: pa.weight,
+  }));
 
-  return null;
+  const perfumers: ProductPerfumerDTO[] = product.perfumers.map((pp) => ({
+    slug: pp.perfumer.slug,
+    name: pp.perfumer.name,
+  }));
+
+  const similar: ProductCardDTO[] = product.similarsFrom.map((ps) =>
+    toProductCard(ps.similar, locale),
+  );
+
+  const fragrance = product.fragrance;
+
+  const parseBreakdown = (val: any): Record<string, number> => {
+    if (typeof val === 'object' && val !== null) {
+      return val as Record<string, number>;
+    }
+    return {};
+  };
+
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: resolveLocaleText(product.name, locale),
+    description: resolveLocaleText(product.description, locale),
+    brand: fragrance?.brand ? fragrance.brand.name : '',
+    ...(fragrance?.brand ? { brand_slug: fragrance.brand.slug } : {}),
+    price: product.price,
+    image: product.images[0]?.url ?? '',
+    images: product.images.map((img) => img.url),
+    gender: normalizeGender(fragrance?.gender),
+    ...(fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
+    volume_ml: fragrance?.volumeMl ?? null,
+    avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
+    avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
+    avg_sillage: fragrance ? Number(fragrance.avgSillage) : 0,
+    votes_count: fragrance ? fragrance.votesCount || fragrance.reviewsCount : 0,
+    notes,
+    accords,
+    perfumers,
+    similar,
+    seasons: parseBreakdown(fragrance?.seasonsBreakdown),
+    time: parseBreakdown(fragrance?.timeBreakdown),
+    love: parseBreakdown(fragrance?.loveBreakdown),
+  };
 };

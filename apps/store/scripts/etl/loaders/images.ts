@@ -1,9 +1,8 @@
 // ProductImage loader: Spree product images -> Prisma ProductImage.
 //
 // Spree image chain (verified against schema.rb):
-//   spree_assets (viewable_type='Spree::Variant', viewable_id=variant.id,
+//   spree_assets (viewable_type='Spree::Product', viewable_id=product.id,
 //                 type='Spree::Image', alt, position)
-//     -> spree_variants.product_id
 //     -> active_storage_attachments (record_type='Spree::Asset',
 //                                    record_id=asset.id, name='attachment')
 //       -> active_storage_blobs (key, filename, content_type, byte_size, service_name)
@@ -25,20 +24,16 @@
 // Object key: we reuse the ActiveStorage blob `key` as the storage object key so
 // the same source blob always maps to the same destination object.
 
-import { db } from '@/lib/db';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { query } from '../source';
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { db } from "@/lib/db";
+import { query } from "../source";
 
-const MIGRATE_BLOBS = process.env.MIGRATE_BLOBS === 'true';
+const MIGRATE_BLOBS = process.env.MIGRATE_BLOBS === "true";
 // Host that already serves the legacy Spree ActiveStorage blobs (e.g. the Rails
 // app or its disk/S3 service). Used to build reference URLs and, when migrating,
 // to fetch the bytes.
-const PUBLIC_HOST = (process.env.PUBLIC_HOST ?? '').replace(/\/+$/, '');
-// Optional mount of the legacy Rails ActiveStorage disk service. During a local
-// cutover this avoids relying on signed Rails URLs and copies the original bytes
-// straight into object storage.
-const SOURCE_STORAGE_DIR = process.env.SOURCE_STORAGE_DIR;
+const PUBLIC_HOST = (process.env.PUBLIC_HOST ?? "").replace(/\/+$/, "");
 
 interface AssetImageRow {
   product_id: string;
@@ -57,7 +52,7 @@ interface AssetImageRow {
  * exposes blobs elsewhere.
  */
 function referenceUrl(blobKey: string, filename: string): string {
-  const base = PUBLIC_HOST || '';
+  const base = PUBLIC_HOST || "";
   return `${base}/storage/${blobKey}/${encodeURIComponent(filename)}`;
 }
 
@@ -73,30 +68,45 @@ async function resolveUrl(row: AssetImageRow): Promise<string> {
     return referenceUrl(row.blob_key, row.filename);
   }
 
-  const buffer = SOURCE_STORAGE_DIR
-    ? await readFile(
-        join(SOURCE_STORAGE_DIR, row.blob_key.slice(0, 2), row.blob_key.slice(2, 4), row.blob_key),
-      )
-    : await fetchBlob(row);
-  const contentType = row.content_type ?? 'application/octet-stream';
+  const first2 = row.blob_key.slice(0, 2);
+  const next2 = row.blob_key.slice(2, 4);
+  const localPath = path.join(__dirname, "../../../tmp-storage", first2, next2, row.blob_key);
 
-  const { putObject } = await import('@/lib/storage');
-  // Reuse the ActiveStorage key as the destination object key -> idempotent copy.
-  return putObject(row.blob_key, buffer, contentType);
-}
+  try {
+    const buffer = await fs.readFile(localPath);
+    const contentType = row.content_type ?? "application/octet-stream";
 
-async function fetchBlob(row: AssetImageRow): Promise<Buffer> {
-  const sourceUrl = referenceUrl(row.blob_key, row.filename);
-  const res = await fetch(sourceUrl);
-  if (!res.ok) {
-    throw new Error(
-      `[images] failed to fetch blob ${row.blob_key} (${sourceUrl}): HTTP ${res.status}`,
+    const { putObject } = await import("@/lib/storage");
+    // Reuse the ActiveStorage key as the destination object key -> idempotent copy.
+    return await putObject(row.blob_key, buffer, contentType);
+  } catch (err: any) {
+    console.warn(
+      `[images] local file not found for ${row.blob_key} at ${localPath}, trying fetch as fallback...`
     );
+
+    const sourceUrl = referenceUrl(row.blob_key, row.filename);
+    try {
+      const res = await fetch(sourceUrl);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const buffer = Buffer.from(await res.arrayBuffer());
+      const contentType = row.content_type ?? "application/octet-stream";
+
+      const { putObject } = await import("@/lib/storage");
+      return await putObject(row.blob_key, buffer, contentType);
+    } catch (fallbackErr: any) {
+      throw new Error(
+        `[images] failed to resolve blob ${row.blob_key} locally or via fallback fetch: ${err.message} / ${fallbackErr.message}`
+      );
+    }
   }
-  return Buffer.from(await res.arrayBuffer());
 }
 
-export async function loadImages(productOldIdToNewId: Map<number, number>): Promise<void> {
+
+export async function loadImages(
+  productOldIdToNewId: Map<number, number>,
+): Promise<void> {
   const rows = await query<AssetImageRow>(
     `SELECT v.product_id    AS product_id,
             a.alt           AS alt,
@@ -107,13 +117,13 @@ export async function loadImages(productOldIdToNewId: Map<number, number>): Prom
        FROM spree_assets a
        JOIN spree_variants v
          ON v.id = a.viewable_id
+        AND a.viewable_type = 'Spree::Variant'
        JOIN active_storage_attachments att
          ON att.record_type = 'Spree::Asset'
         AND att.record_id   = a.id
         AND att.name        = 'attachment'
        JOIN active_storage_blobs b
          ON b.id = att.blob_id
-      WHERE a.viewable_type = 'Spree::Variant'
       ORDER BY v.product_id, a.position NULLS LAST, a.id`,
   );
 

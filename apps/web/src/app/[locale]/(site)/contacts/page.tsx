@@ -76,6 +76,7 @@ export default async function ContactsPage({ params }: Props) {
   setRequestLocale(locale);
   const lang = toLang(locale);
   const c = COPY[lang];
+  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
 
   const rows: readonly { k: string; v: React.ReactNode }[] = [
     { k: c.labels.address, v: ADDRESS[lang] },
@@ -99,8 +100,8 @@ export default async function ContactsPage({ params }: Props) {
     {
       k: c.labels.telegram,
       v: (
-        <a href="https://t.me/labor_uz_bot" className="hover:text-brass">
-          @labor_uz_bot
+        <a href={`https://t.me/${botUsername}`} className="hover:text-brass">
+          @{botUsername}
         </a>
       ),
     },

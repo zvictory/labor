@@ -29,7 +29,7 @@ def labor_env_placeholder?(value)
   PLACEHOLDER_PREFIXES.any? { |p| value.start_with?(p) }
 end
 
-if Rails.env.production?
+if Rails.env.production? && ENV['SECRET_KEY_BASE_DUMMY'].blank?
   REQUIRED_ENV_KEYS.each do |key|
     value = ENV.fetch(key) # raises KeyError if missing
     if labor_env_placeholder?(value)

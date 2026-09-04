@@ -72,6 +72,7 @@ export interface ProductNoteDTO {
 
 /// An accord weighting on a product detail.
 export interface ProductAccordDTO {
+  slug?: string;
   name: string;
   color_hex: string;
   weight: number;
@@ -113,4 +114,7 @@ export interface ProductDetailDTO {
   accords: ProductAccordDTO[];
   perfumers: ProductPerfumerDTO[];
   similar: ProductCardDTO[];
+  seasons: Record<string, number>;
+  time: Record<string, number>;
+  love: Record<string, number>;
 }

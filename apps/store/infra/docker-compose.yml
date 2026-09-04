@@ -19,7 +19,7 @@ services:
       POSTGRES_PASSWORD: labor
       POSTGRES_DB: labor_store
     ports:
-      - '5432:5432'
+      - '5435:5432'
     volumes:
       - store_pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -33,7 +33,7 @@ services:
     container_name: labor-store-redis
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      - '6380:6379'
     volumes:
       - store_redis_data:/data
     healthcheck:

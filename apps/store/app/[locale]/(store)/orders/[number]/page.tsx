@@ -15,7 +15,8 @@ const SUPPORTED: readonly Lang[] = ['ru', 'uz', 'en'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
-const TELEGRAM_URL = 'https://t.me/labor_uz_bot';
+const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
+const TELEGRAM_URL = `https://t.me/${botUsername}`;
 
 const COPY: Record<
   Lang,

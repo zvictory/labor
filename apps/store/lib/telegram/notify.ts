@@ -12,14 +12,22 @@ import { db } from '@/lib/db';
 import { getOrderByNumber, type OrderDTO } from '@/lib/orders/queries';
 import { formatUzs } from '@/lib/money';
 import { getBot } from '@/lib/telegram/bot';
-import { NOTIFY_MESSAGES, statusLabel, toBotLocale, type BotLocale } from '@/lib/telegram/messages';
+import {
+  NOTIFY_MESSAGES,
+  statusLabel,
+  toBotLocale,
+  type BotLocale,
+} from '@/lib/telegram/messages';
 
 function escapeHtml(value: string | number): string {
-  return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 interface Recipient {
-  telegramId: string;
+  telegramId: bigint;
   locale: BotLocale;
 }
 
@@ -95,7 +103,7 @@ export async function notifyOrderPaid(orderNumber: string): Promise<void> {
       const order =
         recipient.locale === 'ru'
           ? orderRu
-          : ((await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu);
+          : (await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu;
       await send(recipient.telegramId, paidBody(order, recipient.locale));
     }
 
@@ -108,7 +116,10 @@ export async function notifyOrderPaid(orderNumber: string): Promise<void> {
 }
 
 /// Notify customer + admin of a generic status change. Best-effort throughout.
-export async function notifyOrderStatus(orderNumber: string, status: string): Promise<void> {
+export async function notifyOrderStatus(
+  orderNumber: string,
+  status: string,
+): Promise<void> {
   try {
     const recipient = await customerRecipient(orderNumber);
     const adminId = adminChatId();
@@ -121,7 +132,7 @@ export async function notifyOrderStatus(orderNumber: string, status: string): Pr
       const order =
         recipient.locale === 'ru'
           ? orderRu
-          : ((await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu);
+          : (await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu;
       await send(recipient.telegramId, statusBody(order, status, recipient.locale));
     }
 

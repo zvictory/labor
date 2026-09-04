@@ -107,7 +107,10 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
 
   // Recompute subtotal from line snapshots rather than trusting cart.subtotal,
   // so the persisted total is internally consistent with the OrderItems.
-  const subtotal = cart.items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  const subtotal = cart.items.reduce(
+    (sum, line) => sum + line.unitPrice * line.quantity,
+    0,
+  );
   const total = subtotal + deliveryFee;
 
   const itemsData = cart.items.map((line) => ({
@@ -128,17 +131,15 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
           number,
           // Session user (or explicit override); guest orders carry undefined
           // and are tracked by phone.
-          userId: userId ?? null,
+          userId,
           status: 'pending',
           paymentStatus: 'unpaid',
           total,
           region: parsed.address.region,
           district: parsed.address.district,
-          address: parsed.address.address || '',
-          customerPhone: parsed.customer.phone,
-          customerName: parsed.customer.name || 'Customer',
+          address: parsed.address.address || null,
+          phone: parsed.customer.phone,
           deliveryMethod: parsed.deliveryMethod,
-          paymentMethod: 'cod',
           items: { create: itemsData },
         },
       });
