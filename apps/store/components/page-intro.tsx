@@ -23,7 +23,7 @@ export const PageIntro = ({
     } ${className || ''}`}
   >
     {eyebrow ? (
-      <div className="text-brass text-[10px] font-bold tracking-[0.32em] uppercase md:text-xs">
+      <div className="text-foreground text-micro font-bold tracking-[0.32em] uppercase md:text-xs">
         {eyebrow}
       </div>
     ) : null}
@@ -31,15 +31,11 @@ export const PageIntro = ({
       {title}
     </h1>
     <div
-      className={`bg-brass my-3 h-px w-10 opacity-60 ${
+      className={`bg-foreground my-3 h-px w-10 opacity-60 ${
         align === 'center' ? 'mx-auto' : 'mr-auto'
       }`}
     />
-    {lead ? (
-      <p className="text-ink-muted mx-auto max-w-2xl text-sm leading-5 dark:text-stone-400">
-        {lead}
-      </p>
-    ) : null}
+    {lead ? <p className="text-ink-muted mx-auto max-w-2xl text-sm leading-5">{lead}</p> : null}
     {action ? <div className="mt-3">{action}</div> : null}
   </header>
 );

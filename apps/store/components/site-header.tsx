@@ -12,8 +12,11 @@ export function SiteHeader({ locale }: { locale: string }) {
   const b = useTranslations('brand');
   const href = (path: string) => `/${locale}${path}`;
 
+  // Solid, not frosted. A translucent blurred bar is the one texture the shop
+  // has nowhere — the island is a single opaque surface, and the header is the
+  // screen's version of it. The hairline does the separating.
   return (
-    <header className="border-border bg-background/85 sticky top-0 z-40 border-b backdrop-blur">
+    <header className="border-border bg-background sticky top-0 z-40 border-b">
       <div className="container flex h-20 items-center justify-between gap-6 transition-all duration-300 md:h-24">
         <Link
           href={href('')}

@@ -122,12 +122,16 @@ export function MiniCart({ locale }: { locale: string }) {
             type="button"
             aria-label={copy.close}
             onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="bg-graphite/50 absolute inset-0"
           />
+          {/* A flat scrim and a hairline, not a blur and a drop shadow: the
+              drawer is a panel that slid over the page, not one floating above
+              it. `shadow-xl` resolves to none in this system, so the left edge
+              is what separates the drawer from what it covers. */}
           <aside
             role="dialog"
             aria-label={copy.title}
-            className="bg-background absolute top-0 right-0 flex h-full w-full max-w-md flex-col shadow-xl"
+            className="bg-background border-border absolute top-0 right-0 flex h-full w-full max-w-md flex-col border-l"
           >
             <header className="border-border flex items-center justify-between border-b px-5 py-4">
               <h2 className="font-display text-ink dark:text-bone text-2xl">{copy.title}</h2>

@@ -17,14 +17,7 @@ interface PdpStickyBarProps {
   locale: string;
 }
 
-export function PdpStickyBar({
-  productId,
-  name,
-  brand,
-  price,
-  image,
-  locale,
-}: PdpStickyBarProps) {
+export function PdpStickyBar({ productId, name, brand, price, image, locale }: PdpStickyBarProps) {
   const [visible, setVisible] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -63,26 +56,37 @@ export function PdpStickyBar({
   const buyText = locale === 'ru' ? 'В корзину' : locale === 'uz' ? 'Savatga' : 'Add to cart';
 
   return (
-    <div className="fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-30 border-t border-stone-200/80 bg-white/95 px-4 py-2.5 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] backdrop-blur-md dark:border-stone-850 dark:bg-stone-900/95 flex items-center justify-between gap-4 animate-in slide-in-from-bottom duration-300 md:hidden">
-      <div className="flex items-center gap-3 min-w-0">
+    // A flat bar with a hairline on top, never a raised one. It repeats the
+    // decision the page already offers, so it must not read as a second, louder
+    // interface floating over the first.
+    <div className="border-border bg-background fixed right-0 bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 z-30 flex items-center justify-between gap-4 border-t px-4 py-2.5 md:hidden">
+      <div className="flex min-w-0 items-center gap-3">
         {image && (
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-stone-50 border border-stone-100 p-0.5">
-            <Image src={image} alt={name} fill className="object-contain" />
+          <div className="border-border relative h-10 w-10 shrink-0 overflow-hidden border p-0.5">
+            <Image
+              src={image}
+              alt={name}
+              fill
+              sizes="40px"
+              className="object-contain mix-blend-multiply dark:mix-blend-normal"
+            />
           </div>
         )}
         <div className="min-w-0 leading-tight">
-          <p className="text-[9px] uppercase tracking-widest text-stone-400 font-bold truncate">{brand}</p>
-          <h4 className="text-xs text-stone-900 dark:text-stone-100 font-medium truncate">{name}</h4>
-          <p className="text-xs font-semibold text-brass mt-0.5">{formatUzs(price, locale)}</p>
+          <p className="text-muted-foreground text-micro truncate font-mono tracking-[0.16em] uppercase">
+            {brand}
+          </p>
+          <h4 className="truncate text-xs font-semibold tracking-[-0.01em]">{name}</h4>
+          <p className="mt-0.5 font-mono text-xs font-semibold">{formatUzs(price, locale)}</p>
         </div>
       </div>
       <button
         onClick={handleAdd}
         disabled={pending}
-        className="flex h-10 items-center justify-center gap-1.5 bg-ink text-bone dark:bg-bone dark:text-ink text-[10px] font-bold uppercase tracking-wider px-5 shrink-0 transition-colors hover:bg-brass disabled:opacity-60"
+        className="bg-foreground text-background text-micro flex h-10 shrink-0 items-center justify-center gap-1.5 px-5 font-semibold tracking-[0.16em] uppercase transition-opacity hover:opacity-80 disabled:opacity-60"
       >
         {pending ? (
-          <span className="h-3 w-3 animate-spin rounded-full border border-bone border-t-transparent" />
+          <span className="border-background h-3 w-3 animate-spin border border-t-transparent" />
         ) : (
           <>
             <ShoppingBag className="h-3.5 w-3.5" />

@@ -94,16 +94,14 @@ export function QuickFilter({ brands, notes, families, locale }: QuickFilterProp
   };
 
   return (
-    <section className="bg-stone-50 border-y border-border py-12 dark:bg-stone-900/10">
+    <section className="border-border border-y py-12 dark:bg-stone-900/10">
       <div className="container max-w-5xl">
-        <div className="mb-8 text-center space-y-2">
-          <span className="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-brass">
+        <div className="mb-8 space-y-2 text-center">
+          <span className="text-micro text-foreground flex items-center justify-center gap-2 font-bold tracking-[0.3em] uppercase">
             <Sparkles className="h-3.5 w-3.5" />
             {c.title}
           </span>
-          <p className="text-xs text-ink-muted dark:text-stone-400">
-            {c.subtitle}
-          </p>
+          <p className="text-ink-muted text-xs">{c.subtitle}</p>
         </div>
 
         <form onSubmit={handleSearch} className="space-y-4">
@@ -114,22 +112,22 @@ export function QuickFilter({ brands, notes, families, locale }: QuickFilterProp
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={c.searchPlaceholder}
-              className="w-full border border-border bg-white px-5 py-3.5 pl-12 text-sm text-ink placeholder:text-stone-400 focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass dark:bg-ink/60 dark:text-bone"
+              className="border-border bg-background text-ink focus:ring-brass dark:bg-ink/60 dark:text-bone w-full border px-5 py-3.5 pl-12 text-sm placeholder:text-stone-400 focus:ring-1 focus:outline-none"
             />
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-stone-400" />
+            <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
           </div>
 
           {/* Quick Select Rails */}
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {/* Brands */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              <label className="text-micro text-muted-foreground font-bold tracking-wider uppercase">
                 {c.brandLabel}
               </label>
               <select
                 value={selectedBrand}
                 onChange={(e) => setSelectedBrand(e.target.value)}
-                className="w-full cursor-pointer appearance-none border border-border/80 bg-white px-3 py-2.5 text-xs uppercase tracking-widest text-ink focus:border-brass focus:outline-none dark:bg-ink/80 dark:text-bone"
+                className="border-border/80 bg-background text-ink dark:bg-ink/80 dark:text-bone w-full cursor-pointer appearance-none border px-3 py-2.5 text-xs tracking-widest uppercase focus:outline-none"
               >
                 <option value="">{c.brandAll}</option>
                 {brands.map((b) => (
@@ -142,13 +140,13 @@ export function QuickFilter({ brands, notes, families, locale }: QuickFilterProp
 
             {/* Notes */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              <label className="text-micro text-muted-foreground font-bold tracking-wider uppercase">
                 {c.noteLabel}
               </label>
               <select
                 value={selectedNote}
                 onChange={(e) => setSelectedNote(e.target.value)}
-                className="w-full cursor-pointer appearance-none border border-border/80 bg-white px-3 py-2.5 text-xs uppercase tracking-widest text-ink focus:border-brass focus:outline-none dark:bg-ink/80 dark:text-bone"
+                className="border-border/80 bg-background text-ink dark:bg-ink/80 dark:text-bone w-full cursor-pointer appearance-none border px-3 py-2.5 text-xs tracking-widest uppercase focus:outline-none"
               >
                 <option value="">{c.noteAll}</option>
                 {notes.map((n) => (
@@ -161,13 +159,13 @@ export function QuickFilter({ brands, notes, families, locale }: QuickFilterProp
 
             {/* Categories (Families) */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              <label className="text-micro text-muted-foreground font-bold tracking-wider uppercase">
                 {c.familyLabel}
               </label>
               <select
                 value={selectedFamily}
                 onChange={(e) => setSelectedFamily(e.target.value)}
-                className="w-full cursor-pointer appearance-none border border-border/80 bg-white px-3 py-2.5 text-xs uppercase tracking-widest text-ink focus:border-brass focus:outline-none dark:bg-ink/80 dark:text-bone"
+                className="border-border/80 bg-background text-ink dark:bg-ink/80 dark:text-bone w-full cursor-pointer appearance-none border px-3 py-2.5 text-xs tracking-widest uppercase focus:outline-none"
               >
                 <option value="">{c.familyAll}</option>
                 {families.map((f) => (
@@ -180,13 +178,13 @@ export function QuickFilter({ brands, notes, families, locale }: QuickFilterProp
 
             {/* Genders */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              <label className="text-micro text-muted-foreground font-bold tracking-wider uppercase">
                 {c.genderLabel}
               </label>
               <select
                 value={selectedGender}
                 onChange={(e) => setSelectedGender(e.target.value)}
-                className="w-full cursor-pointer appearance-none border border-border/80 bg-white px-3 py-2.5 text-xs uppercase tracking-widest text-ink focus:border-brass focus:outline-none dark:bg-ink/80 dark:text-bone"
+                className="border-border/80 bg-background text-ink dark:bg-ink/80 dark:text-bone w-full cursor-pointer appearance-none border px-3 py-2.5 text-xs tracking-widest uppercase focus:outline-none"
               >
                 <option value="">{c.genderAll}</option>
                 {GENDERS.map((g) => (
@@ -202,7 +200,7 @@ export function QuickFilter({ brands, notes, families, locale }: QuickFilterProp
           <div className="flex justify-center pt-2">
             <button
               type="submit"
-              className="inline-flex h-12 items-center justify-center bg-ink px-10 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass dark:bg-bone dark:text-ink dark:hover:bg-brass"
+              className="bg-ink text-bone dark:bg-bone dark:text-ink dark:hover:bg-brass inline-flex h-12 items-center justify-center px-10 text-xs font-semibold tracking-widest uppercase transition-colors hover:opacity-80"
             >
               {c.submit}
             </button>

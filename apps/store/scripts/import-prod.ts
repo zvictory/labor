@@ -156,8 +156,6 @@ async function main() {
       loveBreakdown: jsonReq(r.loveBreakdown),
       seasonsBreakdown: jsonReq(r.seasonsBreakdown),
       timeBreakdown: jsonReq(r.timeBreakdown),
-      createdAt: new Date(),
-      updatedAt: new Date(),
     })),
   });
 

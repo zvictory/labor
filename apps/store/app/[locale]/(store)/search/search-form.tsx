@@ -46,24 +46,22 @@ export function SearchForm({ placeholder, initialValue = '' }: SearchFormProps) 
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
-          className="h-12 w-full rounded-full border border-stone-200 bg-stone-50/50 pl-12 pr-12 text-sm text-ink outline-none transition-all placeholder:text-stone-400 focus:border-brass/60 focus:bg-white dark:border-stone-850 dark:bg-stone-900/50 dark:text-bone dark:focus:border-brass/60 dark:focus:bg-stone-900"
+          className="border-border text-ink focus:border-brass/60 dark:text-bone dark:focus:border-brass/60 h-12 w-full border pr-12 pl-12 text-sm transition-all outline-none placeholder:text-stone-400 dark:focus:bg-stone-900"
           autoFocus
         />
-        <Search className="absolute left-4 top-3.5 h-5 w-5 text-stone-400" />
+        <Search className="text-muted-foreground absolute top-3.5 left-4 h-5 w-5" />
         {value && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-4 top-3.5 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+            className="text-muted-foreground hover:text-foreground absolute top-3.5 right-4"
           >
             <X className="h-5 w-5" />
           </button>
         )}
       </div>
       {isPending && (
-        <span className="absolute right-14 text-xs text-stone-400 animate-pulse">
-          ...
-        </span>
+        <span className="text-muted-foreground absolute right-14 animate-pulse text-xs">...</span>
       )}
     </form>
   );

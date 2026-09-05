@@ -21,15 +21,19 @@ export const NotesPyramid = ({ notes, locale }: Props) => {
 
   return (
     <section className="space-y-5" aria-labelledby="pyramid-heading">
-      <h2 id="pyramid-heading" className="font-serif text-2xl tracking-tight">{t('title')}</h2>
+      <h2 id="pyramid-heading" className="font-serif text-2xl tracking-tight">
+        {t('title')}
+      </h2>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
         {LAYERS.map(({ key, langKey }) => {
           const group = notes[key];
           return (
             <div key={key}>
-              <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-stone-500">{t(langKey)}</p>
+              <p className="text-muted-foreground mb-3 text-xs font-medium tracking-[0.18em] uppercase">
+                {t(langKey)}
+              </p>
               {group.length === 0 ? (
-                <p className="text-xs text-stone-400">—</p>
+                <p className="text-muted-foreground text-xs">—</p>
               ) : (
                 <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:flex md:flex-col md:gap-3">
                   {group.map((n) => {
@@ -38,11 +42,11 @@ export const NotesPyramid = ({ notes, locale }: Props) => {
                       <li key={n.slug} className="flex items-center gap-3">
                         <Link
                           href={`/${locale}/catalog?note=${slug}`}
-                          className="group flex items-center gap-3 w-full"
+                          className="group flex w-full items-center gap-3"
                           aria-label={n.name}
                         >
                           <div
-                            className="relative shrink-0 overflow-hidden rounded-xl border border-stone-200/60 bg-stone-50 shadow-sm transition group-hover:shadow-md group-hover:scale-[1.03]"
+                            className="relative shrink-0 overflow-hidden border border-stone-200/60 shadow-sm transition group-hover:scale-[1.03] group-hover:shadow-md"
                             style={{ width: TILE_PX, height: TILE_PX }}
                           >
                             {n.icon_url ? (
@@ -55,12 +59,12 @@ export const NotesPyramid = ({ notes, locale }: Props) => {
                                 unoptimized
                               />
                             ) : (
-                              <span className="absolute inset-0 flex items-center justify-center text-sm uppercase tracking-tight text-stone-400">
+                              <span className="text-muted-foreground absolute inset-0 flex items-center justify-center text-sm tracking-tight uppercase">
                                 {n.name.slice(0, 2)}
                               </span>
                             )}
                           </div>
-                          <span className="text-xs font-medium text-stone-700 leading-tight dark:text-stone-300 group-hover:text-brass transition-colors truncate">
+                          <span className="text-muted-foreground group-hover:text-brass truncate text-xs leading-tight font-medium transition-colors">
                             {n.name}
                           </span>
                         </Link>

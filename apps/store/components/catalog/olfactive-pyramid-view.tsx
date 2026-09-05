@@ -18,12 +18,20 @@ export interface OlfactivePyramidProps {
   locale: string;
 }
 
-// The pyramid as three labelled rows, not a decorated panel. It no longer
-// carries its own frame or heading — it sits inside the full record, which
-// supplies both, so the page reads as one document rather than a stack of
-// cards. Note thumbnails are square: nothing in this system is a round avatar.
-
-const FALLBACK_ICON = 'https://fimgs.net/mdimg/sastojci/t.75.jpg';
+// The pyramid as three labelled rows, not a decorated panel. It carries no
+// frame or heading of its own — it sits inside the full record, which supplies
+// both, so the page reads as one document rather than a stack of cards.
+//
+// The material photographs are back. A customer who has never met labdanum
+// learns more from the picture of the resin than from the word, and that is the
+// whole job of a note list. They are square, inside the chip's own hairline,
+// and served from public/notes/prod — mirrored by scripts/mirror-note-icons.ts
+// rather than hotlinked, so no third-party host sits on the critical path of a
+// product page.
+//
+// 177 of the 418 notes have no photograph. Those render as plain chips instead
+// of a generic stand-in image: a picture of nothing in particular teaches the
+// reader nothing and makes the row look uniform when it is not.
 
 function NoteRow({ title, notes, locale }: { title: string; notes?: NoteItem[]; locale: string }) {
   if (!notes || notes.length === 0) return null;
@@ -38,17 +46,17 @@ function NoteRow({ title, notes, locale }: { title: string; notes?: NoteItem[]; 
           <Link
             key={note.slug}
             href={`/${locale}/catalog?note=${note.slug}`}
-            className="border-border hover:border-foreground flex items-center gap-2.5 border px-2.5 py-1.5 transition-colors"
+            className="border-border hover:border-foreground flex items-center gap-2.5 border py-1.5 pr-3 pl-1.5 transition-colors"
           >
-            <span className="border-border relative h-5 w-5 shrink-0 overflow-hidden border">
-              <Image
-                src={note.icon_url || FALLBACK_ICON}
-                alt=""
-                fill
-                sizes="20px"
-                className="object-cover"
-              />
-            </span>
+            {note.icon_url ? (
+              <span className="border-border relative h-7 w-7 shrink-0 overflow-hidden border">
+                <Image src={note.icon_url} alt="" fill sizes="28px" className="object-cover" />
+              </span>
+            ) : (
+              <span className="border-border text-muted-foreground text-micro flex h-7 w-7 shrink-0 items-center justify-center border font-mono uppercase">
+                {note.name.charAt(0)}
+              </span>
+            )}
             <span className="text-sm">{note.name}</span>
           </Link>
         ))}

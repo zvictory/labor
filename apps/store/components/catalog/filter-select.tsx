@@ -50,7 +50,7 @@ export const FilterSelect = ({
 
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-stone-400">
+      <span className="text-micro text-muted-foreground font-bold tracking-[0.25em] uppercase">
         {label}
       </span>
       <div className="relative">
@@ -58,7 +58,7 @@ export const FilterSelect = ({
           value={currentValue}
           onChange={handleChange}
           disabled={isPending}
-          className="w-full cursor-pointer appearance-none border border-border/60 bg-bone/60 px-3 py-2.5 pr-9 text-xs uppercase tracking-widest text-ink focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass dark:bg-ink/60 dark:text-bone disabled:opacity-60"
+          className="border-border/60 bg-bone/60 text-ink focus:ring-brass dark:bg-ink/60 dark:text-bone w-full cursor-pointer appearance-none border px-3 py-2.5 pr-9 text-xs tracking-widest uppercase focus:ring-1 focus:outline-none disabled:opacity-60"
         >
           {showAll && <option value="">{allLabel}</option>}
           {options.map((opt) => (
@@ -70,7 +70,7 @@ export const FilterSelect = ({
         </select>
         <span
           aria-hidden
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-stone-400"
+          className="text-muted-foreground pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
         >
           ▾
         </span>

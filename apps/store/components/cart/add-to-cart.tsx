@@ -131,9 +131,12 @@ export function AddToCart({
       {toast && (
         <p
           role="status"
+          // Success reads in the page's own voice — the shop has no green.
+          // Failure keeps red: it is the one colour that means "this did not
+          // work", and a system rule is not worth a customer missing that.
           className={
             toast.kind === 'ok'
-              ? 'text-xs text-emerald-600 dark:text-emerald-400'
+              ? 'text-micro font-mono tracking-[0.16em] uppercase'
               : 'text-xs text-red-600 dark:text-red-400'
           }
         >

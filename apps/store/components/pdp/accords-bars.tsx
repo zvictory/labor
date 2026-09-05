@@ -14,10 +14,10 @@ export const AccordsBars = ({ accords, locale }: Props) => {
   if (sorted.length === 0) return null;
 
   return (
-    <section className="space-y-4 flex flex-col items-center" aria-labelledby="accords-heading">
-      <h2 
-        id="accords-heading" 
-        className="font-sans text-lg font-semibold tracking-wide text-stone-700 dark:text-stone-300 text-center"
+    <section className="flex flex-col items-center space-y-4" aria-labelledby="accords-heading">
+      <h2
+        id="accords-heading"
+        className="text-muted-foreground text-center font-sans text-lg font-semibold tracking-wide"
       >
         main accords
       </h2>
@@ -29,7 +29,7 @@ export const AccordsBars = ({ accords, locale }: Props) => {
             <li key={a.name} className="w-full">
               <Link
                 href={a.slug ? `/${locale}/catalog?accord=${a.slug}` : `/${locale}/catalog`}
-                className="flex h-7 w-full items-center justify-center rounded-md px-3 text-[11px] font-medium lowercase tracking-wide transition-all duration-300 hover:scale-[1.01] hover:brightness-105 shadow-xs"
+                className="text-label flex h-7 w-full items-center justify-center px-3 font-medium tracking-wide lowercase shadow-xs transition-all duration-300 hover:scale-[1.01] hover:brightness-105"
                 style={{
                   width: `${width}%`,
                   backgroundColor: bg,
@@ -46,7 +46,7 @@ export const AccordsBars = ({ accords, locale }: Props) => {
       <div className="pt-2">
         <Link
           href={`/${locale}/notes`}
-          className="inline-flex h-9 items-center justify-center rounded-full border border-teal-600/20 bg-teal-50/40 px-6 text-xs font-medium text-teal-800 transition-colors hover:bg-teal-50 hover:text-teal-900 dark:border-teal-500/20 dark:bg-teal-950/20 dark:text-teal-400 dark:hover:bg-teal-950/40"
+          className="border-border hover:border-foreground text-micro inline-flex h-9 items-center justify-center border px-6 font-mono tracking-[0.16em] uppercase transition-colors"
         >
           Search by accords
         </Link>
