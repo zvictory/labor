@@ -36,9 +36,26 @@ git reset --hard origin/main
 # containers alone, and the deploy reports success having shipped nothing.
 docker compose -f infra/docker-compose.yml pull --ignore-buildable
 docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
+# nginx resolves its upstreams once, at startup, and holds the addresses. The
+# rebuild above recreates every application container on a new address, so nginx
+# keeps proxying to the old ones and every request returns 502 — the site went
+# down this way the first time --build was used. It is not restarted by the line
+# above because its own image and config did not change.
+docker compose -f infra/docker-compose.yml restart nginx
 docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:migrate
 docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear
 docker image prune -f
+
+# Fail the deploy if the site is not actually answering. Everything above can
+# report success while nginx serves 502s to every visitor.
+for i in 1 2 3 4 5 6 7 8 9 10; do
+  code=\$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://localhost/ || echo 000)
+  case "\$code" in
+    2*|3*) echo "--> site answering: \$code"; break ;;
+    *) if [ "\$i" = 10 ]; then echo "--> site NOT answering after 10 tries (last: \$code)" >&2; exit 1; fi
+       sleep 3 ;;
+  esac
+done
 echo "--> now running:"
 git log --oneline -1
 EOF
