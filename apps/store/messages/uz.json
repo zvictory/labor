@@ -76,7 +76,9 @@
     "similar": "Oʻxshash hidlar",
     "compare": "Solishtirish",
     "reviews": "Sharhlar",
-    "writeReview": "Sharh yozish"
+    "writeReview": "Sharh yozish",
+    "votes": "{count} baho",
+    "inStore": "Sotuvda bor"
   },
   "pdp": {
     "longevityShort": "Davom.",

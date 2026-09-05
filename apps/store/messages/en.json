@@ -76,7 +76,9 @@
     "similar": "Similar fragrances",
     "compare": "Compare",
     "reviews": "Reviews",
-    "writeReview": "Write a review"
+    "writeReview": "Write a review",
+    "votes": "{count} votes",
+    "inStore": "In store"
   },
   "pdp": {
     "longevityShort": "Long.",

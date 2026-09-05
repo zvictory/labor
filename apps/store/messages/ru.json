@@ -76,7 +76,9 @@
     "similar": "Похожие ароматы",
     "compare": "Сравнить",
     "reviews": "Отзывы",
-    "writeReview": "Написать отзыв"
+    "writeReview": "Написать отзыв",
+    "votes": "{count} оценок",
+    "inStore": "Есть в наличии"
   },
   "pdp": {
     "longevityShort": "Стойк.",

@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Globe } from 'lucide-react';
 
 import { locales, localeNames, type Locale } from '@/i18n/config';
@@ -12,7 +12,6 @@ export function LocaleSwitcher() {
   const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
-  const params = useParams();
 
   const switchTo = (next: Locale) => {
     if (next === locale) return;
@@ -27,12 +26,12 @@ export function LocaleSwitcher() {
 
   return (
     <label className="relative inline-flex items-center gap-1 text-sm">
-      <Globe className="text-ink-muted h-4 w-4" aria-hidden />
+      <Globe className="text-muted-foreground h-4 w-4" aria-hidden />
       <select
         aria-label="Language"
         value={locale}
         onChange={(e) => switchTo(e.target.value as Locale)}
-        className="focus: cursor-pointer appearance-none bg-transparent pr-2 font-medium tracking-wider uppercase"
+        className="text-label cursor-pointer appearance-none bg-transparent pr-2 font-mono tracking-[0.16em] uppercase"
       >
         {locales.map((l) => (
           <option key={l} value={l}>
@@ -40,7 +39,6 @@ export function LocaleSwitcher() {
           </option>
         ))}
       </select>
-      <span className="sr-only">{params.locale as string}</span>
     </label>
   );
 }

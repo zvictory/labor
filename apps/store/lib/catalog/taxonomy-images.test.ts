@@ -38,13 +38,26 @@ describe('taxonomy image resolution', () => {
     ).toBe('/brands/dior.svg');
   });
 
-  it('falls back to a representative product image for brands', () => {
+  // A brand with no logo used to borrow one of its own bottles. On /brands that
+  // picture asserts "this is the house", which is not true, so the fallback was
+  // removed and the card falls back to the brand's name set in type. Returning
+  // nothing here is the behaviour, not a gap.
+  it('returns nothing for a brand with no logo, rather than one of its bottles', () => {
     expect(
       resolveBrandImage({
         slug: 'unknown',
         productImageUrls: ['https://images.test/product.webp'],
       }),
-    ).toBe('https://images.test/product.webp');
+    ).toBeUndefined();
+  });
+
+  it('returns nothing for a note with no photograph', () => {
+    expect(
+      resolveNoteImage({
+        slug: 'unknown',
+        productImageUrls: ['https://images.test/product.webp'],
+      }),
+    ).toBeUndefined();
   });
 
   it('prioritizes a database note icon over curated and product images', () => {

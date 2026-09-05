@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 import type { ProductCardDTO } from '@/lib/catalog/types';
 import { formatUzs } from '@/lib/money';
@@ -18,6 +19,7 @@ import { AddToCartIcon } from '@/components/cart/add-to-cart';
 // product page says whose votes they are.
 
 export const ProductCard = ({ product, locale }: { product: ProductCardDTO; locale: string }) => {
+  const t = useTranslations('product');
   const hasImage = Boolean(product.image);
   const codeLine = [
     product.brand,
@@ -69,7 +71,7 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
               row folds into two clean lines instead of splitting the price. */}
           <div className="border-hairline dark:border-gunmetal flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t pt-2 font-mono">
             <span className="text-muted-foreground text-micro tracking-[0.12em] whitespace-nowrap uppercase">
-              {product.votes_count > 0 ? `${product.votes_count} votes` : 'In store'}
+              {product.votes_count > 0 ? t('votes', { count: product.votes_count }) : t('inStore')}
             </span>
             <span className="text-foreground text-sm font-semibold whitespace-nowrap">
               {formatUzs(product.price, locale)}

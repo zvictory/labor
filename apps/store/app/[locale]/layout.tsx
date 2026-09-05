@@ -4,7 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { SessionProvider } from 'next-auth/react';
 
-import { locales, localeHtmlLang, type Locale } from '@/i18n/config';
+import { locales } from '@/i18n/config';
 import { TelegramWebAppBridge } from '@/components/telegram/webapp-bridge';
 
 export function generateStaticParams() {
@@ -24,9 +24,9 @@ export default async function LocaleLayout({ children, params }: Props) {
     <NextIntlClientProvider locale={locale} messages={messages}>
       <SessionProvider>
         <TelegramWebAppBridge />
-        <div lang={localeHtmlLang[locale as Locale]} className="contents">
-          {children}
-        </div>
+        {/* `lang` lives on <html> in app/layout.tsx now. A <div> here could not
+            reach <head>, so the page title was announced in the wrong voice. */}
+        {children}
       </SessionProvider>
     </NextIntlClientProvider>
   );

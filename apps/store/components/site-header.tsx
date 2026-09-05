@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ShoppingBag } from 'lucide-react';
 
+import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
 
 // Site chrome — Labor wordmark in font-display, primary catalog nav, and cart.
@@ -43,6 +44,7 @@ export function SiteHeader({ locale }: { locale: string }) {
         </nav>
 
         <div className="flex items-center gap-3">
+          <LocaleSwitcher />
           <Link
             href={href('/cart')}
             aria-label={t('cart')}
