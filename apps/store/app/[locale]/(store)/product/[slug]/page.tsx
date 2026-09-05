@@ -56,8 +56,10 @@ export default async function ProductPage({ params }: Props) {
                 className="object-contain p-6 mix-blend-multiply dark:mix-blend-normal"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-xs tracking-widest text-stone-400 uppercase">
-                {product.brand}
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
+                  {product.brand}
+                </span>
               </div>
             )}
 
