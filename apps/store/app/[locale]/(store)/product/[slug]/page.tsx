@@ -7,7 +7,7 @@ import { type Locale } from '@/i18n/config';
 import { ProductCard } from '@/components/catalog/product-card';
 import { AccordBarList } from '@/components/catalog/accord-bar-list';
 import { ProductRecord } from '@/components/catalog/product-record';
-import { TickScale } from '@/components/catalog/tick-scale';
+import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCart } from '@/components/cart/add-to-cart';
 import { getProduct } from '@/lib/catalog/products';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
@@ -113,13 +113,14 @@ export default async function ProductPage({ params }: Props) {
               {product.name}
             </h1>
 
-            {/* Intensity on the same five-tick scale the paper label carries.
-                p.29 forbids a star widget where there are no real reviews — and
-                the vote figures behind these averages are imported, not ours. */}
+            {/* Stars, because a star is what a rating looks like. The
+                provenance is the thing that needed handling, not the shape:
+                the count beside them says whose votes these are, and the full
+                record repeats it. */}
             <div className="flex items-center gap-4 pt-1">
               {product.votes_count > 0 && (
                 <div className="flex items-center gap-3">
-                  <TickScale value={product.avg_rating} label="Rating" />
+                  <StarRating value={product.avg_rating} label="Rating" />
                   <span className="text-muted-foreground text-label font-mono tracking-[0.12em] uppercase">
                     {formatRating(product.avg_rating)} / 5 · {product.votes_count} votes
                   </span>

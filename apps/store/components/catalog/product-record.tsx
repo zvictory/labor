@@ -1,6 +1,7 @@
 import { OlfactivePyramidView, type OlfactivePyramidProps } from './olfactive-pyramid-view';
 import { PerfumerCard, type PerfumerInfo } from './perfumer-card';
 import { TickScale, toTicks } from './tick-scale';
+import { StarRating } from './star-rating';
 
 // Layer two of the product page.
 //
@@ -34,17 +35,22 @@ export function ProductRecord({
 }) {
   const hasNotes = Boolean(notes.top?.length || notes.middle?.length || notes.base?.length);
 
-  // Ratings arrive on a 0-5 scale, longevity and sillage on 0-10. Both are
-  // redrawn on the same five ticks, so the three read as one instrument.
+  // Longevity and sillage arrive on a 0-10 scale and are redrawn on five ticks,
+  // so the two read as one instrument. The rating is not in this table: it is a
+  // verdict, not a quantity, and it gets stars — the same ones the label above
+  // shows, so the page does not state the number two different ways.
   const measurements: Measurement[] = [
-    { label: 'Rating', value: avgRating, scaleMax: 5, display: avgRating.toFixed(1) },
     { label: 'Longevity', value: avgLongevity, scaleMax: 10, display: avgLongevity.toFixed(1) },
     { label: 'Sillage', value: avgSillage, scaleMax: 10, display: avgSillage.toFixed(1) },
   ].filter((m) => m.value > 0);
 
   const primaryPerfumer = perfumers[0];
 
-  if (!hasNotes && measurements.length === 0 && !primaryPerfumer) return null;
+  // The rating lives outside `measurements` now, so both guards have to count
+  // it — otherwise a product with a rating and nothing else renders nothing.
+  const hasMeasures = measurements.length > 0 || avgRating > 0;
+
+  if (!hasNotes && !hasMeasures && !primaryPerfumer) return null;
 
   return (
     <details className="group border-border border-t">
@@ -69,7 +75,7 @@ export function ProductRecord({
         </div>
 
         <div className="flex flex-col gap-8">
-          {measurements.length > 0 && (
+          {hasMeasures && (
             <section className="flex flex-col gap-4">
               <div className="border-border flex items-baseline justify-between border-b pb-3">
                 <h2 className="text-lg font-semibold tracking-[-0.01em]">Measurements</h2>
@@ -77,6 +83,17 @@ export function ProductRecord({
                   {votesCount} votes
                 </span>
               </div>
+              {avgRating > 0 && (
+                <div className="flex items-center gap-4">
+                  <span className="text-muted-foreground text-label w-24 shrink-0 font-mono tracking-[0.12em] uppercase">
+                    Rating
+                  </span>
+                  <StarRating value={avgRating} size="sm" />
+                  <span className="text-muted-foreground text-label ml-auto font-mono tabular-nums">
+                    {avgRating.toFixed(1)}
+                  </span>
+                </div>
+              )}
               {measurements.map((m) => (
                 <div key={m.label} className="flex items-center gap-4">
                   <span className="text-muted-foreground text-label w-24 shrink-0 font-mono tracking-[0.12em] uppercase">

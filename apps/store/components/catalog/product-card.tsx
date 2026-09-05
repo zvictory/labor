@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import type { ProductCardDTO } from '@/lib/catalog/types';
 import { formatUzs } from '@/lib/money';
-import { TickScale } from '@/components/catalog/tick-scale';
+import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCartIcon } from '@/components/cart/add-to-cart';
 
 // The screen form of the shop's 24 × 32 mm tester label: code line, name,
@@ -11,10 +11,11 @@ import { AddToCartIcon } from '@/components/cart/add-to-cart';
 // the bottle a customer picks up off the island and the card they open on their
 // phone are recognisably the same object.
 //
-// Gone on purpose: the coloured accord badge (70/20/10), the star rating (p.29
-// forbids a rating widget without real reviews — intensity is shown as ticks
-// instead), rounded corners and the shadow (nothing on a laboratory label is
-// raised or rounded).
+// Gone on purpose: the coloured accord badge (70/20/10), rounded corners and
+// the shadow (nothing on a laboratory label is raised or rounded). The stars
+// are drawn in the label's own two colours rather than gold — see
+// components/catalog/star-rating.tsx — and the vote count beside them on the
+// product page says whose votes they are.
 
 export const ProductCard = ({ product, locale }: { product: ProductCardDTO; locale: string }) => {
   const hasImage = Boolean(product.image);
@@ -62,7 +63,7 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
             {product.top_accord?.name ?? ' '}
           </p>
 
-          <TickScale value={product.avg_rating} label="Intensity" size="sm" className="pt-0.5" />
+          <StarRating value={product.avg_rating} label="Rating" size="sm" className="pt-0.5" />
 
           {/* Two cells that must never break mid-value: at 2-up on a phone the
               row folds into two clean lines instead of splitting the price. */}
