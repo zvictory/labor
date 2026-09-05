@@ -10,7 +10,9 @@ type Props = {
 
 export function TaxonomyCardImage({ src, alt, fallback, mode = 'contain' }: Props) {
   return (
-    <div className="relative mb-4 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg bg-stone-100 dark:bg-stone-900">
+    // No radius, no tinted plate, no bottom margin: the card that owns this
+    // supplies its own frame and spacing, so the image is just the image.
+    <div className="bg-background relative flex aspect-[4/3] items-center justify-center overflow-hidden">
       {src ? (
         <Image
           src={src}

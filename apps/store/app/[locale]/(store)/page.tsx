@@ -250,7 +250,7 @@ export default async function HomePage({ params }: Props) {
                 href={`/${locale}/catalog?brand=${brand.slug}`}
                 className="group border-border/80 bg-bone hover:border-foreground dark:bg-graphite/30 dark:hover:bg-graphite/60 flex flex-col items-center justify-center border p-8 text-center transition-all duration-300 hover:bg-stone-50"
               >
-                <span className="font-display text-ink group- dark:text-bone mb-4 flex h-16 w-full items-center justify-center text-3xl transition-colors duration-300 hover:underline hover:underline-offset-4">
+                <span className="mb-4 flex h-16 w-full items-center justify-center text-2xl font-semibold tracking-[-0.01em] transition-colors duration-300 group-hover:underline group-hover:underline-offset-4">
                   {brand.name}
                 </span>
                 <p className="text-muted-foreground group-hover:text-foreground text-micro font-mono tracking-[0.2em] uppercase transition-colors">

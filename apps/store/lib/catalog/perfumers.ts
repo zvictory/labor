@@ -95,8 +95,12 @@ const FALLBACK_PERFUMERS: PerfumerDTO[] = [
 
 export const getPerfumers = async (locale: string): Promise<PerfumerDTO[]> => {
   try {
+    // A nose with fourteen fragrances in the shop is not the same as one with
+    // a single decant, and alphabetical order said they were. Weight first,
+    // name only to break ties. `some: {}` drops the noses credited on nothing.
     const rows = await db.perfumer.findMany({
-      orderBy: { name: 'asc' },
+      where: { productPerfumers: { some: {} } },
+      orderBy: [{ productPerfumers: { _count: 'desc' } }, { name: 'asc' }],
       select: perfumerSelect,
     });
 
