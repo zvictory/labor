@@ -7,6 +7,7 @@ import {
 } from '@/components/finder/perfume-finder-client';
 import type { ProductCardDTO } from '@/lib/catalog/types';
 import type { Locale } from '@/i18n/config';
+import { FAMILY_FILTERS } from '@/lib/catalog/note-families';
 
 interface Props {
   params: Promise<{ locale: Locale }>;
@@ -18,7 +19,6 @@ const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'] as const;
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'en';
 
-const FAMILY_FILTERS = ['woody', 'floral', 'citrus', 'gourmand', 'smoky', 'aquatic', 'leather', 'oriental'];
 const GENDER_FILTERS = ['men', 'women', 'unisex'] as const;
 
 const COPY: Record<Lang, FinderCopy> = {
@@ -39,7 +39,8 @@ const COPY: Record<Lang, FinderCopy> = {
     add: 'Add to cart',
     added: 'Added',
     emptyTitle: 'The finder needs catalog data',
-    emptyBody: 'We could not load enough products right now. Try again after the catalog API is available.',
+    emptyBody:
+      'We could not load enough products right now. Try again after the catalog API is available.',
     steps: [
       {
         key: 'style',
@@ -47,9 +48,24 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Who is this scent for?',
         helper: 'Choose the direction that feels closest. Unisex keeps the recommendation broad.',
         choices: [
-          { id: 'unisex', label: 'Open', text: 'A flexible signature for any wardrobe', gender: 'unisex' },
-          { id: 'men', label: 'Masculine', text: 'Clean, woody, confident, structured', gender: 'men' },
-          { id: 'women', label: 'Feminine', text: 'Soft, radiant, floral, polished', gender: 'women' },
+          {
+            id: 'unisex',
+            label: 'Open',
+            text: 'A flexible signature for any wardrobe',
+            gender: 'unisex',
+          },
+          {
+            id: 'men',
+            label: 'Masculine',
+            text: 'Clean, woody, confident, structured',
+            gender: 'men',
+          },
+          {
+            id: 'women',
+            label: 'Feminine',
+            text: 'Soft, radiant, floral, polished',
+            gender: 'women',
+          },
           { id: 'neutral', label: 'No rule', text: 'Ignore gender and follow the notes' },
         ],
       },
@@ -59,10 +75,30 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Which world attracts you first?',
         helper: 'This is the strongest signal in the match.',
         choices: [
-          { id: 'woods', label: 'Woods', text: 'Sandalwood, cedar, smoke, dry texture', families: ['woody', 'leather', 'smoky'] },
-          { id: 'flowers', label: 'Flowers', text: 'Petals, garden air, clean softness', families: ['floral', 'green'] },
-          { id: 'fresh', label: 'Fresh', text: 'Citrus, water, herbs, bright morning', families: ['citrus', 'aquatic', 'aromatic'] },
-          { id: 'warm', label: 'Warm', text: 'Amber, spice, sweetness, evening depth', families: ['oriental', 'gourmand', 'spicy'] },
+          {
+            id: 'woods',
+            label: 'Woods',
+            text: 'Sandalwood, cedar, smoke, dry texture',
+            families: ['woody', 'leather', 'smoky'],
+          },
+          {
+            id: 'flowers',
+            label: 'Flowers',
+            text: 'Petals, garden air, clean softness',
+            families: ['floral', 'green'],
+          },
+          {
+            id: 'fresh',
+            label: 'Fresh',
+            text: 'Citrus, water, herbs, bright morning',
+            families: ['citrus', 'aquatic', 'aromatic'],
+          },
+          {
+            id: 'warm',
+            label: 'Warm',
+            text: 'Amber, spice, sweetness, evening depth',
+            families: ['oriental', 'gourmand', 'spicy'],
+          },
         ],
       },
       {
@@ -71,10 +107,34 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Where will you wear it most?',
         helper: 'Occasion adjusts the tone: daytime clarity, evening warmth, or safe gifting.',
         choices: [
-          { id: 'daily', label: 'Daily', text: 'Office, daytime, close conversation', families: ['citrus', 'green', 'aromatic'], occasion: 'day' },
-          { id: 'evening', label: 'Evening', text: 'Dinner, dates, low light', families: ['amber', 'oriental', 'woody', 'leather'], occasion: 'evening' },
-          { id: 'gift', label: 'Gift', text: 'Easy to love, polished, not too sharp', families: ['floral', 'fresh', 'woody'], occasion: 'gift' },
-          { id: 'statement', label: 'Statement', text: 'Memorable entrance, stronger trail', families: ['smoky', 'leather', 'oud', 'gourmand'], occasion: 'evening' },
+          {
+            id: 'daily',
+            label: 'Daily',
+            text: 'Office, daytime, close conversation',
+            families: ['citrus', 'green', 'aromatic'],
+            occasion: 'day',
+          },
+          {
+            id: 'evening',
+            label: 'Evening',
+            text: 'Dinner, dates, low light',
+            families: ['amber', 'oriental', 'woody', 'leather'],
+            occasion: 'evening',
+          },
+          {
+            id: 'gift',
+            label: 'Gift',
+            text: 'Easy to love, polished, not too sharp',
+            families: ['floral', 'fresh', 'woody'],
+            occasion: 'gift',
+          },
+          {
+            id: 'statement',
+            label: 'Statement',
+            text: 'Memorable entrance, stronger trail',
+            families: ['smoky', 'leather', 'oud', 'gourmand'],
+            occasion: 'evening',
+          },
         ],
       },
       {
@@ -84,9 +144,19 @@ const COPY: Record<Lang, FinderCopy> = {
         helper: 'Choose the projection level you want before seeing the results.',
         choices: [
           { id: 'quiet', label: 'Quiet', text: 'Skin-close and refined', presence: 'quiet' },
-          { id: 'balanced', label: 'Balanced', text: 'Noticeable but controlled', presence: 'balanced' },
+          {
+            id: 'balanced',
+            label: 'Balanced',
+            text: 'Noticeable but controlled',
+            presence: 'balanced',
+          },
           { id: 'bold', label: 'Bold', text: 'Long-lasting and expressive', presence: 'bold' },
-          { id: 'surprise', label: 'Surprise me', text: 'Let the strongest match decide', presence: 'balanced' },
+          {
+            id: 'surprise',
+            label: 'Surprise me',
+            text: 'Let the strongest match decide',
+            presence: 'balanced',
+          },
         ],
       },
     ],
@@ -103,7 +173,8 @@ const COPY: Record<Lang, FinderCopy> = {
   ru: {
     eyebrow: 'Подбор аромата',
     title: 'Найдите аромат под ваш стиль',
-    intro: 'Ответьте на четыре коротких вопроса, и Labor подберет ароматы из каталога под настроение, шлейф и образ.',
+    intro:
+      'Ответьте на четыре коротких вопроса, и Labor подберет ароматы из каталога под настроение, шлейф и образ.',
     start: 'Начать подбор',
     progress: 'Вопрос {current} из {total}',
     back: 'Назад',
@@ -116,7 +187,8 @@ const COPY: Record<Lang, FinderCopy> = {
     add: 'В корзину',
     added: 'Добавлено',
     emptyTitle: 'Для подбора нужен каталог',
-    emptyBody: 'Сейчас не удалось загрузить достаточно товаров. Повторите, когда API каталога будет доступен.',
+    emptyBody:
+      'Сейчас не удалось загрузить достаточно товаров. Повторите, когда API каталога будет доступен.',
     steps: [
       {
         key: 'style',
@@ -124,7 +196,12 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Для кого этот аромат?',
         helper: 'Выберите ближайшее направление. Унисекс оставляет подбор шире.',
         choices: [
-          { id: 'unisex', label: 'Свободно', text: 'Гибкая сигнатура под любой гардероб', gender: 'unisex' },
+          {
+            id: 'unisex',
+            label: 'Свободно',
+            text: 'Гибкая сигнатура под любой гардероб',
+            gender: 'unisex',
+          },
           { id: 'men', label: 'Мужской', text: 'Чистый, древесный, уверенный', gender: 'men' },
           { id: 'women', label: 'Женский', text: 'Мягкий, сияющий, цветочный', gender: 'women' },
           { id: 'neutral', label: 'Без правила', text: 'Не учитывать пол, только ноты' },
@@ -136,10 +213,30 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'К какому миру вас тянет?',
         helper: 'Это главный сигнал для подбора.',
         choices: [
-          { id: 'woods', label: 'Дерево', text: 'Сандал, кедр, дым, сухая фактура', families: ['woody', 'leather', 'smoky'] },
-          { id: 'flowers', label: 'Цветы', text: 'Лепестки, садовый воздух, мягкость', families: ['floral', 'green'] },
-          { id: 'fresh', label: 'Свежесть', text: 'Цитрус, вода, травы, утро', families: ['citrus', 'aquatic', 'aromatic'] },
-          { id: 'warm', label: 'Тепло', text: 'Амбра, специи, сладость, вечер', families: ['oriental', 'gourmand', 'spicy'] },
+          {
+            id: 'woods',
+            label: 'Дерево',
+            text: 'Сандал, кедр, дым, сухая фактура',
+            families: ['woody', 'leather', 'smoky'],
+          },
+          {
+            id: 'flowers',
+            label: 'Цветы',
+            text: 'Лепестки, садовый воздух, мягкость',
+            families: ['floral', 'green'],
+          },
+          {
+            id: 'fresh',
+            label: 'Свежесть',
+            text: 'Цитрус, вода, травы, утро',
+            families: ['citrus', 'aquatic', 'aromatic'],
+          },
+          {
+            id: 'warm',
+            label: 'Тепло',
+            text: 'Амбра, специи, сладость, вечер',
+            families: ['oriental', 'gourmand', 'spicy'],
+          },
         ],
       },
       {
@@ -148,10 +245,34 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Где вы будете носить его чаще?',
         helper: 'Сценарий меняет тон: день, вечер или подарок.',
         choices: [
-          { id: 'daily', label: 'Каждый день', text: 'Офис, день, близкое общение', families: ['citrus', 'green', 'aromatic'], occasion: 'day' },
-          { id: 'evening', label: 'Вечер', text: 'Ужин, свидание, мягкий свет', families: ['amber', 'oriental', 'woody', 'leather'], occasion: 'evening' },
-          { id: 'gift', label: 'Подарок', text: 'Понятный, аккуратный, без резкости', families: ['floral', 'fresh', 'woody'], occasion: 'gift' },
-          { id: 'statement', label: 'Заявление', text: 'Запоминающийся вход и шлейф', families: ['smoky', 'leather', 'oud', 'gourmand'], occasion: 'evening' },
+          {
+            id: 'daily',
+            label: 'Каждый день',
+            text: 'Офис, день, близкое общение',
+            families: ['citrus', 'green', 'aromatic'],
+            occasion: 'day',
+          },
+          {
+            id: 'evening',
+            label: 'Вечер',
+            text: 'Ужин, свидание, мягкий свет',
+            families: ['amber', 'oriental', 'woody', 'leather'],
+            occasion: 'evening',
+          },
+          {
+            id: 'gift',
+            label: 'Подарок',
+            text: 'Понятный, аккуратный, без резкости',
+            families: ['floral', 'fresh', 'woody'],
+            occasion: 'gift',
+          },
+          {
+            id: 'statement',
+            label: 'Заявление',
+            text: 'Запоминающийся вход и шлейф',
+            families: ['smoky', 'leather', 'oud', 'gourmand'],
+            occasion: 'evening',
+          },
         ],
       },
       {
@@ -161,9 +282,19 @@ const COPY: Record<Lang, FinderCopy> = {
         helper: 'Выберите желаемую громкость перед результатами.',
         choices: [
           { id: 'quiet', label: 'Тихий', text: 'Близко к коже и спокойно', presence: 'quiet' },
-          { id: 'balanced', label: 'Баланс', text: 'Заметный, но контролируемый', presence: 'balanced' },
+          {
+            id: 'balanced',
+            label: 'Баланс',
+            text: 'Заметный, но контролируемый',
+            presence: 'balanced',
+          },
           { id: 'bold', label: 'Сильный', text: 'Стойкий и выразительный', presence: 'bold' },
-          { id: 'surprise', label: 'Удивите', text: 'Пусть решит лучший матч', presence: 'balanced' },
+          {
+            id: 'surprise',
+            label: 'Удивите',
+            text: 'Пусть решит лучший матч',
+            presence: 'balanced',
+          },
         ],
       },
     ],
@@ -180,7 +311,8 @@ const COPY: Record<Lang, FinderCopy> = {
   uz: {
     eyebrow: 'Atir tanlash',
     title: 'Uslubingizga mos atirni toping',
-    intro: 'Toʻrtta savolga javob bering, Labor katalogdan kayfiyat, vaziyat va ifor kuchiga mos atirlarni tanlaydi.',
+    intro:
+      'Toʻrtta savolga javob bering, Labor katalogdan kayfiyat, vaziyat va ifor kuchiga mos atirlarni tanlaydi.',
     start: 'Boshlash',
     progress: 'Savol {current}/{total}',
     back: 'Orqaga',
@@ -201,7 +333,12 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Bu atir kim uchun?',
         helper: 'Eng yaqin yo‘nalishni tanlang. Uniseks tanlovni kengroq qoldiradi.',
         choices: [
-          { id: 'unisex', label: 'Erkin', text: 'Har qanday obrazga mos signature', gender: 'unisex' },
+          {
+            id: 'unisex',
+            label: 'Erkin',
+            text: 'Har qanday obrazga mos signature',
+            gender: 'unisex',
+          },
           { id: 'men', label: 'Erkak', text: 'Toza, yog‘ochli, ishonchli', gender: 'men' },
           { id: 'women', label: 'Ayol', text: 'Yumshoq, yorqin, gulli', gender: 'women' },
           { id: 'neutral', label: 'Farqi yo‘q', text: 'Jins emas, notalar muhim' },
@@ -213,10 +350,30 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Qaysi dunyo sizga yaqin?',
         helper: 'Bu moslikdagi eng kuchli signal.',
         choices: [
-          { id: 'woods', label: 'Yog‘och', text: 'Sandal, kedr, tutun, quruq ohang', families: ['woody', 'leather', 'smoky'] },
-          { id: 'flowers', label: 'Gullar', text: 'Barglar, bog‘ havosi, yumshoqlik', families: ['floral', 'green'] },
-          { id: 'fresh', label: 'Fresh', text: 'Sitrus, suv, ko‘kat, tong', families: ['citrus', 'aquatic', 'aromatic'] },
-          { id: 'warm', label: 'Iliq', text: 'Ambra, ziravor, shirinlik, kech', families: ['oriental', 'gourmand', 'spicy'] },
+          {
+            id: 'woods',
+            label: 'Yog‘och',
+            text: 'Sandal, kedr, tutun, quruq ohang',
+            families: ['woody', 'leather', 'smoky'],
+          },
+          {
+            id: 'flowers',
+            label: 'Gullar',
+            text: 'Barglar, bog‘ havosi, yumshoqlik',
+            families: ['floral', 'green'],
+          },
+          {
+            id: 'fresh',
+            label: 'Fresh',
+            text: 'Sitrus, suv, ko‘kat, tong',
+            families: ['citrus', 'aquatic', 'aromatic'],
+          },
+          {
+            id: 'warm',
+            label: 'Iliq',
+            text: 'Ambra, ziravor, shirinlik, kech',
+            families: ['oriental', 'gourmand', 'spicy'],
+          },
         ],
       },
       {
@@ -225,10 +382,34 @@ const COPY: Record<Lang, FinderCopy> = {
         title: 'Uni ko‘proq qayerda ishlatasiz?',
         helper: 'Vaziyat atir ohangini aniqlaydi.',
         choices: [
-          { id: 'daily', label: 'Har kuni', text: 'Ofis, kunduz, yaqin suhbat', families: ['citrus', 'green', 'aromatic'], occasion: 'day' },
-          { id: 'evening', label: 'Kechki', text: 'Kechki ovqat, uchrashuv, past yorug‘lik', families: ['amber', 'oriental', 'woody', 'leather'], occasion: 'evening' },
-          { id: 'gift', label: 'Sovg‘a', text: 'Hammaga yoqimli, silliq, xavfsiz', families: ['floral', 'fresh', 'woody'], occasion: 'gift' },
-          { id: 'statement', label: 'Ta’sirli', text: 'Esda qoladigan kirish va shleyf', families: ['smoky', 'leather', 'oud', 'gourmand'], occasion: 'evening' },
+          {
+            id: 'daily',
+            label: 'Har kuni',
+            text: 'Ofis, kunduz, yaqin suhbat',
+            families: ['citrus', 'green', 'aromatic'],
+            occasion: 'day',
+          },
+          {
+            id: 'evening',
+            label: 'Kechki',
+            text: 'Kechki ovqat, uchrashuv, past yorug‘lik',
+            families: ['amber', 'oriental', 'woody', 'leather'],
+            occasion: 'evening',
+          },
+          {
+            id: 'gift',
+            label: 'Sovg‘a',
+            text: 'Hammaga yoqimli, silliq, xavfsiz',
+            families: ['floral', 'fresh', 'woody'],
+            occasion: 'gift',
+          },
+          {
+            id: 'statement',
+            label: 'Ta’sirli',
+            text: 'Esda qoladigan kirish va shleyf',
+            families: ['smoky', 'leather', 'oud', 'gourmand'],
+            occasion: 'evening',
+          },
         ],
       },
       {
@@ -238,9 +419,19 @@ const COPY: Record<Lang, FinderCopy> = {
         helper: 'Natijadan oldin kerakli ifor kuchini tanlang.',
         choices: [
           { id: 'quiet', label: 'Sokin', text: 'Teri yaqinida, nozik', presence: 'quiet' },
-          { id: 'balanced', label: 'Balans', text: 'Seziladi, lekin nazoratli', presence: 'balanced' },
+          {
+            id: 'balanced',
+            label: 'Balans',
+            text: 'Seziladi, lekin nazoratli',
+            presence: 'balanced',
+          },
           { id: 'bold', label: 'Kuchli', text: 'Uzoq turuvchi va ifodali', presence: 'bold' },
-          { id: 'surprise', label: 'Hayrat', text: 'Eng yaxshi moslik hal qilsin', presence: 'balanced' },
+          {
+            id: 'surprise',
+            label: 'Hayrat',
+            text: 'Eng yaxshi moslik hal qilsin',
+            presence: 'balanced',
+          },
         ],
       },
     ],
@@ -267,12 +458,21 @@ export default async function FindYourPerfumePage({ params }: Props) {
 
 async function loadCandidates(locale: string): Promise<FinderCandidate[]> {
   const requests: Promise<{ tag: string; products: ProductCardDTO[] }>[] = [
-    listProducts({ locale, sort: 'popular' }).then((res) => ({ tag: 'popular', products: res.data })),
+    listProducts({ locale, sort: 'popular' }).then((res) => ({
+      tag: 'popular',
+      products: res.data,
+    })),
     ...FAMILY_FILTERS.map((family) =>
-      listProducts({ locale, family, sort: 'popular' }).then((res) => ({ tag: `family:${family}`, products: res.data })),
+      listProducts({ locale, family, sort: 'popular' }).then((res) => ({
+        tag: `family:${family}`,
+        products: res.data,
+      })),
     ),
     ...GENDER_FILTERS.map((gender) =>
-      listProducts({ locale, gender, sort: 'popular' }).then((res) => ({ tag: `gender:${gender}`, products: res.data })),
+      listProducts({ locale, gender, sort: 'popular' }).then((res) => ({
+        tag: `gender:${gender}`,
+        products: res.data,
+      })),
     ),
   ];
 

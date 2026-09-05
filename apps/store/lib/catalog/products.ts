@@ -15,6 +15,15 @@ import type {
 
 export const PAGE_SIZE = 24;
 
+// Families the reclassification retired, pointed at what replaced them. A link
+// someone saved to `?family=oriental` would otherwise return an empty catalogue
+// with no explanation — the failure mode is silence, which is why it is worth
+// two lines. `oriental` was mostly amber and resin; `chypre` was the moss.
+const RETIRED_FAMILIES: Record<string, string> = {
+  oriental: 'balsamic',
+  chypre: 'mossy',
+};
+
 export type ProductSort = 'new' | 'popular' | 'price_asc' | 'price_desc';
 
 export interface ListProductsParams {
@@ -118,7 +127,7 @@ const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
   if (params.note || params.family) {
     const noteFilter: Prisma.NoteWhereInput = {};
     if (params.note) noteFilter.slug = params.note;
-    if (params.family) noteFilter.family = params.family;
+    if (params.family) noteFilter.family = RETIRED_FAMILIES[params.family] ?? params.family;
     where.notes = { some: { note: noteFilter } };
   }
   if (params.q) {
