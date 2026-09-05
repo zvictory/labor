@@ -25,17 +25,19 @@ const prisma = new PrismaClient();
 const APPLY = process.argv.includes('--apply');
 
 async function main() {
+  // The url shape differs between the two stores, so the key is matched inside
+  // it rather than against it: prod holds the full ActiveStorage url, the local
+  // mirror a rewritten path. Narrowed to the listed products first, so a
+  // `contains` scan runs over 39 rows and not the whole table.
   const rows = await prisma.productImage.findMany({
-    where: { url: { in: WRONG_PRODUCT_IMAGES.map((w) => w.url) } },
+    where: { product: { slug: { in: WRONG_PRODUCT_IMAGES.map((w) => w.slug) } } },
     select: { id: true, url: true, product: { select: { slug: true } } },
   });
-
-  const byPair = new Map(rows.map((r) => [`${r.product.slug} ${r.url}`, r.id]));
 
   const hit: { slug: string; shows: string; id: number }[] = [];
   const miss: string[] = [];
   for (const w of WRONG_PRODUCT_IMAGES) {
-    const id = byPair.get(`${w.slug} ${w.url}`);
+    const id = rows.find((r) => r.product.slug === w.slug && r.url.includes(w.storageKey))?.id;
     // Already gone, or the file moved to a different product. Either way the
     // entry no longer describes anything, and saying so is the point of a run.
     if (id === undefined) miss.push(w.slug);
