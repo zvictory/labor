@@ -42,8 +42,13 @@ docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 # down this way the first time --build was used. It is not restarted by the line
 # above because its own image and config did not change.
 docker compose -f infra/docker-compose.yml restart nginx
-docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:migrate
-docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear
+# `< /dev/null` on both, and it is load-bearing. This script reaches the server
+# as ssh's stdin, and `exec -T` reads stdin — so without it the rails command
+# swallows the rest of the script. Everything below these two lines silently
+# never ran, including the image prune that has been in this script from the
+# start, and the shell then reached EOF and exited 0.
+docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:migrate < /dev/null
+docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear < /dev/null
 docker image prune -f
 
 # Fail the deploy if the site is not actually answering. Everything above can
