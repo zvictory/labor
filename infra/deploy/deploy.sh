@@ -7,8 +7,8 @@ set -euo pipefail
 ENV="${1:-prod}"
 case "$ENV" in
   prod)
-    SSH_HOST="${LABOR_SSH_HOST:-labor.uz}"
-    SSH_USER="${LABOR_SSH_USER:-deploy}"
+    SSH_HOST="${LABOR_SSH_HOST:-labor-prod}"
+    SSH_USER="${LABOR_SSH_USER:-root}"
     REMOTE_DIR="/srv/labor"
     ;;
   staging)
@@ -29,11 +29,18 @@ set -euo pipefail
 cd "$REMOTE_DIR"
 git fetch --all --prune
 git reset --hard origin/main
-docker compose -f infra/docker-compose.yml pull
-docker compose -f infra/docker-compose.yml up -d --remove-orphans
+# Only postgres, redis and nginx come from a registry. The other seven services
+# are built from this checkout, so --ignore-buildable keeps pull from warning
+# about images that will never exist, and --build is what actually deploys the
+# code: without it `up -d` sees the same compose definition, leaves the running
+# containers alone, and the deploy reports success having shipped nothing.
+docker compose -f infra/docker-compose.yml pull --ignore-buildable
+docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:migrate
 docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear
 docker image prune -f
+echo "--> now running:"
+git log --oneline -1
 EOF
 
 echo "==> Deploy to $ENV complete"
