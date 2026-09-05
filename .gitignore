@@ -80,7 +80,14 @@ labor_ssh_configs/
 # git. Brand logos and perfumer portraits are small enough to keep.
 apps/store/prisma/dev.db
 apps/store/prisma/*.db-journal
-apps/store/public/products/
+# The contents rather than the directory itself, so the exception below can be
+# reached — git will not descend into an excluded directory.
+apps/store/public/products/*
+# …except the replacements for photographs that showed the wrong perfume. These
+# are 34 files, ~830 KB, and the whole point of them is that they do not depend
+# on a re-import or on a third party staying up. See
+# apps/store/lib/catalog/wrong-product-images.ts.
+!apps/store/public/products/fixed/
 apps/store/design-shots/
 
 # Store app local storage cache
