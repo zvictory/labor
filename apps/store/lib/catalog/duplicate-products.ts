@@ -50,6 +50,7 @@ export const DUPLICATE_PRODUCT_GROUPS: readonly DuplicateProductGroup[] = [
     archive: ['black-pepper-amber-neroli-2'],
   },
   { name: 'Bleu de Chanel', keep: 'blue', archive: ['bleu-de'] },
+  { name: 'Black Orchid', keep: 'black-orchid', archive: ['black-orchid-2'] },
   { name: 'Bois Impérial', keep: 'bois-imperial', archive: ['bois-imp-rial'] },
   { name: 'Bombshell', keep: 'bombshell', archive: ['bombshell-2'] },
   { name: 'California Dream', keep: 'california-dream', archive: ['california-dream-2'] },

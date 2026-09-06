@@ -133,6 +133,7 @@ export const PRODUCT_NAME_FIXES: readonly ProductNameFix[] = [
   { slug: 'lost-cherry-5', from: 'lost cherry', to: 'Lost Cherry' },
   // "mixture of fragrant substances" is what the customs form calls it.
   { slug: 'lost-cherry-3', from: 'смесь душистых веществ LOST CHERRY', to: 'Lost Cherry' },
+  { slug: 'black-orchid-2', from: 'смесь душистых веществ Black orchid', to: 'Black Orchid' },
 
   // ---- accents the scrape dropped ----
   // Each of these already sits beside a row that spells it correctly, except
