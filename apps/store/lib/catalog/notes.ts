@@ -7,6 +7,12 @@ import type { NoteDTO } from '@/lib/catalog/types';
 
 export { NOTE_ICON_FILES } from './media-manifest';
 
+// Counts and membership are over ACTIVE products only, the way the catalogue
+// counts them. Without the filter /brands said "Tom Ford · 26 ароматов" while
+// /catalog?brand=tom-ford found 18 — archived duplicates and drafts were still
+// counted here. The ordering below is still by the unfiltered count: Prisma
+// cannot filter the relation count it sorts on, and the difference moves a row
+// by a place or two, which is not worth fetching every row to sort in memory.
 const noteSelect = {
   slug: true,
   name: true,
@@ -23,7 +29,7 @@ const noteSelect = {
       },
     },
   },
-  _count: { select: { productNotes: true } },
+  _count: { select: { productNotes: { where: { product: { status: 'active' } } } } },
 } satisfies Prisma.NoteSelect;
 
 type NoteRow = {
@@ -88,7 +94,7 @@ const FALLBACK_NOTES: NoteDTO[] = [
 export const getNotes = async (locale: string, options?: { take?: number }): Promise<NoteDTO[]> => {
   try {
     const rows = await db.note.findMany({
-      where: { productNotes: { some: {} } },
+      where: { productNotes: { some: { product: { status: 'active' } } } },
       orderBy: [{ productNotes: { _count: 'desc' } }, { slug: 'asc' }],
       take: options?.take,
       select: noteSelect,

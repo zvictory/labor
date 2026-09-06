@@ -7,6 +7,12 @@ import type { PerfumerDTO } from '@/lib/catalog/types';
 
 export { PERFUMER_IMAGES } from './media-manifest';
 
+// Counts and membership are over ACTIVE products only, the way the catalogue
+// counts them. Without the filter /brands said "Tom Ford · 26 ароматов" while
+// /catalog?brand=tom-ford found 18 — archived duplicates and drafts were still
+// counted here. The ordering below is still by the unfiltered count: Prisma
+// cannot filter the relation count it sorts on, and the difference moves a row
+// by a place or two, which is not worth fetching every row to sort in memory.
 const perfumerSelect = {
   slug: true,
   name: true,
@@ -22,7 +28,7 @@ const perfumerSelect = {
       },
     },
   },
-  _count: { select: { productPerfumers: true } },
+  _count: { select: { productPerfumers: { where: { product: { status: 'active' } } } } },
 } satisfies Prisma.PerfumerSelect;
 
 type PerfumerRow = {
@@ -99,7 +105,7 @@ export const getPerfumers = async (locale: string): Promise<PerfumerDTO[]> => {
     // a single decant, and alphabetical order said they were. Weight first,
     // name only to break ties. `some: {}` drops the noses credited on nothing.
     const rows = await db.perfumer.findMany({
-      where: { productPerfumers: { some: {} } },
+      where: { productPerfumers: { some: { product: { status: 'active' } } } },
       orderBy: [{ productPerfumers: { _count: 'desc' } }, { name: 'asc' }],
       select: perfumerSelect,
     });
