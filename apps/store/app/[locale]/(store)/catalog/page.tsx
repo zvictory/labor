@@ -6,6 +6,8 @@ import { ProductCard } from '@/components/catalog/product-card';
 import { listProducts, PAGE_SIZE, type ProductSort } from '@/lib/catalog/products';
 import { getNotes } from '@/lib/catalog/notes';
 import { getBrands } from '@/lib/catalog/brands';
+import { FAMILY_FILTERS, type NoteFamily } from '@/lib/catalog/note-families';
+import type { Gender } from '@/lib/catalog/types';
 
 type Props = {
   params: Promise<{ locale: Locale }>;
@@ -37,10 +39,124 @@ const SORT_COPY: Record<Lang, Record<ProductSort, string>> = {
   uz: { new: 'Yangi', popular: 'Ommabop', price_asc: 'Arzon', price_desc: 'Qimmat' },
 };
 
-const FILTERS_COPY: Record<Lang, { notes: string; brands: string; all: string; clear: string }> = {
-  ru: { notes: 'Ноты', brands: 'Бренды', all: 'Все', clear: 'Сбросить' },
-  en: { notes: 'Notes', brands: 'Brands', all: 'All', clear: 'Clear' },
-  uz: { notes: 'Notalar', brands: 'Brendlar', all: 'Barchasi', clear: 'Tozalash' },
+const FILTERS_COPY: Record<
+  Lang,
+  {
+    notes: string;
+    brands: string;
+    families: string;
+    genders: string;
+    all: string;
+    clear: string;
+    sort: string;
+    allBrands: string;
+    allNotes: string;
+  }
+> = {
+  ru: {
+    notes: 'Ноты',
+    brands: 'Бренды',
+    families: 'Семейство',
+    genders: 'Для кого',
+    all: 'Все',
+    clear: 'Сбросить',
+    sort: 'Сортировка',
+    allBrands: 'Все бренды',
+    allNotes: 'Все ноты',
+  },
+  en: {
+    notes: 'Notes',
+    brands: 'Brands',
+    families: 'Family',
+    genders: 'For',
+    all: 'All',
+    clear: 'Clear',
+    sort: 'Sort',
+    allBrands: 'All brands',
+    allNotes: 'All notes',
+  },
+  uz: {
+    notes: 'Notalar',
+    brands: 'Brendlar',
+    families: 'Oila',
+    genders: 'Kim uchun',
+    all: 'Barchasi',
+    clear: 'Tozalash',
+    sort: 'Saralash',
+    allBrands: 'Barcha brendlar',
+    allNotes: 'Barcha notalar',
+  },
+};
+
+// The olfactive families and the gender rails. `family` and `gender` have been
+// parsed and passed to listProducts since the catalogue was written, but no
+// control ever set them — the Brandbook rebuild replaced the mobile drawer that
+// carried them with the server-rendered rails and did not bring these two over.
+// So a visitor could only narrow 541 fragrances by note or brand.
+//
+// Every family is spelled out even though FAMILY_FILTERS offers nine, so adding
+// a tenth is a type error here rather than a slug printed raw on the page.
+const FAMILY_COPY: Record<Lang, Record<NoteFamily, string>> = {
+  ru: {
+    floral: 'Цветочные',
+    woody: 'Древесные',
+    gourmand: 'Гурманские',
+    fruity: 'Фруктовые',
+    citrus: 'Цитрусовые',
+    spicy: 'Пряные',
+    aromatic: 'Ароматические',
+    balsamic: 'Смолистые',
+    green: 'Зелёные',
+    musky: 'Мускусные',
+    aquatic: 'Водные',
+    smoky: 'Дымные',
+    mineral: 'Минеральные',
+    mossy: 'Мшистые',
+    leather: 'Кожаные',
+  },
+  en: {
+    floral: 'Floral',
+    woody: 'Woody',
+    gourmand: 'Gourmand',
+    fruity: 'Fruity',
+    citrus: 'Citrus',
+    spicy: 'Spicy',
+    aromatic: 'Aromatic',
+    balsamic: 'Balsamic',
+    green: 'Green',
+    musky: 'Musky',
+    aquatic: 'Aquatic',
+    smoky: 'Smoky',
+    mineral: 'Mineral',
+    mossy: 'Mossy',
+    leather: 'Leather',
+  },
+  uz: {
+    floral: 'Gulli',
+    woody: 'Yogʻochli',
+    gourmand: 'Shirin',
+    fruity: 'Mevali',
+    citrus: 'Sitrusli',
+    spicy: 'Ziravorli',
+    aromatic: 'Aromatik',
+    balsamic: 'Balzamik',
+    green: 'Yashil',
+    musky: 'Muskusli',
+    aquatic: 'Suvli',
+    smoky: 'Tutunli',
+    mineral: 'Mineral',
+    mossy: 'Moxli',
+    leather: 'Charmli',
+  },
+};
+
+// Ordered by how much of the shop each covers: 436 unisex, 53 women, 52 men.
+const GENDER_FILTERS: readonly Gender[] = ['unisex', 'women', 'men'];
+
+const GENDER_COPY: Record<Lang, Record<Gender, string>> = {
+  ru: { unisex: 'Унисекс', women: 'Женские', men: 'Мужские' },
+  en: { unisex: 'Unisex', women: 'Women', men: 'Men' },
+  uz: { unisex: 'Uniseks', women: 'Ayollar', men: 'Erkaklar' },
 };
 
 const first = (v: string | string[] | undefined): string | undefined =>
@@ -119,14 +235,17 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           </p>
         </div>
 
-        {/* Sort — links (server-friendly, no client state) */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Sort — links (server-friendly, no client state). The group carries a
+            name and the active link is marked, so the pair is announced as a
+            sort control rather than as two loose links. */}
+        <div role="group" aria-label={fc.sort} className="flex flex-wrap items-center gap-2">
           {SHOWN_SORTS.map((s) => {
             const isActive = s === sort;
             return (
               <Link
                 key={s}
                 href={buildHref(locale, active, { sort: s === 'new' ? null : s, page: null })}
+                aria-current={isActive ? 'true' : undefined}
                 className={`border px-3 py-1.5 text-xs tracking-wider uppercase transition-colors ${
                   isActive
                     ? 'border-brass bg-brass text-bone'
@@ -143,6 +262,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       {/* Filter rails */}
       <div className="border-border mb-10 space-y-4 border-b pb-8">
         <FilterRow
+          id="filter-notes"
           label={fc.notes}
           allLabel={fc.all}
           allActive={!note}
@@ -153,8 +273,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             active: n.slug === note,
             href: buildHref(locale, active, { note: n.slug, page: null }),
           }))}
+          moreHref={`/${locale}/notes`}
+          moreLabel={fc.allNotes}
         />
         <FilterRow
+          id="filter-brands"
           label={fc.brands}
           allLabel={fc.all}
           allActive={!brand}
@@ -164,6 +287,34 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             label: br.name,
             active: br.slug === brand,
             href: buildHref(locale, active, { brand: br.slug, page: null }),
+          }))}
+          moreHref={`/${locale}/brands`}
+          moreLabel={fc.allBrands}
+        />
+        <FilterRow
+          id="filter-families"
+          label={fc.families}
+          allLabel={fc.all}
+          allActive={!family}
+          allHref={buildHref(locale, active, { family: null, page: null })}
+          items={FAMILY_FILTERS.map((f) => ({
+            key: f,
+            label: FAMILY_COPY[lang][f],
+            active: f === family,
+            href: buildHref(locale, active, { family: f, page: null }),
+          }))}
+        />
+        <FilterRow
+          id="filter-genders"
+          label={fc.genders}
+          allLabel={fc.all}
+          allActive={!gender}
+          allHref={buildHref(locale, active, { gender: null, page: null })}
+          items={GENDER_FILTERS.map((g) => ({
+            key: g,
+            label: GENDER_COPY[lang][g],
+            active: g === gender,
+            href: buildHref(locale, active, { gender: g, page: null }),
           }))}
         />
         {hasActiveFilter && (
@@ -243,29 +394,63 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   );
 }
 
+// A rail is a group of links, not a loose run of them: the label that reads as
+// its heading on screen names the group for a screen reader too, and the pill
+// standing for the view you are looking at says so.
+//
+// `moreHref` is the way past the rail. Brands and notes are cut to twelve, out
+// of 243 and 418 — without it, everything below the twelfth is unreachable from
+// the catalogue at any screen width.
 function FilterRow({
+  id,
   label,
   allLabel,
   allActive,
   allHref,
   items,
+  moreHref,
+  moreLabel,
 }: {
+  id: string;
   label: string;
   allLabel: string;
   allActive: boolean;
   allHref: string;
   items: { key: string; label: string; active: boolean; href: string }[];
+  moreHref?: string;
+  moreLabel?: string;
 }) {
   if (items.length === 0) return null;
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-ink-muted text-micro mr-1 w-16 shrink-0 font-bold tracking-[0.2em] uppercase dark:text-stone-400">
+    <div
+      role="group"
+      aria-labelledby={id}
+      className="flex flex-col gap-2 sm:flex-row sm:items-baseline"
+    >
+      {/* The label is a fixed column from `sm` up so the four rails read as one
+          grid. It sits above the pills on a phone instead: at 64px it clipped
+          СЕМЕЙСТВО into the first pill, and a column wide enough for Russian
+          would eat a quarter of a 375px screen. */}
+      <span
+        id={id}
+        className="text-ink-muted text-micro font-bold tracking-[0.2em] uppercase sm:mr-3 sm:w-24 sm:shrink-0 dark:text-stone-400"
+      >
         {label}
       </span>
-      <Pill label={allLabel} active={allActive} href={allHref} />
-      {items.map((it) => (
-        <Pill key={it.key} label={it.label} active={it.active} href={it.href} />
-      ))}
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill label={allLabel} active={allActive} href={allHref} />
+        {items.map((it) => (
+          <Pill key={it.key} label={it.label} active={it.active} href={it.href} />
+        ))}
+        {moreHref && moreLabel && (
+          <Link
+            href={moreHref}
+            className="text-muted-foreground text-label hover:text-foreground ml-1 font-mono tracking-[0.08em] underline underline-offset-4"
+          >
+            {moreLabel} →
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
@@ -284,6 +469,7 @@ function Pill({ label, active, href }: { label: string; active: boolean; href: s
   return (
     <Link
       href={href}
+      aria-current={active ? 'true' : undefined}
       className={`text-label border px-3 py-1 font-mono tracking-[0.08em] transition-colors ${
         active
           ? 'border-foreground bg-foreground text-background'
