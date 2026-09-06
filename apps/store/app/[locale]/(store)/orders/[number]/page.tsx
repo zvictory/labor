@@ -5,6 +5,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
 import { getOrderByNumber, type OrderStatus, type OrderPaymentStatus } from '@/lib/orders/queries';
+import { TELEGRAM_URL } from '@/lib/telegram';
 
 type Props = {
   params: Promise<{ locale: Locale; number: string }>;
@@ -14,9 +15,6 @@ type Lang = 'ru' | 'uz' | 'en';
 const SUPPORTED: readonly Lang[] = ['ru', 'uz', 'en'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
-
-const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
-const TELEGRAM_URL = `https://t.me/${botUsername}`;
 
 const COPY: Record<
   Lang,

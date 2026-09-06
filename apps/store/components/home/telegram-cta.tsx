@@ -1,12 +1,11 @@
 import { Send, ArrowRight } from 'lucide-react';
 
+import { TELEGRAM_URL } from '@/lib/telegram';
+
 // Static Telegram mini-app CTA. Reuses the live bot link. Ported from
 // apps/web/src/components/home/telegram-cta.tsx.
 
 type Lang = 'en' | 'ru' | 'uz';
-
-const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
-const TELEGRAM_URL = `https://t.me/${botUsername}`;
 
 const COPY: Record<Lang, { eyebrow: string; headline: string; sub: string; cta: string }> = {
   ru: {

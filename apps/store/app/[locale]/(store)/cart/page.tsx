@@ -6,6 +6,7 @@ import { type Locale } from '@/i18n/config';
 import { readCart } from '@/lib/cart/cart';
 import { formatUzs } from '@/lib/money';
 import { CartLineControls } from '@/components/cart/cart-line-controls';
+import { TELEGRAM_URL } from '@/lib/telegram';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -14,8 +15,6 @@ const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
 const toLang = (locale: string): Lang =>
   (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
 
-const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
-const TELEGRAM_URL = `https://t.me/${botUsername}`;
 const ORDER_COPY: Record<Lang, string> = {
   ru: 'Заказать в Telegram',
   en: 'Order on Telegram',

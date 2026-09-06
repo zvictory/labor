@@ -41,6 +41,13 @@ export function SiteHeader({ locale }: { locale: string }) {
           <Link href={href('/perfumers')} className="hover:underline hover:underline-offset-4">
             {t('perfumers')}
           </Link>
+          {/* 450 lines of working guided search that nothing linked to. */}
+          <Link
+            href={href('/find-your-perfume')}
+            className="hover:underline hover:underline-offset-4"
+          >
+            {t('finder')}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">

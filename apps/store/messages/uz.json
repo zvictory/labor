@@ -9,6 +9,7 @@
     "notes": "Notalar",
     "perfumers": "Parfyumerlar",
     "finder": "Tanlash",
+    "delivery": "Yetkazish",
     "campaigns": "Aksiyalar",
     "wishlist": "Sevimlilar",
     "cart": "Savat",
@@ -403,5 +404,24 @@
     "loading": "Yuklanmoqda…",
     "empty": "Sevimlilar roʻyxati boʻsh.",
     "browse": "Katalogga oʻtish"
+  },
+  "delivery": {
+    "title": "Yetkazib berish va toʻlov",
+    "subtitle": "Buyurtma sizga qanday yetib boradi va nima bilan toʻlash mumkin.",
+    "shippingTitle": "Yetkazib berish",
+    "tashkentTerm": "Toshkent",
+    "tashkentBody": "Shu kuni.",
+    "regionsTerm": "Oʻzbekiston viloyatlari",
+    "regionsBody": "2–4 kun.",
+    "paymentTitle": "Toʻlov",
+    "paymentBody": "Payme, Click, karta yoki yetkazishda naqd.",
+    "authenticityTitle": "Original",
+    "authenticityBody": "Toʻgʻridan-toʻgʻri yetkazib berish va har partiyani tekshirish.",
+    "helpTitle": "Savolingiz bormi?",
+    "helpBody": "Telegramda yozing — javob beramiz va tanlashga yordam beramiz. Toʻliq flakondan oldin hidni sinab koʻrish uchun dekant olishingiz mumkin.",
+    "helpCta": "Telegramda yozish"
+  },
+  "footer": {
+    "telegram": "Telegramda mini-ilovani oching:"
   }
 }

@@ -13,12 +13,11 @@ import { getProduct } from '@/lib/catalog/products';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
 import type { Gender } from '@/lib/catalog/types';
+import { TELEGRAM_URL } from '@/lib/telegram';
 
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
 };
-
-const TELEGRAM_URL = 'https://t.me/labor_uz_bot';
 
 export default async function ProductPage({ params }: Props) {
   const { locale, slug } = await params;

@@ -1,11 +1,16 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
+import { TELEGRAM_HANDLE, TELEGRAM_URL } from '@/lib/telegram';
+
 // Footer chrome ported from apps/web. Server-safe (useTranslations in RSC). All
-// internal links are locale-prefixed; the Telegram link is the live bot handle.
+// internal links are locale-prefixed; the Telegram handle comes from
+// lib/telegram so it cannot drift from the one production is configured with —
+// this block used to hardcode @labor_uz_bot, which is not the shop's bot.
 export function SiteFooter({ locale }: { locale: string }) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
+  const f = useTranslations('footer');
   const href = (path: string) => `/${locale}${path}`;
 
   return (
@@ -33,17 +38,22 @@ export function SiteFooter({ locale }: { locale: string }) {
                 {t('perfumers')}
               </Link>
             </li>
+            <li>
+              <Link href={href('/delivery')} className="hover:underline hover:underline-offset-4">
+                {t('delivery')}
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="text-ink-muted mb-3 text-xs tracking-widest uppercase">Telegram</h4>
           <p className="text-ink-muted text-sm">
-            Open the mini-app in Telegram:{' '}
+            {f('telegram')}{' '}
             <a
-              href="https://t.me/labor_uz_bot"
+              href={TELEGRAM_URL}
               className="text-ink font-medium hover:underline hover:underline-offset-4"
             >
-              @labor_uz_bot
+              {TELEGRAM_HANDLE}
             </a>
           </p>
         </div>

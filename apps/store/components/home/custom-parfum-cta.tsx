@@ -1,13 +1,12 @@
 import { Droplets, ArrowRight } from 'lucide-react';
 
+import { TELEGRAM_URL } from '@/lib/telegram';
+
 // Static marketing section. No custom-parfum backend route/model yet, so the CTA
 // hands off to the Telegram bot. Ported from
 // apps/web/src/components/home/custom-parfum-cta.tsx.
 
 type Lang = 'en' | 'ru' | 'uz';
-
-const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
-const TELEGRAM_URL = `https://t.me/${botUsername}`;
 
 const COPY: Record<
   Lang,

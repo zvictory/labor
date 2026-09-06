@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { ShieldCheck, Truck, CreditCard, Droplets } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-// Static trust / authenticity strip. The delivery card links to the (future)
-// /delivery route; the rest are informational. Ported from
+// Static trust / authenticity strip. The delivery and payment cards link to
+// /delivery, which restates exactly these claims; the rest are informational.
+// Ported from
 // apps/web/src/components/home/trust-strip.tsx.
 
 type Lang = 'en' | 'ru' | 'uz';

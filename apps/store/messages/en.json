@@ -9,6 +9,7 @@
     "notes": "Notes",
     "perfumers": "Perfumers",
     "finder": "Finder",
+    "delivery": "Delivery",
     "campaigns": "Campaigns",
     "wishlist": "Wishlist",
     "cart": "Cart",
@@ -403,5 +404,24 @@
     "loading": "Loading…",
     "empty": "Your wishlist is empty.",
     "browse": "Browse catalog"
+  },
+  "delivery": {
+    "title": "Delivery & payment",
+    "subtitle": "How the order reaches you, and what you can pay with.",
+    "shippingTitle": "Delivery",
+    "tashkentTerm": "Tashkent",
+    "tashkentBody": "Same day.",
+    "regionsTerm": "Regions of Uzbekistan",
+    "regionsBody": "2–4 days.",
+    "paymentTitle": "Payment",
+    "paymentBody": "Payme, Click, card, or cash on delivery.",
+    "authenticityTitle": "Authenticity",
+    "authenticityBody": "Direct supply and authenticity checks on every batch.",
+    "helpTitle": "Still have a question?",
+    "helpBody": "Message us on Telegram — we answer and help you choose. You can take a decant to try a scent before committing to the full bottle.",
+    "helpCta": "Message on Telegram"
+  },
+  "footer": {
+    "telegram": "Open the mini-app in Telegram:"
   }
 }

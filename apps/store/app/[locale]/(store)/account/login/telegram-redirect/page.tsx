@@ -3,15 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
+import { TELEGRAM_BOT_USERNAME, TELEGRAM_URL } from '@/lib/telegram';
+
 export default function TelegramRedirectPage() {
   const params = useParams();
   const locale = (params?.locale as string) || 'ru';
-  const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'laborparfum_bot';
   const [countdown, setCountdown] = useState(4);
 
   useEffect(() => {
     // Attempt protocol launch immediately
-    window.location.href = `tg://resolve?domain=${botUsername}&start=login`;
+    window.location.href = `tg://resolve?domain=${TELEGRAM_BOT_USERNAME}&start=login`;
 
     const interval = setInterval(() => {
       setCountdown((prev) => {
@@ -29,7 +30,7 @@ export default function TelegramRedirectPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [botUsername]);
+  }, []);
 
   const copy = {
     ru: {
@@ -57,21 +58,17 @@ export default function TelegramRedirectPage() {
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-white p-8 text-center shadow-xl dark:bg-zinc-950">
-        <h1 className="font-display text-2xl tracking-widest text-brass uppercase">
-          {copy.title}
-        </h1>
-        <p className="mt-4 text-base font-medium text-ink dark:text-bone">
-          {copy.status}
-        </p>
-        <p className="mt-2 text-xs text-ink-muted dark:text-stone-400">
+      <div className="border-border w-full max-w-sm rounded-lg border bg-white p-8 text-center shadow-xl dark:bg-zinc-950">
+        <h1 className="font-display text-brass text-2xl tracking-widest uppercase">{copy.title}</h1>
+        <p className="text-ink dark:text-bone mt-4 text-base font-medium">{copy.status}</p>
+        <p className="text-ink-muted mt-2 text-xs dark:text-stone-400">
           {countdown > 0 ? copy.autoClose(countdown) : ''}
         </p>
         <div className="mt-6 flex flex-col gap-3">
           <a
-            href={`https://t.me/${botUsername}?start=login`}
+            href={`${TELEGRAM_URL}?start=login`}
             target="_self"
-            className="inline-flex h-11 w-full items-center justify-center bg-ink px-6 text-xs font-semibold uppercase tracking-widest text-bone transition-colors hover:bg-brass dark:bg-bone dark:text-ink dark:hover:bg-brass dark:hover:text-ink"
+            className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink dark:hover:bg-brass dark:hover:text-ink inline-flex h-11 w-full items-center justify-center px-6 text-xs font-semibold tracking-widest uppercase transition-colors"
           >
             {copy.manualBtn}
           </a>
@@ -83,7 +80,7 @@ export default function TelegramRedirectPage() {
                 // fallback if script cannot close
               }
             }}
-            className="text-xs text-ink-muted underline underline-offset-4 hover:text-ink dark:text-stone-400 dark:hover:text-bone"
+            className="text-ink-muted hover:text-ink dark:hover:text-bone text-xs underline underline-offset-4 dark:text-stone-400"
           >
             {copy.closeBtn}
           </button>
