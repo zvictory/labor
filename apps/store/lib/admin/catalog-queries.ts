@@ -9,6 +9,7 @@ import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
+import { toPyramidLayer } from '@/lib/catalog/types';
 import type { LocaleText, PyramidLayer } from '@/lib/catalog/types';
 
 export const ADMIN_PAGE_SIZE = 20;
@@ -157,9 +158,6 @@ export interface AdminProduct {
   images: AdminProductImage[];
 }
 
-const isPyramidLayer = (v: string): v is PyramidLayer =>
-  v === 'top' || v === 'middle' || v === 'base';
-
 export const getAdminProduct = async (id: number): Promise<AdminProduct | null> => {
   const product = await db.product.findUnique({
     where: { id },
@@ -219,12 +217,12 @@ export const getAdminProduct = async (id: number): Promise<AdminProduct | null> 
     concentration: product.fragrance?.concentration ?? '',
     brandId: product.fragrance?.brandId ?? null,
     notes: product.notes
-      .filter((n) => isPyramidLayer(n.pyramidLayer))
+      .filter((n) => toPyramidLayer(n.pyramidLayer) !== undefined)
       .map((n) => ({
         id: n.id,
         noteId: n.noteId,
         noteName: resolveLocaleText(n.note.name, 'ru'),
-        pyramidLayer: n.pyramidLayer as PyramidLayer,
+        pyramidLayer: toPyramidLayer(n.pyramidLayer) as PyramidLayer,
         position: n.position,
       })),
     accords: product.accords.map((a) => ({

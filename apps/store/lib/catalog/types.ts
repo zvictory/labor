@@ -9,6 +9,21 @@ export type LocaleText = { ru: string; uz?: string; uzc?: string; en?: string };
 /// Pyramid layer of a fragrance note.
 export type PyramidLayer = 'top' | 'middle' | 'base';
 
+/**
+ * The stored layer, normalised.
+ *
+ * The import writes the middle layer as `heart` and the admin form writes it as
+ * `middle`, and every reader accepted only the second — so all 1163 heart rows
+ * were dropped and the middle of the pyramid was missing from every product
+ * page and from the admin editor. Both spellings are read here; `middle` is
+ * what gets written.
+ */
+export const toPyramidLayer = (value: string): PyramidLayer | undefined => {
+  if (value === 'top' || value === 'base') return value;
+  if (value === 'middle' || value === 'heart') return 'middle';
+  return undefined;
+};
+
 /// Gender targeting of a fragrance.
 export type Gender = 'men' | 'women' | 'unisex';
 
@@ -104,6 +119,7 @@ export interface ProductDetailDTO {
   images: string[];
   gender: Gender;
   concentration?: string;
+  release_year?: number | null;
   volume_ml?: number | null;
   avg_rating: number;
   /** Imported averages on a 0-10 scale — shown as ticks in the full record. */

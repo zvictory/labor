@@ -14,6 +14,7 @@ import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
 import type { Gender } from '@/lib/catalog/types';
 import { TELEGRAM_URL } from '@/lib/telegram';
+import { describeProduct } from '@/lib/catalog/product-description';
 
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -143,11 +144,12 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </div>
 
-          {product.description && (
-            <p className="text-muted-foreground max-w-prose font-serif text-base leading-relaxed">
-              {product.description}
-            </p>
-          )}
+          {/* Built from the record rather than read out of it: the stored
+              description is Fragrantica's English template, filed under `ru` as
+              well, and 133 products had none at all. */}
+          <p className="text-muted-foreground max-w-prose font-serif text-base leading-relaxed">
+            {describeProduct(product, locale)}
+          </p>
 
           {/* Main Accords Bars */}
           {product.accords.length > 0 && <AccordBarList accords={product.accords} />}

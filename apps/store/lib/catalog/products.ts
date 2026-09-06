@@ -10,8 +10,8 @@ import type {
   ProductDetailDTO,
   ProductNoteDTO,
   ProductPerfumerDTO,
-  PyramidLayer,
 } from '@/lib/catalog/types';
+import { toPyramidLayer } from '@/lib/catalog/types';
 
 export const PAGE_SIZE = 24;
 
@@ -186,9 +186,6 @@ export const listProducts = async (params: ListProductsParams): Promise<ListProd
 
 // ── product detail ─────────────────────────────────────────────────────────────
 
-const isPyramidLayer = (value: string): value is PyramidLayer =>
-  value === 'top' || value === 'middle' || value === 'base';
-
 const normalizeGender = (value: string | undefined): Gender =>
   value === 'men' || value === 'women' || value === 'unisex' ? value : 'unisex';
 
@@ -222,6 +219,7 @@ export const getProduct = async (
         select: {
           gender: true,
           concentration: true,
+          releaseYear: true,
           volumeMl: true,
           avgRating: true,
           avgLongevity: true,
@@ -268,8 +266,9 @@ export const getProduct = async (
 
   const notes: NotePyramidDTO = { top: [], middle: [], base: [] };
   for (const pn of product.notes) {
-    if (isPyramidLayer(pn.pyramidLayer)) {
-      notes[pn.pyramidLayer].push(toProductNote(pn.note, locale));
+    const layer = toPyramidLayer(pn.pyramidLayer);
+    if (layer) {
+      notes[layer].push(toProductNote(pn.note, locale));
     }
   }
 
@@ -310,6 +309,7 @@ export const getProduct = async (
     images: product.images.map((img) => img.url),
     gender: normalizeGender(fragrance?.gender),
     ...(fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
+    release_year: fragrance?.releaseYear ?? null,
     volume_ml: fragrance?.volumeMl ?? null,
     avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
     avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
