@@ -3,11 +3,7 @@ import animate from 'tailwindcss-animate';
 
 const config: Config = {
   darkMode: ['class'],
-  content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './lib/**/*.{ts,tsx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   theme: {
     container: {
       center: true,
@@ -22,8 +18,15 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        // Brandbook Edition 02: three faces, three jobs.
-        sans: ['var(--font-archivo)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        // Brandbook Edition 02: three faces, three jobs. The second entry is the
+        // Cyrillic companion (lib/fonts.ts) — Latin never reaches it.
+        sans: [
+          'var(--font-archivo)',
+          'var(--font-golos-text)',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
         mono: [
           'var(--font-jetbrains-mono)',
           'ui-monospace',
@@ -31,11 +34,17 @@ const config: Config = {
           'Menlo',
           'monospace',
         ],
-        serif: ['var(--font-newsreader)', 'Georgia', 'serif'],
+        serif: ['var(--font-newsreader)', 'var(--font-literata)', 'Georgia', 'serif'],
         // `display` is what ~35 headings already carry. It now resolves to
         // Archivo, which is what the brandbook wants for headings, so those
         // files did not have to be touched one by one.
-        display: ['var(--font-archivo)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: [
+          'var(--font-archivo)',
+          'var(--font-golos-text)',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
         // Story Script survives here alone: wordmark and perfumer's signature.
         logo: ['var(--font-story-script)', 'Georgia', 'serif'],
       },

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { getLocale } from 'next-intl/server';
 
 import { localeHtmlLang, defaultLocale, type Locale } from '@/i18n/config';
-import { archivo, jetbrainsMono, newsreader, storyScript } from '@/lib/fonts';
+import { archivo, golosText, jetbrainsMono, literata, newsreader, storyScript } from '@/lib/fonts';
 import './globals.css';
 
 export const metadata = {
@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html
       lang={localeHtmlLang[locale] ?? localeHtmlLang[defaultLocale]}
       suppressHydrationWarning
-      className={`${archivo.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${storyScript.variable}`}
+      className={`${archivo.variable} ${golosText.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${literata.variable} ${storyScript.variable}`}
     >
       <body className="font-sans">{children}</body>
     </html>
