@@ -78,8 +78,9 @@
     "compare": "Сравнить",
     "reviews": "Отзывы",
     "writeReview": "Написать отзыв",
-    "votes": "{count} оценок",
-    "inStore": "Есть в наличии"
+    "votes": "{count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}",
+    "inStore": "Есть в наличии",
+    "volumeShort": "{ml} мл"
   },
   "pdp": {
     "longevityShort": "Стойк.",
@@ -95,13 +96,14 @@
       "compareFull": "Список сравнения заполнен (макс. {max})"
     },
     "accords": {
-      "title": "Основные аккорды"
+      "title": "Основные аккорды",
+      "subtitle": "Характер аромата"
     },
     "pyramid": {
       "title": "Пирамида аромата",
-      "top": "Верхние ноты (Top)",
-      "heart": "Средние ноты (Heart)",
-      "base": "Базовые ноты (Base)"
+      "top": "Верхние ноты",
+      "heart": "Ноты сердца",
+      "base": "Базовые ноты"
     },
     "aggregates": {
       "seasons": "Когда носить",
@@ -160,9 +162,23 @@
       }
     },
     "similar": {
-      "title": "Похожие ароматы"
+      "title": "Похожие ароматы",
+      "subtitle": "Ароматы с похожим ольфакторным характером"
     },
-    "trustLine": "Только оригинал · Доставка по Узбекистану · Оплата при получении или картой"
+    "trustLine": "Только оригинал · Доставка по Узбекистану · Оплата при получении или картой",
+    "rating": "Рейтинг",
+    "votes": "{count, plural, one {# голос} few {# голоса} many {# голосов} other {# голоса}}",
+    "decantLine": "Декант {ml} мл · {price} за мл",
+    "telegramPrompt": "Удобнее в Telegram?",
+    "telegramLink": "Закажите там",
+    "record": {
+      "title": "Полное описание",
+      "open": "Открыть +",
+      "close": "Закрыть −",
+      "measurements": "Показатели",
+      "imported": "Справочные данные из внешнего каталога — не отзывы Labor",
+      "nose": "Парфюмер"
+    }
   },
   "cart": {
     "title": "Корзина",
@@ -255,7 +271,8 @@
     "viewAll": "Все бренды",
     "detailDescription": "О бренде",
     "detailProducts": "Ароматы",
-    "errorLoading": "Не удалось загрузить бренды"
+    "errorLoading": "Не удалось загрузить бренды",
+    "houseCount": "{count, plural, one {# дом} few {# дома} many {# домов} other {# дома}}"
   },
   "perfumers": {
     "title": "Парфюмеры",
@@ -265,7 +282,8 @@
     "detailFragrances": "Ароматы",
     "bio": "Биография",
     "country": "Страна",
-    "errorLoading": "Не удалось загрузить парфюмеров"
+    "errorLoading": "Не удалось загрузить парфюмеров",
+    "count": "{count, plural, one {# парфюмер} few {# парфюмера} many {# парфюмеров} other {# парфюмера}}"
   },
   "campaign": {
     "useCode": "Используйте код",
@@ -362,7 +380,10 @@
     "family": "Семейство",
     "empty": "Ноты пока недоступны",
     "detailProducts": "Ароматы с этой нотой",
-    "errorLoading": "Не удалось загрузить ноты"
+    "errorLoading": "Не удалось загрузить ноты",
+    "noteCount": "{count, plural, one {# нота} few {# ноты} many {# нот} other {# ноты}}",
+    "familyCount": "{count, plural, one {# семейство} few {# семейства} many {# семейств} other {# семейства}}",
+    "unclassified": "Без семейства"
   },
   "common": {
     "loading": "Загрузка…",
@@ -375,7 +396,9 @@
     "save": "Сохранить",
     "cancel": "Отмена",
     "notFound": "Страница не найдена",
-    "backHome": "На главную"
+    "backHome": "На главную",
+    "language": "Язык",
+    "block": "Блок {n}"
   },
   "account": {
     "greeting": "Личный кабинет",
@@ -422,6 +445,7 @@
     "helpCta": "Написать в Telegram"
   },
   "footer": {
-    "telegram": "Откройте мини-приложение в Telegram:"
+    "telegram": "Откройте мини-приложение в Telegram:",
+    "copyright": "© {year} Labor. Ташкент, Узбекистан."
   }
 }

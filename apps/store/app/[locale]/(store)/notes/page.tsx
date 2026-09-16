@@ -6,6 +6,7 @@ import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
 import { BlockMarker } from '@/components/catalog/index-block';
 import { getNotes } from '@/lib/catalog/notes';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
+import { familyLabel } from '@/lib/catalog/note-families';
 import type { NoteDTO } from '@/lib/catalog/types';
 
 type Props = { params: Promise<{ locale: Locale }> };
@@ -23,7 +24,9 @@ const UNCLASSIFIED = '__none__';
 
 type Family = { key: string; label: string; notes: NoteDTO[] };
 
-const groupByFamily = (notes: readonly NoteDTO[]): Family[] => {
+type Labels = { family: (key: string) => string; unclassified: string };
+
+const groupByFamily = (notes: readonly NoteDTO[], labels: Labels): Family[] => {
   const groups = new Map<string, NoteDTO[]>();
   for (const note of notes) {
     const key = note.family ?? UNCLASSIFIED;
@@ -34,11 +37,11 @@ const groupByFamily = (notes: readonly NoteDTO[]): Family[] => {
 
   const named = [...groups.entries()]
     .filter(([key]) => key !== UNCLASSIFIED)
-    .map(([key, rows]) => ({ key, label: key, notes: rows }))
-    .sort((a, b) => b.notes.length - a.notes.length || a.label.localeCompare(b.label));
+    .map(([key, rows]) => ({ key, label: labels.family(key), notes: rows }))
+    .sort((a, b) => b.notes.length - a.notes.length || a.key.localeCompare(b.key));
 
   const rest = groups.get(UNCLASSIFIED);
-  return rest ? [...named, { key: UNCLASSIFIED, label: 'Unclassified', notes: rest }] : named;
+  return rest ? [...named, { key: UNCLASSIFIED, label: labels.unclassified, notes: rest }] : named;
 };
 
 export default async function NotesPage({ params }: Props) {
@@ -46,7 +49,10 @@ export default async function NotesPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations('notes');
   const notes = await getNotes(locale);
-  const families = groupByFamily(notes);
+  const families = groupByFamily(notes, {
+    family: (key) => familyLabel(key, locale),
+    unclassified: t('unclassified'),
+  });
 
   return (
     <main className="container space-y-10 py-12">
@@ -57,7 +63,7 @@ export default async function NotesPage({ params }: Props) {
         <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
         <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
         <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-          {notes.length} notes · {families.length} families
+          {t('noteCount', { count: notes.length })} · {t('familyCount', { count: families.length })}
         </p>
       </header>
 
@@ -67,7 +73,10 @@ export default async function NotesPage({ params }: Props) {
         <div className="space-y-14">
           {families.map((family) => (
             <section key={family.key} className="space-y-5">
-              <BlockMarker label={family.label} position={`${family.notes.length} notes`} />
+              <BlockMarker
+                label={family.label}
+                position={t('noteCount', { count: family.notes.length })}
+              />
               <h2 className="sr-only">{family.label}</h2>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
                 {family.notes.map((note) => (

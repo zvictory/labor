@@ -31,7 +31,7 @@ export const NOTE_TRANSLATIONS: Record<string, NoteTranslation> = {
   ambermax: { ru: 'Ambermax', uz: 'Ambermax' },
   amberwood: { ru: 'Амбровое дерево', uz: 'Amber yogʻochi' },
   ambrette: { ru: 'Амбретта', uz: 'Ambretta' },
-  'ambrette-musk-mallow': { ru: 'Амбретта (мускусная мальва)', uz: 'Ambretta (mushk gulxayrisi)' },
+  'ambrette-musk-mallow': { ru: 'Амбретта (мускусная мальва)', uz: 'Ambretta (muskus gulxayrisi)' },
   ambrettolide: { ru: 'Амбреттолид', uz: 'Ambrettolid' },
   ambrofix: { ru: 'Ambrofix', uz: 'Ambrofix' },
   amyris: { ru: 'Амирис', uz: 'Amiris' },
@@ -59,7 +59,7 @@ export const NOTE_TRANSLATIONS: Record<string, NoteTranslation> = {
   'black-currant': { ru: 'Чёрная смородина', uz: 'Qora smorodina' },
   'black-elder': { ru: 'Чёрная бузина', uz: 'Qora buzina' },
   'black-leather': { ru: 'Чёрная кожа', uz: 'Qora charm' },
-  'black-musk': { ru: 'Чёрный мускус', uz: 'Qora mushk' },
+  'black-musk': { ru: 'Чёрный мускус', uz: 'Qora muskus' },
   'black-orchid': { ru: 'Чёрная орхидея', uz: 'Qora orxideya' },
   'black-pepper': { ru: 'Чёрный перец', uz: 'Qora murch' },
   blackberry: { ru: 'Ежевика', uz: 'Maymunjon' },
@@ -91,7 +91,7 @@ export const NOTE_TRANSLATIONS: Record<string, NoteTranslation> = {
   carrot: { ru: 'Морковь', uz: 'Sabzi' },
   'carrot-seeds': { ru: 'Семена моркови', uz: 'Sabzi urugʻi' },
   cashmeran: { ru: 'Кашмеран', uz: 'Kashmeran' },
-  'cashmere-musk': { ru: 'Кашемировый мускус', uz: 'Kashmir mushki' },
+  'cashmere-musk': { ru: 'Кашемировый мускус', uz: 'Kashmir muskusi' },
   cassis: { ru: 'Кассис', uz: 'Kassis' },
   castoreum: { ru: 'Кастореум', uz: 'Kastoreum' },
   'cedar-needles': { ru: 'Кедровая хвоя', uz: 'Sadr ninabarglari' },
@@ -222,7 +222,8 @@ export const NOTE_TRANSLATIONS: Record<string, NoteTranslation> = {
   'mock-orange': { ru: 'Чубушник', uz: 'Soxta apelsin guli' },
   moss: { ru: 'Мох', uz: 'Yoʻsin' },
   muscone: { ru: 'Мускон', uz: 'Muskon' },
-  'musk-mallow': { ru: 'Мускусная мальва', uz: 'Mushk gulxayri' },
+  musk: { ru: 'Мускус', uz: 'Muskus' },
+  'musk-mallow': { ru: 'Мускусная мальва', uz: 'Muskus gulxayri' },
   'mysore-sandalwood': { ru: 'Майсорский сандал', uz: 'Maysor sandali' },
   mystikal: { ru: 'Mystikal', uz: 'Mystikal' },
   narcissus: { ru: 'Нарцисс', uz: 'Nargis' },
@@ -336,7 +337,7 @@ export const NOTE_TRANSLATIONS: Record<string, NoteTranslation> = {
   whiskey: { ru: 'Виски', uz: 'Viski' },
   'white-cedar-extract': { ru: 'Экстракт белого кедра', uz: 'Oq sadr ekstrakti' },
   'white-flowers': { ru: 'Белые цветы', uz: 'Oq gullar' },
-  'white-musk': { ru: 'Белый мускус', uz: 'Oq mushk' },
+  'white-musk': { ru: 'Белый мускус', uz: 'Oq muskus' },
   'white-peach': { ru: 'Белый персик', uz: 'Oq shaftoli' },
   'white-pepper': { ru: 'Белый перец', uz: 'Oq murch' },
   'white-rose': { ru: 'Белая роза', uz: 'Oq atirgul' },
@@ -350,4 +351,18 @@ export const NOTE_TRANSLATIONS: Record<string, NoteTranslation> = {
   'woodsy-notes': { ru: 'Древесные ноты', uz: 'Yogʻoch notalari' },
   'woody-notes': { ru: 'Древесные ноты', uz: 'Yogʻoch notalari' },
   yuzu: { ru: 'Юдзу', uz: 'Yudzu' },
+};
+
+// Uzbek names this file (or the seed) once wrote and has since replaced. The
+// script treats a row still holding exactly the old value as untranslated, so
+// the correction reaches databases that already ran the earlier version while a
+// name edited by hand in the admin is still left alone. «Mushk» became «muskus»
+// to agree with the family and accord labels (muskusli).
+export const SUPERSEDED_UZ: Readonly<Record<string, string>> = {
+  musk: 'Mushk',
+  'musk-mallow': 'Mushk gulxayri',
+  'ambrette-musk-mallow': 'Ambretta (mushk gulxayrisi)',
+  'black-musk': 'Qora mushk',
+  'cashmere-musk': 'Kashmir mushki',
+  'white-musk': 'Oq mushk',
 };

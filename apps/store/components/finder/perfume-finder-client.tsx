@@ -173,7 +173,7 @@ const ARCHETYPES: Record<
       tagline: 'Yengil, toza va tabiiy',
       description:
         'Siz teriga yaqin bo‘lgan nozik va toza iforlarni qadrlaysiz. Siz shivirlovchi sitruslar, tonggi shabada va yorqin dengiz notalarini afzal ko‘rasiz.',
-      notes: ['Bergamot', 'Neroli', 'Dengiz tuzi', 'Oq mushk'],
+      notes: ['Bergamot', 'Neroli', 'Dengiz tuzi', 'Oq muskus'],
     },
     muse: {
       name: 'Efirli Muza',

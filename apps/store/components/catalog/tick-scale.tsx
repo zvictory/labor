@@ -38,7 +38,7 @@ export const TickScale = ({
   return (
     <div
       role="img"
-      aria-label={label ? `${label}: ${filled} of ${max}` : `${filled} of ${max}`}
+      aria-label={label ? `${label}: ${filled} / ${max}` : `${filled} / ${max}`}
       className={`flex items-end gap-1 ${className}`}
     >
       {Array.from({ length: max }, (_, i) => (

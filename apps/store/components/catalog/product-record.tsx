@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import { OlfactivePyramidView, type OlfactivePyramidProps } from './olfactive-pyramid-view';
 import { PerfumerCard, type PerfumerInfo } from './perfumer-card';
 import { TickScale, toTicks } from './tick-scale';
@@ -33,6 +35,7 @@ export function ProductRecord({
   avgSillage: number;
   votesCount: number;
 }) {
+  const t = useTranslations('pdp');
   const hasNotes = Boolean(notes.top?.length || notes.middle?.length || notes.base?.length);
 
   // Longevity and sillage arrive on a 0-10 scale and are redrawn on five ticks,
@@ -40,8 +43,13 @@ export function ProductRecord({
   // verdict, not a quantity, and it gets stars — the same ones the label above
   // shows, so the page does not state the number two different ways.
   const measurements: Measurement[] = [
-    { label: 'Longevity', value: avgLongevity, scaleMax: 10, display: avgLongevity.toFixed(1) },
-    { label: 'Sillage', value: avgSillage, scaleMax: 10, display: avgSillage.toFixed(1) },
+    {
+      label: t('vote.longevity'),
+      value: avgLongevity,
+      scaleMax: 10,
+      display: avgLongevity.toFixed(1),
+    },
+    { label: t('vote.sillage'), value: avgSillage, scaleMax: 10, display: avgSillage.toFixed(1) },
   ].filter((m) => m.value > 0);
 
   const primaryPerfumer = perfumers[0];
@@ -55,10 +63,10 @@ export function ProductRecord({
   return (
     <details className="group border-border border-t">
       <summary className="flex cursor-pointer list-none items-center justify-between py-5 [&::-webkit-details-marker]:hidden">
-        <span className="text-label font-mono tracking-[0.2em] uppercase">Full record</span>
+        <span className="text-label font-mono tracking-[0.2em] uppercase">{t('record.title')}</span>
         <span className="text-muted-foreground text-label font-mono tracking-[0.2em] uppercase">
-          <span className="group-open:hidden">Open +</span>
-          <span className="hidden group-open:inline">Close −</span>
+          <span className="group-open:hidden">{t('record.open')}</span>
+          <span className="hidden group-open:inline">{t('record.close')}</span>
         </span>
       </summary>
 
@@ -67,7 +75,7 @@ export function ProductRecord({
           {hasNotes && (
             <section className="flex flex-col gap-5">
               <h2 className="border-border border-b pb-3 text-lg font-semibold tracking-[-0.01em]">
-                Olfactive pyramid
+                {t('pyramid.title')}
               </h2>
               <OlfactivePyramidView notes={notes} locale={locale} />
             </section>
@@ -78,17 +86,19 @@ export function ProductRecord({
           {hasMeasures && (
             <section className="flex flex-col gap-4">
               <div className="border-border flex items-baseline justify-between border-b pb-3">
-                <h2 className="text-lg font-semibold tracking-[-0.01em]">Measurements</h2>
+                <h2 className="text-lg font-semibold tracking-[-0.01em]">
+                  {t('record.measurements')}
+                </h2>
                 <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
-                  {votesCount} votes
+                  {t('votes', { count: votesCount })}
                 </span>
               </div>
               {avgRating > 0 && (
                 <div className="flex items-center gap-4">
-                  <span className="text-muted-foreground text-label w-24 shrink-0 font-mono tracking-[0.12em] uppercase">
-                    Rating
+                  <span className="text-muted-foreground text-label w-28 shrink-0 font-mono tracking-[0.12em] uppercase">
+                    {t('rating')}
                   </span>
-                  <StarRating value={avgRating} size="sm" />
+                  <StarRating value={avgRating} label={t('rating')} size="sm" />
                   <span className="text-muted-foreground text-label ml-auto font-mono tabular-nums">
                     {avgRating.toFixed(1)}
                   </span>
@@ -96,7 +106,7 @@ export function ProductRecord({
               )}
               {measurements.map((m) => (
                 <div key={m.label} className="flex items-center gap-4">
-                  <span className="text-muted-foreground text-label w-24 shrink-0 font-mono tracking-[0.12em] uppercase">
+                  <span className="text-muted-foreground text-label w-28 shrink-0 font-mono tracking-[0.12em] uppercase">
                     {m.label}
                   </span>
                   <TickScale value={toTicks(m.value, m.scaleMax)} label={m.label} />
@@ -108,7 +118,7 @@ export function ProductRecord({
               {/* These averages came in with the catalogue import; they are not
                   Labor's own reviews, and the page should not imply they are. */}
               <p className="text-muted-foreground text-micro font-mono leading-relaxed tracking-[0.08em] uppercase">
-                Imported reference data — not Labor reviews
+                {t('record.imported')}
               </p>
             </section>
           )}

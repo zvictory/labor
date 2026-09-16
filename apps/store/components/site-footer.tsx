@@ -59,7 +59,7 @@ export function SiteFooter({ locale }: { locale: string }) {
         </div>
       </div>
       <div className="border-border text-ink-muted container mt-10 border-t pt-6 text-xs">
-        © {new Date().getFullYear()} Labor. Tashkent, Uzbekistan.
+        {f('copyright', { year: new Date().getFullYear() })}
       </div>
     </footer>
   );

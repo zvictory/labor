@@ -6,6 +6,7 @@ import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
 import { BlockMarker, chunk, pad } from '@/components/catalog/index-block';
 import { getPerfumers } from '@/lib/catalog/perfumers';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
+import { countryName } from '@/lib/catalog/countries';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -25,6 +26,7 @@ export default async function PerfumersPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('perfumers');
+  const tc = await getTranslations('common');
   const perfumers = await getPerfumers(locale);
   const blocks = chunk(perfumers, BLOCK_SIZE);
 
@@ -37,7 +39,7 @@ export default async function PerfumersPage({ params }: Props) {
         <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
         <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
         <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-          {perfumers.length} noses
+          {t('count', { count: perfumers.length })}
         </p>
       </header>
       {perfumers.length === 0 ? (
@@ -50,7 +52,7 @@ export default async function PerfumersPage({ params }: Props) {
             return (
               <section key={first} className="space-y-5">
                 <BlockMarker
-                  label={`Block ${pad(bi + 1)}`}
+                  label={tc('block', { n: pad(bi + 1) })}
                   position={`${pad(first)}–${pad(last)} / ${perfumers.length}`}
                 />
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
@@ -80,7 +82,7 @@ export default async function PerfumersPage({ params }: Props) {
                           {perfumer.name}
                         </p>
                         <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase tabular-nums">
-                          {perfumer.country ? `${perfumer.country} · ` : ''}
+                          {perfumer.country ? `${countryName(perfumer.country, locale)} · ` : ''}
                           {t('productCount', { count: perfumer.product_count })}
                         </span>
                       </div>

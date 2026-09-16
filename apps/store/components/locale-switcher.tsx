@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { Globe } from 'lucide-react';
 
@@ -10,6 +10,7 @@ import { locales, localeNames, type Locale } from '@/i18n/config';
 // path. Ported from apps/web/src/components/locale-switcher.tsx.
 export function LocaleSwitcher() {
   const locale = useLocale() as Locale;
+  const t = useTranslations('common');
   const router = useRouter();
   const pathname = usePathname();
 
@@ -28,7 +29,7 @@ export function LocaleSwitcher() {
     <label className="relative inline-flex items-center gap-1 text-sm">
       <Globe className="text-muted-foreground h-4 w-4" aria-hidden />
       <select
-        aria-label="Language"
+        aria-label={t('language')}
         value={locale}
         onChange={(e) => switchTo(e.target.value as Locale)}
         className="text-label cursor-pointer appearance-none bg-transparent pr-2 font-mono tracking-[0.16em] uppercase"

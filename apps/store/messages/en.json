@@ -79,7 +79,8 @@
     "reviews": "Reviews",
     "writeReview": "Write a review",
     "votes": "{count} votes",
-    "inStore": "In store"
+    "inStore": "In store",
+    "volumeShort": "{ml} ml"
   },
   "pdp": {
     "longevityShort": "Long.",
@@ -95,7 +96,8 @@
       "compareFull": "Comparison is full (max {max})"
     },
     "accords": {
-      "title": "Main accords"
+      "title": "Main accords",
+      "subtitle": "Olfactive signature"
     },
     "pyramid": {
       "title": "Fragrance pyramid",
@@ -160,9 +162,23 @@
       }
     },
     "similar": {
-      "title": "Similar fragrances"
+      "title": "Similar fragrances",
+      "subtitle": "Explore fragrances with similar olfactive signatures"
     },
-    "trustLine": "Authentic only · Delivery across Uzbekistan · Pay on delivery or by card"
+    "trustLine": "Authentic only · Delivery across Uzbekistan · Pay on delivery or by card",
+    "rating": "Rating",
+    "votes": "{count, plural, one {# vote} other {# votes}}",
+    "decantLine": "{ml} ml decant · {price} per ml",
+    "telegramPrompt": "Prefer Telegram?",
+    "telegramLink": "Order there instead",
+    "record": {
+      "title": "Full record",
+      "open": "Open +",
+      "close": "Close −",
+      "measurements": "Measurements",
+      "imported": "Imported reference data — not Labor reviews",
+      "nose": "Nose"
+    }
   },
   "cart": {
     "title": "Cart",
@@ -255,7 +271,8 @@
     "viewAll": "All brands",
     "detailDescription": "About the brand",
     "detailProducts": "Fragrances",
-    "errorLoading": "Failed to load brands"
+    "errorLoading": "Failed to load brands",
+    "houseCount": "{count, plural, one {# house} other {# houses}}"
   },
   "perfumers": {
     "title": "Perfumers",
@@ -265,7 +282,8 @@
     "detailFragrances": "Fragrances",
     "bio": "Biography",
     "country": "Country",
-    "errorLoading": "Failed to load perfumers"
+    "errorLoading": "Failed to load perfumers",
+    "count": "{count, plural, one {# nose} other {# noses}}"
   },
   "campaign": {
     "useCode": "Use code",
@@ -362,7 +380,10 @@
     "family": "Family",
     "empty": "No notes available yet",
     "detailProducts": "Fragrances featuring this note",
-    "errorLoading": "Could not load notes"
+    "errorLoading": "Could not load notes",
+    "noteCount": "{count, plural, one {# note} other {# notes}}",
+    "familyCount": "{count, plural, one {# family} other {# families}}",
+    "unclassified": "Unclassified"
   },
   "common": {
     "loading": "Loading…",
@@ -375,7 +396,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "notFound": "Page not found",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "language": "Language",
+    "block": "Block {n}"
   },
   "account": {
     "greeting": "My account",
@@ -422,6 +445,7 @@
     "helpCta": "Message on Telegram"
   },
   "footer": {
-    "telegram": "Open the mini-app in Telegram:"
+    "telegram": "Open the mini-app in Telegram:",
+    "copyright": "© {year} Labor. Tashkent, Uzbekistan."
   }
 }

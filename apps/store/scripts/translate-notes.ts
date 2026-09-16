@@ -1,9 +1,11 @@
 /**
- * Fills in the Russian and Uzbek names of the notes that still read English.
+ * Fills in the Russian and Uzbek names of the notes (or, with --accords, the
+ * accords) that still read English.
  *
  *   npx tsx scripts/translate-notes.ts            # dry run
  *   npx tsx scripts/translate-notes.ts --apply    # write to the connected DB
  *   npx tsx scripts/translate-notes.ts --sql      # emit SQL + rollback for prod
+ *   npx tsx scripts/translate-notes.ts --accords  # same three modes, Accord table
  *
  * A locale key is written only when it is empty or still holds the English
  * string, so a name corrected by hand in the admin is never overwritten and a
@@ -13,12 +15,48 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { PrismaClient } from '@prisma/client';
 
-import { NOTE_TRANSLATIONS } from '../lib/catalog/note-translations';
+import {
+  NOTE_TRANSLATIONS,
+  SUPERSEDED_UZ,
+  type NoteTranslation,
+} from '../lib/catalog/note-translations';
+import { ACCORD_TRANSLATIONS } from '../lib/catalog/accord-translations';
 
 const db = new PrismaClient();
 
 const APPLY = process.argv.includes('--apply');
 const EMIT_SQL = process.argv.includes('--sql');
+
+// Notes and accords share the { en, ru, uz } name column and the same import
+// defect, so one script serves both; only the table, manifest and file names differ.
+type Row = { slug: string; name: unknown };
+type Target = {
+  table: 'Note' | 'Accord';
+  out: string;
+  manifest: Record<string, NoteTranslation>;
+  supersededUz: Readonly<Record<string, string>>;
+  read: () => Promise<Row[]>;
+  write: (slug: string, name: { en: string; ru: string; uz: string }) => Promise<unknown>;
+};
+
+const select = { slug: true, name: true } as const;
+const TARGET: Target = process.argv.includes('--accords')
+  ? {
+      table: 'Accord',
+      out: 'translate-accords',
+      manifest: ACCORD_TRANSLATIONS,
+      supersededUz: {},
+      read: () => db.accord.findMany({ select, orderBy: { slug: 'asc' } }),
+      write: (slug, name) => db.accord.update({ where: { slug }, data: { name } }),
+    }
+  : {
+      table: 'Note',
+      out: 'translate-notes',
+      manifest: NOTE_TRANSLATIONS,
+      supersededUz: SUPERSEDED_UZ,
+      read: () => db.note.findMany({ select, orderBy: { slug: 'asc' } }),
+      write: (slug, name) => db.note.update({ where: { slug }, data: { name } }),
+    };
 
 interface LocaleName {
   ru: string;
@@ -44,17 +82,14 @@ const isUntranslated = (value: string, en: string): boolean => value === '' || v
 const quote = (value: string): string => `'${value.replace(/'/g, "''")}'`;
 
 const main = async (): Promise<void> => {
-  const notes = await db.note.findMany({
-    select: { slug: true, name: true },
-    orderBy: { slug: 'asc' },
-  });
+  const notes = await TARGET.read();
 
   const updates: { slug: string; before: LocaleName; after: LocaleName }[] = [];
   const skipped: string[] = [];
   const unknown: string[] = [];
 
   for (const note of notes) {
-    const translation = NOTE_TRANSLATIONS[note.slug];
+    const translation = TARGET.manifest[note.slug];
     if (!translation) continue;
 
     const before = readName(note.name);
@@ -66,7 +101,10 @@ const main = async (): Promise<void> => {
     const after: LocaleName = {
       en: before.en,
       ru: isUntranslated(before.ru, before.en) ? translation.ru : before.ru,
-      uz: isUntranslated(before.uz, before.en) ? translation.uz : before.uz,
+      uz:
+        isUntranslated(before.uz, before.en) || before.uz === TARGET.supersededUz[note.slug]
+          ? translation.uz
+          : before.uz,
     };
 
     if (after.ru === before.ru && after.uz === before.uz) {
@@ -76,10 +114,10 @@ const main = async (): Promise<void> => {
     updates.push({ slug: note.slug, before, after });
   }
 
-  const manifestSlugs = new Set(Object.keys(NOTE_TRANSLATIONS));
+  const manifestSlugs = new Set(Object.keys(TARGET.manifest));
   for (const slug of notes.map((n) => n.slug)) manifestSlugs.delete(slug);
 
-  console.log(`manifest: ${Object.keys(NOTE_TRANSLATIONS).length}`);
+  console.log(`${TARGET.table} manifest: ${Object.keys(TARGET.manifest).length}`);
   console.log(`yazılacak: ${updates.length}`);
   console.log(`zaten çevrili (atlandı): ${skipped.length}`);
   if (manifestSlugs.size > 0) {
@@ -97,26 +135,29 @@ const main = async (): Promise<void> => {
     // it is null or still equal to the English name, which makes the file
     // idempotent and leaves hand-corrections alone.
     mkdirSync('scripts/out', { recursive: true });
-    const backup = `_note_name_backup_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`;
-    const forward = Object.entries(NOTE_TRANSLATIONS).map(
-      ([slug, t]) =>
-        `UPDATE "Note" SET name = jsonb_build_object(\n` +
+    const backup = `_${TARGET.table.toLowerCase()}_name_backup_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`;
+    const forward = Object.entries(TARGET.manifest).map(([slug, t]) => {
+      const old = TARGET.supersededUz[slug];
+      const oldGuard = old ? ` OR name->>'uz' = ${quote(old)}` : '';
+      return (
+        `UPDATE "${TARGET.table}" SET name = jsonb_build_object(\n` +
         `    'en', name->>'en',\n` +
         `    'ru', CASE WHEN name->>'ru' IS NULL OR name->>'ru' = name->>'en' THEN ${quote(t.ru)} ELSE name->>'ru' END,\n` +
-        `    'uz', CASE WHEN name->>'uz' IS NULL OR name->>'uz' = name->>'en' THEN ${quote(t.uz)} ELSE name->>'uz' END)\n` +
-        `  WHERE slug = ${quote(slug)};`,
-    );
+        `    'uz', CASE WHEN name->>'uz' IS NULL OR name->>'uz' = name->>'en'${oldGuard} THEN ${quote(t.uz)} ELSE name->>'uz' END)\n` +
+        `  WHERE slug = ${quote(slug)};`
+      );
+    });
     writeFileSync(
-      'scripts/out/translate-notes.sql',
-      `BEGIN;\nCREATE TABLE IF NOT EXISTS "${backup}" AS SELECT slug, name FROM "Note";\n` +
+      `scripts/out/${TARGET.out}.sql`,
+      `BEGIN;\nCREATE TABLE IF NOT EXISTS "${backup}" AS SELECT slug, name FROM "${TARGET.table}";\n` +
         `${forward.join('\n')}\nCOMMIT;\n`,
     );
     writeFileSync(
-      'scripts/out/translate-notes.rollback.sql',
-      `BEGIN;\nUPDATE "Note" n SET name = b.name FROM "${backup}" b WHERE b.slug = n.slug;\nCOMMIT;\n`,
+      `scripts/out/${TARGET.out}.rollback.sql`,
+      `BEGIN;\nUPDATE "${TARGET.table}" n SET name = b.name FROM "${backup}" b WHERE b.slug = n.slug;\nCOMMIT;\n`,
     );
     console.log(
-      `yazıldı: scripts/out/translate-notes.sql (${forward.length} satır, yedek tablo ${backup})`,
+      `yazıldı: scripts/out/${TARGET.out}.sql (${forward.length} satır, yedek tablo ${backup})`,
     );
   }
 
@@ -130,12 +171,9 @@ const main = async (): Promise<void> => {
   }
 
   for (const { slug, after } of updates) {
-    await db.note.update({
-      where: { slug },
-      data: { name: { en: after.en, ru: after.ru, uz: after.uz } },
-    });
+    await TARGET.write(slug, { en: after.en, ru: after.ru, uz: after.uz });
   }
-  console.log(`\n${updates.length} nota güncellendi.`);
+  console.log(`\n${updates.length} satır güncellendi (${TARGET.table}).`);
   await db.$disconnect();
 };
 

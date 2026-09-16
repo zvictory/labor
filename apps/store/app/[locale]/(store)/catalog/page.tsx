@@ -6,7 +6,7 @@ import { ProductCard } from '@/components/catalog/product-card';
 import { listProducts, PAGE_SIZE, type ProductSort } from '@/lib/catalog/products';
 import { getNotes } from '@/lib/catalog/notes';
 import { getBrands } from '@/lib/catalog/brands';
-import { FAMILY_FILTERS, type NoteFamily } from '@/lib/catalog/note-families';
+import { FAMILY_FILTERS, FAMILY_LABELS } from '@/lib/catalog/note-families';
 import type { Gender } from '@/lib/catalog/types';
 
 type Props = {
@@ -92,63 +92,8 @@ const FILTERS_COPY: Record<
 // parsed and passed to listProducts since the catalogue was written, but no
 // control ever set them — the Brandbook rebuild replaced the mobile drawer that
 // carried them with the server-rendered rails and did not bring these two over.
-// So a visitor could only narrow 541 fragrances by note or brand.
-//
-// Every family is spelled out even though FAMILY_FILTERS offers nine, so adding
-// a tenth is a type error here rather than a slug printed raw on the page.
-const FAMILY_COPY: Record<Lang, Record<NoteFamily, string>> = {
-  ru: {
-    floral: 'Цветочные',
-    woody: 'Древесные',
-    gourmand: 'Гурманские',
-    fruity: 'Фруктовые',
-    citrus: 'Цитрусовые',
-    spicy: 'Пряные',
-    aromatic: 'Ароматические',
-    balsamic: 'Смолистые',
-    green: 'Зелёные',
-    musky: 'Мускусные',
-    aquatic: 'Водные',
-    smoky: 'Дымные',
-    mineral: 'Минеральные',
-    mossy: 'Мшистые',
-    leather: 'Кожаные',
-  },
-  en: {
-    floral: 'Floral',
-    woody: 'Woody',
-    gourmand: 'Gourmand',
-    fruity: 'Fruity',
-    citrus: 'Citrus',
-    spicy: 'Spicy',
-    aromatic: 'Aromatic',
-    balsamic: 'Balsamic',
-    green: 'Green',
-    musky: 'Musky',
-    aquatic: 'Aquatic',
-    smoky: 'Smoky',
-    mineral: 'Mineral',
-    mossy: 'Mossy',
-    leather: 'Leather',
-  },
-  uz: {
-    floral: 'Gulli',
-    woody: 'Yogʻochli',
-    gourmand: 'Shirin',
-    fruity: 'Mevali',
-    citrus: 'Sitrusli',
-    spicy: 'Ziravorli',
-    aromatic: 'Aromatik',
-    balsamic: 'Balzamik',
-    green: 'Yashil',
-    musky: 'Muskusli',
-    aquatic: 'Suvli',
-    smoky: 'Tutunli',
-    mineral: 'Mineral',
-    mossy: 'Moxli',
-    leather: 'Charmli',
-  },
-};
+// So a visitor could only narrow 541 fragrances by note or brand. The family
+// labels live beside the families in lib/catalog/note-families.
 
 // Ordered by how much of the shop each covers: 436 unisex, 53 women, 52 men.
 const GENDER_FILTERS: readonly Gender[] = ['unisex', 'women', 'men'];
@@ -185,6 +130,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const lang = toLang(locale);
 
   const t = await getTranslations('catalog');
+  const tc = await getTranslations('common');
 
   const note = first(sp.note);
   const brand = first(sp.brand);
@@ -299,7 +245,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           allHref={buildHref(locale, active, { family: null, page: null })}
           items={FAMILY_FILTERS.map((f) => ({
             key: f,
-            label: FAMILY_COPY[lang][f],
+            label: FAMILY_LABELS[lang][f],
             active: f === family,
             href: buildHref(locale, active, { family: f, page: null }),
           }))}
@@ -340,7 +286,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             return (
               <div key={first} className="flex flex-col gap-4">
                 <div className="border-border text-muted-foreground text-micro flex items-baseline justify-between border-t pt-3 font-mono tracking-[0.16em] uppercase tabular-nums">
-                  <span>Block {pad(Math.ceil(first / BLOCK_SIZE))}</span>
+                  <span>{tc('block', { n: pad(Math.ceil(first / BLOCK_SIZE)) })}</span>
                   <span>
                     {pad(first)}–{pad(first + block.length - 1)} / {meta.total}
                   </span>

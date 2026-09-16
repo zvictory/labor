@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export interface NoteItem {
   slug: string;
@@ -66,14 +67,15 @@ function NoteRow({ title, notes, locale }: { title: string; notes?: NoteItem[]; 
 }
 
 export function OlfactivePyramidView({ notes, locale }: OlfactivePyramidProps) {
+  const t = useTranslations('pdp.pyramid');
   const hasNotes = Boolean(notes.top?.length || notes.middle?.length || notes.base?.length);
   if (!hasNotes) return null;
 
   return (
     <div className="flex flex-col gap-5">
-      <NoteRow title="Top" notes={notes.top} locale={locale} />
-      <NoteRow title="Heart" notes={notes.middle} locale={locale} />
-      <NoteRow title="Base" notes={notes.base} locale={locale} />
+      <NoteRow title={t('top')} notes={notes.top} locale={locale} />
+      <NoteRow title={t('heart')} notes={notes.middle} locale={locale} />
+      <NoteRow title={t('base')} notes={notes.base} locale={locale} />
     </div>
   );
 }

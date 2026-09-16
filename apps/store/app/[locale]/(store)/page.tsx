@@ -12,6 +12,8 @@ import { TelegramCta } from '@/components/home/telegram-cta';
 import { listProducts } from '@/lib/catalog/products';
 import { getNotes } from '@/lib/catalog/notes';
 import { getBrands } from '@/lib/catalog/brands';
+import { countryName } from '@/lib/catalog/countries';
+import { familyLabel } from '@/lib/catalog/note-families';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -23,6 +25,8 @@ const toLang = (locale: string): Lang =>
 // Section eyebrows + "view all" labels, per locale. Component-local (not in
 // next-intl catalogs) to match the apps/web homepage convention.
 type HomeCopy = {
+  heroCode: string;
+  niche: string;
   eyebrowNew: string;
   eyebrowNotes: string;
   eyebrowBrands: string;
@@ -36,6 +40,8 @@ type HomeCopy = {
 
 const COPY: Record<Lang, HomeCopy> = {
   ru: {
+    heroCode: 'ОТОБРАНО',
+    niche: 'Нишевый',
     eyebrowNew: 'Свежие поступления',
     eyebrowNotes: 'Парфюмерные ингредиенты',
     eyebrowBrands: 'Официальный дистрибьютор',
@@ -47,6 +53,8 @@ const COPY: Record<Lang, HomeCopy> = {
     viewAllBrands: 'Все бренды',
   },
   en: {
+    heroCode: 'SELECTED',
+    niche: 'Niche',
     eyebrowNew: 'Just blended',
     eyebrowNotes: 'Olfactive pyramid',
     eyebrowBrands: 'Niche houses',
@@ -58,6 +66,8 @@ const COPY: Record<Lang, HomeCopy> = {
     viewAllBrands: 'All brands',
   },
   uz: {
+    heroCode: 'TANLANGAN',
+    niche: 'Nisha',
     eyebrowNew: 'Yangi tushganlar',
     eyebrowNotes: 'Parfyumeriya ingredientlari',
     eyebrowBrands: 'Rasmiy distribyutor',
@@ -145,7 +155,7 @@ export default async function HomePage({ params }: Props) {
         sub={t('hero.sub')}
         cta={t('hero.cta')}
         href={`/${locale}/catalog`}
-        code={`LABOR / ${locale.toUpperCase()} — ${HOME_GRID} SELECTED`}
+        code={`LABOR / ${locale.toUpperCase()} — ${HOME_GRID} ${c.heroCode}`}
       />
 
       {/* New arrivals — listProducts({ sort:'new' }) */}
@@ -208,7 +218,7 @@ export default async function HomePage({ params }: Props) {
                   <span className="text-sm font-semibold tracking-[-0.01em]">{note.name}</span>
                   {note.family && (
                     <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase">
-                      {note.family}
+                      {familyLabel(note.family, locale)}
                     </span>
                   )}
                 </div>
@@ -254,7 +264,7 @@ export default async function HomePage({ params }: Props) {
                   {brand.name}
                 </span>
                 <p className="text-muted-foreground group-hover:text-foreground text-micro font-mono tracking-[0.2em] uppercase transition-colors">
-                  {brand.country ?? (brand.niche ? 'Niche' : ' ')}
+                  {brand.country ? countryName(brand.country, locale) : brand.niche ? c.niche : ' '}
                 </p>
               </Link>
             ))}

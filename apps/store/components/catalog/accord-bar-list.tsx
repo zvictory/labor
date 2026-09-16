@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
+
 import { TickScale, toTicks } from './tick-scale';
 
 export interface AccordItem {
@@ -21,6 +23,7 @@ export interface AccordItem {
 const SHOWN = 5;
 
 export function AccordBarList({ accords }: { accords: AccordItem[] }) {
+  const t = useTranslations('pdp');
   if (!accords || accords.length === 0) return null;
 
   const shown = [...accords].sort((a, b) => b.weight - a.weight).slice(0, SHOWN);
@@ -28,9 +31,9 @@ export function AccordBarList({ accords }: { accords: AccordItem[] }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="border-hairline dark:border-gunmetal flex items-baseline justify-between border-b pb-3">
-        <h3 className="text-lg font-semibold tracking-tight">Main accords</h3>
+        <h3 className="text-lg font-semibold tracking-tight">{t('accords.title')}</h3>
         <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
-          Olfactive signature
+          {t('accords.subtitle')}
         </span>
       </div>
 

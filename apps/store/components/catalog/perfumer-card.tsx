@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export interface PerfumerInfo {
   slug: string;
@@ -12,6 +13,7 @@ export interface PerfumerInfo {
 // The nose, credited the way a formula credits its author: mono label, square
 // portrait, name in the page's own face. No round avatar, no amber link.
 export function PerfumerCard({ perfumer, locale }: { perfumer: PerfumerInfo; locale: string }) {
+  const t = useTranslations('pdp.record');
   if (!perfumer) return null;
 
   return (
@@ -27,7 +29,7 @@ export function PerfumerCard({ perfumer, locale }: { perfumer: PerfumerInfo; loc
       </div>
       <div className="min-w-0 flex-1 space-y-1">
         <p className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
-          Nose
+          {t('nose')}
         </p>
         <Link
           href={`/${locale}/catalog?perfumer=${perfumer.slug}`}

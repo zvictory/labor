@@ -79,7 +79,8 @@
     "reviews": "Sharhlar",
     "writeReview": "Sharh yozish",
     "votes": "{count} baho",
-    "inStore": "Sotuvda bor"
+    "inStore": "Sotuvda bor",
+    "volumeShort": "{ml} ml"
   },
   "pdp": {
     "longevityShort": "Davom.",
@@ -95,13 +96,14 @@
       "compareFull": "Taqqoslash roʻyxati toʻla (maks. {max})"
     },
     "accords": {
-      "title": "Asosiy akkordlar"
+      "title": "Asosiy akkordlar",
+      "subtitle": "Hid xarakteri"
     },
     "pyramid": {
       "title": "Hid piramidasi",
-      "top": "Yuqori notalar (Top)",
-      "heart": "Oʻrta notalar (Heart)",
-      "base": "Asosiy notalar (Base)"
+      "top": "Yuqori notalar",
+      "heart": "Yurak notalari",
+      "base": "Bazaviy notalar"
     },
     "aggregates": {
       "seasons": "Qaysi faslda kiyish",
@@ -160,9 +162,23 @@
       }
     },
     "similar": {
-      "title": "Oʻxshash hidlar"
+      "title": "Oʻxshash hidlar",
+      "subtitle": "Oʻxshash hid xarakteriga ega atirlar"
     },
-    "trustLine": "Faqat original · Oʻzbekiston boʻylab yetkazib berish · Yetkazishda yoki karta bilan toʻlov"
+    "trustLine": "Faqat original · Oʻzbekiston boʻylab yetkazib berish · Yetkazishda yoki karta bilan toʻlov",
+    "rating": "Reyting",
+    "votes": "{count} ta ovoz",
+    "decantLine": "Dekant {ml} ml · 1 ml uchun {price}",
+    "telegramPrompt": "Telegram qulayroqmi?",
+    "telegramLink": "U yerda buyurtma bering",
+    "record": {
+      "title": "Toʻliq maʼlumot",
+      "open": "Ochish +",
+      "close": "Yopish −",
+      "measurements": "Koʻrsatkichlar",
+      "imported": "Tashqi katalogdan olingan maʼlumot — Labor sharhlari emas",
+      "nose": "Parfyumer"
+    }
   },
   "cart": {
     "title": "Savat",
@@ -218,7 +234,7 @@
   "campaigns": {
     "eyebrow": "Aksiyalar",
     "title": "Labor kampaniyalari",
-    "empty": "Hozircha faol kampaniya yo'q",
+    "empty": "Hozircha faol kampaniya yoʻq",
     "itemsCount": "{count} ta atir",
     "until": "{date} gacha"
   },
@@ -242,20 +258,21 @@
   "compare": {
     "drawer": {
       "label": "Solishtirish",
-      "remove": "O'chirish",
+      "remove": "Oʻchirish",
       "cta": "Solishtirishni ochish",
       "clear": "Tozalash"
     }
   },
   "brands": {
     "title": "Brendlar",
-    "subtitle": "Labor'dagi nicha va selektiv parfyumeriya",
+    "subtitle": "Laborʼdagi nicha va selektiv parfyumeriya",
     "productCount": "{count, plural, one {# atir} other {# atir}}",
-    "empty": "Hozircha brendlar yo'q",
+    "empty": "Hozircha brendlar yoʻq",
     "viewAll": "Barcha brendlar",
     "detailDescription": "Brend haqida",
     "detailProducts": "Atirlar",
-    "errorLoading": "Brendlarni yuklab bo'lmadi"
+    "errorLoading": "Brendlarni yuklab boʻlmadi",
+    "houseCount": "{count} ta brend"
   },
   "perfumers": {
     "title": "Parfyumerlar",
@@ -265,7 +282,8 @@
     "detailFragrances": "Hidlar",
     "bio": "Biografiya",
     "country": "Mamlakat",
-    "errorLoading": "Parfyumerlarni yuklab boʻlmadi"
+    "errorLoading": "Parfyumerlarni yuklab boʻlmadi",
+    "count": "{count} ta parfyumer"
   },
   "campaign": {
     "useCode": "Promokod",
@@ -286,9 +304,9 @@
       "title": "Savat",
       "total": "Jami",
       "checkout": "Rasmiylashtirish",
-      "remove": "O'chirish",
+      "remove": "Oʻchirish",
       "empty": {
-        "title": "Savat bo'sh",
+        "title": "Savat boʻsh",
         "body": "Katalogni oching va atir tanlang",
         "cta": "Katalogga"
       }
@@ -299,7 +317,7 @@
       "name": "Ism",
       "address": "Yetkazib berish",
       "city": "Shahar",
-      "street": "Ko'cha, uy, xonadon",
+      "street": "Koʻcha, uy, xonadon",
       "delivery": "Yetkazish",
       "provider": {
         "yandex": "Yandex",
@@ -307,7 +325,7 @@
         "bts": "BTS"
       },
       "eta": "{minutes} daqiqa",
-      "payment": "To'lov",
+      "payment": "Toʻlov",
       "method": {
         "click": "Click",
         "payme": "Payme",
@@ -319,24 +337,24 @@
       "subtotal": "Mahsulotlar",
       "shipping": "Yetkazish",
       "total": "Jami",
-      "pay": "To'lash",
+      "pay": "Toʻlash",
       "submitting": "Buyurtma yaratilmoqda…",
       "quote": {
-        "error": "Yetkazishni hisoblab bo'lmadi"
+        "error": "Yetkazishni hisoblab boʻlmadi"
       },
       "error": {
-        "generic": "Buyurtma berib bo'lmadi"
+        "generic": "Buyurtma berib boʻlmadi"
       }
     },
     "orders": {
       "title": "Mening buyurtmalarim",
       "loading": "Yuklanmoqda…",
-      "empty": "Hali buyurtmalaringiz yo'q",
+      "empty": "Hali buyurtmalaringiz yoʻq",
       "state": {
         "cart": "Savatda",
         "address": "Manzil",
         "delivery": "Yetkazish",
-        "payment": "To'lov",
+        "payment": "Toʻlov",
         "confirm": "Tasdiqlash",
         "complete": "Tayyor",
         "canceled": "Bekor qilingan"
@@ -362,7 +380,10 @@
     "family": "Oilasi",
     "empty": "Notalar hali mavjud emas",
     "detailProducts": "Ushbu nota mavjud atirlar",
-    "errorLoading": "Notalarni yuklab boʻlmadi"
+    "errorLoading": "Notalarni yuklab boʻlmadi",
+    "noteCount": "{count} ta nota",
+    "familyCount": "{count} ta oila",
+    "unclassified": "Oilasiz"
   },
   "common": {
     "loading": "Yuklanmoqda…",
@@ -375,7 +396,9 @@
     "save": "Saqlash",
     "cancel": "Bekor qilish",
     "notFound": "Sahifa topilmadi",
-    "backHome": "Bosh sahifaga"
+    "backHome": "Bosh sahifaga",
+    "language": "Til",
+    "block": "Blok {n}"
   },
   "account": {
     "greeting": "Shaxsiy kabinet",
@@ -387,16 +410,16 @@
     "orderState": "Holati",
     "orderDate": "Sana",
     "orderTotal": "Jami",
-    "empty": "Sizda hali buyurtmalar yo'q",
-    "emptyCta": "Katalogga o'tish",
+    "empty": "Sizda hali buyurtmalar yoʻq",
+    "emptyCta": "Katalogga oʻtish",
     "detailTitle": "Buyurtma tafsilotlari",
     "detailLineItems": "Buyurtma tarkibi",
     "detailShipping": "Yetkazish manzili",
     "detailShipmentTracking": "Kuzatuv",
-    "detailPayments": "To'lov",
+    "detailPayments": "Toʻlov",
     "detailNoTracking": "Kuzatuv raqami berilmagan",
     "loading": "Yuklanmoqda…",
-    "error": "Ma'lumotlarni yuklab bo'lmadi"
+    "error": "Maʼlumotlarni yuklab boʻlmadi"
   },
   "wishlist": {
     "title": "Sevimlilar",
@@ -422,6 +445,7 @@
     "helpCta": "Telegramda yozish"
   },
   "footer": {
-    "telegram": "Telegramda mini-ilovani oching:"
+    "telegram": "Telegramda mini-ilovani oching:",
+    "copyright": "© {year} Labor. Toshkent, Oʻzbekiston."
   }
 }

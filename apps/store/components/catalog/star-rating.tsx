@@ -34,7 +34,7 @@ export const StarRating = ({
   value,
   max = 5,
   size = 'md',
-  label = 'Rating',
+  label,
   className = '',
 }: {
   /** The rating itself, on a 0..max scale. Fractions are drawn. */
@@ -42,7 +42,7 @@ export const StarRating = ({
   max?: number;
   size?: StarRatingSize;
   /** Announced to screen readers. */
-  label?: string;
+  label: string;
   className?: string;
 }) => {
   const safe = Number.isFinite(value) ? Math.max(0, Math.min(max, value)) : 0;
@@ -51,7 +51,7 @@ export const StarRating = ({
   return (
     <div
       role="img"
-      aria-label={`${label}: ${safe.toFixed(1)} of ${max}`}
+      aria-label={`${label}: ${safe.toFixed(1)} / ${max}`}
       className={`flex items-center ${gap} ${className}`}
     >
       {Array.from({ length: max }, (_, i) => {

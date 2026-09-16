@@ -26,6 +26,11 @@ const SAMPLE_COPY: Record<Lang, string> = {
   uz: 'Namuna',
   en: 'Sample',
 };
+const ML_COPY: Record<Lang, string> = {
+  ru: 'мл',
+  uz: 'ml',
+  en: 'ml',
+};
 const ADDED_COPY: Record<Lang, string> = {
   ru: 'Добавлено в корзину',
   uz: 'Savatga qoʻshildi',
@@ -114,7 +119,11 @@ export function AddToCart({
           className="bg-foreground text-background inline-flex h-12 flex-1 items-center justify-center px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {ADD_COPY[lang]}
-          {volumeMl ? <span className="ml-2 font-mono opacity-70">· {volumeMl} ml</span> : null}
+          {volumeMl ? (
+            <span className="ml-2 font-mono opacity-70">
+              · {volumeMl} {ML_COPY[lang]}
+            </span>
+          ) : null}
         </button>
         {hasSample && (
           <button
@@ -124,7 +133,11 @@ export function AddToCart({
             className="border-foreground text-foreground hover:bg-foreground hover:text-background inline-flex h-12 items-center justify-center border px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-70"
           >
             {SAMPLE_COPY[lang]}
-            {sampleMl ? <span className="ml-2 font-mono opacity-70">· {sampleMl} ml</span> : null}
+            {sampleMl ? (
+              <span className="ml-2 font-mono opacity-70">
+                · {sampleMl} {ML_COPY[lang]}
+              </span>
+            ) : null}
           </button>
         )}
       </div>

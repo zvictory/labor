@@ -6,6 +6,7 @@ import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
 import { BlockMarker, chunk, pad } from '@/components/catalog/index-block';
 import { getBrands } from '@/lib/catalog/brands';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
+import { countryName } from '@/lib/catalog/countries';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -18,6 +19,7 @@ export default async function BrandsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('brands');
+  const tc = await getTranslations('common');
   const brands = await getBrands(locale);
   const blocks = chunk(brands, BLOCK_SIZE);
 
@@ -30,7 +32,7 @@ export default async function BrandsPage({ params }: Props) {
         <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
         <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
         <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-          {brands.length} houses
+          {t('houseCount', { count: brands.length })}
         </p>
       </header>
 
@@ -44,7 +46,7 @@ export default async function BrandsPage({ params }: Props) {
             return (
               <section key={first} className="space-y-5">
                 <BlockMarker
-                  label={`Block ${pad(bi + 1)}`}
+                  label={tc('block', { n: pad(bi + 1) })}
                   position={`${pad(first)}–${pad(last)} / ${brands.length}`}
                 />
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
@@ -74,7 +76,7 @@ export default async function BrandsPage({ params }: Props) {
                           {brand.name}
                         </p>
                         <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase tabular-nums">
-                          {brand.country ? `${brand.country} · ` : ''}
+                          {brand.country ? `${countryName(brand.country, locale)} · ` : ''}
                           {t('productCount', { count: brand.product_count })}
                         </span>
                       </div>

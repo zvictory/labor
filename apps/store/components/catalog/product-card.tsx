@@ -20,11 +20,12 @@ import { AddToCartIcon } from '@/components/cart/add-to-cart';
 
 export const ProductCard = ({ product, locale }: { product: ProductCardDTO; locale: string }) => {
   const t = useTranslations('product');
+  const tpdp = useTranslations('pdp');
   const hasImage = Boolean(product.image);
   const codeLine = [
     product.brand,
     product.concentration,
-    product.volume_ml ? `${product.volume_ml} ml` : null,
+    product.volume_ml ? t('volumeShort', { ml: product.volume_ml }) : null,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -65,7 +66,12 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
             {product.top_accord?.name ?? ' '}
           </p>
 
-          <StarRating value={product.avg_rating} label="Rating" size="sm" className="pt-0.5" />
+          <StarRating
+            value={product.avg_rating}
+            label={tpdp('rating')}
+            size="sm"
+            className="pt-0.5"
+          />
 
           {/* Two cells that must never break mid-value: at 2-up on a phone the
               row folds into two clean lines instead of splitting the price. */}

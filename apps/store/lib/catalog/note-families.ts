@@ -50,6 +50,68 @@ export const FAMILY_FILTERS: readonly NoteFamily[] = [
   'leather',
 ];
 
+/** Plural labels for pills and headings, per locale. Every family is spelled out so a new
+ * one is a type error rather than a slug printed raw on the page. */
+export const FAMILY_LABELS: Record<'ru' | 'en' | 'uz', Record<NoteFamily, string>> = {
+  ru: {
+    floral: 'Цветочные',
+    woody: 'Древесные',
+    gourmand: 'Гурманские',
+    fruity: 'Фруктовые',
+    citrus: 'Цитрусовые',
+    spicy: 'Пряные',
+    aromatic: 'Ароматические',
+    balsamic: 'Смолистые',
+    green: 'Зелёные',
+    musky: 'Мускусные',
+    aquatic: 'Водные',
+    smoky: 'Дымные',
+    mineral: 'Минеральные',
+    mossy: 'Мшистые',
+    leather: 'Кожаные',
+  },
+  en: {
+    floral: 'Floral',
+    woody: 'Woody',
+    gourmand: 'Gourmand',
+    fruity: 'Fruity',
+    citrus: 'Citrus',
+    spicy: 'Spicy',
+    aromatic: 'Aromatic',
+    balsamic: 'Balsamic',
+    green: 'Green',
+    musky: 'Musky',
+    aquatic: 'Aquatic',
+    smoky: 'Smoky',
+    mineral: 'Mineral',
+    mossy: 'Mossy',
+    leather: 'Leather',
+  },
+  uz: {
+    floral: 'Gulli',
+    woody: 'Yogʻochli',
+    gourmand: 'Shirin',
+    fruity: 'Mevali',
+    citrus: 'Sitrusli',
+    spicy: 'Ziravorli',
+    aromatic: 'Aromatik',
+    balsamic: 'Balzamik',
+    green: 'Yashil',
+    musky: 'Muskusli',
+    aquatic: 'Suvli',
+    smoky: 'Tutunli',
+    mineral: 'Mineral',
+    mossy: 'Moxli',
+    leather: 'Charmli',
+  },
+};
+
+/** A stored family key as a heading. Keys outside the fifteen (a retired import value) print as-is. */
+export const familyLabel = (family: string, locale: string): string => {
+  const lang = locale === 'en' || locale === 'uz' ? locale : 'ru';
+  return (FAMILY_LABELS[lang] as Record<string, string>)[family] ?? family;
+};
+
 const FAMILY_MEMBERS: Record<NoteFamily, readonly string[]> = {
   citrus: [
     'amalfi-lemon',

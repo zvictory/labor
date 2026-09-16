@@ -122,9 +122,10 @@ export default async function ProductPage({ params }: Props) {
             <div className="flex items-center gap-4 pt-1">
               {product.votes_count > 0 && (
                 <div className="flex items-center gap-3">
-                  <StarRating value={product.avg_rating} label="Rating" />
+                  <StarRating value={product.avg_rating} label={tpdp('rating')} />
                   <span className="text-muted-foreground text-label font-mono tracking-[0.12em] uppercase">
-                    {formatRating(product.avg_rating)} / 5 · {product.votes_count} votes
+                    {formatRating(product.avg_rating)} / 5 ·{' '}
+                    {tpdp('votes', { count: product.votes_count })}
                   </span>
                 </div>
               )}
@@ -138,7 +139,10 @@ export default async function ProductPage({ params }: Props) {
               </span>
               {product.volume_ml ? (
                 <span className="text-label font-mono tracking-[0.16em] uppercase">
-                  {product.volume_ml} ml decant · {formatUzs(PRICE_PER_ML, locale)} per ml
+                  {tpdp('decantLine', {
+                    ml: product.volume_ml,
+                    price: formatUzs(PRICE_PER_ML, locale),
+                  })}
                 </span>
               ) : null}
             </div>
@@ -173,14 +177,14 @@ export default async function ProductPage({ params }: Props) {
 
             {/* Telegram is a channel, not a third peer button. */}
             <p className="text-muted-foreground text-xs">
-              Prefer Telegram?{' '}
+              {tpdp('telegramPrompt')}{' '}
               <a
                 href={TELEGRAM_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="text-foreground font-medium underline underline-offset-4"
               >
-                Order there instead
+                {tpdp('telegramLink')}
               </a>
             </p>
           </div>
@@ -205,7 +209,7 @@ export default async function ProductPage({ params }: Props) {
             <div>
               <h2 className="text-2xl font-semibold tracking-[-0.02em]">{tpdp('similar.title')}</h2>
               <p className="mt-1 text-xs tracking-widest text-stone-500 uppercase">
-                Explore Fragrances with Similar Olfactive Signatures
+                {tpdp('similar.subtitle')}
               </p>
             </div>
           </div>

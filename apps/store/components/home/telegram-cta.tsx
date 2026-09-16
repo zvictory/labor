@@ -9,7 +9,7 @@ type Lang = 'en' | 'ru' | 'uz';
 
 const COPY: Record<Lang, { eyebrow: string; headline: string; sub: string; cta: string }> = {
   ru: {
-    eyebrow: 'Telegram mini-app',
+    eyebrow: 'Мини-приложение Telegram',
     headline: 'Заказывайте прямо в Telegram',
     sub: 'Каталог, подбор и оформление — в один чат. Напишите нам, поможем подобрать аромат за минуту.',
     cta: 'Открыть в Telegram',
@@ -21,7 +21,7 @@ const COPY: Record<Lang, { eyebrow: string; headline: string; sub: string; cta: 
     cta: 'Open in Telegram',
   },
   uz: {
-    eyebrow: 'Telegram mini-app',
+    eyebrow: 'Telegram mini-ilovasi',
     headline: 'Toʻgʻridan-toʻgʻri Telegramda buyurtma bering',
     sub: 'Katalog, tanlov va rasmiylashtirish — bitta chatda. Bizga yozing, bir daqiqada hid tanlaymiz.',
     cta: 'Telegramda ochish',
