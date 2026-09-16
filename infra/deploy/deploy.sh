@@ -24,7 +24,12 @@ esac
 
 echo "==> Deploying to $ENV ($SSH_USER@$SSH_HOST:$REMOTE_DIR)"
 
-ssh "$SSH_USER@$SSH_HOST" <<EOF
+# Keepalives: the image build runs for minutes without printing, and an idle
+# connection was dropped mid-build, which stops the script on the server after
+# the build (it is read from this ssh session) — so nginx was never restarted.
+# The heredoc is unquoted so $REMOTE_DIR expands here; that also means a
+# backtick anywhere below, comments included, runs on THIS machine. Use quotes.
+ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=20 "$SSH_USER@$SSH_HOST" <<EOF
 set -euo pipefail
 cd "$REMOTE_DIR"
 git fetch --all --prune
@@ -32,7 +37,7 @@ git reset --hard origin/main
 # Only postgres, redis and nginx come from a registry. The other seven services
 # are built from this checkout, so --ignore-buildable keeps pull from warning
 # about images that will never exist, and --build is what actually deploys the
-# code: without it `up -d` sees the same compose definition, leaves the running
+# code: without it 'up -d' sees the same compose definition, leaves the running
 # containers alone, and the deploy reports success having shipped nothing.
 docker compose -f infra/docker-compose.yml pull --ignore-buildable
 docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
@@ -42,8 +47,8 @@ docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 # down this way the first time --build was used. It is not restarted by the line
 # above because its own image and config did not change.
 docker compose -f infra/docker-compose.yml restart nginx
-# `< /dev/null` on both, and it is load-bearing. This script reaches the server
-# as ssh's stdin, and `exec -T` reads stdin — so without it the rails command
+# '< /dev/null' on both, and it is load-bearing. This script reaches the server
+# as ssh's stdin, and 'exec -T' reads stdin — so without it the rails command
 # swallows the rest of the script. Everything below these two lines silently
 # never ran, including the image prune that has been in this script from the
 # start, and the shell then reached EOF and exited 0.
