@@ -4,6 +4,8 @@
     "tagline": "Hidlarni eshitganlar uchun parfyumeriya"
   },
   "nav": {
+    "menu": "Menyu",
+    "closeMenu": "Menyuni yopish",
     "shop": "Doʻkon",
     "brands": "Brendlar",
     "notes": "Notalar",

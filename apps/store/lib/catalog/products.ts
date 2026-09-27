@@ -12,6 +12,8 @@ import type {
   ProductPerfumerDTO,
 } from '@/lib/catalog/types';
 import { toPyramidLayer } from '@/lib/catalog/types';
+import { pickOrbitNotes } from '@/lib/catalog/orbit';
+import { HERO_LINEUP, HERO_PRODUCTS, pickHeroSlugs } from '@/lib/catalog/hero-scenes';
 
 export const PAGE_SIZE = 24;
 
@@ -65,8 +67,13 @@ const cardSelect = {
       // three fields the paper tester label carries.
       concentration: true,
       volumeMl: true,
+      avgLongevity: true,
       brand: { select: { name: true } },
     },
+  },
+  notes: {
+    orderBy: { position: 'asc' },
+    select: { pyramidLayer: true, note: { select: { slug: true, name: true } } },
   },
   accords: {
     orderBy: { weight: 'desc' },
@@ -78,6 +85,16 @@ const cardSelect = {
 } satisfies Prisma.ProductSelect;
 
 type ProductCardRow = Prisma.ProductGetPayload<{ select: typeof cardSelect }>;
+
+// Three notes read as the arc of a scent — how it opens, sits and dries down —
+// where the first three by position are usually all from the opening.
+const LAYER_ORDER = ['top', 'middle', 'base'] as const;
+
+const pickLayerNotes = (rows: ProductCardRow['notes'], locale: string): string[] =>
+  LAYER_ORDER.flatMap((layer) => {
+    const row = rows.find((n) => toPyramidLayer(n.pyramidLayer) === layer);
+    return row ? [resolveLocaleText(row.note.name, locale)] : [];
+  });
 
 const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
   const fragrance = row.fragrance;
@@ -102,6 +119,9 @@ const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
     concentration: fragrance?.concentration ?? null,
     volume_ml: fragrance?.volumeMl ?? null,
     top_accord,
+    notes: pickLayerNotes(row.notes, locale),
+    orbit: pickOrbitNotes(row.notes, locale),
+    avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
   };
 };
 
@@ -182,6 +202,37 @@ export const listProducts = async (params: ListProductsParams): Promise<ListProd
     data: rows.map((row) => toProductCard(row, params.locale)),
     meta: { total, totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)) },
   };
+};
+
+/**
+ * The home hero's slides, in order: the product staff ticked in the admin, the
+ * hero lineup, then the highest-rated products that have a photograph.
+ */
+export const getHeroProducts = async (locale: string): Promise<ProductDetailDTO[]> => {
+  const withPhoto: Prisma.ProductWhereInput = { status: 'active', images: { some: {} } };
+  const [featured, lineup, topRated] = await Promise.all([
+    db.product.findFirst({ where: { status: 'active', featured: true }, select: { slug: true } }),
+    db.product.findMany({
+      where: { ...withPhoto, slug: { in: [...HERO_LINEUP] } },
+      select: { slug: true },
+    }),
+    db.product.findMany({
+      where: withPhoto,
+      orderBy: [{ fragrance: { avgRating: 'desc' } }, { fragrance: { votesCount: 'desc' } }],
+      take: HERO_PRODUCTS,
+      select: { slug: true },
+    }),
+  ]);
+
+  // An archived lineup product drops out rather than leaving an empty slide.
+  const live = new Set(lineup.map((row) => row.slug));
+  const slugs = pickHeroSlugs({
+    featured: featured?.slug ?? null,
+    lineup: HERO_LINEUP.filter((slug) => live.has(slug)),
+    topRated: topRated.map((row) => row.slug),
+  });
+  const products = await Promise.all(slugs.map((slug) => getProduct(slug, locale)));
+  return products.filter((product): product is ProductDetailDTO => product !== null);
 };
 
 // ── product detail ─────────────────────────────────────────────────────────────

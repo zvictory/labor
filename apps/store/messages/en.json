@@ -4,6 +4,8 @@
     "tagline": "Fragrance for those who listen to scent"
   },
   "nav": {
+    "menu": "Menu",
+    "closeMenu": "Close menu",
     "shop": "Shop",
     "brands": "Brands",
     "notes": "Notes",

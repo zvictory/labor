@@ -112,11 +112,13 @@ export function AddToCart({
   return (
     <div className="flex w-full flex-col gap-2">
       <div className="flex w-full flex-col gap-3 sm:flex-row">
+        {/* flex-1 only in the row: in the phone's column its zero basis beat
+            h-12 and squeezed the primary button to the height of its text. */}
         <button
           type="button"
           disabled={pending}
           onClick={() => add(false)}
-          className="bg-foreground text-background inline-flex h-12 flex-1 items-center justify-center px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-70"
+          className="bg-foreground text-background inline-flex h-12 items-center justify-center px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-70 sm:flex-1"
         >
           {ADD_COPY[lang]}
           {volumeMl ? (

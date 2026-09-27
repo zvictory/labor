@@ -1,100 +1,88 @@
 # Labor — Project Rules
 
-Multi-brand fragrance ecommerce for Uzbekistan. Spree (Rails) backend + Next.js storefront + Telegram bot, all in a single monorepo.
+Multi-brand fragrance ecommerce for Uzbekistan (laborparfum.com). The product is a single
+Next.js app, `apps/store`, with its own Postgres database through Prisma.
+Develop it as a plain Next.js app — **no Docker locally.**
 
 ## Stack
 
-| Layer | Tech |
-|---|---|
-| Backend | Rails 7.1 + Spree 5.4 + Postgres 15 + Redis 7 + Sidekiq |
-| Web | Next.js 14 App Router + TS strict + Tailwind + shadcn/ui (new-york style; components are feature-organized under `src/components/`, no `components/ui/` dir yet) |
-| Bot | grammy (Node TS) |
-| State | Zustand (client), TanStack Query (server), Zod (schemas), React Hook Form |
-| i18n | next-intl (web), mobility (Rails) — locales: ru, en, uz |
-| Currency | UZS only |
+| Layer        | Tech                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| App          | `apps/store` — Next.js 15 App Router + React 19 + TS strict + Tailwind v4                              |
+| Data         | Prisma 5 + Postgres, database `labor_store`; schema `apps/store/prisma/schema.prisma`                  |
+| Auth         | NextAuth v5 (`lib/auth/config.ts`): Telegram login, Telegram WebApp, phone OTP, staff email + password |
+| Payments     | Click and Payme route handlers under `app/api/payments/`                                               |
+| Telegram bot | grammy inside the app (`lib/telegram/`, webhook `app/api/telegram/webhook`)                            |
+| i18n         | next-intl — locales ru, en, uz; ru is the default                                                      |
+| Validation   | Zod                                                                                                    |
+| Tests        | Vitest (unit), Playwright (`e2e/`)                                                                     |
+| Currency     | UZS only                                                                                               |
 
-## Repo layout
+## Where things live (`apps/store`)
 
-```
-apps/{backend,web,bot}
-packages/{api-client,ui,i18n,tg}
-infra/{docker-compose.yml,nginx,deploy}
-docs/plans/
-```
+| Path                       | What                                                            |
+| -------------------------- | --------------------------------------------------------------- |
+| `app/[locale]/(store)/`    | storefront pages                                                |
+| `app/[locale]/admin/`      | admin: catalog, orders, campaigns (guard: `lib/admin/guard.ts`) |
+| `app/api/`                 | auth, cart, delivery quote, payments, Telegram webhook          |
+| `lib/catalog/`             | catalog queries, DTOs, locale resolution                        |
+| `messages/{ru,en,uz}.json` | UI strings                                                      |
+| `scripts/`                 | one-off scripts, run with `npx tsx`                             |
 
 Reference design: `docs/plans/2026-05-21-labor-parfum-design.md`.
 
-## Architecture map
+## Running locally — no Docker
 
-**Read `docs/architecture.md` before grepping for where something lives.**
-It maps every storefront API controller, payment idempotency model, Telegram auth flow,
-Mobility-translated models, rake tasks, web app-router pages, bot handlers, and shared
-packages — all with verified file paths. Saves 3-5 grep round-trips per session.
+| What       | How                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Postgres   | Homebrew `postgresql@16` on `localhost:5432` (`brew services start postgresql@16`). `psql` is not on PATH: `/opt/homebrew/opt/postgresql@16/bin/psql` |
+| Env        | `apps/store/.env` — `DATABASE_URL` points at the local `labor_store`                                                                                  |
+| Dev server | `npm run dev -w apps/store` → http://localhost:3012 (`PORT_STORE` overrides). Stop with Ctrl-C                                                        |
+| Checks     | `npm run typecheck -w apps/store`, `npm test -w apps/store`                                                                                           |
 
-## Running the stack
+Do **not** start Docker, `npm run dev:all` / `scripts/dev.sh` (it brings up the Docker stack),
+or the root `npm run dev` (turbo also starts the legacy `apps/web` and `apps/bot`).
 
-**Canonical command:** `npm run dev:all` (from repo root).
+## Legacy — not run locally
 
-What it does: brings up infra (postgres/redis/backend/sidekiq) in Docker, kills any
-stale process on `:3001`/`:8080`, waits for backend readiness, then runs web + bot on
-the host with hot-reload via `turbo run dev --parallel`.
+`apps/backend` (Spree/Rails), `apps/web` (Next.js 14 storefront for Spree), `apps/bot`,
+`packages/*` and `infra/docker-compose.yml` are the earlier Spree stack. The store does not
+call them at runtime; only `apps/store/scripts/etl` reads the Spree database (read-only,
+`SPREE_DATABASE_URL`). `docs/architecture.md` maps this legacy stack only.
 
-| Process | Port | Notes |
-|---|---|---|
-| Web (Next.js) | `:3001` | `next dev`, HMR |
-| Bot (grammy) | `:8080` | `tsx watch`; mock mode unless `TELEGRAM_BOT_TOKEN` is a real token |
-| Backend (Rails) | `:4000` | Docker container (internal `:3000`) |
-
-Stop web/bot: **Ctrl-C**. Stop Docker infra:
-`docker compose -f infra/docker-compose.yml --env-file .env stop`
-
-⚠ The `web` and `bot` services in `docker-compose.yml` are **production builds** (no HMR).
-Do **not** use `docker compose up web bot` for day-to-day dev — use `npm run dev:all`.
+Production still runs in Docker on the VPS: `infra/deploy/deploy.sh` builds the compose
+stack there. Never deploy without Zafar's approval.
 
 ## Conventions
 
 - Package manager: **npm** (workspaces). Never bun/yarn/pnpm.
-- Money fields: always `MoneyInput`, never raw `<Input type="number">`. (Rule is aspirational — `MoneyInput` is not yet implemented in `apps/web`. When adding the first money input, build it per the global rule.)
+- Money fields: always `MoneyInput`, never raw `<Input type="number">`. (Rule is aspirational — `MoneyInput` is not yet implemented in `apps/store`. When adding the first money input, build it per the global rule.)
 - TS strict. No `any`. Use `unknown` + narrowing, or `zod`.
 - Prefer named exports over default exports.
 - Currency: UZS, stored as integer minor units (UZS has no minor unit → 100 sum = 100).
-- Locales: ru is default. URL prefix `/[locale]/...`. Catalog data via mobility.
+- Locales: ru is default. URL prefix `/[locale]/...`. Catalog translations are Prisma `Json` fields `{ ru, uz, en }`, read through `resolveLocaleText` (`lib/catalog/locale.ts`).
 - File:line references when discussing code.
 
-## Telegram auth
+## Users and auth
 
-`telegram_id` (bigint, unique) is the SOURCE OF TRUTH on `spree_users`. `email` is synthesized as `tg_{telegram_id}@labor.local`. Staff use Devise email/password at `/admin`.
+`telegramId` (BigInt, unique) on `User` is the SOURCE OF TRUTH for Telegram users; `email` may be synthesized as `tg_{telegramId}@labor.local`. `role` is `customer | staff | admin`; staff and admin sign in with email + password (`passwordHash`).
 
 ## Payments
 
-Each provider is a `Spree::PaymentMethod` subclass with a dedicated webhook controller. All webhooks are **idempotent** — store `(provider, external_txn_id)` in `payment_webhook_events`.
+Click and Payme each have their own route handlers. All webhooks are **idempotent** — every event is stored in `PaymentWebhookEvent`, unique on `(provider, externalTxnId, eventType)`.
 
 ## Admin
 
-- URL: `http://localhost:4000/admin/login` (backend port 4000)
-- Default admin: `admin@labor.local`
-- Reset password (writes a known value):
+- URL: http://localhost:3012/ru/admin — `staff` and `admin` roles enter; `admin` also passes `isAdmin()` (`lib/admin/guard.ts`).
+- Create or promote a staff user (the password goes only through the environment):
   ```bash
-  docker exec labor-backend-1 bundle exec rails runner \
-    'u = Spree::User.find_by(email: "admin@labor.local"); u.password = ENV["NEW_PWD"]; u.password_confirmation = ENV["NEW_PWD"]; u.save!; puts u.errors.full_messages.inspect'
+  cd apps/store && STAFF_EMAIL=admin@labor.local STAFF_PASSWORD=… npx tsx scripts/create-staff-user.ts
   ```
-  (pre-set `NEW_PWD` in the container env or use `docker exec -e NEW_PWD=...`).
-- Admin role must be store-scoped in Spree 5.4 (`spree_role_users.resource_type='Spree::Store'`, `resource_id=Spree::Store.default.id`) — `has_spree_role?('admin')` defaults to `Spree::Store.current` and returns false otherwise.
-- Spree 5.4 admin assets: Tailwind entry is `apps/backend/app/assets/tailwind/spree_admin.css`. Build with `docker exec labor-backend-1 bundle exec rails spree:admin:tailwindcss:build` (output: `app/assets/builds/spree/admin/application.css`, served by Propshaft as `/assets/spree/admin/application-<hash>.css`).
-- Image management CLI (Edit Image modal Delete button is Turbo-confirm-driven; if it appears to do nothing, the JS confirm dialog was cancelled):
-  - List: `docker exec labor-backend-1 bundle exec rake "labor:images:list[<slug>]"`
-  - Delete: `docker exec labor-backend-1 bundle exec rake "labor:images:delete[<id>]"`
-  Defined in `apps/backend/lib/tasks/labor_images.rake`.
-
-## Spree 5.4 storefront API
-
-- Spree 5.4 removed the `Spree::Api::V2` namespace. Labor's storefront routes still mount at `/api/v2/storefront/...`; a shim at `apps/backend/app/controllers/spree/api/v2/base_controller.rb` re-exposes `Spree::Api::V2::BaseController` as a subclass of `Spree::Api::V3::BaseController` (NOT `V3::Store::BaseController` — that one requires a publishable API key that apps/web and apps/bot don't send).
-- Storefront/bot URL stability: keep new routes under `/api/v2/storefront/...` until/unless a deliberate V3 migration is planned.
 
 ## Don'ts
 
+- Don't use Docker locally or start the legacy apps.
 - Don't add multi-currency.
-- Don't use Spree's default storefront (it's disabled).
-- Don't bypass mobility for catalog translations.
+- Don't bypass `resolveLocaleText` for catalog translations.
 - Don't commit `.env`.
 - Don't run `git add -A` — stage specific files.

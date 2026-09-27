@@ -1,10 +1,12 @@
-import { Droplets, ArrowRight } from 'lucide-react';
-
 import { TELEGRAM_URL } from '@/lib/telegram';
 
 // Static marketing section. No custom-parfum backend route/model yet, so the CTA
 // hands off to the Telegram bot. Ported from
 // apps/web/src/components/home/custom-parfum-cta.tsx.
+//
+// The page's only amber, and amber only as a fill under graphite text — the one
+// way the colour is allowed on screen. The four steps are set as the label's
+// mono rows, numbered on the right like the lines of a formula card.
 
 type Lang = 'en' | 'ru' | 'uz';
 
@@ -39,35 +41,31 @@ export function CustomParfumCta({ lang }: { lang: Lang }) {
   const c = COPY[lang];
 
   return (
-    <section className="bg-graphite text-offwhite">
-      <div className="container grid gap-12 py-24 md:grid-cols-2 md:items-center">
-        <div>
-          <span className="text-accent text-micro flex items-center gap-2 font-mono tracking-[0.28em] uppercase">
-            <Droplets className="h-3.5 w-3.5" />
-            {c.eyebrow}
-          </span>
-          <h2 className="font-display text-bone mt-4 text-4xl leading-tight md:text-5xl">
+    <section className="bg-accent text-accent-foreground">
+      <div className="container grid gap-[18px] py-[34px] md:grid-cols-2 md:items-end md:gap-12 md:py-20">
+        <div className="flex flex-col gap-[18px]">
+          <p className="text-micro font-mono tracking-[0.16em] uppercase">{c.eyebrow}</p>
+          <h2 className="text-[28px] leading-[33px] font-semibold tracking-[-0.025em] md:text-5xl md:leading-[1.05]">
             {c.headline}
           </h2>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-stone-300">{c.sub}</p>
+          <p className="max-w-md font-serif text-base leading-[26px] text-pretty">{c.sub}</p>
+        </div>
+        <div className="flex flex-col gap-[18px]">
+          <ol className="border-graphite/25 border-t pt-3 font-mono text-sm leading-[26px]">
+            {c.steps.map((s, i) => (
+              <li key={s} className="flex justify-between gap-4">
+                <span>{s}</span>
+                <span className="tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              </li>
+            ))}
+          </ol>
           <a
             href={TELEGRAM_URL}
-            className="group bg-accent text-accent-foreground mt-8 inline-flex h-12 items-center gap-2 px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-opacity duration-300 hover:opacity-85"
+            className="bg-graphite text-offwhite flex min-h-12 items-center justify-center text-sm font-semibold transition-opacity hover:opacity-85"
           >
             {c.cta}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
         </div>
-        <ol className="space-y-5">
-          {c.steps.map((s, i) => (
-            <li key={s} className="flex items-start gap-4">
-              <span className="font-display text-brass-300 text-2xl">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <span className="pt-1 text-sm text-stone-200">{s}</span>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );

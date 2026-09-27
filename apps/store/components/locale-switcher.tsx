@@ -2,12 +2,14 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { Globe } from 'lucide-react';
 
 import { locales, localeNames, type Locale } from '@/i18n/config';
 
 // Client locale switcher — rewrites the leading locale segment of the current
 // path. Ported from apps/web/src/components/locale-switcher.tsx.
+//
+// The header shows only the two-letter code in a 44 × 44 target; the native
+// select sits invisibly over it, so the picker itself still lists full names.
 export function LocaleSwitcher() {
   const locale = useLocale() as Locale;
   const t = useTranslations('common');
@@ -26,13 +28,13 @@ export function LocaleSwitcher() {
   };
 
   return (
-    <label className="relative inline-flex items-center gap-1 text-sm">
-      <Globe className="text-muted-foreground h-4 w-4" aria-hidden />
+    <label className="text-label relative flex h-11 w-11 items-center justify-center font-mono tracking-[0.1em] uppercase">
+      <span aria-hidden="true">{locale}</span>
       <select
         aria-label={t('language')}
         value={locale}
         onChange={(e) => switchTo(e.target.value as Locale)}
-        className="text-label cursor-pointer appearance-none bg-transparent pr-2 font-mono tracking-[0.16em] uppercase"
+        className="absolute inset-0 cursor-pointer appearance-none opacity-0"
       >
         {locales.map((l) => (
           <option key={l} value={l}>

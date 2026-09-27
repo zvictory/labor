@@ -1,63 +1,81 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ShoppingBag } from 'lucide-react';
+import { Search, ShoppingBag } from 'lucide-react';
 
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
+import { SiteMenu } from '@/components/site-menu';
 
-// Site chrome — Labor wordmark in font-display, primary catalog nav, and cart.
-// Ported from apps/web. Server-safe: useTranslations works in RSC under
+// Site chrome. On a phone: menu and language left, the seal centred, search and
+// cart right — every target 44 × 44, the bar 56 px. From xl up the menu's pages
+// are listed inline instead; any narrower, six labels do not fit beside a
+// centred seal. Server-safe: useTranslations works in RSC under
 // NextIntlClientProvider. All links are locale-prefixed.
 export function SiteHeader({ locale }: { locale: string }) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
   const href = (path: string) => `/${locale}${path}`;
 
+  const pages = [
+    { href: href('/catalog'), label: t('shop') },
+    { href: href('/brands'), label: t('brands') },
+    { href: href('/notes'), label: t('notes') },
+    { href: href('/perfumers'), label: t('perfumers') },
+    // 450 lines of working guided search that nothing linked to.
+    { href: href('/find-your-perfume'), label: t('finder') },
+    { href: href('/delivery'), label: t('delivery') },
+  ];
+
   // Solid, not frosted. A translucent blurred bar is the one texture the shop
   // has nowhere — the island is a single opaque surface, and the header is the
   // screen's version of it. The hairline does the separating.
   return (
     <header className="border-border bg-background sticky top-0 z-40 border-b">
-      <div className="container flex h-20 items-center justify-between gap-6 transition-all duration-300 md:h-24">
-        <Link
-          href={href('')}
-          className="flex items-baseline gap-2 transition-opacity select-none hover:opacity-90"
-        >
-          <span className="font-logo text-ink hover:text-ink-muted dark:text-bone py-2 text-5xl leading-none tracking-normal transition-colors md:text-6xl lg:text-7xl">
-            {b('name')}
-          </span>
+      <div className="grid h-14 grid-cols-[88px_1fr_88px] items-center px-1.5 md:container md:h-16 md:grid-cols-[1fr_auto_1fr]">
+        <div className="flex items-center xl:gap-6">
+          <SiteMenu items={pages} openLabel={t('menu')} closeLabel={t('closeMenu')} />
+          <nav className="text-label hidden items-center gap-6 font-mono tracking-[0.1em] uppercase xl:flex">
+            {pages.map((page) => (
+              <Link
+                key={page.href}
+                href={page.href}
+                className="hover:underline hover:underline-offset-4"
+              >
+                {page.label}
+              </Link>
+            ))}
+          </nav>
+          <LocaleSwitcher />
+        </div>
+
+        <Link href={href('')} aria-label={b('name')} className="flex justify-center">
+          {/* The seal is a black-on-white PNG; multiply drops the white onto
+              the off-white ground, and dark mode inverts it onto graphite. */}
+          <Image
+            src="/labor-seal.png"
+            alt=""
+            width={34}
+            height={34}
+            priority
+            className="mix-blend-multiply md:h-10 md:w-10 dark:mix-blend-screen dark:invert"
+          />
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-medium tracking-wider uppercase md:flex">
-          <Link href={href('/catalog')} className="hover:underline hover:underline-offset-4">
-            {t('shop')}
-          </Link>
-          <Link href={href('/brands')} className="hover:underline hover:underline-offset-4">
-            {t('brands')}
-          </Link>
-          <Link href={href('/notes')} className="hover:underline hover:underline-offset-4">
-            {t('notes')}
-          </Link>
-          <Link href={href('/perfumers')} className="hover:underline hover:underline-offset-4">
-            {t('perfumers')}
-          </Link>
-          {/* 450 lines of working guided search that nothing linked to. */}
+        <div className="flex items-center justify-end">
           <Link
-            href={href('/find-your-perfume')}
-            className="hover:underline hover:underline-offset-4"
+            href={href('/search')}
+            aria-label={t('search')}
+            className="flex h-11 w-11 items-center justify-center"
           >
-            {t('finder')}
+            <Search className="h-[18px] w-[18px]" strokeWidth={1.3} />
           </Link>
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <LocaleSwitcher />
           <Link
             href={href('/cart')}
             aria-label={t('cart')}
-            className="relative p-2 hover:underline hover:underline-offset-4"
+            className="relative flex h-11 w-11 items-center justify-center"
           >
-            <ShoppingBag className="h-5 w-5" />
+            <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.3} />
             <CartCountBadge />
           </Link>
         </div>
