@@ -82,7 +82,7 @@ model Product {
   // money: integer UZS minor units
   price         Int               @default(0)
   // The one product the home page opens on. Staff set it in the admin editor;
-  // saving one clears the rest. None set → the highest-rated product.
+  // saving one clears the rest. None set → the hero lineup (lib/catalog/hero-scenes.ts).
   featured      Boolean           @default(false)
   // relations
   fragrance     FragranceDetail?

@@ -5,7 +5,7 @@ import { locales, type Locale } from '@/i18n/config';
 import { Hero } from '@/components/home/hero';
 import { SelectionCard } from '@/components/home/selection-card';
 import { CustomParfumCta } from '@/components/home/custom-parfum-cta';
-import { getFeaturedProduct, listProducts } from '@/lib/catalog/products';
+import { getHeroProducts, listProducts } from '@/lib/catalog/products';
 import { FAMILY_FILTERS, NOTE_FAMILIES, familyLabel } from '@/lib/catalog/note-families';
 
 type Props = { params: Promise<{ locale: Locale }> };
@@ -66,17 +66,18 @@ export default async function HomePage({ params }: Props) {
   const c = COPY[lang];
 
   // ── data-access layer: called directly from the RSC, no HTTP hop ──────────────
-  const [hero, newRes] = await Promise.all([
-    getFeaturedProduct(locale),
+  const [heroes, newRes] = await Promise.all([
+    getHeroProducts(locale),
     listProducts({ locale, sort: 'new' }),
   ]);
 
-  // The hero bottle is not repeated in the grid below it.
-  const selection = newRes.data.filter((p) => p.id !== hero?.id).slice(0, HOME_GRID);
+  // The hero bottles are not repeated in the grid below them.
+  const inHero = new Set(heroes.map((p) => p.id));
+  const selection = newRes.data.filter((p) => !inHero.has(p.id)).slice(0, HOME_GRID);
 
   return (
     <>
-      {hero && <Hero product={hero} locale={locale} lang={lang} />}
+      {heroes.length > 0 && <Hero products={heroes} locale={locale} lang={lang} />}
 
       <section className="border-border border-b">
         <div className="container flex flex-col gap-3 pt-6 pb-8 md:gap-6 md:py-16">

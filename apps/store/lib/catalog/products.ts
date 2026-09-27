@@ -13,6 +13,7 @@ import type {
 } from '@/lib/catalog/types';
 import { toPyramidLayer } from '@/lib/catalog/types';
 import { pickOrbitNotes } from '@/lib/catalog/orbit';
+import { HERO_LINEUP, HERO_PRODUCTS, pickHeroSlugs } from '@/lib/catalog/hero-scenes';
 
 export const PAGE_SIZE = 24;
 
@@ -204,22 +205,34 @@ export const listProducts = async (params: ListProductsParams): Promise<ListProd
 };
 
 /**
- * The product the home page opens on: the one staff ticked in the admin, or —
- * when none is — the highest-rated product that has a photograph.
+ * The home hero's slides, in order: the product staff ticked in the admin, the
+ * hero lineup, then the highest-rated products that have a photograph.
  */
-export const getFeaturedProduct = async (locale: string): Promise<ProductDetailDTO | null> => {
-  const picked =
-    (await db.product.findFirst({
-      where: { status: 'active', featured: true },
+export const getHeroProducts = async (locale: string): Promise<ProductDetailDTO[]> => {
+  const withPhoto: Prisma.ProductWhereInput = { status: 'active', images: { some: {} } };
+  const [featured, lineup, topRated] = await Promise.all([
+    db.product.findFirst({ where: { status: 'active', featured: true }, select: { slug: true } }),
+    db.product.findMany({
+      where: { ...withPhoto, slug: { in: [...HERO_LINEUP] } },
       select: { slug: true },
-    })) ??
-    (await db.product.findFirst({
-      where: { status: 'active', images: { some: {} } },
+    }),
+    db.product.findMany({
+      where: withPhoto,
       orderBy: [{ fragrance: { avgRating: 'desc' } }, { fragrance: { votesCount: 'desc' } }],
+      take: HERO_PRODUCTS,
       select: { slug: true },
-    }));
+    }),
+  ]);
 
-  return picked ? getProduct(picked.slug, locale) : null;
+  // An archived lineup product drops out rather than leaving an empty slide.
+  const live = new Set(lineup.map((row) => row.slug));
+  const slugs = pickHeroSlugs({
+    featured: featured?.slug ?? null,
+    lineup: HERO_LINEUP.filter((slug) => live.has(slug)),
+    topRated: topRated.map((row) => row.slug),
+  });
+  const products = await Promise.all(slugs.map((slug) => getProduct(slug, locale)));
+  return products.filter((product): product is ProductDetailDTO => product !== null);
 };
 
 // ── product detail ─────────────────────────────────────────────────────────────
