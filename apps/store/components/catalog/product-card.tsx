@@ -6,6 +6,7 @@ import type { ProductCardDTO } from '@/lib/catalog/types';
 import { formatUzs } from '@/lib/money';
 import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCartIcon } from '@/components/cart/add-to-cart';
+import { NoteOrbit } from '@/components/catalog/note-orbit';
 
 // The screen form of the shop's 24 × 32 mm tester label: code line, name,
 // accord, tick scale, price. Same four rows, same order, same mono face — so
@@ -16,7 +17,8 @@ import { AddToCartIcon } from '@/components/cart/add-to-cart';
 // the shadow (nothing on a laboratory label is raised or rounded). The stars
 // are drawn in the label's own two colours rather than gold — see
 // components/catalog/star-rating.tsx — and the vote count beside them on the
-// product page says whose votes they are.
+// product page says whose votes they are. When the product has at least three
+// illustrated notes, they orbit the bottle on hover or focus.
 
 export const ProductCard = ({ product, locale }: { product: ProductCardDTO; locale: string }) => {
   const t = useTranslations('product');
@@ -29,9 +31,13 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
   ]
     .filter(Boolean)
     .join(' · ');
+  const orbit = product.orbit ?? [];
 
   return (
-    <div className="group border-hairline bg-background hover:border-graphite dark:border-gunmetal dark:hover:border-offwhite relative border transition-colors duration-200">
+    <div
+      data-orbit-card
+      className="group border-hairline bg-background hover:border-graphite dark:border-gunmetal dark:hover:border-offwhite relative border transition-colors duration-200"
+    >
       <div className="absolute top-3 right-3 z-10">
         <AddToCartIcon productId={product.id} locale={locale} />
       </div>
@@ -39,13 +45,20 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
       <Link href={`/${locale}/product/${product.slug}`} className="block">
         <div className="border-hairline dark:border-gunmetal relative aspect-[3/4] w-full overflow-hidden border-b">
           {hasImage ? (
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
-              className="object-contain p-6 mix-blend-multiply dark:mix-blend-normal"
-            />
+            <>
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
+                className={`object-contain p-6 mix-blend-multiply dark:mix-blend-normal z-[1]${
+                  orbit.length > 0
+                    ? 'transition-[scale] duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-focus-within:scale-[.72] group-hover:scale-[.72] motion-reduce:transition-none'
+                    : ''
+                }`}
+              />
+              {orbit.length > 0 && <NoteOrbit notes={orbit} />}
+            </>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
               <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">

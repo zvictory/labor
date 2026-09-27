@@ -43,8 +43,18 @@ export interface ProductCardDTO {
   top_accord?: { name: string; color_hex: string } | null;
   /** One note from each layer of the pyramid, top first — the card's "A · B · C" line. */
   notes: string[];
+  /** Up to six notes that have an orbit illustration, top layer first; empty when fewer than three. */
+  orbit?: OrbitNoteDTO[];
   /** Imported average on a 0-10 scale. */
   avg_longevity: number;
+}
+
+/// A note with its orbit illustration — the catalogue card's hover orbit.
+export interface OrbitNoteDTO {
+  slug: string;
+  name: string;
+  /** Public path, e.g. `/notes/orbit/raspberry.webp`. */
+  image: string;
 }
 
 /// Note as surfaced on listing/browse pages.

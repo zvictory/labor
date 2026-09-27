@@ -12,6 +12,7 @@ import type {
   ProductPerfumerDTO,
 } from '@/lib/catalog/types';
 import { toPyramidLayer } from '@/lib/catalog/types';
+import { pickOrbitNotes } from '@/lib/catalog/orbit';
 
 export const PAGE_SIZE = 24;
 
@@ -71,7 +72,7 @@ const cardSelect = {
   },
   notes: {
     orderBy: { position: 'asc' },
-    select: { pyramidLayer: true, note: { select: { name: true } } },
+    select: { pyramidLayer: true, note: { select: { slug: true, name: true } } },
   },
   accords: {
     orderBy: { weight: 'desc' },
@@ -118,6 +119,7 @@ const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
     volume_ml: fragrance?.volumeMl ?? null,
     top_accord,
     notes: pickLayerNotes(row.notes, locale),
+    orbit: pickOrbitNotes(row.notes, locale),
     avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
   };
 };
