@@ -6,6 +6,7 @@ import {
   HERO_PRODUCTS,
   HERO_SCENES,
   HERO_STORIES,
+  heroVideoFile,
   pickHeroSlugs,
   weaveHeroSlides,
   type HeroSlot,
@@ -69,6 +70,15 @@ describe('hero photographs', () => {
   it('ships every scene and story photograph with the app', () => {
     const srcs = [...Object.values(HERO_SCENES), ...HERO_STORIES].map((scene) => scene.src);
     expect(srcs.filter((src) => !existsSync(publicFile(src)))).toEqual([]);
+  });
+
+  // A missing cut would 404 on every visit at that width and leave the scene
+  // still there, while the other width moves.
+  it('ships both cuts of every scene loop, desktop and phone', () => {
+    const files = [...Object.values(HERO_SCENES), ...HERO_STORIES].flatMap((scene) =>
+      scene.video ? [heroVideoFile(scene.video, true), heroVideoFile(scene.video, false)] : [],
+    );
+    expect(files.filter((file) => !existsSync(publicFile(file)))).toEqual([]);
   });
 
   it('sends every story to a storefront path, once', () => {

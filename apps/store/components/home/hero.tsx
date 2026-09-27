@@ -16,6 +16,7 @@ import {
 import { AddToCart } from '@/components/cart/add-to-cart';
 import { TickScale, toTicks } from '@/components/catalog/tick-scale';
 import { HeroCarousel } from '@/components/home/hero-carousel';
+import { SceneVideo } from '@/components/home/scene-video';
 
 // The home page opens on up to three bottles, one slide each, and the first
 // screen of a phone is enough to buy the one showing: name, what it smells
@@ -154,6 +155,8 @@ const COPY: Record<
 // The photograph settles while its slide shows (a little longer than the 7 s
 // timer, so it is still moving under the crossfade), and the text rises in
 // block by block; --rise staggers the blocks. Reduced motion: both stay still.
+// A scene's loop drifts with its photograph, so the two stay registered while
+// the loop fades in over it.
 const DRIFT = 'motion-safe:group-data-[active=true]/slide:animate-[hero-drift_7.5s_ease-out_both]';
 const RISE =
   'motion-safe:group-data-[active=true]/slide:animate-[hero-rise_600ms_cubic-bezier(.22,1,.36,1)_var(--rise)_both]';
@@ -261,6 +264,13 @@ function HeroSlide({
             style={scene ? { objectPosition: scene.position } : undefined}
           />
         )}
+        {scene?.video && (
+          <SceneVideo
+            video={scene.video}
+            className={`object-cover ${DRIFT}`}
+            style={{ objectPosition: scene.position }}
+          />
+        )}
       </Link>
 
       <div className={COLUMN}>
@@ -318,6 +328,8 @@ function StorySlide({
   const s = COPY[lang].stories[story.id];
   const href = `/${locale}${story.path}`;
   const Title = first ? 'h1' : 'h2';
+  const fit = `object-cover [object-position:var(--pos-phone)] lg:[object-position:var(--pos)] ${DRIFT}`;
+  const crop = { '--pos': story.position, '--pos-phone': story.phonePosition } as CSSProperties;
 
   return (
     <div className={FRAME}>
@@ -335,9 +347,10 @@ function StorySlide({
           fill
           priority={first}
           sizes="100vw"
-          className={`object-cover [object-position:var(--pos-phone)] lg:[object-position:var(--pos)] ${DRIFT}`}
-          style={{ '--pos': story.position, '--pos-phone': story.phonePosition } as CSSProperties}
+          className={fit}
+          style={crop}
         />
+        {story.video && <SceneVideo video={story.video} className={fit} style={crop} />}
       </Link>
 
       <div className={COLUMN}>

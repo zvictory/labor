@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
 // The home hero's slides crossfade on a timer, and the timer is the progress
 // bar: the active segment's CSS animation runs for one slide's length and, when
@@ -8,7 +8,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 // a mouse rests on the hero, while keyboard focus is inside it, while the tab
 // is hidden, and after the pause button. Reduced motion: no autoplay; the
 // segments still switch slides. The slides are server-rendered; this component
-// only decides which one shows.
+// only decides which one shows, and tells each slide whether its scene loop
+// may load and play (useSlideMotion).
 
 export type HeroCarouselLabels = {
   carousel: string;
@@ -17,6 +18,28 @@ export type HeroCarouselLabels = {
   pause: string;
   play: string;
 };
+
+/** What a slide's own motion, its scene loop, may do right now. */
+export type SlideMotion = {
+  /** The slide is the one showing. */
+  active: boolean;
+  /** The slide is showing or next, so its media may load. */
+  near: boolean;
+  /**
+   * Motion is welcome: not under reduced motion, in a hidden tab or after the
+   * pause button — a loop runs for longer than five seconds, so the button
+   * stops it too. A resting mouse holds the slide, not the loop.
+   */
+  moving: boolean;
+};
+
+const SlideMotionContext = createContext<SlideMotion>({
+  active: false,
+  near: false,
+  moving: false,
+});
+
+export const useSlideMotion = (): SlideMotion => useContext(SlideMotionContext);
 
 // A swipe must travel this far, and mostly sideways, before it turns a slide.
 const SWIPE_PX = 48;
@@ -62,6 +85,7 @@ export function HeroCarousel({
   // Until hydration the bar holds at zero: an animation that ended before
   // React listened for it would never turn the slide.
   const playing = mounted && count > 1 && !paused && !hovered && !focused && !hidden && !reduced;
+  const moving = mounted && !paused && !hidden && !reduced;
   const go = (index: number) => {
     const next = (index + count) % count;
     setActive(next);
@@ -113,7 +137,9 @@ export function HeroCarousel({
             hidden={!near.has(i)}
             className="group/slide bg-background relative overflow-hidden opacity-0 transition-opacity duration-700 ease-out [grid-area:1/1] data-[active=true]:z-[1] data-[active=true]:opacity-100"
           >
-            {slide}
+            <SlideMotionContext value={{ active: i === active, near: near.has(i), moving }}>
+              {slide}
+            </SlideMotionContext>
           </div>
         ))}
       </div>

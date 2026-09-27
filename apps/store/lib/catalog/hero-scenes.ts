@@ -3,7 +3,21 @@ export type HeroScene = {
   src: string;
   /** CSS object-position that keeps the subject in frame when the scene is cropped. */
   position: string;
+  /**
+   * Public path of the scene's four-second loop, without its width: see
+   * {@link heroVideoFile}. The photograph stays underneath it, as the poster
+   * and as the whole scene where the loop does not play.
+   */
+  video?: string;
 };
+
+// A loop is cut from a five-second clip generated from the photograph: its
+// last second cross-fades into its first, and a bottle's label is laid back
+// from the photograph, so the lettering never wavers.
+
+/** A loop's file for the viewport: full width from the lg breakpoint, a lighter cut below it. */
+export const heroVideoFile = (video: string, desktop: boolean): string =>
+  `${video}-${desktop ? 1920 : 1280}.mp4`;
 
 // A slide opens full-bleed on its product's scene when one exists; any other
 // product keeps the plain bottle layout.
@@ -13,9 +27,21 @@ export type HeroScene = {
 // little high (40%): a wide screen trims the stone under the bottle before it
 // reaches the cap.
 export const HERO_SCENES: Readonly<Record<string, HeroScene>> = {
-  'ombre-nomade': { src: '/hero/ombre-nomade.webp', position: '35% 40%' },
-  'imagination-2': { src: '/hero/imagination.webp', position: '35% 40%' },
-  'baccarat-extrait-maison': { src: '/hero/baccarat-rouge-540-extrait.webp', position: '35% 40%' },
+  'ombre-nomade': {
+    src: '/hero/ombre-nomade.webp',
+    position: '35% 40%',
+    video: '/hero/ombre-nomade',
+  },
+  'imagination-2': {
+    src: '/hero/imagination.webp',
+    position: '35% 40%',
+    video: '/hero/imagination',
+  },
+  'baccarat-extrait-maison': {
+    src: '/hero/baccarat-rouge-540-extrait.webp',
+    position: '35% 40%',
+    video: '/hero/baccarat-rouge-540-extrait',
+  },
 };
 
 /** How many product slides the home hero carries; the stories come on top. */
@@ -75,6 +101,7 @@ export const HERO_STORIES: readonly HeroStory[] = [
     id: 'decants',
     path: '/catalog',
     src: '/hero/story-decants.webp',
+    video: '/hero/story-decants',
     position: '35% 55%',
     phonePosition: '100% 55%',
   },
@@ -82,6 +109,7 @@ export const HERO_STORIES: readonly HeroStory[] = [
     id: 'blotters',
     path: '/find-your-perfume',
     src: '/hero/story-blotters.webp',
+    video: '/hero/story-blotters',
     position: '35% 50%',
     phonePosition: '100% 50%',
   },
@@ -89,6 +117,7 @@ export const HERO_STORIES: readonly HeroStory[] = [
     id: 'uzbekistan',
     path: '/delivery',
     src: '/hero/story-uzbekistan.webp',
+    video: '/hero/story-uzbekistan',
     position: '35% 60%',
     phonePosition: '100% 60%',
   },
@@ -96,6 +125,7 @@ export const HERO_STORIES: readonly HeroStory[] = [
     id: 'notes',
     path: '/notes',
     src: '/hero/story-notes.webp',
+    video: '/hero/story-notes',
     position: '35% 55%',
     phonePosition: '100% 55%',
   },
