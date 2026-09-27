@@ -11,6 +11,15 @@ import { useSlideMotion } from '@/components/home/hero-carousel';
 // and download nothing. The loop fades in once it actually plays, so a slow
 // network or a refused autoplay (iOS Low Power Mode) leaves the photograph
 // rather than a blank frame; once shown, it stays, paused, between turns.
+// A slide that turns away keeps its loop running through the crossfade, so
+// nothing freezes mid-sway while it fades out. Each time the slide comes round,
+// its loop starts again on its first frame, the photograph; a loop plays
+// forward and back for longer than a showing, so the point where the file
+// wraps does not show.
+
+// The carousel's crossfade (its slides' duration-700).
+const CROSSFADE_MS = 700;
+
 export function SceneVideo({
   video,
   className,
@@ -25,6 +34,7 @@ export function SceneVideo({
   const ref = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState<string | null>(null);
   const [shown, setShown] = useState(false);
+  const wasActive = useRef(active);
 
   useEffect(() => {
     if (src || !moving || !near) return;
@@ -36,13 +46,22 @@ export function SceneVideo({
   useEffect(() => {
     const el = ref.current;
     if (!el || !src) return;
+    const arrived = active && !wasActive.current;
+    wasActive.current = active;
     if (active && moving) {
+      // Round again from the photograph; back within the crossfade, it runs on.
+      if (arrived && el.paused) el.currentTime = 0;
       el.play().catch(() => {
         // Autoplay refused: the photograph underneath stays.
       });
-    } else {
-      el.pause();
+      return;
     }
+    if (!moving) {
+      el.pause();
+      return;
+    }
+    const fadedOut = window.setTimeout(() => el.pause(), CROSSFADE_MS);
+    return () => window.clearTimeout(fadedOut);
   }, [active, moving, src]);
 
   return (

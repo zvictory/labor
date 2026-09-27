@@ -4,16 +4,19 @@ export type HeroScene = {
   /** CSS object-position that keeps the subject in frame when the scene is cropped. */
   position: string;
   /**
-   * Public path of the scene's four-second loop, without its width: see
+   * Public path of the scene's loop, without its width: see
    * {@link heroVideoFile}. The photograph stays underneath it, as the poster
    * and as the whole scene where the loop does not play.
    */
   video?: string;
 };
 
-// A loop is cut from a five-second clip generated from the photograph: its
-// last second cross-fades into its first, and a bottle's label is laid back
-// from the photograph, so the lettering never wavers.
+// A loop is cut from a five-second clip generated from the photograph: a
+// stretch where the motion runs evenly plays forward and back, easing into
+// each turn, so it has no seam; a cycle lasts 7.75 to 9 seconds, longer than
+// a slide shows. It starts on or near the photograph, fitted to its colours,
+// and a bottle's label is laid back from the photograph, so the lettering
+// never wavers.
 
 /** A loop's file for the viewport: full width from the lg breakpoint, a lighter cut below it. */
 export const heroVideoFile = (video: string, desktop: boolean): string =>
