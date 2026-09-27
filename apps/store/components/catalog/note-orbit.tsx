@@ -1,11 +1,13 @@
 'use client';
 
 // The orbit is decorative (aria-hidden; the card's text already names the product).
-// The frames are square because nothing in this system is rounded.
-// Geometry comes from the approved Ombre Nomade prototype.
+// It is the one place this system rounds, raises and gilds, on purpose: each note sits
+// in a glass bead on gold rings, as in the approved Ombre Nomade prototype. Radius and
+// shadow are arbitrary values because the config collapses `rounded-full` and `shadow-*`.
+// Each ring is drawn in two halves, the far one behind the bottle and the near one over it.
 
 import Image from 'next/image';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 
 import { ORBITS, orbitSlot } from '@/lib/catalog/orbit';
 import type { OrbitNoteDTO } from '@/lib/catalog/types';
@@ -26,13 +28,37 @@ const BADGE_LIVE = [
 const LINE_REST = 'opacity-0';
 const LINE_LIVE = [
   'opacity-0 [stroke-dashoffset:1] transition-[stroke-dashoffset,opacity] duration-[350ms] ease-[cubic-bezier(.22,1,.36,1)]',
-  'group-hover:opacity-60 group-hover:[stroke-dashoffset:0] group-hover:duration-[1100ms] group-hover:delay-(--d)',
-  'group-focus-within:opacity-60 group-focus-within:[stroke-dashoffset:0] group-focus-within:duration-[1100ms] group-focus-within:delay-(--d)',
+  'group-hover:opacity-90 group-hover:[stroke-dashoffset:0] group-hover:duration-[1100ms] group-hover:delay-(--d)',
+  'group-focus-within:opacity-90 group-focus-within:[stroke-dashoffset:0] group-focus-within:duration-[1100ms] group-focus-within:delay-(--d)',
   'motion-reduce:[stroke-dashoffset:0]',
 ].join(' ');
 
+// Both halves run from a ring's left end to its right: the far one over the top, the
+// near one under the bottom (the arc's sweep flag).
+const HALVES = [
+  { half: 'far', sweep: 1, layer: 'z-0' },
+  { half: 'near', sweep: 0, layer: 'z-[1]' },
+] as const;
+
+// Deep enough to hold a 1 px line on off-white, where pale gold all but vanishes.
+const GOLD = [
+  ['0', '#8a6526'],
+  ['.3', '#c49a50'],
+  ['.5', '#94712f'],
+  ['.72', '#cfa85e'],
+  ['1', '#8a6526'],
+] as const;
+
+// A clear bead: nearly clear through the middle, bright at the rim, shade at the
+// bottom, a soft shadow under it; then its highlight, laid over the ingredient.
+const BEAD =
+  'absolute inset-[9%] rounded-[50%] bg-[radial-gradient(circle_at_50%_40%,rgb(255_255_255/.22),rgb(255_255_255/.12)_58%,rgb(255_255_255/.7)_100%)] shadow-[inset_0_0_0_1px_rgb(255_255_255/.95),0_0_0_1px_rgb(140_115_80/.25),inset_0_-10px_16px_-6px_rgb(110_85_45/.18),0_12px_18px_-10px_rgb(40_28_12/.4)] dark:bg-[radial-gradient(circle_at_50%_40%,rgb(255_255_255/.06),rgb(255_255_255/.03)_58%,rgb(255_255_255/.16)_100%)] dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/.25),0_12px_18px_-10px_rgb(0_0_0/.7)]';
+const GLINT =
+  'absolute inset-[9%] rounded-[50%] bg-[radial-gradient(ellipse_46%_28%_at_36%_20%,rgb(255_255_255/.8),transparent_72%),radial-gradient(ellipse_40%_14%_at_60%_88%,rgb(255_255_255/.35),transparent_70%)] dark:bg-[radial-gradient(ellipse_46%_28%_at_36%_20%,rgb(255_255_255/.3),transparent_72%)]';
+
 export function NoteOrbit({ notes }: { notes: OrbitNoteDTO[] }) {
   const ref = useRef<HTMLDivElement>(null);
+  const gold = useId();
   const [armed, setArmed] = useState(false);
   const [live, setLive] = useState(false);
 
@@ -63,32 +89,49 @@ export function NoteOrbit({ notes }: { notes: OrbitNoteDTO[] }) {
 
   return (
     <>
-      {armed && (
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 300 400"
-          preserveAspectRatio="none"
-          className="text-gunmetal-light pointer-events-none absolute inset-0 z-0 size-full"
-        >
-          {ORBITS.map((orbit, i) => (
-            <ellipse
-              key={orbit.tilt}
-              cx={150}
-              cy={200}
-              rx={orbit.rx * 300}
-              ry={orbit.ry * 400}
-              transform={`rotate(${orbit.tilt} 150 200)`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1}
-              pathLength={1}
-              strokeDasharray="1 1"
-              style={{ '--d': `${i * 100}ms` } as Vars}
-              className={live ? LINE_LIVE : LINE_REST}
-            />
-          ))}
-        </svg>
-      )}
+      {armed &&
+        HALVES.map(({ half, sweep, layer }) => (
+          <svg
+            key={half}
+            aria-hidden="true"
+            viewBox="0 0 300 400"
+            preserveAspectRatio="none"
+            className={`pointer-events-none absolute inset-0 size-full dark:drop-shadow-[0_0_2px_rgb(212_175_105/.6)] ${layer}`}
+          >
+            <defs>
+              <linearGradient
+                id={`${gold}${half}`}
+                gradientUnits="userSpaceOnUse"
+                x1={0}
+                y1={0}
+                x2={300}
+                y2={400}
+              >
+                {GOLD.map(([offset, color]) => (
+                  <stop key={offset} offset={offset} stopColor={color} />
+                ))}
+              </linearGradient>
+            </defs>
+            {ORBITS.map((orbit, i) => {
+              const rx = orbit.rx * 300;
+              const ry = orbit.ry * 400;
+              return (
+                <path
+                  key={orbit.tilt}
+                  d={`M ${150 - rx} 200 A ${rx} ${ry} 0 0 ${sweep} ${150 + rx} 200`}
+                  transform={`rotate(${orbit.tilt} 150 200)`}
+                  fill="none"
+                  stroke={`url(#${gold}${half})`}
+                  strokeWidth={1.2}
+                  pathLength={1}
+                  strokeDasharray="1 1"
+                  style={{ '--d': `${i * 100}ms` } as Vars}
+                  className={live ? LINE_LIVE : LINE_REST}
+                />
+              );
+            })}
+          </svg>
+        ))}
       <div
         ref={ref}
         aria-hidden="true"
@@ -113,17 +156,18 @@ export function NoteOrbit({ notes }: { notes: OrbitNoteDTO[] }) {
               >
                 <div className="flex [animation:orbit-bob_var(--bob)_ease-in-out_var(--bob-delay)_infinite] flex-col items-center [animation-play-state:paused] group-focus-within:[animation-play-state:running] group-hover:[animation-play-state:running] motion-reduce:[animation:none]">
                   <span className="relative block aspect-square w-full">
-                    <span className="border-hairline bg-background absolute inset-[17%] border" />
+                    <span className={BEAD} />
                     <Image
                       src={note.image}
                       alt=""
                       width={256}
                       height={256}
                       sizes="96px"
-                      className="relative size-full object-contain"
+                      className="relative size-full object-contain p-[6%] drop-shadow-[0_4px_5px_rgb(40_28_12/.22)]"
                     />
+                    <span className={GLINT} />
                   </span>
-                  <span className="text-foreground text-label -mt-1 font-mono whitespace-nowrap @max-[280px]:hidden">
+                  <span className="text-foreground text-label -mt-0.5 whitespace-nowrap @max-[280px]:hidden">
                     {note.name}
                   </span>
                 </div>

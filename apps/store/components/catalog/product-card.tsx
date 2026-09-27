@@ -51,7 +51,7 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
                 alt={product.name}
                 fill
                 sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
-                className={`object-contain p-6 mix-blend-multiply dark:mix-blend-normal z-[1]${
+                className={`z-[1] object-contain p-6 mix-blend-multiply dark:mix-blend-normal ${
                   orbit.length > 0
                     ? 'transition-[scale] duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-focus-within:scale-[.72] group-hover:scale-[.72] motion-reduce:transition-none'
                     : ''

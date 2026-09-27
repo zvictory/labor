@@ -3,6 +3,8 @@
 // Maps note slug → filename in /public/notes/orbit/.
 
 export const ORBIT_NOTE_FILES: Readonly<Record<string, string>> = {
+  agarwood: 'agarwood.webp',
   frankincense: 'frankincense.webp',
+  oud: 'oud.webp',
   raspberry: 'raspberry.webp',
 };
