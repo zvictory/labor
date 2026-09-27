@@ -26,6 +26,7 @@ interface Props {
     description: LocaleText;
     status: string;
     price: number;
+    featured: boolean;
     gender: string;
     concentration: string;
     brandId: number | null;
@@ -55,6 +56,7 @@ export function ProductForm({ locale, brands, initial }: Props) {
   const [description, setDescription] = useState<LocaleText>(initial?.description ?? { ru: '' });
   const [status, setStatus] = useState(initial?.status ?? 'draft');
   const [price, setPrice] = useState<string>(String(initial?.price ?? 0));
+  const [featured, setFeatured] = useState(initial?.featured ?? false);
   const [gender, setGender] = useState(initial?.gender ?? 'unisex');
   const [concentration, setConcentration] = useState(initial?.concentration ?? '');
   const [brandId, setBrandId] = useState<number | ''>(initial?.brandId ?? '');
@@ -74,6 +76,7 @@ export function ProductForm({ locale, brands, initial }: Props) {
       description: { ru: description.ru, uz: description.uz, en: description.en },
       status: status as 'active' | 'draft' | 'archived',
       price: Math.max(0, Math.round(Number(price) || 0)),
+      featured,
       gender: gender as 'men' | 'women' | 'unisex',
       concentration: concentration.trim() || undefined,
       brandId: brandId === '' ? null : brandId,
@@ -203,6 +206,17 @@ export function ProductForm({ locale, brands, initial }: Props) {
           ))}
         </select>
       </div>
+
+      <label className="text-ink flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={featured}
+          onChange={(e) => setFeatured(e.target.checked)}
+          className="h-4 w-4"
+        />
+        Показывать первым на главной
+        <span className="text-ink-muted">(снимет отметку с другого продукта)</span>
+      </label>
 
       {error && (
         <p className="border-destructive/30 bg-destructive/5 text-destructive rounded-md border px-4 py-2 text-sm">

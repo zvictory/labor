@@ -87,6 +87,7 @@ const upsertProductSchema = z.object({
   gender: z.enum(['men', 'women', 'unisex']),
   concentration: z.string().trim().max(60).optional(),
   brandId: z.number().int().positive().nullable().optional(),
+  featured: z.boolean().optional(),
 });
 
 export type UpsertProductInput = z.input<typeof upsertProductSchema>;
@@ -121,6 +122,7 @@ export async function upsertProduct(input: UpsertProductInput): Promise<ActionRe
           description: v.description ? JSON.stringify(v.description) : undefined,
           status: v.status,
           price: v.price,
+          ...(v.featured === undefined ? {} : { featured: v.featured }),
           fragrance: {
             upsert: { create: fragranceData, update: fragranceData },
           },
@@ -136,11 +138,22 @@ export async function upsertProduct(input: UpsertProductInput): Promise<ActionRe
           description: v.description ? JSON.stringify(v.description) : undefined,
           status: v.status,
           price: v.price,
+          featured: v.featured ?? false,
           fragrance: { create: fragranceData },
         },
         select: { id: true },
       });
       productId = created.id;
+    }
+
+    // The home page has room for one. Clearing the others here, rather than
+    // picking among several at read time, keeps what the admin sees ticked and
+    // what the customer sees the same product.
+    if (v.featured) {
+      await db.product.updateMany({
+        where: { featured: true, id: { not: productId } },
+        data: { featured: false },
+      });
     }
 
     revalidateAdmin(ADMIN_BASE);

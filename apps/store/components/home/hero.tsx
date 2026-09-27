@@ -1,76 +1,128 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
-// One object, one sentence, one action.
-//
-// This replaces HeroSlider, which showed two full-bleed photographs on an 8s
-// timer behind a blurred glass panel. Three reasons it had to go: a slideshow
-// decides for the visitor what they look at and for how long; the frosted panel
-// over a photograph is the one texture the shop has nowhere; and a rotating
-// banner cannot be the same gesture as the single lit bottle on the island.
-//
-// The shop's opening move is one object on a bare surface. So is this. Depth
-// lives below the fold, in the twelve, exactly as it lives in the drawers.
+import type { ProductDetailDTO } from '@/lib/catalog/types';
+import { formatUzs } from '@/lib/money';
+import { TELEGRAM_URL } from '@/lib/telegram';
+import { AddToCart } from '@/components/cart/add-to-cart';
+import { TickScale, toTicks } from '@/components/catalog/tick-scale';
+
+// The home page opens on one bottle, and the first screen of a phone is enough
+// to buy it: name, what it smells like, how long it lasts, the price and the
+// button. The photo takes whatever height is left (never under 90 px) so the
+// action stays above the fold from a 667 px phone up.
+
+type Lang = 'en' | 'ru' | 'uz';
+
+const COPY: Record<Lang, { decant: string; telegram: string; trust: string }> = {
+  ru: {
+    decant: 'Декант',
+    telegram: 'Или закажите в Telegram',
+    trust: 'Только оригинал · Доставка по Узбекистану · Оплата при получении или картой',
+  },
+  en: {
+    decant: 'Decant',
+    telegram: 'Or order on Telegram',
+    trust: 'Authentic only · Delivery across Uzbekistan · Pay on delivery or by card',
+  },
+  uz: {
+    decant: 'Dekant',
+    telegram: 'Yoki Telegramda buyurtma bering',
+    trust:
+      'Faqat original · Oʻzbekiston boʻylab yetkazish · Qabul qilganda yoki karta bilan toʻlov',
+  },
+};
+
+// One note per layer: how the scent opens, sits and dries down.
+const arcOf = (notes: ProductDetailDTO['notes']): string[] =>
+  [notes.top[0], notes.middle[0], notes.base[0]].flatMap((n) => (n ? [n.name] : []));
+
 export function Hero({
-  image,
-  tagline,
-  headline,
-  sub,
-  cta,
-  href,
-  code,
+  product,
+  locale,
+  lang,
 }: {
-  image: string;
-  tagline: string;
-  headline: string;
-  sub: string;
-  cta: string;
-  href: string;
-  code: string;
+  product: ProductDetailDTO;
+  locale: string;
+  lang: Lang;
 }) {
+  const t = useTranslations('product');
+  const c = COPY[lang];
+  const pdp = `/${locale}/product/${product.slug}`;
+  const codeLine = [
+    product.brand,
+    product.volume_ml ? `${c.decant} ${t('volumeShort', { ml: product.volume_ml })}` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
+  const arc = arcOf(product.notes);
+
   return (
     <section className="border-border border-b">
-      <div className="container grid items-center gap-12 py-16 md:grid-cols-2 md:gap-16 md:py-24">
-        {/* Text — left on desktop, second on mobile so the object leads there too */}
-        <div className="order-2 max-w-lg space-y-6 md:order-1">
-          <span className="text-muted-foreground text-micro block font-mono tracking-[0.28em] uppercase">
-            {code}
-          </span>
+      <div className="container flex h-[clamp(400px,calc(100svh-230px),500px)] flex-col gap-3 py-4 md:grid md:h-auto md:grid-cols-2 md:items-center md:gap-12 md:py-16">
+        <Link href={pdp} className="relative min-h-[90px] flex-1 md:h-[480px] md:flex-none">
+          {product.image && (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              priority
+              sizes="(min-width:768px) 50vw, 100vw"
+              className="object-contain mix-blend-multiply dark:mix-blend-normal"
+            />
+          )}
+        </Link>
 
-          <h1 className="text-4xl leading-[1.05] font-semibold tracking-[-0.02em] md:text-6xl">
-            {headline}
-          </h1>
-
-          <p className="text-muted-foreground max-w-md text-sm leading-relaxed">{sub}</p>
-
-          <div className="pt-2">
-            <Link
-              href={href}
-              className="bg-foreground text-background text-label inline-flex h-11 items-center px-7 font-semibold tracking-[0.18em] whitespace-nowrap uppercase transition-opacity hover:opacity-80"
-            >
-              {cta}
-            </Link>
+        <div className="flex shrink-0 flex-col gap-3 md:gap-8">
+          <div className="flex flex-col gap-2">
+            {codeLine && (
+              <p className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
+                {codeLine}
+              </p>
+            )}
+            <h1 className="text-[32px] leading-9 font-semibold tracking-[-0.025em] md:text-5xl md:leading-[1.05]">
+              <Link href={pdp}>{product.name}</Link>
+            </h1>
+            {arc.length > 0 && (
+              <p className="text-muted-foreground text-label font-mono">{arc.join(' · ')}</p>
+            )}
+            <div className="flex items-end justify-between gap-4 pt-0.5">
+              <div className="flex gap-5">
+                <Measure label={t('longevity')} ticks={toTicks(product.avg_longevity, 10)} />
+                <Measure label={t('sillage')} ticks={toTicks(product.avg_sillage, 10)} />
+              </div>
+              <p className="font-mono text-[15px] leading-5 whitespace-nowrap tabular-nums">
+                {formatUzs(product.price, locale)}
+              </p>
+            </div>
           </div>
 
-          {/* The tagline reads as a caption under a rule, the way the shelf
-              label sits under the object — not as a chip beside the button. */}
-          <p className="border-border text-muted-foreground text-micro border-t pt-4 font-mono leading-relaxed tracking-[0.2em] uppercase">
-            {tagline}
-          </p>
-        </div>
-
-        {/* The object. Hairline frame, no overlay, no drift, no gradient. */}
-        <div className="border-border relative order-1 aspect-[4/5] w-full border md:order-2">
-          <Image
-            src={image}
-            alt={headline}
-            fill
-            priority
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-          />
+          <div className="flex flex-col">
+            <AddToCart productId={product.id} locale={locale} />
+            <a
+              href={TELEGRAM_URL}
+              className="flex min-h-11 items-center justify-center font-mono text-xs underline underline-offset-4"
+            >
+              {c.telegram}
+            </a>
+            <p className="text-muted-foreground text-label text-center font-mono text-balance">
+              {c.trust}
+            </p>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function Measure({ label, ticks }: { label: string; ticks: number }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-muted-foreground text-micro font-mono leading-3 tracking-[0.16em] uppercase">
+        {label}
+      </span>
+      <TickScale value={ticks} label={label} />
+    </div>
   );
 }

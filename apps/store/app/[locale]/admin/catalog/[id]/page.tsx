@@ -79,6 +79,7 @@ export default async function AdminProductEditPage({ params }: PageProps) {
             description: product.description,
             status: product.status,
             price: product.price,
+            featured: product.featured,
             gender: product.gender,
             concentration: product.concentration,
             brandId: product.brandId,

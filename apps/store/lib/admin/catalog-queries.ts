@@ -149,6 +149,7 @@ export interface AdminProduct {
   description: LocaleText;
   status: string;
   price: number;
+  featured: boolean;
   gender: string;
   concentration: string;
   brandId: number | null;
@@ -168,6 +169,7 @@ export const getAdminProduct = async (id: number): Promise<AdminProduct | null> 
       description: true,
       status: true,
       price: true,
+      featured: true,
       fragrance: {
         select: { gender: true, concentration: true, brandId: true },
       },
@@ -213,6 +215,7 @@ export const getAdminProduct = async (id: number): Promise<AdminProduct | null> 
     description: toLocaleText(product.description),
     status: product.status,
     price: product.price,
+    featured: product.featured,
     gender: product.fragrance?.gender ?? 'unisex',
     concentration: product.fragrance?.concentration ?? '',
     brandId: product.fragrance?.brandId ?? null,

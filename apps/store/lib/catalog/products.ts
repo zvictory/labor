@@ -65,8 +65,13 @@ const cardSelect = {
       // three fields the paper tester label carries.
       concentration: true,
       volumeMl: true,
+      avgLongevity: true,
       brand: { select: { name: true } },
     },
+  },
+  notes: {
+    orderBy: { position: 'asc' },
+    select: { pyramidLayer: true, note: { select: { name: true } } },
   },
   accords: {
     orderBy: { weight: 'desc' },
@@ -78,6 +83,16 @@ const cardSelect = {
 } satisfies Prisma.ProductSelect;
 
 type ProductCardRow = Prisma.ProductGetPayload<{ select: typeof cardSelect }>;
+
+// Three notes read as the arc of a scent — how it opens, sits and dries down —
+// where the first three by position are usually all from the opening.
+const LAYER_ORDER = ['top', 'middle', 'base'] as const;
+
+const pickLayerNotes = (rows: ProductCardRow['notes'], locale: string): string[] =>
+  LAYER_ORDER.flatMap((layer) => {
+    const row = rows.find((n) => toPyramidLayer(n.pyramidLayer) === layer);
+    return row ? [resolveLocaleText(row.note.name, locale)] : [];
+  });
 
 const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
   const fragrance = row.fragrance;
@@ -102,6 +117,8 @@ const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
     concentration: fragrance?.concentration ?? null,
     volume_ml: fragrance?.volumeMl ?? null,
     top_accord,
+    notes: pickLayerNotes(row.notes, locale),
+    avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
   };
 };
 
@@ -182,6 +199,25 @@ export const listProducts = async (params: ListProductsParams): Promise<ListProd
     data: rows.map((row) => toProductCard(row, params.locale)),
     meta: { total, totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)) },
   };
+};
+
+/**
+ * The product the home page opens on: the one staff ticked in the admin, or —
+ * when none is — the highest-rated product that has a photograph.
+ */
+export const getFeaturedProduct = async (locale: string): Promise<ProductDetailDTO | null> => {
+  const picked =
+    (await db.product.findFirst({
+      where: { status: 'active', featured: true },
+      select: { slug: true },
+    })) ??
+    (await db.product.findFirst({
+      where: { status: 'active', images: { some: {} } },
+      orderBy: [{ fragrance: { avgRating: 'desc' } }, { fragrance: { votesCount: 'desc' } }],
+      select: { slug: true },
+    }));
+
+  return picked ? getProduct(picked.slug, locale) : null;
 };
 
 // ── product detail ─────────────────────────────────────────────────────────────

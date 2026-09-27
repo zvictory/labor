@@ -41,6 +41,10 @@ export interface ProductCardDTO {
   /** Decant size. The shop sells by volume, so the price is meaningless without it. */
   volume_ml?: number | null;
   top_accord?: { name: string; color_hex: string } | null;
+  /** One note from each layer of the pyramid, top first — the card's "A · B · C" line. */
+  notes: string[];
+  /** Imported average on a 0-10 scale. */
+  avg_longevity: number;
 }
 
 /// Note as surfaced on listing/browse pages.
