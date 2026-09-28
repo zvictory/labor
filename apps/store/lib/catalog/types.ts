@@ -43,7 +43,7 @@ export interface ProductCardDTO {
   top_accord?: { name: string; color_hex: string } | null;
   /** One note from each layer of the pyramid, top first — the card's "A · B · C" line. */
   notes: string[];
-  /** Up to six notes with a picture, top layer first; empty when fewer than three. */
+  /** Up to six notes with a picture, two from each layer, top layer first; empty when fewer than three. */
   orbit?: OrbitNoteDTO[];
   /** Imported average on a 0-10 scale. */
   avg_longevity: number;

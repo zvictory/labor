@@ -42,27 +42,33 @@ export const pickOrbitNotes = (
   files: Readonly<Record<string, string>> = ORBIT_NOTE_FILES,
 ): OrbitNoteDTO[] => {
   const seen = new Set<string>();
-  const candidates = LAYERS.flatMap((layer) =>
-    rows.filter((row) => toPyramidLayer(row.pyramidLayer) === layer),
-  ).flatMap(({ note }) => {
-    const picture = notePicture(
-      { slug: note.slug, ...(note.iconUrl ? { icon_url: note.iconUrl } : {}) },
-      files,
-    );
-    if (!picture || seen.has(note.slug)) return [];
-    seen.add(note.slug);
-    return [{ note, picture }];
-  });
-  // Our cut-outs take the six places first — the approved orbit was drawn with
-  // them, and Ombre Nomade keeps its oud — and photographs fill what is left.
-  // The badges still go round in the order the scent unfolds.
-  const chosen = new Set(
-    [
-      ...candidates.filter(({ picture }) => picture.cutout),
-      ...candidates.filter(({ picture }) => !picture.cutout),
-    ].slice(0, ORBIT_MAX),
+  const layers = LAYERS.map((layer) =>
+    rows
+      .filter((row) => toPyramidLayer(row.pyramidLayer) === layer)
+      .flatMap(({ note }) => {
+        const picture = notePicture(
+          { slug: note.slug, ...(note.iconUrl ? { icon_url: note.iconUrl } : {}) },
+          files,
+        );
+        if (!picture || seen.has(note.slug)) return [];
+        seen.add(note.slug);
+        return [{ note, picture }];
+      }),
   );
-  const picked = candidates
+  // One note from each layer per round, in the order the product lists them: the
+  // six places hold two top, two heart and two base notes, so the orbit shows the
+  // whole scent, and a layer with fewer leaves its places to the others. A cut-out
+  // gets no precedence over a photograph: it would put an oud listed last ahead of
+  // the notes that lead the base. The badges go round in the order the scent unfolds.
+  const chosen = new Set(
+    Array.from({ length: ORBIT_MAX }, (_, round) =>
+      layers.flatMap((layer) => layer.slice(round, round + 1)),
+    )
+      .flat()
+      .slice(0, ORBIT_MAX),
+  );
+  const picked = layers
+    .flat()
     .filter((candidate) => chosen.has(candidate))
     .map(({ note, picture }) => ({
       slug: note.slug,
