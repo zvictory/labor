@@ -100,4 +100,55 @@ export const DUPLICATE_PRODUCT_GROUPS: readonly DuplicateProductGroup[] = [
   { name: 'Symphony', keep: 'symphony', archive: ['symphony-2'] },
   { name: 'Tobacco Vanille', keep: 'tobacco-vanille', archive: ['tobacco-vanille-2'] },
   { name: 'Tygar', keep: 'tygar', archive: ['tygar-3'] },
+
+  // Twenty-four more, found 2026-09-29 once every product carried its Fragrantica
+  // id (fragrantica-sources.ts). Each pair points at one perfume under two names —
+  // "Silver Mountain" beside "Silver Mountain Water", "Smoke Cherry" beside
+  // "Cherry Smoke" — so no name match ever paired them. Same order of preference
+  // as above; where it keeps the row whose name is off, product-name-fixes.ts and
+  // product-brand-fixes.ts correct it.
+  { name: "Angels' Share", keep: 'angels-share-by', archive: ['angel-s-share'] },
+  { name: 'Apple Brandy', keep: 'apple-brandy', archive: ['apple-brandy-by'] },
+  { name: 'Aventus', keep: 'aventus', archive: ['aventus-man'] },
+  {
+    name: 'Baccarat Rouge 540',
+    keep: 'baccarat-rouge-540-maison',
+    archive: ['baccarat-rouge-540'],
+  },
+  { name: 'Black Phantom', keep: 'black-phantom-by', archive: ['black-phantom'] },
+  { name: 'Cherry Smoke', keep: 'cherry-smoke', archive: ['smoke-cherry'] },
+  { name: 'Devil’s Intrigue', keep: 'devil-s-intrigue', archive: ['devil-s-intrigue-haute'] },
+  {
+    name: 'Divine Blossom',
+    keep: 'divine-blossom',
+    archive: ['divine-blossom-haute-fragrance-company'],
+  },
+  { name: 'Elysium', keep: 'elysium-roja-dove', archive: ['elysium'] },
+  { name: 'English Pear & Freesia', keep: 'english-pear', archive: ['english-pear-freesia'] },
+  { name: 'Fabulous', keep: 'fabulous', archive: ['fucking-fabulous'] },
+  { name: 'Good Girl Gone Bad', keep: 'good-girl-gone-bad-by', archive: ['good-girl-gone-bad'] },
+  {
+    name: 'Indian Venus',
+    keep: 'indian-venus',
+    archive: ['indian-venus-haute-fragrance-company'],
+  },
+  {
+    name: 'Jump Up And Kiss Me Hedonistic',
+    keep: 'jump-up-and-kiss-me',
+    archive: ['jump-up-and-kiss-me-hedonistic-2021'],
+  },
+  {
+    name: 'Kissing Burns 6.4 Calories',
+    keep: 'kissing-burns-6-4-calories',
+    archive: ['kissing-burns-6-4'],
+  },
+  { name: 'L’Immensité', keep: 'l-immensit', archive: ['limmensite'] },
+  { name: 'Love Don’t Be Shy', keep: 'love-don-t-by-shy', archive: ['love-don-t-be-shy-by'] },
+  { name: 'Molecule 02', keep: 'molecule-02', archive: ['molecule-02-2'] },
+  { name: 'Montabaco', keep: 'montabaco', archive: ['montabaco-2'] },
+  { name: 'Musk Kashmir', keep: 'musk-kashmir', archive: ['attar-musc-kashmir'] },
+  { name: 'N4 Après l’Amour', keep: 'n4-apres-l-amour', archive: ['n4-apr-s-l-amour'] },
+  { name: 'Pink Molecule 090', keep: 'pink-molecule-090', archive: ['pink-mol-cule-090-09'] },
+  { name: 'Silver Mountain Water', keep: 'silver-mountain', archive: ['silver-mountain-water'] },
+  { name: 'Torino22', keep: 'torino22', archive: ['torino-22'] },
 ];
