@@ -1,0 +1,102 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "Ana sayfa · masaüstü 1440",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 3600
+    },
+    {
+      "file": "Mobile.dc.html",
+      "title": "Ana sayfa · mobil 390",
+      "x": 1560,
+      "y": 0,
+      "w": 390,
+      "h": 2500
+    },
+    {
+      "file": "Product.dc.html",
+      "title": "Ürün detay · iki katman",
+      "x": 2070,
+      "y": 0,
+      "w": 1440,
+      "h": 1900
+    },
+    {
+      "file": "System.dc.html",
+      "title": "Tasarım sistemi",
+      "x": 0,
+      "y": 3800,
+      "w": 1100,
+      "h": 1500
+    },
+    {
+      "file": "Components.dc.html",
+      "title": "Bileşenler · bugün ↔ olacak",
+      "x": 1220,
+      "y": 3800,
+      "w": 1100,
+      "h": 1150
+    },
+    {
+      "file": "LabelBridge.dc.html",
+      "title": "Etiket ↔ ekran köprüsü",
+      "x": 2440,
+      "y": 3800,
+      "w": 1100,
+      "h": 1120
+    },
+    {
+      "file": "MobileV2.dc.html",
+      "title": "Ana sayfa · mobil v2 · ru · kurul düzeltmeleri",
+      "x": 3630,
+      "y": 0,
+      "w": 390,
+      "h": 3550,
+      "expand": "fill"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "brief",
+      "x": 0,
+      "y": -230,
+      "w": 620,
+      "text": "Kurulun kararları:\n1 · Zemin off-white #F4F1EA, grafit nesne rengi\n2 · Archivo / JetBrains Mono / Newsreader — Story Script web'den kalkar\n3 · Ana sayfa: tek nesne + Seçilmiş 12, slider yok\n4 · Akor renkleri çizilmez — tek TickScale bileşeni\n5 · Create Your Own: anlatım, randevu yok — sayfanın tek amber bloğu"
+    },
+    {
+      "id": "mobil-kural",
+      "x": 1560,
+      "y": -230,
+      "w": 390,
+      "text": "Mobil kuralı: nesne bloğu 500 px — 844 px viewport'un %60'ı. Altından ilk iki kartın üst kenarı görünür kalır. Taşkent trafiği ağırlıkla mobil ve Telegram içi tarayıcı."
+    },
+    {
+      "id": "amber-kural",
+      "x": 2070,
+      "y": -230,
+      "w": 620,
+      "text": "Ürün sayfasında amber hiç yok: bütün işlem butonları grafit. Şişedeki sıvı amber ürünün kendisi, arayüz öğesi değil. Oy / puan / benzerler ikinci katmanda, kapalı duruyor — mağazadaki arşiv kutusuyla aynı mantık."
+    },
+    {
+      "id": "sistem-not",
+      "x": 0,
+      "y": 3640,
+      "w": 620,
+      "text": "Sistem sayfaları. Soldan sağa: renk ve tipografi · bugünkü kart ile olacak kartın yan yana karşılaştırması · mağazadaki 24×32 mm kâğıt etiketin ekran kartına eşlenmesi."
+    },
+    {
+      "id": "mobil-v2",
+      "x": 3630,
+      "y": -330,
+      "w": 620,
+      "text": "Mobil v2 — kurulun 16 Eylül düzeltmeleri. Orijinal mobil artboard dokunulmadan duruyor.\n· Rusça, metinler canlı ru.json'dan; fiyat 160 000 UZS · 10 мл (dekant kararı)\n· Hero 400–500 px ekran yüksekliğine göre, şişe alanı en az 90 px; В корзину + Telegram bağlantısı + güven satırı katlanma üstünde\n· Tüm dokunma hedefleri ≥ 44 px; en küçük yazı 10 px büyük harf, notalar ve güven satırı 11 px\n· Amber yalnız 'Создайте свой аромат' bloğunda; yer tutucu sıvılar #C9C4B8\n· Ürünler katalogdan gerçek kayıt; çubuklar gerçek stoykost verisi (0–10 → 5)\n· 'Подборка' — canlıdaki 'Избранное' istek listesiyle aynı adı taşıyor\n· Kiril: Archivo ve Newsreader'da Kiril yok — karar: Golos Text + Literata (canlı sitede de uygulandı)\n· Katalog verisi: 'Intense Cafe', 'Parfums Prives' aksansız kayıtlı\n· Doğrulanmamış: [N] tester, [АДРЕС], [ТЕЛЕФОН], hero ürünü seçimi (Isola Blu)"
+    }
+  ],
+  "launch": {
+    "view": "focused",
+    "file": "MobileV2.dc.html"
+  }
+}

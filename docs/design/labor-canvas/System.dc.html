@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
+    body { margin: 0; background: #F4F1EA; color: #121212;
+      font-family: Archivo, 'Helvetica Neue', Arial, sans-serif; }
+    a { color: #121212; } a:hover { color: #4A4B4D; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+    .micro { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #4A4B4D; }
+    .rule { height: 1px; background: #DDD8CC; }
+  </style>
+</helmet>
+
+<div style="padding: 56px 64px; display: flex; flex-direction: column; gap: 44px">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <div class="micro">Labor Parfum · laborparfum.com</div>
+      <div style="font-size: 34px; font-weight: 600; letter-spacing: -0.02em">Tasarım sistemi</div>
+    </div>
+    <img src="labor-seal.png" alt="Labor" style="width: 68px; height: 68px" />
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- RENK -->
+  <div style="display: flex; flex-direction: column; gap: 18px">
+    <div class="micro">01 · Renk — alan oranı 70 / 20 / 10</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="height: 120px; background: #F4F1EA; border: 1px solid #DDD8CC"></div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div class="mono" style="font-size: 13px; font-weight: 500">#F4F1EA</div>
+          <div style="font-size: 13px; color: #4A4B4D">Raw Off-White · zemin</div>
+          <div class="micro">%70 · sayfa tabanı</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="height: 120px; background: #121212"></div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div class="mono" style="font-size: 13px; font-weight: 500">#121212</div>
+          <div style="font-size: 13px; color: #4A4B4D">Deep Graphite · mürekkep</div>
+          <div class="micro">metin · nesne · birincil buton</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="height: 120px; background: #4A4B4D"></div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div class="mono" style="font-size: 13px; font-weight: 500">#4A4B4D</div>
+          <div style="font-size: 13px; color: #4A4B4D">Gunmetal · ikincil metin</div>
+          <div class="micro">%20 · ui · ikinci dil</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="height: 120px; background: #D9C3A5"></div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div class="mono" style="font-size: 13px; font-weight: 500">#D9C3A5</div>
+          <div style="font-size: 13px; color: #4A4B4D">Amber · tek vurgu</div>
+          <div class="micro">%10 · sayfada bir kez</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AMBER KURALI -->
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <div class="micro">02 · Amber'in tek kuralı — kontrast ölçüldü (WCAG 2.1)</div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+
+      <div style="border: 1px solid #DDD8CC; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <div style="background: #D9C3A5; color: #121212; padding: 14px 18px; font-size: 14px; font-weight: 600; text-align: center">Kendi parfümünü yarat</div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <div class="mono" style="font-size: 13px; font-weight: 700">11 : 1 &nbsp;DOĞRU</div>
+          <div style="font-size: 13px; color: #4A4B4D">Amber zemin, grafit yazı. Sayfadaki tek amber öğe budur.</div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #DDD8CC; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <div style="background: #F4F1EA; color: #D9C3A5; padding: 14px 18px; font-size: 14px; font-weight: 600; text-align: center; border: 1px solid #DDD8CC">Kendi parfümünü yarat</div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <div class="mono" style="font-size: 13px; font-weight: 700; color: #4A4B4D">1.5 : 1 &nbsp;YANLIŞ</div>
+          <div style="font-size: 13px; color: #4A4B4D">Off-white üstünde amber metin okunmaz. Amber asla yazı rengi değildir.</div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #DDD8CC; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+        <div style="background: #121212; color: #F4F1EA; padding: 14px 18px; font-size: 14px; font-weight: 600; text-align: center">Sepete ekle</div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <div class="mono" style="font-size: 13px; font-weight: 700">16.6 : 1 &nbsp;BİRİNCİL</div>
+          <div style="font-size: 13px; color: #4A4B4D">Bütün işlem butonları grafit. Amber satış değil, davet içindir.</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size: 13px; color: #4A4B4D; max-width: 780px">
+      Fotoğraftaki amber ayrı tutulur: şişedeki sıvı ürünün kendisidir, arayüz öğesi değildir. Kural arayüz için geçerli.
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- TİPOGRAFİ -->
+  <div style="display: flex; flex-direction: column; gap: 20px">
+    <div class="micro">03 · Tipografi — üç font, üç iş</div>
+
+    <div style="display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 28px 32px; align-items: baseline">
+
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <div style="font-size: 14px; font-weight: 600">Archivo</div>
+        <div class="micro">arayüz · başlık</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="font-size: 34px; font-weight: 600; letter-spacing: -0.02em">Seçilmiş on iki</div>
+        <div style="font-size: 22px; font-weight: 500">Bölüm başlığı 22 / 28</div>
+        <div style="font-size: 15px; line-height: 24px; max-width: 620px; text-wrap: pretty">Gövde metni 15 / 24. Arayüzün taşıyıcı boyu bu. Uzun okuma metni değil — etiket, buton, liste, kart.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <div style="font-size: 14px; font-weight: 600">JetBrains Mono</div>
+        <div class="micro">kod · rakam · ölçü</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div class="mono" style="font-size: 20px; letter-spacing: .04em">LB-W-014 · XJ-2211 · PM-0087</div>
+        <div class="mono" style="font-size: 15px; display: flex; flex-direction: column; gap: 2px">
+          <div>10 ML&nbsp;&nbsp;&nbsp;&nbsp;160 000 so'm</div>
+          <div>50 ML&nbsp;&nbsp;2 480 000 so'm</div>
+        </div>
+        <div style="font-size: 13px; color: #4A4B4D">Rakamlar tabular — sütunlar hizalanır. Ayırıcı kırılmaz boşluk, virgül veya nokta değil.</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <div style="font-size: 14px; font-weight: 600">Newsreader</div>
+        <div class="micro">uzun okuma</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="font-family: Newsreader, Georgia, serif; font-size: 19px; line-height: 30px; max-width: 620px; text-wrap: pretty">İlk dakikalarda keskin bergamot ve karabiber. İki saat sonra deri ve tütsü kalır, tene yakın durur. Ağır tütsüden hoşlanmayana uymaz.</div>
+        <div class="micro">koku tarifi · üç cümle kuralı</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- FORM KURALLARI -->
+  <div style="display: flex; flex-direction: column; gap: 16px">
+    <div class="micro">04 · Form — laboratuvar dili</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+      <div style="border: 1px solid #DDD8CC; padding: 20px; display: flex; flex-direction: column; gap: 6px">
+        <div class="mono" style="font-size: 22px; font-weight: 700">0</div>
+        <div style="font-size: 13px; color: #4A4B4D">Köşe yarıçapı. Etiket, tablo, tick — hiçbiri yuvarlak değildir.</div>
+      </div>
+      <div style="border: 1px solid #DDD8CC; padding: 20px; display: flex; flex-direction: column; gap: 6px">
+        <div class="mono" style="font-size: 22px; font-weight: 700">yok</div>
+        <div style="font-size: 13px; color: #4A4B4D">Gölge. Ayırıcı tek şey 1 px saç çizgisi: #DDD8CC.</div>
+      </div>
+      <div style="border: 1px solid #DDD8CC; padding: 20px; display: flex; flex-direction: column; gap: 6px">
+        <div class="mono" style="font-size: 22px; font-weight: 700">12</div>
+        <div style="font-size: 13px; color: #4A4B4D">Ekranda aynı anda görünen ürün. Mağaza adasında 84 tester.</div>
+      </div>
+      <div style="border: 1px solid #DDD8CC; padding: 20px; display: flex; flex-direction: column; gap: 6px">
+        <div class="mono" style="font-size: 22px; font-weight: 700">1</div>
+        <div style="font-size: 13px; color: #4A4B4D">Sayfa başına amber blok. İki tanesi ikisini de sıradanlaştırır.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

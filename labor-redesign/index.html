@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Labor — Парфюмерная лаборатория · Ташкент</title>
+<meta name="description" content="Labor — нишевая и кастомная парфюмерия в Ташкенте. Аромат как подпись. Подбор аромата, ноты, бренды, парфюмеры, доставка по Узбекистану." />
+<meta property="og:title" content="Labor — A scent like a signature" />
+<meta property="og:description" content="Niche & custom perfumery in Tashkent. Find the fragrance that speaks before you do." />
+<meta property="og:type" content="website" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Store","name":"Labor Parfum","description":"Niche and custom perfumery in Tashkent","address":{"@type":"PostalAddress","addressLocality":"Tashkent","addressCountry":"UZ"},"priceRange":"UZS"}
+</script>
+<style>
+/* ---------- Labor brand fonts (self-hosted, matching production) ----------
+   Source: apps/web/public/fonts via apps/web/src/lib/fonts.ts + tailwind.config.ts
+   Roboto Slab  -> body/nav/buttons (Apache-2.0, full Cyrillic incl. Uzbek)
+   Story Script -> headings + brand wordmark (SIL OFL 1.1, Latin-only;
+                   RU/UZ fall back to Georgia serif exactly as on the live site) */
+@font-face{
+  font-family:"Roboto Slab";
+  src:url("assets/fonts/RobotoSlab-VariableFont.ttf") format("truetype-variations"),
+      url("assets/fonts/RobotoSlab-VariableFont.ttf") format("truetype");
+  font-weight:100 900;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:"Story Script";
+  src:url("assets/fonts/StoryScript-Regular.ttf") format("truetype");
+  font-weight:400;font-style:normal;font-display:swap;
+}
+:root{
+  --ink:#1a1714;        /* near-black warm */
+  --ink-soft:#3c352e;
+  --ivory:#f4efe7;      /* paper */
+  --ivory-2:#ece4d8;
+  --champagne:#c9a86a;  /* metal, used sparingly */
+  --champagne-soft:#e3cfa4;
+  --rose:#b08a86;
+  --line:rgba(26,23,20,.14);
+  --line-on-dark:rgba(244,239,231,.16);
+  --shadow:0 24px 60px -28px rgba(26,23,20,.45);
+  --r:14px;
+  --maxw:1240px;
+  /* Labor production font system (display=Story Script, sans=Roboto Slab),
+     with the same Georgia/serif fallback chain used in tailwind.config.ts */
+  --serif:"Story Script",Georgia,serif;   /* display / headings / wordmark */
+  --sans:"Roboto Slab",Georgia,serif;      /* body / nav / buttons */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--ivory);
+  font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* Story Script is a single-weight (400) script with tall ascenders/descenders:
+   use weight 400 (no faux-bold), no tracking, and a little more leading. The
+   Georgia fallback used for Cyrillic RU/UZ headings also reads well at these. */
+h1,h2,h3,.serif{font-family:var(--serif);font-weight:400;line-height:1.16;letter-spacing:0}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img{max-width:100%;display:block}
+.eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--champagne)}
+.muted{color:var(--ink-soft)}
+section{position:relative}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .mist,.float{animation:none!important}
+}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:14px 26px;border-radius:100px;font-size:13px;letter-spacing:.04em;font-weight:500;
+  transition:transform .25s,background .25s,color .25s,border-color .25s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--ink);color:var(--ivory)}
+.btn-primary:hover{background:#000}
+.btn-ghost{border:1px solid var(--line);background:transparent}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-gold{background:var(--champagne);color:var(--ink)}
+.btn-gold:hover{background:var(--champagne-soft)}
+.btn-tg{background:#229ED9;color:#fff}
+.btn-tg:hover{background:#1c8dc4}
+.btn-block{width:100%}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:60;background:rgba(244,239,231,.82);
+  backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:26px;height:70px}
+/* Wordmark matches the live site: Story Script, normal case, normal tracking */
+.brand{font-family:var(--serif);font-size:38px;line-height:.9;letter-spacing:0;font-weight:400;text-transform:none}
+.brand small{font-size:9px;letter-spacing:.28em;text-transform:uppercase;display:block;color:var(--ink-soft);font-family:var(--sans);font-weight:500;margin-top:0}
+.nav-links{display:flex;gap:22px;margin-left:14px}
+.nav-links a{font-size:13px;letter-spacing:.03em;position:relative;padding:6px 0;color:var(--ink-soft)}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--ink);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.icon-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;position:relative;transition:background .2s}
+.icon-btn:hover{background:var(--ivory-2)}
+.icon-btn svg{width:19px;height:19px}
+.cart-count{position:absolute;top:2px;right:2px;background:var(--champagne);color:var(--ink);font-size:10px;font-weight:600;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;font-family:var(--sans);padding:0 4px}
+.lang{display:flex;border:1px solid var(--line);border-radius:100px;overflow:hidden}
+.lang button{padding:6px 11px;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink-soft);text-transform:uppercase}
+.lang button.on{background:var(--ink);color:var(--ivory)}
+.burger{display:none}
+
+/* ---------- hero ---------- */
+.hero{min-height:92vh;display:flex;align-items:center;background:
+  radial-gradient(120% 90% at 80% 0%,#2a2420 0%,#1a1714 42%,#120f0d 100%);
+  color:var(--ivory);position:relative;overflow:hidden}
+.hero .wrap{position:relative;z-index:3;padding-top:60px;padding-bottom:60px}
+.hero-eyebrow{color:var(--champagne-soft)}
+.hero h1{font-size:clamp(46px,8vw,104px);margin:18px 0 0;letter-spacing:-.01em}
+.hero h1 em{font-style:italic;color:var(--champagne-soft)}
+.hero p{max-width:520px;margin:24px 0 34px;color:rgba(244,239,231,.78);font-size:17px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-meta{margin-top:48px;display:flex;gap:38px;flex-wrap:wrap;color:rgba(244,239,231,.62);font-size:12.5px;letter-spacing:.04em}
+.hero-meta b{display:block;font-family:var(--serif);font-size:30px;color:var(--ivory);font-weight:500;letter-spacing:0}
+.mist{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;z-index:1}
+.mist.a{width:520px;height:520px;background:radial-gradient(circle,#7a5a36,transparent 70%);top:-120px;right:-80px;animation:drift 18s ease-in-out infinite}
+.mist.b{width:420px;height:420px;background:radial-gradient(circle,#5e4b6e,transparent 70%);bottom:-140px;left:10%;animation:drift 22s ease-in-out infinite reverse}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+.hero-bottle{position:absolute;right:6%;top:50%;transform:translateY(-50%);z-index:2;width:min(34vw,420px);height:min(60vh,560px);
+  background:linear-gradient(160deg,rgba(201,168,106,.22),rgba(176,138,134,.10));
+  border:1px solid rgba(227,207,164,.25);border-radius:200px 200px 26px 26px;backdrop-filter:blur(2px);
+  box-shadow:inset 0 0 80px rgba(227,207,164,.12);animation:float 7s ease-in-out infinite}
+.hero-bottle::before{content:"";position:absolute;left:50%;top:-26px;transform:translateX(-50%);width:64px;height:42px;background:linear-gradient(var(--champagne),#9c7e44);border-radius:8px}
+.hero-bottle span{position:absolute;left:50%;bottom:54px;transform:translateX(-50%);font-family:var(--serif);font-size:30px;letter-spacing:.2em;color:rgba(244,239,231,.85)}
+@keyframes float{0%,100%{transform:translateY(-50%)}50%{transform:translateY(-56%)}}
+@media(max-width:900px){.hero-bottle{display:none}}
+
+/* ---------- section heading ---------- */
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:34px;flex-wrap:wrap}
+.shead h2{font-size:clamp(30px,4.4vw,48px)}
+.shead p{max-width:420px;color:var(--ink-soft);font-size:15px;margin-top:8px}
+.pad{padding:88px 0}
+.pad-sm{padding:60px 0}
+
+/* ---------- finder band ---------- */
+.finder-band{background:var(--ink);color:var(--ivory)}
+.finder-band .inner{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.finder-band h2{font-size:clamp(30px,4.4vw,50px)}
+.finder-band p{color:rgba(244,239,231,.72);margin:16px 0 26px;max-width:440px}
+.finder-steps{display:flex;gap:10px;flex-wrap:wrap}
+.finder-steps span{font-size:12px;letter-spacing:.04em;border:1px solid var(--line-on-dark);padding:8px 14px;border-radius:100px;color:rgba(244,239,231,.8)}
+@media(max-width:820px){.finder-band .inner{grid-template-columns:1fr}}
+
+/* ---------- moods ---------- */
+.mood-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mood{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4;display:flex;align-items:flex-end;padding:20px;color:#fff;cursor:pointer;isolation:isolate}
+.mood::after{content:"";position:absolute;inset:0;z-index:-1;transition:transform .6s}
+.mood:hover::after{transform:scale(1.06)}
+.mood::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(18,15,13,.75),transparent 60%)}
+.mood h3{font-size:22px;font-weight:500}
+.mood small{font-size:11px;letter-spacing:.04em;opacity:.85;display:block;margin-top:2px}
+.m1::after{background:linear-gradient(150deg,#3a4a3f,#243029)}
+.m2::after{background:linear-gradient(150deg,#5a3f44,#3a2326)}
+.m3::after{background:linear-gradient(150deg,#46566a,#2a3340)}
+.m4::after{background:linear-gradient(150deg,#6e5a3a,#41331f)}
+@media(max-width:760px){.mood-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- notes ---------- */
+.notes-row{display:flex;gap:12px;flex-wrap:wrap}
+.note-pill{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:100px;padding:9px 16px 9px 9px;font-size:13.5px;transition:border-color .2s,background .2s;cursor:pointer}
+.note-pill:hover{border-color:var(--ink);background:#fff}
+.note-dot{width:26px;height:26px;border-radius:50%;flex:none}
+
+/* ---------- catalog ---------- */
+.catalog-top{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.chip-row{display:flex;gap:9px;flex-wrap:wrap}
+.chip{font-size:12.5px;letter-spacing:.02em;border:1px solid var(--line);border-radius:100px;padding:8px 15px;color:var(--ink-soft);transition:all .2s}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+.select{margin-left:auto;border:1px solid var(--line);border-radius:100px;padding:9px 16px;font-size:12.5px;background:transparent;font-family:inherit;color:var(--ink)}
+.filter-btn{display:none}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:1080px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:transform .35s,box-shadow .35s;cursor:pointer}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.card-img{aspect-ratio:4/5;position:relative;display:grid;place-items:center;overflow:hidden}
+.card-img .bottle{width:46%;height:64%;border-radius:60px 60px 12px 12px;border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 0 40px rgba(255,255,255,.25);transition:transform .5s}
+.card:hover .card-img .bottle{transform:translateY(-6px) scale(1.03)}
+.card-img .bottle::before{content:"";position:absolute;top:14%;left:50%;transform:translateX(-50%);width:22px;height:16px;background:var(--ink);opacity:.55;border-radius:4px}
+.sample-tag{position:absolute;top:12px;left:12px;background:rgba(244,239,231,.9);color:var(--ink);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:5px 10px;border-radius:100px}
+.wish{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.85);display:grid;place-items:center;opacity:0;transition:opacity .25s}
+.card:hover .wish{opacity:1}
+.wish svg{width:16px;height:16px}
+.card-body{padding:15px 16px 17px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card-brand{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--champagne);font-weight:600}
+.card-name{font-family:var(--serif);font-size:20px;line-height:1.1}
+.card-fam{font-size:12px;color:var(--ink-soft)}
+.card-notes{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.tag{font-size:10.5px;letter-spacing:.02em;background:var(--ivory-2);border-radius:100px;padding:3px 9px;color:var(--ink-soft)}
+.card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px}
+.price{font-family:var(--serif);font-size:19px}
+.price small{font-family:var(--sans);font-size:11px;color:var(--ink-soft);letter-spacing:.02em}
+.rating{font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:4px}
+.star{color:var(--champagne)}
+.add{font-size:12px;font-weight:600;letter-spacing:.03em;border:1px solid var(--ink);border-radius:100px;padding:8px 14px;transition:background .2s,color .2s}
+.add:hover{background:var(--ink);color:var(--ivory)}
+
+/* ---------- campaigns ---------- */
+.camp-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+.camp{border-radius:var(--r);overflow:hidden;position:relative;min-height:300px;display:flex;align-items:flex-end;padding:30px;color:#fff;cursor:pointer}
+.camp::after{content:"";position:absolute;inset:0;z-index:-1;transition:transform .7s}.camp:hover::after{transform:scale(1.05)}
+.camp::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(18,15,13,.78),transparent 65%)}
+.camp.big::after{background:linear-gradient(135deg,#2a2018,#46342a)}
+.camp.sm::after{background:linear-gradient(135deg,#283443,#1c2530)}
+.camp h3{font-size:30px;font-weight:500}
+.camp p{font-size:13.5px;opacity:.85;margin-top:6px;max-width:340px}
+@media(max-width:760px){.camp-grid{grid-template-columns:1fr}}
+
+/* ---------- custom parfum ---------- */
+.custom{background:linear-gradient(150deg,#221c17,#15110e);color:var(--ivory)}
+.custom .inner{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.custom h2{font-size:clamp(32px,4.6vw,52px)}
+.custom p{color:rgba(244,239,231,.74);margin:16px 0 24px;max-width:440px}
+.steps{display:grid;gap:14px;margin-top:26px}
+.step{display:flex;gap:14px;align-items:flex-start}
+.step .n{font-family:var(--serif);font-size:22px;color:var(--champagne-soft);width:34px;flex:none}
+.step b{font-weight:500;display:block;font-size:15px}
+.step small{color:rgba(244,239,231,.66);font-size:13px}
+.cform{background:rgba(244,239,231,.05);border:1px solid var(--line-on-dark);border-radius:var(--r);padding:26px}
+.field{margin-bottom:14px}
+.field label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(244,239,231,.6);display:block;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:rgba(244,239,231,.06);border:1px solid var(--line-on-dark);border-radius:10px;padding:12px 14px;color:var(--ivory);font-family:inherit;font-size:14px}
+.field input:focus,.field select,.field textarea:focus{outline:2px solid var(--champagne)}
+.field textarea{resize:vertical;min-height:70px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:820px){.custom .inner{grid-template-columns:1fr}}
+
+/* ---------- trust ---------- */
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.trust{border:1px solid var(--line);border-radius:var(--r);padding:24px;background:#fff}
+.trust .ic{width:42px;height:42px;border-radius:11px;background:var(--ivory-2);display:grid;place-items:center;margin-bottom:14px}
+.trust .ic svg{width:20px;height:20px;color:var(--champagne)}
+.trust b{font-weight:500;font-size:16px;display:block;margin-bottom:5px}
+.trust small{color:var(--ink-soft);font-size:13px}
+@media(max-width:860px){.trust-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- telegram cta ---------- */
+.tg-cta{background:linear-gradient(120deg,#229ED9,#1c7fb0);color:#fff;border-radius:22px;padding:48px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.tg-cta h2{font-size:clamp(26px,3.6vw,40px)}
+.tg-cta p{opacity:.9;margin-top:8px;max-width:480px}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink);color:rgba(244,239,231,.7);padding:64px 0 30px;margin-top:10px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:30px;margin-bottom:40px}
+.foot-grid h4{color:var(--ivory);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:16px;font-family:var(--sans);font-weight:600}
+.foot-grid a{display:block;font-size:14px;padding:5px 0;color:rgba(244,239,231,.7)}
+.foot-grid a:hover{color:var(--ivory)}
+.foot-brand{font-family:var(--serif);font-size:44px;line-height:.9;letter-spacing:0;color:var(--ivory);text-transform:none}
+.foot-bottom{border-top:1px solid var(--line-on-dark);padding-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px}
+@media(max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
+
+/* ---------- drawers / modals ---------- */
+.scrim{position:fixed;inset:0;background:rgba(18,15,13,.5);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;transition:opacity .35s}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--ivory);z-index:95;transform:translateX(100%);transition:transform .4s cubic-bezier(.3,.8,.3,1);display:flex;flex-direction:column}
+.drawer.show{transform:none}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid var(--line)}
+.drawer-head h3{font-size:22px}
+.drawer-body{flex:1;overflow-y:auto;padding:18px 24px}
+.drawer-foot{border-top:1px solid var(--line);padding:20px 24px}
+.close{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;transition:background .2s}.close:hover{background:var(--ivory-2)}
+
+.cart-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.cart-item .ci-img{width:64px;height:80px;border-radius:8px;background:var(--ivory-2);flex:none;display:grid;place-items:center}
+.cart-item .ci-img div{width:50%;height:64%;border-radius:20px 20px 4px 4px;background:linear-gradient(160deg,#cdbfa6,#a8987c)}
+.ci-name{font-family:var(--serif);font-size:18px}
+.ci-meta{font-size:12px;color:var(--ink-soft)}
+.qty{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:100px;padding:3px 6px;margin-top:8px}
+.qty button{width:24px;height:24px;font-size:16px;line-height:1}
+.ci-price{margin-left:auto;font-family:var(--serif);font-size:16px;white-space:nowrap}
+.empty{text-align:center;color:var(--ink-soft);padding:60px 0}
+.cart-total{display:flex;justify-content:space-between;font-family:var(--serif);font-size:22px;margin-bottom:14px}
+
+/* big modal (PDP + finder) */
+.modal{position:fixed;inset:0;z-index:96;display:grid;place-items:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .35s}
+.modal.show{opacity:1;pointer-events:auto}
+.modal-card{background:var(--ivory);border-radius:20px;width:min(960px,100%);max-height:90vh;overflow-y:auto;position:relative;box-shadow:var(--shadow);transform:translateY(20px);transition:transform .4s}
+.modal.show .modal-card{transform:none}
+.modal-close{position:absolute;top:16px;right:16px;z-index:5;background:rgba(244,239,231,.9)}
+
+/* PDP */
+.pdp{display:grid;grid-template-columns:1fr 1fr}
+.pdp-media{background:linear-gradient(160deg,#2a2420,#16120f);min-height:420px;display:grid;place-items:center;position:relative}
+.pdp-media .bottle{width:130px;height:240px;border-radius:70px 70px 14px 14px;border:1px solid rgba(227,207,164,.3);box-shadow:inset 0 0 60px rgba(227,207,164,.15)}
+.pdp-info{padding:34px}
+.pyramid{margin:18px 0}
+.pyr-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.pyr-row .lvl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--champagne);width:74px;flex:none;padding-top:3px}
+.pyr-row .vals{font-size:14px}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.spec{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.spec small{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block}
+.spec b{font-weight:500;font-size:15px}
+.auth{display:flex;gap:10px;align-items:flex-start;background:var(--ivory-2);border-radius:10px;padding:14px;font-size:13px;color:var(--ink-soft);margin:8px 0 18px}
+.auth svg{width:18px;height:18px;color:var(--champagne);flex:none;margin-top:1px}
+.pdp-cta{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:760px){.pdp{grid-template-columns:1fr}.pdp-media{min-height:260px}}
+
+/* Finder */
+.finder{padding:34px}
+.finder .q{margin-bottom:6px}
+.finder .opts{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 8px}
+.opt{border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:14px;transition:all .2s;display:flex;align-items:center;gap:10px}
+.opt:hover{border-color:var(--ink)}
+.opt.on{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+.prog{height:3px;background:var(--ivory-2);border-radius:3px;margin-bottom:26px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--champagne);transition:width .4s}
+.finder-foot{display:flex;justify-content:space-between;align-items:center;margin-top:26px}
+.result{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);align-items:center}
+.result .ri{width:60px;height:76px;border-radius:8px;background:var(--ivory-2);flex:none;display:grid;place-items:center}
+.result .ri div{width:50%;height:64%;border-radius:18px 18px 4px 4px;background:linear-gradient(160deg,#cdbfa6,#a8987c)}
+.match{margin-left:auto;text-align:right;flex:none}
+.match b{font-family:var(--serif);font-size:24px;color:var(--champagne)}
+.match small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* sticky mobile add */
+.mobile-bar{display:none}
+
+/* mobile nav */
+.mnav{position:fixed;top:0;left:0;height:100%;width:min(360px,88vw);background:var(--ivory);z-index:95;transform:translateX(-100%);transition:transform .4s;padding:26px;display:flex;flex-direction:column;gap:6px}
+.mnav.show{transform:none}
+.mnav a{font-family:var(--serif);font-size:26px;padding:10px 0;border-bottom:1px solid var(--line)}
+
+@media(max-width:900px){
+  .nav-links{display:none}
+  .burger{display:grid}
+  .brand{font-size:22px}
+}
+@media(max-width:760px){
+  .wrap{padding:0 18px}
+  .pad{padding:60px 0}
+  .select{margin-left:0}
+  .filter-btn{display:inline-flex;margin-left:auto}
+  .catalog-top .chip-row{display:none}
+  .mobile-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:55;background:rgba(244,239,231,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:12px 16px;gap:10px;align-items:center}
+  .mobile-bar .mb-find{flex:1}
+  body.has-bar{padding-bottom:74px}
+}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--ivory);padding:13px 22px;border-radius:100px;font-size:13.5px;z-index:120;opacity:0;transition:all .35s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){.toast{bottom:84px}}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap nav">
+    <button class="icon-btn burger" aria-label="Menu" onclick="openMnav()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="#top" class="brand">Labor<small data-t="tagShort">Parfumerie · Tashkent</small></a>
+    <nav class="nav-links">
+      <a href="#catalog" data-t="navShop">Каталог</a>
+      <a href="#notes" data-t="navNotes">Ноты</a>
+      <a href="#campaigns" data-t="navBrands">Кампании</a>
+      <a href="#custom" data-t="navCustom">Кастом</a>
+      <a href="#trust" data-t="navAbout">О нас</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="ru" class="on" onclick="setLang('ru')">RU</button>
+        <button data-lang="uz" onclick="setLang('uz')">UZ</button>
+        <button data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="icon-btn" aria-label="Search" onclick="toast(T().searchSoon)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Cart" onclick="openCart()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2 4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4z"/><path d="M4 6h16M9 10a3 3 0 0 0 6 0"/></svg>
+        <span class="cart-count" id="cartCount" style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <span class="mist a"></span><span class="mist b"></span>
+  <div class="hero-bottle"><span>L</span></div>
+  <div class="wrap">
+    <span class="eyebrow hero-eyebrow" data-t="heroEyebrow">Нишевая и кастомная парфюмерия</span>
+    <h1 data-t="heroH1">Аромат<br>как <em>подпись</em></h1>
+    <p data-t="heroP">Лаборатория ароматов в Ташкенте. Мы помогаем найти запах, который говорит за вас — раньше, чем вы скажете слово.</p>
+    <div class="hero-cta">
+      <button class="btn btn-gold" onclick="openFinder()" data-t="heroCta1">Подобрать аромат</button>
+      <a href="#catalog" class="btn btn-ghost" style="border-color:var(--line-on-dark);color:var(--ivory)" data-t="heroCta2">Смотреть каталог</a>
+    </div>
+    <div class="hero-meta">
+      <div><b>240+</b><span data-t="heroM1">ароматов в подборке</span></div>
+      <div><b>18</b><span data-t="heroM2">нишевых домов</span></div>
+      <div><b>UZS</b><span data-t="heroM3">доставка по Узбекистану</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINDER BAND ============ -->
+<section class="finder-band pad-sm">
+  <div class="wrap inner">
+    <div>
+      <span class="eyebrow" data-t="finderEyebrow">Подбор аромата</span>
+      <h2 class="serif" data-t="finderH">Не можете выбрать? Аромат можно подобрать словами.</h2>
+      <p data-t="finderP">Запах нельзя понюхать онлайн — поэтому мы спрашиваем о настроении, поводе, нотах и интенсивности, и предлагаем три точных варианта.</p>
+      <button class="btn btn-gold" onclick="openFinder()" data-t="finderCta">Пройти подбор · 6 шагов</button>
+    </div>
+    <div class="finder-steps">
+      <span data-t="fs1">Настроение</span><span data-t="fs2">Повод</span><span data-t="fs3">Любимые ноты</span>
+      <span data-t="fs4">Нежелательные ноты</span><span data-t="fs5">Сезон</span><span data-t="fs6">Интенсивность</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MOODS ============ -->
+<section class="pad wrap reveal">
+  <div class="shead">
+    <div><span class="eyebrow" data-t="moodEyebrow">По настроению</span><h2 class="serif" data-t="moodH">Выберите состояние</h2></div>
+    <p data-t="moodP">Ароматы — это эмоция. Начните с того, как вы хотите себя чувствовать.</p>
+  </div>
+  <div class="mood-grid" id="moodGrid"></div>
+</section>
+
+<!-- ============ NOTES ============ -->
+<section class="pad-sm wrap reveal" id="notes">
+  <div class="shead">
+    <div><span class="eyebrow" data-t="noteEyebrow">По нотам</span><h2 class="serif" data-t="noteH">Язык запаха</h2></div>
+    <p data-t="noteP">Дерево, роза, мускус, уд. Нажмите ноту — мы покажем ароматы вокруг неё.</p>
+  </div>
+  <div class="notes-row" id="notesRow"></div>
+</section>
+
+<!-- ============ CATALOG ============ -->
+<section class="pad wrap reveal" id="catalog">
+  <div class="shead">
+    <div><span class="eyebrow" data-t="catEyebrow">Каталог</span><h2 class="serif" data-t="catH">Подборка дома Labor</h2></div>
+    <p data-t="catP">Каждый аромат отобран, описан и подписан. Пробники доступны почти на всё.</p>
+  </div>
+  <div class="catalog-top">
+    <div class="chip-row" id="famChips"></div>
+    <button class="btn btn-ghost filter-btn" onclick="openFilter()" data-t="filterBtn">Фильтры</button>
+    <select class="select" id="sortSel" onchange="renderCatalog()">
+      <option value="pop" data-t="sortPop">Популярные</option>
+      <option value="priceLow" data-t="sortLow">Цена: по возрастанию</option>
+      <option value="priceHigh" data-t="sortHigh">Цена: по убыванию</option>
+      <option value="rating" data-t="sortRate">По рейтингу</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- ============ CAMPAIGNS ============ -->
+<section class="pad-sm wrap reveal" id="campaigns">
+  <div class="shead">
+    <div><span class="eyebrow" data-t="campEyebrow">Кампании</span><h2 class="serif" data-t="campH">Сезонные истории</h2></div>
+  </div>
+  <div class="camp-grid">
+    <div class="camp big" onclick="filterFam('woody')">
+      <div><h3 class="serif" data-t="camp1H">Вечер в Ташкенте</h3><p data-t="camp1P">Тёплое дерево, амбра и дым после заката.</p></div>
+    </div>
+    <div class="camp sm" onclick="filterFam('fresh')">
+      <div><h3 class="serif" data-t="camp2H">Чистая кожа</h3><p data-t="camp2P">Мускус и бумага. Почти ничего — и это всё.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CUSTOM PARFUM ============ -->
+<section class="custom pad" id="custom">
+  <div class="wrap inner">
+    <div>
+      <span class="eyebrow" data-t="customEyebrow">Кастомный парфюм</span>
+      <h2 class="serif" data-t="customH">Аромат, созданный для одного человека</h2>
+      <p data-t="customP">Консультация, профиль запаха, подбор нот и флакон с гравировкой. От первой встречи до готового парфюма — около трёх недель.</p>
+      <div class="steps">
+        <div class="step"><span class="n">01</span><div><b data-t="cs1b">Консультация</b><small data-t="cs1s">Разговор о памяти, вкусах и поводе.</small></div></div>
+        <div class="step"><span class="n">02</span><div><b data-t="cs2b">Профиль аромата</b><small data-t="cs2s">Собираем ноты, которые вам подходят.</small></div></div>
+        <div class="step"><span class="n">03</span><div><b data-t="cs3b">Композиция и проба</b><small data-t="cs3s">Тестируем версии, дорабатываем баланс.</small></div></div>
+        <div class="step"><span class="n">04</span><div><b data-t="cs4b">Флакон с подписью</b><small data-t="cs4s">Гравировка имени и подарочная упаковка.</small></div></div>
+      </div>
+    </div>
+    <form class="cform" onsubmit="submitCustom(event)">
+      <div class="field"><label data-t="cf_name">Имя</label><input required placeholder="—"></div>
+      <div class="two">
+        <div class="field"><label data-t="cf_love">Любимые ноты</label><input placeholder="роза, уд…"></div>
+        <div class="field"><label data-t="cf_avoid">Нежелательные ноты</label><input placeholder="—"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label data-t="cf_purpose">Повод</label>
+          <select><option data-t="cf_p1">Для себя</option><option data-t="cf_p2">В подарок</option><option data-t="cf_p3">Свадьба / событие</option></select></div>
+        <div class="field"><label data-t="cf_budget">Бюджет (UZS)</label>
+          <select><option>1–2 млн</option><option>2–4 млн</option><option>4 млн+</option></select></div>
+      </div>
+      <div class="field"><label data-t="cf_tg">Telegram / телефон</label><input required placeholder="@username"></div>
+      <div class="field"><label data-t="cf_msg">Сообщение</label><textarea placeholder="—"></textarea></div>
+      <button class="btn btn-gold btn-block" type="submit" data-t="cf_send">Оставить заявку</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============ TRUST ============ -->
+<section class="pad wrap reveal" id="trust">
+  <div class="shead">
+    <div><span class="eyebrow" data-t="trustEyebrow">Почему Labor</span><h2 class="serif" data-t="trustH">Покупать спокойно</h2></div>
+  </div>
+  <div class="trust-grid">
+    <div class="trust"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg></div><b data-t="t1b">Только оригинал</b><small data-t="t1s">Прямые поставки и проверка подлинности каждой партии.</small></div>
+    <div class="trust"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h13v10H3zM16 10h3l2 3v4h-5"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div><b data-t="t2b">Доставка по UZ</b><small data-t="t2s">Ташкент в день заказа, регионы — 2–4 дня.</small></div>
+    <div class="trust"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><b data-t="t3b">Оплата как удобно</b><small data-t="t3s">Payme, Click, картой или наличными при получении.</small></div>
+    <div class="trust"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></div><b data-t="t4b">Пробники и помощь</b><small data-t="t4s">Возьмите декант, спросите в Telegram — поможем выбрать.</small></div>
+  </div>
+</section>
+
+<!-- ============ TELEGRAM CTA ============ -->
+<section class="pad-sm wrap reveal">
+  <div class="tg-cta">
+    <div>
+      <span class="eyebrow" style="color:rgba(255,255,255,.85)" data-t="tgEyebrow">Telegram mini-app</span>
+      <h2 class="serif" data-t="tgH">Заказывайте прямо в Telegram</h2>
+      <p data-t="tgP">Каталог, подбор и оформление — в один чат. Напишите нам, поможем подобрать аромат за минуту.</p>
+    </div>
+    <a href="#" class="btn" style="background:#fff;color:#1c7fb0" onclick="toast(T().tgSoon);return false" data-t="tgCta">Открыть в Telegram</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">Labor</div>
+        <p style="margin-top:14px;max-width:300px;font-size:14px" data-t="footAbout">Парфюмерная лаборатория в Ташкенте. Аромат как подпись.</p>
+      </div>
+      <div><h4 data-t="footShopH">Магазин</h4><a href="#catalog" data-t="navShop">Каталог</a><a href="#notes" data-t="navNotes">Ноты</a><a href="#campaigns" data-t="navBrands">Кампании</a><a href="#custom" data-t="navCustom">Кастом</a></div>
+      <div><h4 data-t="footHelpH">Помощь</h4><a href="#trust" data-t="footDeliv">Доставка и оплата</a><a href="#" onclick="return false" data-t="footAuth">Подлинность</a><a href="#" onclick="return false" data-t="footReturns">Возврат</a><a href="#custom" data-t="footFaq">FAQ</a></div>
+      <div><h4 data-t="footContactH">Контакты</h4><a href="#" onclick="return false">Tashkent</a><a href="#" onclick="return false">+998 — — —</a><a href="#" onclick="return false">Telegram</a><a href="#" onclick="return false">Instagram</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Labor Parfum</span><span data-t="footNote">Цены в UZS · Доставка по Узбекистану</span></div>
+  </div>
+</footer>
+
+<!-- ============ MOBILE STICKY BAR ============ -->
+<div class="mobile-bar">
+  <button class="btn btn-gold mb-find" onclick="openFinder()" data-t="heroCta1">Подобрать аромат</button>
+  <button class="btn btn-primary" onclick="openCart()" data-t="mbCart">Корзина</button>
+</div>
+
+<!-- ============ DRAWERS / MODALS ============ -->
+<div class="scrim" id="scrim" onclick="closeAll()"></div>
+
+<!-- mobile nav -->
+<nav class="mnav" id="mnav" aria-label="Mobile">
+  <button class="close" style="align-self:flex-end" onclick="closeAll()">✕</button>
+  <a href="#catalog" onclick="closeAll()" data-t="navShop">Каталог</a>
+  <a href="#notes" onclick="closeAll()" data-t="navNotes">Ноты</a>
+  <a href="#campaigns" onclick="closeAll()" data-t="navBrands">Кампании</a>
+  <a href="#custom" onclick="closeAll()" data-t="navCustom">Кастом</a>
+  <a href="#trust" onclick="closeAll()" data-t="navAbout">О нас</a>
+</nav>
+
+<!-- cart -->
+<aside class="drawer" id="cartDrawer" aria-label="Cart">
+  <div class="drawer-head"><h3 class="serif" data-t="cartH">Корзина</h3><button class="close" onclick="closeAll()">✕</button></div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot" id="cartFoot"></div>
+</aside>
+
+<!-- filter drawer (mobile) -->
+<aside class="drawer" id="filterDrawer" aria-label="Filters">
+  <div class="drawer-head"><h3 class="serif" data-t="filterH">Фильтры</h3><button class="close" onclick="closeAll()">✕</button></div>
+  <div class="drawer-body" id="filterBody"></div>
+  <div class="drawer-foot"><button class="btn btn-primary btn-block" onclick="closeAll()" data-t="filterApply">Показать</button></div>
+</aside>
+
+<!-- PDP modal -->
+<div class="modal" id="pdpModal"><div class="modal-card"><button class="close modal-close" onclick="closeAll()">✕</button><div id="pdpBody"></div></div></div>
+
+<!-- finder modal -->
+<div class="modal" id="finderModal"><div class="modal-card"><button class="close modal-close" onclick="closeAll()">✕</button><div id="finderBody" class="finder"></div></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   i18n — UI chrome fully translated (ru default · uz · en).
+   Product copy is RU-first with EN fallback; UZ falls back to RU
+   where a localized string is not yet provided (honest prototype).
+========================================================= */
+const I18N = {
+  ru:{tagShort:"Parfumerie · Tashkent",navShop:"Каталог",navNotes:"Ноты",navBrands:"Кампании",navCustom:"Кастом",navAbout:"О нас",
+    heroEyebrow:"Нишевая и кастомная парфюмерия",heroH1:"Аромат<br>как <em>подпись</em>",heroP:"Лаборатория ароматов в Ташкенте. Мы помогаем найти запах, который говорит за вас — раньше, чем вы скажете слово.",heroCta1:"Подобрать аромат",heroCta2:"Смотреть каталог",heroM1:"ароматов в подборке",heroM2:"нишевых домов",heroM3:"доставка по Узбекистану",
+    finderEyebrow:"Подбор аромата",finderH:"Не можете выбрать? Аромат можно подобрать словами.",finderP:"Запах нельзя понюхать онлайн — поэтому мы спрашиваем о настроении, поводе, нотах и интенсивности, и предлагаем три точных варианта.",finderCta:"Пройти подбор · 6 шагов",fs1:"Настроение",fs2:"Повод",fs3:"Любимые ноты",fs4:"Нежелательные ноты",fs5:"Сезон",fs6:"Интенсивность",
+    moodEyebrow:"По настроению",moodH:"Выберите состояние",moodP:"Ароматы — это эмоция. Начните с того, как вы хотите себя чувствовать.",
+    noteEyebrow:"По нотам",noteH:"Язык запаха",noteP:"Дерево, роза, мускус, уд. Нажмите ноту — мы покажем ароматы вокруг неё.",
+    catEyebrow:"Каталог",catH:"Подборка дома Labor",catP:"Каждый аромат отобран, описан и подписан. Пробники доступны почти на всё.",filterBtn:"Фильтры",sortPop:"Популярные",sortLow:"Цена: по возрастанию",sortHigh:"Цена: по убыванию",sortRate:"По рейтингу",
+    campEyebrow:"Кампании",campH:"Сезонные истории",camp1H:"Вечер в Ташкенте",camp1P:"Тёплое дерево, амбра и дым после заката.",camp2H:"Чистая кожа",camp2P:"Мускус и бумага. Почти ничего — и это всё.",
+    customEyebrow:"Кастомный парфюм",customH:"Аромат, созданный для одного человека",customP:"Консультация, профиль запаха, подбор нот и флакон с гравировкой. От первой встречи до готового парфюма — около трёх недель.",
+    cs1b:"Консультация",cs1s:"Разговор о памяти, вкусах и поводе.",cs2b:"Профиль аромата",cs2s:"Собираем ноты, которые вам подходят.",cs3b:"Композиция и проба",cs3s:"Тестируем версии, дорабатываем баланс.",cs4b:"Флакон с подписью",cs4s:"Гравировка имени и подарочная упаковка.",
+    cf_name:"Имя",cf_love:"Любимые ноты",cf_avoid:"Нежелательные ноты",cf_purpose:"Повод",cf_p1:"Для себя",cf_p2:"В подарок",cf_p3:"Свадьба / событие",cf_budget:"Бюджет (UZS)",cf_tg:"Telegram / телефон",cf_msg:"Сообщение",cf_send:"Оставить заявку",
+    trustEyebrow:"Почему Labor",trustH:"Покупать спокойно",t1b:"Только оригинал",t1s:"Прямые поставки и проверка подлинности каждой партии.",t2b:"Доставка по UZ",t2s:"Ташкент в день заказа, регионы — 2–4 дня.",t3b:"Оплата как удобно",t3s:"Payme, Click, картой или наличными при получении.",t4b:"Пробники и помощь",t4s:"Возьмите декант, спросите в Telegram — поможем выбрать.",
+    tgEyebrow:"Telegram mini-app",tgH:"Заказывайте прямо в Telegram",tgP:"Каталог, подбор и оформление — в один чат. Напишите нам, поможем подобрать аромат за минуту.",tgCta:"Открыть в Telegram",
+    footAbout:"Парфюмерная лаборатория в Ташкенте. Аромат как подпись.",footShopH:"Магазин",footHelpH:"Помощь",footDeliv:"Доставка и оплата",footAuth:"Подлинность",footReturns:"Возврат",footFaq:"FAQ",footContactH:"Контакты",footNote:"Цены в UZS · Доставка по Узбекистану",
+    cartH:"Корзина",filterH:"Фильтры",filterApply:"Показать",mbCart:"Корзина",
+    addToCart:"В корзину",sample:"Пробник",orderTg:"Заказать в Telegram",inCart:"Добавлено в корзину",emptyCart:"Корзина пуста",total:"Итого",checkout:"Оформить заказ",checkoutSoon:"Оформление подключается на проде",searchSoon:"Поиск скоро",tgSoon:"Telegram mini-app скоро",customSent:"Заявка отправлена — мы напишем в Telegram",
+    pdpStory:"История аромата",pdpPyr:"Пирамида нот",pdpTop:"Верх",pdpHeart:"Сердце",pdpBase:"База",pdpWhen:"Когда носить",pdpWho:"Кому подходит",longevity:"Стойкость",sillage:"Шлейф",volume:"Объём",family:"Семейство",auth:"Оригинал с проверкой подлинности. Пробник-декант доступен.",
+    fTitle:["Какое настроение вы ищете?","По какому поводу?","Какие ноты любите?","Чего избегать?","Какой сезон?","Какая интенсивность?"],
+    next:"Далее",back:"Назад",seeResults:"Показать результаты",yourMatches:"Ваши совпадения",finderIntro:"6 быстрых шагов — и три точных аромата.",viewProduct:"Открыть",restart:"Заново",
+    seasons:["Весна","Лето","Осень","Зима"],intens:["Лёгкая","Средняя","Насыщенная"],
+    moods:["Чистый","Чувственный","Свежий","Тёплый"],moodSub:["мускус, бумага","роза, амбра","цитрус, чай","дерево, ваниль"],
+    occ:["Каждый день","Вечер","Работа","Свидание","Особый случай"]},
+
+  en:{tagShort:"Parfumerie · Tashkent",navShop:"Shop",navNotes:"Notes",navBrands:"Campaigns",navCustom:"Custom",navAbout:"About",
+    heroEyebrow:"Niche & custom perfumery",heroH1:"A scent<br>like a <em>signature</em>",heroP:"A fragrance laboratory in Tashkent. We help you find the scent that speaks for you — before you say a word.",heroCta1:"Find your scent",heroCta2:"Browse the catalog",heroM1:"curated fragrances",heroM2:"niche houses",heroM3:"delivery across Uzbekistan",
+    finderEyebrow:"Scent finder",finderH:"Can't choose? A scent can be found in words.",finderP:"You can't smell a website — so we ask about mood, occasion, notes and intensity, and return three precise matches.",finderCta:"Take the finder · 6 steps",fs1:"Mood",fs2:"Occasion",fs3:"Notes you love",fs4:"Notes to avoid",fs5:"Season",fs6:"Intensity",
+    moodEyebrow:"By mood",moodH:"Choose a feeling",moodP:"Fragrance is emotion. Start with how you want to feel.",
+    noteEyebrow:"By notes",noteH:"The language of scent",noteP:"Wood, rose, musk, oud. Tap a note — we'll show the scents around it.",
+    catEyebrow:"Catalog",catH:"The Labor edit",catP:"Every scent is selected, described and signed. Samples available on almost everything.",filterBtn:"Filters",sortPop:"Popular",sortLow:"Price: low to high",sortHigh:"Price: high to low",sortRate:"Top rated",
+    campEyebrow:"Campaigns",campH:"Seasonal stories",camp1H:"Evening in Tashkent",camp1P:"Warm wood, amber and smoke after sunset.",camp2H:"Clean skin",camp2P:"Musk and paper. Almost nothing — and that's everything.",
+    customEyebrow:"Custom parfum",customH:"A scent made for one person",customP:"Consultation, scent profile, note selection and an engraved bottle. From first meeting to finished perfume — about three weeks.",
+    cs1b:"Consultation",cs1s:"A talk about memory, taste and occasion.",cs2b:"Scent profile",cs2s:"We gather the notes that suit you.",cs3b:"Composition & trial",cs3s:"We test versions and refine the balance.",cs4b:"Signed bottle",cs4s:"Name engraving and gift packaging.",
+    cf_name:"Name",cf_love:"Notes you love",cf_avoid:"Notes to avoid",cf_purpose:"Purpose",cf_p1:"For myself",cf_p2:"As a gift",cf_p3:"Wedding / event",cf_budget:"Budget (UZS)",cf_tg:"Telegram / phone",cf_msg:"Message",cf_send:"Send request",
+    trustEyebrow:"Why Labor",trustH:"Buy with confidence",t1b:"Authentic only",t1s:"Direct supply and authenticity checks on every batch.",t2b:"Delivery across UZ",t2s:"Same-day in Tashkent, 2–4 days to regions.",t3b:"Pay your way",t3s:"Payme, Click, card, or cash on delivery.",t4b:"Samples & help",t4s:"Take a decant, ask on Telegram — we'll help you choose.",
+    tgEyebrow:"Telegram mini-app",tgH:"Order right inside Telegram",tgP:"Catalog, finder and checkout in one chat. Message us and we'll match a scent in a minute.",tgCta:"Open in Telegram",
+    footAbout:"A fragrance laboratory in Tashkent. A scent like a signature.",footShopH:"Shop",footHelpH:"Help",footDeliv:"Delivery & payment",footAuth:"Authenticity",footReturns:"Returns",footFaq:"FAQ",footContactH:"Contacts",footNote:"Prices in UZS · Delivery across Uzbekistan",
+    cartH:"Cart",filterH:"Filters",filterApply:"Show results",mbCart:"Cart",
+    addToCart:"Add to cart",sample:"Sample",orderTg:"Order on Telegram",inCart:"Added to cart",emptyCart:"Your cart is empty",total:"Total",checkout:"Checkout",checkoutSoon:"Checkout connects in production",searchSoon:"Search coming soon",tgSoon:"Telegram mini-app coming soon",customSent:"Request sent — we'll message you on Telegram",
+    pdpStory:"The scent story",pdpPyr:"Notes pyramid",pdpTop:"Top",pdpHeart:"Heart",pdpBase:"Base",pdpWhen:"When to wear",pdpWho:"Who it suits",longevity:"Longevity",sillage:"Sillage",volume:"Volume",family:"Family",auth:"Authentic, verified. Decant sample available.",
+    fTitle:["What mood are you after?","What's the occasion?","Which notes do you love?","Anything to avoid?","Which season?","How intense?"],
+    next:"Next",back:"Back",seeResults:"See results",yourMatches:"Your matches",finderIntro:"6 quick steps — three precise scents.",viewProduct:"Open",restart:"Restart",
+    seasons:["Spring","Summer","Autumn","Winter"],intens:["Light","Medium","Bold"],
+    moods:["Clean","Sensual","Fresh","Warm"],moodSub:["musk, paper","rose, amber","citrus, tea","wood, vanilla"],
+    occ:["Everyday","Evening","Work","Date","Special"]},
+
+  uz:{tagShort:"Parfumeriya · Toshkent",navShop:"Katalog",navNotes:"Notalar",navBrands:"Kampaniyalar",navCustom:"Maxsus",navAbout:"Biz haqimizda",
+    heroEyebrow:"Nicha va maxsus parfumeriya",heroH1:"Hid —<br><em>imzo</em> kabi",heroP:"Toshkentdagi hidlar laboratoriyasi. Siz so'z aytishdan oldin siz haqingizda gapiradigan hidni topishga yordam beramiz.",heroCta1:"Hid tanlash",heroCta2:"Katalogni ko'rish",heroM1:"tanlangan hidlar",heroM2:"nicha uylar",heroM3:"O'zbekiston bo'ylab yetkazib berish",
+    finderEyebrow:"Hid tanlash",finderH:"Tanlay olmayapsizmi? Hidni so'zlar bilan topish mumkin.",finderP:"Hidni onlayn hidlab bo'lmaydi — shuning uchun kayfiyat, sabab, nota va kuchni so'raymiz va uchta aniq variant beramiz.",finderCta:"Tanlovni boshlash · 6 qadam",fs1:"Kayfiyat",fs2:"Sabab",fs3:"Yoqtirgan notalar",fs4:"Istalmagan notalar",fs5:"Fasl",fs6:"Kuchi",
+    moodEyebrow:"Kayfiyat bo'yicha",moodH:"Holatni tanlang",moodP:"Hid — bu his. O'zingizni qanday his qilishni xohlashingizdan boshlang.",
+    noteEyebrow:"Notalar bo'yicha",noteH:"Hid tili",noteP:"Yog'och, atirgul, mushk, ud. Notani bosing — atrofidagi hidlarni ko'rsatamiz.",
+    catEyebrow:"Katalog",catH:"Labor tanlovi",catP:"Har bir hid tanlangan, tavsiflangan va imzolangan. Deyarli hammasiga namuna bor.",filterBtn:"Filtrlar",sortPop:"Ommabop",sortLow:"Narx: o'sish",sortHigh:"Narx: kamayish",sortRate:"Reyting bo'yicha",
+    campEyebrow:"Kampaniyalar",campH:"Mavsumiy hikoyalar",camp1H:"Toshkent oqshomi",camp1P:"Iliq yog'och, ambra va quyosh botgandagi tutun.",camp2H:"Toza teri",camp2P:"Mushk va qog'oz. Deyarli hech narsa — va bu hammasi.",
+    customEyebrow:"Maxsus parfyum",customH:"Bir kishi uchun yaratilgan hid",customP:"Maslahat, hid profili, nota tanlash va gravirovkali flakon. Birinchi uchrashuvdan tayyor atirgacha — taxminan uch hafta.",
+    cs1b:"Maslahat",cs1s:"Xotira, ta'm va sabab haqida suhbat.",cs2b:"Hid profili",cs2s:"Sizga mos notalarni yig'amiz.",cs3b:"Kompozitsiya va sinov",cs3s:"Versiyalarni sinab, muvozanatni yaxshilaymiz.",cs4b:"Imzoli flakon",cs4s:"Ism gravirovkasi va sovg'a qadog'i.",
+    cf_name:"Ism",cf_love:"Yoqtirgan notalar",cf_avoid:"Istalmagan notalar",cf_purpose:"Sabab",cf_p1:"O'zim uchun",cf_p2:"Sovg'a",cf_p3:"To'y / tadbir",cf_budget:"Byudjet (UZS)",cf_tg:"Telegram / telefon",cf_msg:"Xabar",cf_send:"So'rov yuborish",
+    trustEyebrow:"Nega Labor",trustH:"Xotirjam xarid qiling",t1b:"Faqat original",t1s:"To'g'ridan-to'g'ri yetkazib berish va har partiyani tekshirish.",t2b:"UZ bo'ylab yetkazish",t2s:"Toshkentda shu kuni, viloyatlarga 2–4 kun.",t3b:"Qulay to'lov",t3s:"Payme, Click, karta yoki yetkazishda naqd.",t4b:"Namuna va yordam",t4s:"Dekant oling, Telegramda so'rang — tanlashga yordam beramiz.",
+    tgEyebrow:"Telegram mini-app",tgH:"To'g'ridan-to'g'ri Telegramda buyurtma bering",tgP:"Katalog, tanlov va rasmiylashtirish — bitta chatda. Bizga yozing, bir daqiqada hid tanlaymiz.",tgCta:"Telegramda ochish",
+    footAbout:"Toshkentdagi hidlar laboratoriyasi. Hid — imzo kabi.",footShopH:"Do'kon",footHelpH:"Yordam",footDeliv:"Yetkazish va to'lov",footAuth:"Haqiqiylik",footReturns:"Qaytarish",footFaq:"FAQ",footContactH:"Kontaktlar",footNote:"Narxlar UZS · O'zbekiston bo'ylab yetkazish",
+    cartH:"Savat",filterH:"Filtrlar",filterApply:"Ko'rsatish",mbCart:"Savat",
+    addToCart:"Savatga",sample:"Namuna",orderTg:"Telegramda buyurtma",inCart:"Savatga qo'shildi",emptyCart:"Savat bo'sh",total:"Jami",checkout:"Rasmiylashtirish",checkoutSoon:"Rasmiylashtirish prodda ulanadi",searchSoon:"Qidiruv tez orada",tgSoon:"Telegram mini-app tez orada",customSent:"So'rov yuborildi — Telegramda yozamiz",
+    pdpStory:"Hid hikoyasi",pdpPyr:"Notalar piramidasi",pdpTop:"Yuqori",pdpHeart:"Yurak",pdpBase:"Asos",pdpWhen:"Qachon kiyish",pdpWho:"Kimga mos",longevity:"Davomiyligi",sillage:"Iz",volume:"Hajm",family:"Oila",auth:"Original, tekshirilgan. Dekant namunasi bor.",
+    fTitle:["Qanday kayfiyat izlayapsiz?","Qanday sabab?","Qaysi notalarni yoqtirasiz?","Nimadan qochish kerak?","Qaysi fasl?","Qanchalik kuchli?"],
+    next:"Keyingi",back:"Orqaga",seeResults:"Natijalar",yourMatches:"Sizning mosliklaringiz",finderIntro:"6 tezkor qadam — uchta aniq hid.",viewProduct:"Ochish",restart:"Qaytadan",
+    seasons:["Bahor","Yoz","Kuz","Qish"],intens:["Yengil","O'rtacha","Kuchli"],
+    moods:["Toza","Hissiy","Yangi","Iliq"],moodSub:["mushk, qog'oz","atirgul, ambra","tsitrus, choy","yog'och, vanil"],
+    occ:["Har kuni","Oqshom","Ish","Uchrashuv","Maxsus"]}
+};
+let LANG="ru";
+const T=()=>I18N[LANG];
+
+/* =========================================================
+   Notes palette
+========================================================= */
+const NOTES={
+  sandalwood:{ru:"Сандал",en:"Sandalwood",uz:"Sandal",c:"#c2a878"},
+  rose:{ru:"Роза",en:"Rose",uz:"Atirgul",c:"#c98b93"},
+  bergamot:{ru:"Бергамот",en:"Bergamot",uz:"Bergamot",c:"#c9bd5e"},
+  musk:{ru:"Мускус",en:"Musk",uz:"Mushk",c:"#d8cdb8"},
+  oud:{ru:"Уд",en:"Oud",uz:"Ud",c:"#6e4a32"},
+  vanilla:{ru:"Ваниль",en:"Vanilla",uz:"Vanil",c:"#d8b878"},
+  vetiver:{ru:"Ветивер",en:"Vetiver",uz:"Vetiver",c:"#7a8a5e"},
+  amber:{ru:"Амбра",en:"Amber",uz:"Ambra",c:"#bd8a4a"},
+  jasmine:{ru:"Жасмин",en:"Jasmine",uz:"Yasemin",c:"#e7ddc7"},
+  tea:{ru:"Чёрный чай",en:"Black tea",uz:"Qora choy",c:"#8a6a4a"},
+  citrus:{ru:"Цитрус",en:"Citrus",uz:"Tsitrus",c:"#d8c24a"},
+  leather:{ru:"Кожа",en:"Leather",uz:"Teri",c:"#7a5230"}
+};
+const noteName=k=>NOTES[k]?NOTES[k][LANG]:k;
+
+const FAMS={
+  woody:{ru:"Древесные",en:"Woody",uz:"Yog'och"},
+  floral:{ru:"Цветочные",en:"Floral",uz:"Gulli"},
+  fresh:{ru:"Свежие",en:"Fresh",uz:"Yangi"},
+  oriental:{ru:"Восточные",en:"Oriental",uz:"Sharqona"},
+  gourmand:{ru:"Гурманские",en:"Gourmand",uz:"Gurman"}
+};
+const famName=k=>FAMS[k]?FAMS[k][LANG]:k;
+
+/* =========================================================
+   Sample products — structured so real data drops in directly.
+   price = UZS integer minor units (UZS has no minor unit).
+========================================================= */
+const PRODUCTS=[
+  {id:"l01",brand:"Atelier Noir",name:{ru:"Oud Royal",en:"Oud Royal",uz:"Oud Royal"},fam:"woody",gender:"unisex",price:2150000,vol:50,rating:4.8,reviews:64,sample:true,
+   top:["bergamot","citrus"],heart:["rose","saffron"],base:["oud","amber"],
+   moods:["warm","sensual"],seasons:[2,3],intensity:3,longevity:"8–10ч",sillage:"high",
+   story:{ru:"Дымный уд на подушке из розы и амбры. Глубокий, ночной, уверенный.",en:"Smoky oud on a bed of rose and amber. Deep, nocturnal, assured.",uz:"Atirgul va ambra ustidagi tutunli ud. Chuqur, tungi, ishonchli."},
+   when:{ru:"Вечер, холодный сезон",en:"Evening, cold season",uz:"Oqshom, sovuq fasl"},who:{ru:"Любителям тёплых восточных ароматов",en:"For lovers of warm orientals",uz:"Iliq sharqona hidlar uchun"}},
+  {id:"l02",brand:"Maison Vela",name:{ru:"Blanc Papier",en:"Blanc Papier",uz:"Blanc Papier"},fam:"fresh",gender:"unisex",price:1340000,vol:50,rating:4.6,reviews:41,sample:true,
+   top:["bergamot"],heart:["jasmine"],base:["musk"],
+   moods:["clean","fresh"],seasons:[0,1],intensity:1,longevity:"5–6ч",sillage:"soft",
+   story:{ru:"Чистая кожа и тёплая бумага. Минимализм, который читается как роскошь.",en:"Clean skin and warm paper. Minimalism that reads as luxury.",uz:"Toza teri va iliq qog'oz. Hashamat kabi o'qiladigan minimalizm."},
+   when:{ru:"Каждый день, офис",en:"Everyday, office",uz:"Har kuni, ofis"},who:{ru:"Тем, кто любит «чистые» ароматы",en:"For those who love clean scents",uz:"Toza hidlarni yoqtiradiganlar uchun"}},
+  {id:"l03",brand:"Atelier Noir",name:{ru:"Rose Cendre",en:"Rose Cendre",uz:"Rose Cendre"},fam:"floral",gender:"women",price:1680000,vol:50,rating:4.7,reviews:58,sample:true,
+   top:["bergamot"],heart:["rose","jasmine"],base:["musk","amber"],
+   moods:["sensual","warm"],seasons:[0,2],intensity:2,longevity:"6–8ч",sillage:"medium",
+   story:{ru:"Роза в пепле и тёплый мускус. Романтика без сладости.",en:"Rose in ash and warm musk. Romance without sweetness.",uz:"Kuldagi atirgul va iliq mushk. Shirinliksiz romantika."},
+   when:{ru:"Свидание, вечер",en:"Date, evening",uz:"Uchrashuv, oqshom"},who:{ru:"Любительницам цветочных с характером",en:"For florals with character",uz:"Xarakterli gulli hidlar uchun"}},
+  {id:"l04",brand:"Kора Lab",name:{ru:"Vetiver Brut",en:"Vetiver Brut",uz:"Vetiver Brut"},fam:"fresh",gender:"men",price:1490000,vol:100,rating:4.5,reviews:33,sample:true,
+   top:["citrus","bergamot"],heart:["vetiver"],base:["vetiver","musk"],
+   moods:["fresh","clean"],seasons:[1],intensity:2,longevity:"6–7ч",sillage:"medium",
+   story:{ru:"Зелёный ветивер и цитрус. Земля после дождя, но в костюме.",en:"Green vetiver and citrus. Earth after rain, but in a suit.",uz:"Yashil vetiver va tsitrus. Yomg'irdan keyingi yer, lekin kostyumda."},
+   when:{ru:"Лето, день",en:"Summer, daytime",uz:"Yoz, kunduzi"},who:{ru:"Любителям свежих древесных",en:"For fresh woody fans",uz:"Yangi yog'och hidlar uchun"}},
+  {id:"l05",brand:"Maison Vela",name:{ru:"Ambre Privé",en:"Ambre Privé",uz:"Ambre Privé"},fam:"oriental",gender:"unisex",price:2390000,vol:50,rating:4.9,reviews:77,sample:true,
+   top:["bergamot"],heart:["amber","rose"],base:["amber","vanilla","oud"],
+   moods:["warm","sensual"],seasons:[2,3],intensity:3,longevity:"9–12ч",sillage:"high",
+   story:{ru:"Густая амбра, ваниль и капля уда. Тепло, которое остаётся на одежде.",en:"Thick amber, vanilla and a drop of oud. Warmth that stays on cloth.",uz:"Quyuq ambra, vanil va bir tomchi ud. Kiyimda qoladigan iliqlik."},
+   when:{ru:"Зима, особый случай",en:"Winter, special",uz:"Qish, maxsus"},who:{ru:"Тем, кто любит шлейф",en:"For those who love sillage",uz:"Iz yoqtiradiganlar uchun"}},
+  {id:"l06",brand:"Кора Lab",name:{ru:"Thé Noir",en:"Thé Noir",uz:"Thé Noir"},fam:"woody",gender:"unisex",price:1560000,vol:50,rating:4.4,reviews:29,sample:true,
+   top:["bergamot","citrus"],heart:["tea"],base:["sandalwood","musk"],
+   moods:["clean","warm"],seasons:[0,2],intensity:2,longevity:"6–7ч",sillage:"medium",
+   story:{ru:"Чёрный чай и сандал. Тихий, умный, носибельный каждый день.",en:"Black tea and sandalwood. Quiet, smart, everyday-wearable.",uz:"Qora choy va sandal. Tinch, aqlli, har kuni kiysa bo'ladi."},
+   when:{ru:"Каждый день",en:"Everyday",uz:"Har kuni"},who:{ru:"Любителям чайных и древесных",en:"For tea & woody lovers",uz:"Choy va yog'och hidlar uchun"}},
+  {id:"l07",brand:"Atelier Noir",name:{ru:"Cuir Fumé",en:"Cuir Fumé",uz:"Cuir Fumé"},fam:"oriental",gender:"men",price:2050000,vol:50,rating:4.6,reviews:38,sample:true,
+   top:["bergamot"],heart:["leather"],base:["leather","oud","amber"],
+   moods:["warm","sensual"],seasons:[3],intensity:3,longevity:"8–10ч",sillage:"high",
+   story:{ru:"Дымная кожа и смола. Чёрный галстук в виде аромата.",en:"Smoky leather and resin. A black tie in the form of a scent.",uz:"Tutunli teri va smola. Hid ko'rinishidagi qora galstuk."},
+   when:{ru:"Вечер, событие",en:"Evening, event",uz:"Oqshom, tadbir"},who:{ru:"Для смелых вечерних образов",en:"For bold evening statements",uz:"Jasur oqshom uchun"}},
+  {id:"l08",brand:"Maison Vela",name:{ru:"Citrus Soleil",en:"Citrus Soleil",uz:"Citrus Soleil"},fam:"fresh",gender:"unisex",price:1190000,vol:100,rating:4.3,reviews:46,sample:true,
+   top:["citrus","bergamot"],heart:["jasmine"],base:["musk"],
+   moods:["fresh","clean"],seasons:[0,1],intensity:1,longevity:"4–5ч",sillage:"soft",
+   story:{ru:"Солнечный цитрус и капля жасмина. Лёгкое начало дня.",en:"Sunny citrus and a drop of jasmine. A light start to the day.",uz:"Quyoshli tsitrus va bir tomchi yasemin. Kunning yengil boshlanishi."},
+   when:{ru:"Утро, лето",en:"Morning, summer",uz:"Ertalab, yoz"},who:{ru:"Любителям лёгких цитрусов",en:"For light citrus fans",uz:"Yengil tsitrus uchun"}},
+  {id:"l09",brand:"Кора Lab",name:{ru:"Vanille Brûlée",en:"Vanille Brûlée",uz:"Vanille Brûlée"},fam:"gourmand",gender:"women",price:1720000,vol:50,rating:4.7,reviews:52,sample:true,
+   top:["bergamot"],heart:["vanilla"],base:["vanilla","sandalwood","amber"],
+   moods:["warm","sensual"],seasons:[2,3],intensity:2,longevity:"7–9ч",sillage:"medium",
+   story:{ru:"Жжёная ваниль и сандал. Сладко, но не приторно.",en:"Burnt vanilla and sandalwood. Sweet, but never cloying.",uz:"Kuygan vanil va sandal. Shirin, lekin me'yorida."},
+   when:{ru:"Осень, вечер",en:"Autumn, evening",uz:"Kuz, oqshom"},who:{ru:"Любителям гурманских",en:"For gourmand lovers",uz:"Gurman hidlar uchun"}},
+  {id:"l10",brand:"Atelier Noir",name:{ru:"Saffron Oud",en:"Saffron Oud",uz:"Saffron Oud"},fam:"oriental",gender:"unisex",price:2480000,vol:50,rating:4.8,reviews:61,sample:true,
+   top:["saffron","bergamot"],heart:["rose","oud"],base:["oud","amber","leather"],
+   moods:["warm","sensual"],seasons:[3],intensity:3,longevity:"10–12ч",sillage:"high",
+   story:{ru:"Шафран, роза и уд. Восточная роскошь в полную силу.",en:"Saffron, rose and oud. Oriental opulence at full strength.",uz:"Za'faron, atirgul va ud. To'liq kuchdagi sharqona hashamat."},
+   when:{ru:"Зима, особый случай",en:"Winter, special",uz:"Qish, maxsus"},who:{ru:"Ценителям нишевого уда",en:"For niche oud connoisseurs",uz:"Nicha ud biluvchilar uchun"}},
+  {id:"l11",brand:"Maison Vela",name:{ru:"Jasmin Blanc",en:"Jasmin Blanc",uz:"Jasmin Blanc"},fam:"floral",gender:"women",price:1610000,vol:50,rating:4.5,reviews:35,sample:true,
+   top:["bergamot","citrus"],heart:["jasmine","rose"],base:["musk","sandalwood"],
+   moods:["clean","fresh"],seasons:[0,1],intensity:2,longevity:"6–7ч",sillage:"medium",
+   story:{ru:"Белый жасмин и мускус. Цветок, который не кричит.",en:"White jasmine and musk. A flower that doesn't shout.",uz:"Oq yasemin va mushk. Baqirmaydigan gul."},
+   when:{ru:"Весна, день",en:"Spring, day",uz:"Bahor, kunduzi"},who:{ru:"Любительницам мягких цветочных",en:"For soft floral lovers",uz:"Yumshoq gulli hidlar uchun"}},
+  {id:"l12",brand:"Кора Lab",name:{ru:"Santal Crème",en:"Santal Crème",uz:"Santal Crème"},fam:"woody",gender:"unisex",price:1880000,vol:50,rating:4.7,reviews:49,sample:true,
+   top:["bergamot"],heart:["sandalwood"],base:["sandalwood","musk","vanilla"],
+   moods:["warm","clean"],seasons:[0,2,3],intensity:2,longevity:"7–8ч",sillage:"medium",
+   story:{ru:"Кремовый сандал и мускус. Тёплая кожа, обёрнутая в кашемир.",en:"Creamy sandalwood and musk. Warm skin wrapped in cashmere.",uz:"Kremli sandal va mushk. Kashemirga o'ralgan iliq teri."},
+   when:{ru:"Круглый год",en:"Year-round",uz:"Yil bo'yi"},who:{ru:"Любителям сандала",en:"For sandalwood lovers",uz:"Sandal yoqtiradiganlar uchun"}}
+];
+/* extra note label for saffron used above */
+NOTES.saffron={ru:"Шафран",en:"Saffron",uz:"Za'faron",c:"#c97e3a"};
+
+/* =========================================================
+   State
+========================================================= */
+let CART=[];
+let activeFam="all";
+const fmtPrice=p=>new Intl.NumberFormat("ru-RU").format(p)+" UZS";
+
+/* =========================================================
+   Apply language to all [data-t] + dynamic sections
+========================================================= */
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-t]").forEach(el=>{
+    const k=el.getAttribute("data-t"); const v=T()[k];
+    if(v!==undefined) el.innerHTML=v;
+  });
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.lang===LANG));
+  renderMoods(); renderNotes(); renderFamChips(); renderCatalog(); renderCart();
+}
+function setLang(l){LANG=l;applyLang();}
+
+/* =========================================================
+   Moods / Notes
+========================================================= */
+function renderMoods(){
+  const cls=["m1","m2","m3","m4"];
+  document.getElementById("moodGrid").innerHTML=T().moods.map((m,i)=>
+    `<div class="mood ${cls[i]}" onclick="filterMood('${["clean","sensual","fresh","warm"][i]}')">
+      <div><h3 class="serif">${m}</h3><small>${T().moodSub[i]}</small></div></div>`).join("");
+}
+function renderNotes(){
+  const keys=["sandalwood","rose","bergamot","musk","oud","vanilla","vetiver","amber","jasmine","tea","citrus","leather"];
+  document.getElementById("notesRow").innerHTML=keys.map(k=>
+    `<button class="note-pill" onclick="filterNote('${k}')"><span class="note-dot" style="background:${NOTES[k].c}"></span>${noteName(k)}</button>`).join("");
+}
+
+/* =========================================================
+   Catalog
+========================================================= */
+function renderFamChips(){
+  const fams=["all","woody","floral","fresh","oriental","gourmand"];
+  const label=f=>f==="all"?(LANG==="ru"?"Все":LANG==="uz"?"Hammasi":"All"):famName(f);
+  const html=fams.map(f=>`<button class="chip ${activeFam===f?'on':''}" onclick="filterFam('${f}')">${label(f)}</button>`).join("");
+  document.getElementById("famChips").innerHTML=html;
+  const fb=document.getElementById("filterBody");
+  if(fb){fb.innerHTML=`<div class="chip-row" style="flex-direction:column;align-items:stretch;gap:10px">`+
+    fams.map(f=>`<button class="chip ${activeFam===f?'on':''}" style="text-align:left;padding:12px 16px" onclick="filterFam('${f}');">${label(f)}</button>`).join("")+`</div>`;}
+}
+let noteFilter=null, moodFilter=null;
+function filterFam(f){activeFam=f;noteFilter=null;moodFilter=null;renderFamChips();renderCatalog();scrollTo2("#catalog");}
+function filterNote(n){noteFilter=n;activeFam="all";moodFilter=null;renderFamChips();renderCatalog();scrollTo2("#catalog");toast((LANG==="ru"?"Ноты: ":LANG==="uz"?"Notalar: ":"Notes: ")+noteName(n));}
+function filterMood(m){moodFilter=m;activeFam="all";noteFilter=null;renderFamChips();renderCatalog();scrollTo2("#catalog");}
+function scrollTo2(s){document.querySelector(s).scrollIntoView({behavior:"smooth"});}
+
+function currentList(){
+  let list=PRODUCTS.slice();
+  if(activeFam!=="all") list=list.filter(p=>p.fam===activeFam);
+  if(noteFilter) list=list.filter(p=>[...p.top,...p.heart,...p.base].includes(noteFilter));
+  if(moodFilter) list=list.filter(p=>p.moods.includes(moodFilter));
+  const s=document.getElementById("sortSel").value;
+  if(s==="priceLow") list.sort((a,b)=>a.price-b.price);
+  else if(s==="priceHigh") list.sort((a,b)=>b.price-a.price);
+  else if(s==="rating") list.sort((a,b)=>b.rating-a.rating);
+  else list.sort((a,b)=>b.reviews-a.reviews);
+  return list;
+}
+function cardHTML(p){
+  const fam=famName(p.fam);
+  const noteTags=[...p.heart,...p.base].slice(0,3).map(n=>`<span class="tag">${noteName(n)}</span>`).join("");
+  return `<article class="card" onclick="openPDP('${p.id}')">
+    <div class="card-img" style="background:linear-gradient(160deg,${shade(p)})">
+      ${p.sample?`<span class="sample-tag">${T().sample}</span>`:""}
+      <button class="wish" aria-label="Wishlist" onclick="event.stopPropagation();toast('♡')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-8-5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 6-8 11-8 11z"/></svg></button>
+      <div class="bottle" style="background:linear-gradient(160deg,${shade(p,true)})"></div>
+    </div>
+    <div class="card-body">
+      <span class="card-brand">${p.brand}</span>
+      <div class="card-name">${p.name[LANG]||p.name.en}</div>
+      <div class="card-fam">${fam} · ${p.vol} ml</div>
+      <div class="card-notes">${noteTags}</div>
+      <div class="card-foot">
+        <div><div class="price">${new Intl.NumberFormat("ru-RU").format(p.price)} <small>UZS</small></div>
+        <div class="rating"><span class="star">★</span>${p.rating} <span class="muted">(${p.reviews})</span></div></div>
+        <button class="add" onclick="event.stopPropagation();addToCart('${p.id}')">${T().addToCart}</button>
+      </div>
+    </div></article>`;
+}
+function shade(p,bottle){
+  const map={woody:["#3a2c20","#241a12"],floral:["#5a3f44","#3a2326"],fresh:["#34433f","#202d28"],oriental:["#46342a","#2a1d14"],gourmand:["#4a3a26","#2c2114"]};
+  const c=map[p.fam]||["#332b22","#1c1610"];
+  return bottle?`${c[0]}cc,${c[1]}aa`:`${c[0]},${c[1]}`;
+}
+function renderCatalog(){
+  const list=currentList();
+  document.getElementById("grid").innerHTML=list.length?list.map(cardHTML).join(""):`<div class="empty" style="grid-column:1/-1">—</div>`;
+}
+
+/* =========================================================
+   Cart
+========================================================= */
+function findP(id){return PRODUCTS.find(p=>p.id===id);}
+function addToCart(id,asSample){
+  const ex=CART.find(c=>c.id===id&&c.sample===!!asSample);
+  if(ex) ex.qty++; else CART.push({id,qty:1,sample:!!asSample});
+  renderCart();toast(T().inCart);bump();
+}
+function bump(){const c=document.getElementById("cartCount");c.style.transform="scale(1.4)";setTimeout(()=>c.style.transform="",200);}
+function changeQty(i,d){CART[i].qty+=d;if(CART[i].qty<=0)CART.splice(i,1);renderCart();}
+function renderCart(){
+  const n=CART.reduce((s,c)=>s+c.qty,0);
+  const cc=document.getElementById("cartCount");cc.style.display=n?"grid":"none";cc.textContent=n;
+  const body=document.getElementById("cartBody"),foot=document.getElementById("cartFoot");
+  if(!CART.length){body.innerHTML=`<div class="empty">${T().emptyCart}</div>`;foot.innerHTML="";return;}
+  body.innerHTML=CART.map((c,i)=>{const p=findP(c.id);const unit=c.sample?Math.round(p.price*0.08):p.price;
+    return `<div class="cart-item"><div class="ci-img"><div></div></div>
+      <div style="flex:1"><div class="ci-name">${p.name[LANG]||p.name.en}</div>
+      <div class="ci-meta">${p.brand} · ${c.sample?T().sample+" 2ml":p.vol+" ml"}</div>
+      <div class="qty"><button onclick="changeQty(${i},-1)">−</button><span>${c.qty}</span><button onclick="changeQty(${i},1)">+</button></div></div>
+      <div class="ci-price">${fmtPrice(unit*c.qty)}</div></div>`;}).join("");
+  const total=CART.reduce((s,c)=>{const p=findP(c.id);return s+(c.sample?Math.round(p.price*0.08):p.price)*c.qty;},0);
+  foot.innerHTML=`<div class="cart-total"><span>${T().total}</span><span>${fmtPrice(total)}</span></div>
+    <button class="btn btn-primary btn-block" onclick="toast(T().checkoutSoon)">${T().checkout}</button>
+    <button class="btn btn-tg btn-block" style="margin-top:10px" onclick="toast(T().tgSoon)">${T().orderTg}</button>`;
+}
+
+/* =========================================================
+   PDP
+========================================================= */
+function openPDP(id){
+  const p=findP(id);
+  const pyr=[[T().pdpTop,p.top],[T().pdpHeart,p.heart],[T().pdpBase,p.base]].map(([lvl,arr])=>
+    `<div class="pyr-row"><span class="lvl">${lvl}</span><span class="vals">${arr.map(noteName).join(" · ")}</span></div>`).join("");
+  document.getElementById("pdpBody").innerHTML=`
+    <div class="pdp">
+      <div class="pdp-media"><div class="bottle"></div></div>
+      <div class="pdp-info">
+        <span class="card-brand">${p.brand}</span>
+        <h2 class="serif" style="font-size:38px;margin:6px 0">${p.name[LANG]||p.name.en}</h2>
+        <div class="muted">${famName(p.fam)} · ${p.vol} ml · <span class="star">★</span> ${p.rating} (${p.reviews})</div>
+        <p style="margin:16px 0 0">${p.story[LANG]||p.story.en}</p>
+        <div class="pyramid">${pyr}</div>
+        <div class="specs">
+          <div class="spec"><small>${T().longevity}</small><b>${p.longevity}</b></div>
+          <div class="spec"><small>${T().sillage}</small><b>${p.sillage}</b></div>
+          <div class="spec"><small>${T().pdpWhen}</small><b>${p.when[LANG]||p.when.en}</b></div>
+          <div class="spec"><small>${T().pdpWho}</small><b style="font-size:13px">${p.who[LANG]||p.who.en}</b></div>
+        </div>
+        <div class="auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg><span>${T().auth}</span></div>
+        <div class="price" style="font-size:26px;margin-bottom:14px">${fmtPrice(p.price)}</div>
+        <div class="pdp-cta">
+          <button class="btn btn-primary" onclick="addToCart('${p.id}');">${T().addToCart}</button>
+          <button class="btn btn-ghost" onclick="addToCart('${p.id}',true);">${T().sample} · 2ml</button>
+          <button class="btn btn-tg" onclick="toast(T().tgSoon)">${T().orderTg}</button>
+        </div>
+      </div>
+    </div>`;
+  show("pdpModal");
+}
+
+/* =========================================================
+   Scent Finder — transparent scoring
+========================================================= */
+const FQ=[
+  {key:"mood",type:"single",opts:()=>T().moods.map((m,i)=>({label:m,val:["clean","sensual","fresh","warm"][i]}))},
+  {key:"occ",type:"single",opts:()=>T().occ.map((o,i)=>({label:o,val:["everyday","evening","work","date","special"][i]}))},
+  {key:"love",type:"multi",opts:()=>["rose","oud","sandalwood","citrus","vanilla","musk","amber","vetiver"].map(n=>({label:noteName(n),val:n}))},
+  {key:"avoid",type:"multi",opts:()=>["oud","vanilla","leather","rose","citrus"].map(n=>({label:noteName(n),val:n}))},
+  {key:"season",type:"single",opts:()=>T().seasons.map((s,i)=>({label:s,val:i}))},
+  {key:"intensity",type:"single",opts:()=>T().intens.map((s,i)=>({label:s,val:i+1}))}
+];
+let fStep=0, fAns={mood:null,occ:null,love:[],avoid:[],season:null,intensity:null};
+function openFinder(){fStep=0;fAns={mood:null,occ:null,love:[],avoid:[],season:null,intensity:null};renderFinder();show("finderModal");}
+function renderFinder(){
+  if(fStep>=FQ.length){renderFinderResults();return;}
+  const q=FQ[fStep];const opts=q.opts();
+  const sel=fAns[q.key];
+  const isOn=v=>q.type==="multi"?sel.includes(v):sel===v;
+  document.getElementById("finderBody").innerHTML=`
+    <div class="prog"><i style="width:${(fStep/FQ.length)*100}%"></i></div>
+    <span class="eyebrow">${T().finderEyebrow} · ${fStep+1}/${FQ.length}</span>
+    <h2 class="serif q" style="font-size:32px;margin:8px 0">${T().fTitle[fStep]}</h2>
+    ${q.type==="multi"?`<div class="muted" style="font-size:13px">${LANG==="ru"?"Можно выбрать несколько":LANG==="uz"?"Bir nechtasini tanlash mumkin":"Choose several"}</div>`:""}
+    <div class="opts">${opts.map(o=>`<button class="opt ${isOn(o.val)?'on':''}" onclick="pick('${q.key}','${o.val}','${q.type}')">${o.label}</button>`).join("")}</div>
+    <div class="finder-foot">
+      <button class="btn btn-ghost" onclick="fPrev()" ${fStep===0?'style="visibility:hidden"':''}>${T().back}</button>
+      <button class="btn btn-gold" onclick="fNext()">${fStep===FQ.length-1?T().seeResults:T().next}</button>
+    </div>`;
+}
+function pick(key,val,type){
+  val=isNaN(val)||val===""?val:(FQ[fStep].opts()[0]&&typeof FQ[fStep].opts()[0].val==="number"?Number(val):val);
+  if(type==="multi"){const a=fAns[key];const i=a.indexOf(val);i>=0?a.splice(i,1):a.push(val);}
+  else fAns[key]=val;
+  renderFinder();
+}
+function fNext(){fStep++;renderFinder();}
+function fPrev(){if(fStep>0)fStep--;renderFinder();}
+function scoreProduct(p){
+  let s=0;
+  if(fAns.mood&&p.moods.includes(fAns.mood))s+=3;
+  const allNotes=[...p.top,...p.heart,...p.base];
+  fAns.love.forEach(n=>{if(allNotes.includes(n))s+=2;});
+  fAns.avoid.forEach(n=>{if(allNotes.includes(n))s-=4;});
+  if(fAns.season!==null&&p.seasons.includes(fAns.season))s+=2;
+  if(fAns.intensity!==null)s+=2-Math.abs(p.intensity-fAns.intensity);
+  const occMap={evening:[2,3],special:[3],work:[1,2],date:[2,3],everyday:[1,2]};
+  if(fAns.occ&&occMap[fAns.occ]&&occMap[fAns.occ].includes(p.intensity))s+=1;
+  s+=p.rating*0.3;
+  return s;
+}
+function renderFinderResults(){
+  const ranked=PRODUCTS.map(p=>({p,s:scoreProduct(p)})).sort((a,b)=>b.s-a.s).slice(0,3);
+  const max=ranked[0].s;
+  document.getElementById("finderBody").innerHTML=`
+    <div class="prog"><i style="width:100%"></i></div>
+    <span class="eyebrow">${T().yourMatches}</span>
+    <h2 class="serif" style="font-size:34px;margin:8px 0 18px">${T().finderH.split("?")[0]}</h2>
+    ${ranked.map(({p,s})=>{const pct=Math.max(60,Math.round((s/max)*100));
+      const why=[...p.heart,...p.base].filter(n=>fAns.love.includes(n)).map(noteName);
+      return `<div class="result">
+        <div class="ri"><div></div></div>
+        <div style="flex:1"><div class="card-brand">${p.brand}</div>
+          <div class="ci-name">${p.name[LANG]||p.name.en}</div>
+          <div class="ci-meta">${famName(p.fam)} · ${fmtPrice(p.price)}${why.length?" · "+why.join(", "):""}</div>
+          <button class="btn btn-ghost" style="margin-top:8px;padding:8px 16px" onclick="closeAll();openPDP('${p.id}')">${T().viewProduct}</button>
+        </div>
+        <div class="match"><b>${pct}%</b><small>match</small></div>
+      </div>`;}).join("")}
+    <div class="finder-foot"><button class="btn btn-ghost" onclick="openFinder()">${T().restart}</button>
+    <button class="btn btn-tg" onclick="toast(T().tgSoon)">${T().orderTg}</button></div>`;
+}
+
+/* =========================================================
+   Drawers / modals plumbing
+========================================================= */
+let openEl=null;
+function show(id){closeAll(true);openEl=id;document.getElementById("scrim").classList.add("show");
+  const el=document.getElementById(id);el.classList.add("show");document.body.style.overflow="hidden";}
+function openCart(){show("cartDrawer");}
+function openFilter(){renderFamChips();show("filterDrawer");}
+function openMnav(){show("mnav");}
+function closeAll(silent){
+  document.getElementById("scrim").classList.remove("show");
+  ["cartDrawer","filterDrawer","mnav","pdpModal","finderModal"].forEach(id=>document.getElementById(id).classList.remove("show"));
+  openEl=null;if(!silent)document.body.style.overflow="";
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll();});
+
+/* =========================================================
+   Misc
+========================================================= */
+function submitCustom(e){e.preventDefault();e.target.reset();toast(T().customSent);}
+let toastT;
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2400);}
+
+/* reveal on scroll (feature-guarded) */
+if("IntersectionObserver" in window){
+  const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:.12});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+}else{
+  document.querySelectorAll(".reveal").forEach(el=>el.classList.add("in"));
+}
+
+/* mobile bottom bar padding */
+if(window.matchMedia&&window.matchMedia("(max-width:760px)").matches)document.body.classList.add("has-bar");
+
+/* init */
+applyLang();
+</script>
+</body>
+</html>

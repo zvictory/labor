@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:opsz,wght@6..72,400&display=swap');
+    body { margin: 0; background: #F4F1EA; color: #121212;
+      font-family: Archivo, 'Helvetica Neue', Arial, sans-serif; }
+    a { color: #121212; text-decoration: none; } a:hover { color: #4A4B4D; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+    .micro { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #4A4B4D; }
+    .on { width: 3px; height: 11px; background: #121212; }
+    .off { width: 3px; height: 11px; background: #CFC9BC; }
+    .card { border: 1px solid #DDD8CC; display: flex; flex-direction: column; }
+    .shot { height: 150px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #DDD8CC; }
+    .cbody { padding: 11px; display: flex; flex-direction: column; gap: 7px; }
+    .ccode { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 9px; letter-spacing: .1em; color: #4A4B4D; }
+    .cname { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+    .cnotes { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 10px; color: #4A4B4D; line-height: 15px; }
+    .cprice { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums;
+      font-size: 13px; font-weight: 500; padding-top: 6px; border-top: 1px solid #DDD8CC; }
+    .chip { border: 1px solid #DDD8CC; padding: 11px 14px; font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+  </style>
+</helmet>
+
+<div style="width: 390px; box-sizing: border-box">
+
+  <!-- HEADER 56 -->
+  <div style="height: 56px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid #DDD8CC">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6 H21 M3 12 H21 M3 18 H21" stroke="#121212" stroke-width="1.4"/></svg>
+    <img src="labor-seal.png" alt="Labor" style="width: 34px; height: 34px" />
+    <div style="display: flex; gap: 16px">
+      <svg viewBox="0 0 20 20" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="6" stroke="#121212" stroke-width="1.3"/><path d="M13.5 13.5 L18 18" stroke="#121212" stroke-width="1.3"/></svg>
+      <svg viewBox="0 0 20 20" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6 H17 L15.6 17 H4.4 Z" stroke="#121212" stroke-width="1.3"/><path d="M7 6 V4.2 A3 3 0 0 1 13 4.2 V6" stroke="#121212" stroke-width="1.3"/></svg>
+    </div>
+  </div>
+
+  <!-- HERO — 500 px, viewport'un %60'ı -->
+  <div style="height: 500px; box-sizing: border-box; padding: 22px 18px 24px; border-bottom: 1px solid #DDD8CC; display: flex; flex-direction: column; gap: 16px">
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center">
+      <svg viewBox="0 0 240 400" width="168" height="280" xmlns="http://www.w3.org/2000/svg">
+        <path d="M56 258 H184 V352 H56 Z" fill="#D9C3A5"/>
+        <rect x="94" y="12" width="52" height="42" fill="none" stroke="#121212" stroke-width="2"/>
+        <rect x="105" y="54" width="30" height="30" fill="none" stroke="#121212" stroke-width="2"/>
+        <path d="M56 84 H184 V352 H56 Z" fill="none" stroke="#121212" stroke-width="2"/>
+        <path d="M74 176 H166" stroke="#121212" stroke-width="1.2"/>
+        <path d="M74 196 H120" stroke="#121212" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div class="mono" style="font-size: 10px; letter-spacing: .14em; color: #4A4B4D">LB-W-014 · LABOR · EDP</div>
+      <div style="font-size: 32px; font-weight: 600; letter-spacing: -0.025em; line-height: 36px">Qora Choy</div>
+      <div class="mono" style="font-size: 11px; color: #4A4B4D">Bergamot · Çay · Sedir</div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 6px">
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div><div class="off"></div></div>
+        <div class="mono" style="font-size: 15px">160 000 so'm</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇİLMİŞ 12 -->
+  <div style="padding: 26px 18px 32px; border-bottom: 1px solid #DDD8CC; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between">
+      <div class="micro">Seçilmiş 12</div>
+      <div class="mono" style="font-size: 10px; letter-spacing: .1em; border-bottom: 1px solid #121212; padding-bottom: 2px">TÜMÜ (479)</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+      <div class="card"><div class="shot"><svg viewBox="0 0 120 190" width="62" height="98" xmlns="http://www.w3.org/2000/svg"><path d="M32 128 H88 V172 H32 Z" fill="#D9C3A5"/><rect x="46" y="6" width="28" height="22" fill="none" stroke="#121212" stroke-width="1.6"/><path d="M32 42 H88 V172 H32 Z" fill="none" stroke="#121212" stroke-width="1.6"/></svg></div>
+        <div class="cbody"><div class="ccode">XJ-2211 · XERJOFF</div><div class="cname">Naxos</div><div class="cnotes">Lavanta · Bal · Tütün</div>
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div><div class="off"></div></div>
+        <div class="cprice">2 480 000</div></div></div>
+
+      <div class="card"><div class="shot"><svg viewBox="0 0 120 190" width="62" height="98" xmlns="http://www.w3.org/2000/svg"><path d="M34 120 H86 V172 H34 Z" fill="#D9C3A5"/><rect x="48" y="6" width="24" height="26" fill="none" stroke="#121212" stroke-width="1.6"/><path d="M34 32 H86 V172 H34 Z" fill="none" stroke="#121212" stroke-width="1.6"/></svg></div>
+        <div class="cbody"><div class="ccode">AM-0140 · AMOUAGE</div><div class="cname">Interlude Man</div><div class="cnotes">Biber · Buhur · Deri</div>
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div></div>
+        <div class="cprice">3 950 000</div></div></div>
+
+      <div class="card"><div class="shot"><svg viewBox="0 0 120 190" width="62" height="98" xmlns="http://www.w3.org/2000/svg"><path d="M30 132 H90 V174 H30 Z" fill="#D9C3A5"/><rect x="50" y="8" width="20" height="20" fill="none" stroke="#121212" stroke-width="1.6"/><path d="M30 28 H90 V174 H30 Z" fill="none" stroke="#121212" stroke-width="1.6"/></svg></div>
+        <div class="cbody"><div class="ccode">PM-0087 · P. DE MARLY</div><div class="cname">Layton</div><div class="cnotes">Elma · Lavanta · Vanilya</div>
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div><div class="off"></div></div>
+        <div class="cprice">3 180 000</div></div></div>
+
+      <div class="card"><div class="shot"><svg viewBox="0 0 120 190" width="62" height="98" xmlns="http://www.w3.org/2000/svg"><path d="M38 126 H82 V170 H38 Z" fill="#D9C3A5"/><rect x="52" y="6" width="16" height="24" fill="none" stroke="#121212" stroke-width="1.6"/><path d="M38 30 H82 V170 H38 Z" fill="none" stroke="#121212" stroke-width="1.6"/></svg></div>
+        <div class="cbody"><div class="ccode">NS-0312 · NISHANE</div><div class="cname">Hacivat</div><div class="cnotes">Ananas · Greyfurt · Sedir</div>
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div><div class="off"></div></div>
+        <div class="cprice">2 740 000</div></div></div>
+
+      <div class="card"><div class="shot"><svg viewBox="0 0 120 190" width="62" height="98" xmlns="http://www.w3.org/2000/svg"><path d="M34 124 H86 V172 H34 Z" fill="#D9C3A5"/><rect x="46" y="6" width="28" height="18" fill="none" stroke="#121212" stroke-width="1.6"/><path d="M34 24 H86 V172 H34 Z" fill="none" stroke="#121212" stroke-width="1.6"/></svg></div>
+        <div class="cbody"><div class="ccode">IN-0055 · INITIO</div><div class="cname">Oud for Greatness</div><div class="cnotes">Ud · Safran · Muskat</div>
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div><div class="on"></div></div>
+        <div class="cprice">3 620 000</div></div></div>
+
+      <div class="card"><div class="shot"><svg viewBox="0 0 120 190" width="62" height="98" xmlns="http://www.w3.org/2000/svg"><path d="M36 130 H84 V172 H36 Z" fill="#D9C3A5"/><rect x="50" y="8" width="20" height="22" fill="none" stroke="#121212" stroke-width="1.6"/><path d="M36 30 H84 V172 H36 Z" fill="none" stroke="#121212" stroke-width="1.6"/></svg></div>
+        <div class="cbody"><div class="ccode">MT-0421 · MONTALE</div><div class="cname">Intense Café</div><div class="cnotes">Kahve · Gül · Vanilya</div>
+        <div style="display: flex; gap: 4px"><div class="on"></div><div class="on"></div><div class="on"></div><div class="off"></div><div class="off"></div></div>
+        <div class="cprice">1 260 000</div></div></div>
+    </div>
+  </div>
+
+  <!-- SORU BANDI -->
+  <div style="padding: 28px 18px; border-bottom: 1px solid #DDD8CC; display: flex; flex-direction: column; gap: 16px">
+    <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em">Hangi aile?</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 9px">
+      <div class="chip">Narenciye</div>
+      <div class="chip">Çiçeksi</div>
+      <div class="chip">Odunsu</div>
+      <div class="chip">Oryantal</div>
+      <div class="chip">Fujer</div>
+      <div class="chip">Kipr</div>
+      <div class="chip">Deri</div>
+      <div class="chip">Gurme</div>
+    </div>
+  </div>
+
+  <!-- CREATE YOUR OWN -->
+  <div style="background: #D9C3A5; color: #121212; padding: 34px 18px; display: flex; flex-direction: column; gap: 18px">
+    <div class="mono" style="font-size: 10px; letter-spacing: .16em; text-transform: uppercase">Mağazada</div>
+    <div style="font-size: 28px; font-weight: 600; letter-spacing: -0.025em; line-height: 33px">O'z atiringizni yarating</div>
+    <div style="font-family: Newsreader, Georgia, serif; font-size: 16px; line-height: 26px; text-wrap: pretty">
+      84 tester, yedi blok. Görevli önce soru sorar. Seçtiğiniz formül yanınızda doldurulur ve numarasıyla arşive yazılır.
+    </div>
+    <div class="mono" style="font-size: 14px; line-height: 26px; border-top: 1px solid rgba(18,18,18,.25); padding-top: 12px">
+      <div style="display: flex; justify-content: space-between">10 ML<span>160 000 so'm</span></div>
+      <div style="display: flex; justify-content: space-between">20 ML<span style="color: #4A4B4D">[karar bekliyor]</span></div>
+      <div style="display: flex; justify-content: space-between">30 ML<span style="color: #4A4B4D">[karar bekliyor]</span></div>
+    </div>
+    <div style="background: #121212; color: #F4F1EA; padding: 15px; font-size: 14px; font-weight: 600; text-align: center">Yol tarifi</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding: 32px 18px 40px; display: flex; flex-direction: column; gap: 18px">
+    <img src="labor-seal.png" alt="Labor" style="width: 38px; height: 38px" />
+    <div class="mono" style="font-size: 10px; letter-spacing: .1em; color: #4A4B4D; line-height: 18px">FORMULA — OUR SIGNATURE<br/>AROMA — YOUR EXPRESSION</div>
+    <div class="mono" style="font-size: 11px; color: #4A4B4D; line-height: 20px">[ADRES], Toshkent<br/>10:00 – 21:00 · [TELEFON]<br/>PAYME · CLICK · UZUM</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
