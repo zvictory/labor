@@ -18,7 +18,8 @@ import { NoteOrbit } from '@/components/catalog/note-orbit';
 // are drawn in the label's own two colours rather than gold — see
 // components/catalog/star-rating.tsx — and the vote count beside them on the
 // product page says whose votes they are. When the product has at least three
-// illustrated notes, they orbit the bottle on hover or focus.
+// notes with a picture — the ones its product page shows — they orbit the bottle
+// on hover or focus.
 
 export const ProductCard = ({ product, locale }: { product: ProductCardDTO; locale: string }) => {
   const t = useTranslations('product');

@@ -6,13 +6,13 @@
 // shadow are arbitrary values because the config collapses `rounded-full` and `shadow-*`.
 // Each ring is drawn in two halves, the far one behind the bottle and the near one over it.
 
-import Image from 'next/image';
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 
-import { ORBITS, orbitSlot } from '@/lib/catalog/orbit';
+import { ORBITS, ORBIT_SLOTS, orbitSlot } from '@/lib/catalog/orbit';
 import type { OrbitNoteDTO } from '@/lib/catalog/types';
 
 import { BEAD, GLINT } from './glass-bead';
+import { NoteFace } from './note-face';
 
 type Vars = CSSProperties & Record<`--${string}`, string>;
 
@@ -41,6 +41,12 @@ const HALVES = [
   { half: 'far', sweep: 1, layer: 'z-0' },
   { half: 'near', sweep: 0, layer: 'z-[1]' },
 ] as const;
+
+// Every badge sits near the card's edge, where a centred name wider than its bead
+// is cut off ("Калабрийский бергамот"). So a name keeps at least its bead's width,
+// which leaves a short one centred, and a long one grows toward the bottle.
+const inward = (angle: number | undefined): string =>
+  angle === undefined ? '' : Math.cos((angle * Math.PI) / 180) < 0 ? 'self-start' : 'self-end';
 
 // Deep enough to hold a 1 px line on off-white, where pale gold all but vanishes.
 const GOLD = [
@@ -152,17 +158,12 @@ export function NoteOrbit({ notes }: { notes: OrbitNoteDTO[] }) {
                 <div className="flex [animation:orbit-bob_var(--bob)_ease-in-out_var(--bob-delay)_infinite] flex-col items-center [animation-play-state:paused] group-focus-within:[animation-play-state:running] group-hover:[animation-play-state:running] motion-reduce:[animation:none]">
                   <span className="relative block aspect-square w-full">
                     <span className={BEAD} />
-                    <Image
-                      src={note.image}
-                      alt=""
-                      width={256}
-                      height={256}
-                      sizes="96px"
-                      className="relative size-full object-contain p-[6%] drop-shadow-[0_4px_5px_rgb(40_28_12/.22)]"
-                    />
+                    <NoteFace picture={{ src: note.image, cutout: note.cutout }} sizes="96px" />
                     <span className={GLINT} />
                   </span>
-                  <span className="text-foreground text-label -mt-0.5 whitespace-nowrap @max-[280px]:hidden">
+                  <span
+                    className={`text-foreground text-label -mt-0.5 min-w-full text-center whitespace-nowrap @max-[280px]:hidden ${inward(ORBIT_SLOTS[i])}`}
+                  >
                     {note.name}
                   </span>
                 </div>

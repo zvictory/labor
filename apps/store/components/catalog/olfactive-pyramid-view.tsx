@@ -1,11 +1,11 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 import { notePicture } from '@/lib/catalog/note-picture';
 
 import { BEAD, GLINT } from './glass-bead';
+import { NoteFace } from './note-face';
 
 export interface NoteItem {
   slug: string;
@@ -44,19 +44,8 @@ function NoteBead({ note, locale }: { note: NoteItem; locale: string }) {
     >
       <span className="relative block size-16 transition-transform duration-300 group-hover/note:-translate-y-0.5 motion-reduce:transition-none">
         <span className={BEAD} />
-        {picture?.cutout ? (
-          <Image
-            src={picture.src}
-            alt=""
-            width={256}
-            height={256}
-            sizes="64px"
-            className="relative size-full object-contain p-[6%] drop-shadow-[0_4px_5px_rgb(40_28_12/.22)]"
-          />
-        ) : picture ? (
-          <span className="absolute inset-[9%] overflow-hidden rounded-[50%]">
-            <Image src={picture.src} alt="" fill sizes="64px" className="object-cover" />
-          </span>
+        {picture ? (
+          <NoteFace picture={picture} sizes="64px" />
         ) : (
           <span className="text-muted-foreground absolute inset-0 flex items-center justify-center font-mono text-sm uppercase">
             {note.name.charAt(0)}

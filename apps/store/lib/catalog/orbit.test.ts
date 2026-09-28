@@ -12,9 +12,9 @@ const dummyFiles: Readonly<Record<string, string>> = {
   n7: 'n7.webp',
 };
 
-const createRow = (pyramidLayer: string, slug: string) => ({
+const createRow = (pyramidLayer: string, slug: string, iconUrl: string | null = null) => ({
   pyramidLayer,
-  note: { slug, name: { ru: `Ru ${slug}`, en: `En ${slug}` } },
+  note: { slug, name: { ru: `Ru ${slug}`, en: `En ${slug}` }, iconUrl },
 });
 
 describe('orbitSlot', () => {
@@ -36,7 +36,51 @@ describe('pickOrbitNotes', () => {
     expect(notes.map((n) => n.slug)).toEqual(['n1', 'n2', 'n3']);
   });
 
-  it('skips notes with no illustration, so a badge never shows an empty frame', () => {
+  it('falls back to the photograph the product page shows, so a perfume orbits without our own cut-outs', () => {
+    const rows = [
+      createRow('top', 'amber', '/notes/prod/amber.jpg'),
+      createRow('middle', 'n2', '/notes/prod/n2.jpg'),
+      createRow('base', 'vetiver', '/notes/prod/vetiver.jpg'),
+    ];
+    const notes = pickOrbitNotes(rows, 'en', dummyFiles);
+    expect(notes.map(({ slug, image, cutout }) => ({ slug, image, cutout }))).toEqual([
+      { slug: 'amber', image: '/notes/prod/amber.jpg', cutout: false },
+      { slug: 'n2', image: '/notes/orbit/n2.webp', cutout: true },
+      { slug: 'vetiver', image: '/notes/prod/vetiver.jpg', cutout: false },
+    ]);
+  });
+
+  it("gives our own cut-outs the six places first, so Ombre Nomade's approved orbit keeps its oud", () => {
+    // Ombre Nomade: six cut-outs, and a photographed amber listed in the base before the oud.
+    const rows = [
+      createRow('top', 'n1'),
+      createRow('top', 'n2'),
+      createRow('middle', 'n3'),
+      createRow('middle', 'n4'),
+      createRow('middle', 'n5'),
+      createRow('base', 'amber', '/notes/prod/amber.jpg'),
+      createRow('base', 'n6'),
+    ];
+    const notes = pickOrbitNotes(rows, 'en', dummyFiles);
+    expect(notes.map((n) => n.slug)).toEqual(['n1', 'n2', 'n3', 'n4', 'n5', 'n6']);
+  });
+
+  it('fills the places the cut-outs leave with photographs, still in the order the scent unfolds', () => {
+    const rows = [
+      createRow('top', 'lemon', '/notes/prod/lemon.jpg'),
+      createRow('top', 'bergamot', '/notes/prod/bergamot.jpg'),
+      createRow('top', 'lime', '/notes/prod/lime.jpg'),
+      createRow('middle', 'n1'),
+      createRow('middle', 'jasmine', '/notes/prod/jasmine.jpg'),
+      createRow('base', 'n2'),
+      createRow('base', 'n3'),
+      createRow('base', 'musk', '/notes/prod/musk.jpg'),
+    ];
+    const notes = pickOrbitNotes(rows, 'en', dummyFiles);
+    expect(notes.map((n) => n.slug)).toEqual(['lemon', 'bergamot', 'lime', 'n1', 'n2', 'n3']);
+  });
+
+  it('skips notes with no picture at all, so a badge never shows an empty frame', () => {
     const rows = [
       createRow('top', 'n1'),
       createRow('middle', 'unillustrated'),

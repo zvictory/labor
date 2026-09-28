@@ -73,7 +73,7 @@ const cardSelect = {
   },
   notes: {
     orderBy: { position: 'asc' },
-    select: { pyramidLayer: true, note: { select: { slug: true, name: true } } },
+    select: { pyramidLayer: true, note: { select: { slug: true, name: true, iconUrl: true } } },
   },
   accords: {
     orderBy: { weight: 'desc' },
