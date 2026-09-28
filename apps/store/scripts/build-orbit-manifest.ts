@@ -1,7 +1,6 @@
 /**
  * Lists public/notes/orbit/*.webp to generate the orbit note manifest.
- * The pictures are photographs cut out to transparent WebP: our own, generated,
- * except oud, which is the Fragrantica photograph mirrored in public/notes/prod.
+ * The pictures are our own photographs (generated, cut out to transparent WebP).
  * The manifest exists so the card query knows which notes have one without
  * touching the filesystem at request time.
  *
