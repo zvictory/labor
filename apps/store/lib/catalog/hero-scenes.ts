@@ -14,7 +14,8 @@ export type HeroScene = {
 // A loop is cut from a five-second clip generated from the photograph: a
 // stretch where the motion runs evenly plays forward and back, easing into
 // each turn, so it has no seam; a cycle lasts 7.75 to 9 seconds, longer than
-// a slide shows. It starts on or near the photograph, fitted to its colours,
+// a slide shows, and plays once (SceneVideo), so a slide held longer rests on
+// the photograph. It starts on or near the photograph, fitted to its colours,
 // and a bottle's label is laid back from the photograph, so the lettering
 // never wavers.
 

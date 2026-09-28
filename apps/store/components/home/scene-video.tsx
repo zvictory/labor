@@ -13,9 +13,10 @@ import { useSlideMotion } from '@/components/home/hero-carousel';
 // rather than a blank frame; once shown, it stays, paused, between turns.
 // A slide that turns away keeps its loop running through the crossfade, so
 // nothing freezes mid-sway while it fades out. Each time the slide comes round,
-// its loop starts again on its first frame, the photograph; a loop plays
-// forward and back for longer than a showing, so the point where the file
-// wraps does not show.
+// its loop starts again on its first frame, the photograph. A loop plays once,
+// forward and back, for longer than a showing; a slide that a pointer or focus
+// holds longer comes to rest on the photograph. The file never wraps: in a still
+// scene its fresh keyframe would tick.
 
 // The carousel's crossfade (its slides' duration-700).
 const CROSSFADE_MS = 700;
@@ -49,8 +50,13 @@ export function SceneVideo({
     const arrived = active && !wasActive.current;
     wasActive.current = active;
     if (active && moving) {
-      // Round again from the photograph; back within the crossfade, it runs on.
-      if (arrived && el.paused) el.currentTime = 0;
+      if (arrived && el.paused) {
+        // Round again from the photograph; back within the crossfade, it runs on.
+        el.currentTime = 0;
+      } else if (el.ended) {
+        // Held past its loop, it rests on the photograph: play() would wrap it.
+        return;
+      }
       el.play().catch(() => {
         // Autoplay refused: the photograph underneath stays.
       });
@@ -69,7 +75,6 @@ export function SceneVideo({
       ref={ref}
       src={src ?? undefined}
       muted
-      loop
       playsInline
       preload="auto"
       aria-hidden
