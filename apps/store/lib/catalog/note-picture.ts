@@ -6,8 +6,8 @@ export interface NotePicture {
   cutout: boolean;
 }
 
-// The picture a note is shown by on the product page. Our own cut-outs come first
-// because the card orbit shows them; the photographs mirrored from Fragrantica
+// The picture a note is shown by, on the product page and in the card orbit alike.
+// Our own cut-outs come first; the photographs mirrored from Fragrantica
 // (scripts/mirror-note-icons.ts) cover most of the rest.
 export const notePicture = (
   note: { slug: string; icon_url?: string },
