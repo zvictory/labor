@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    body { margin: 0; background: #F4F1EA; color: #121212;
+      font-family: Archivo, 'Helvetica Neue', Arial, sans-serif; }
+    a { color: #121212; } a:hover { color: #4A4B4D; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+    .micro { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #4A4B4D; }
+    .rule { height: 1px; background: #DDD8CC; }
+    .tick-on { width: 3px; height: 12px; background: #121212; }
+    .tick-off { width: 3px; height: 12px; background: #CFC9BC; }
+    .tick-on-s { width: 1.5px; height: 5px; background: #121212; }
+    .tick-off-s { width: 1.5px; height: 5px; background: #CFC9BC; }
+  </style>
+</helmet>
+
+<div style="padding: 48px 56px; display: flex; flex-direction: column; gap: 34px">
+
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <div class="micro">Köprü</div>
+    <div style="font-size: 30px; font-weight: 600; letter-spacing: -0.02em">Rafta duran etiket, ekranda duran kart</div>
+    <div style="font-size: 14px; color: #4A4B4D; max-width: 660px; text-wrap: pretty">Aynı vibe atmosferden değil, tekrar eden nesneden gelir. Müşteri adadaki şişeyi eline aldığında ve telefonu açtığında aynı dört satırı görür.</div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div style="display: flex; gap: 64px; align-items: flex-start">
+
+    <!-- MAĞAZA -->
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <div class="micro">Mağaza · kâğıt etiket 24 × 32 mm</div>
+
+      <div style="display: flex; gap: 34px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+          <div style="width: 91px; height: 121px; background: #FFFFFF; border: 1px solid #DDD8CC; padding: 5px 5px 6px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box">
+            <div style="display: flex; flex-direction: column; gap: 3px">
+              <div class="mono" style="font-size: 12px; font-weight: 700; letter-spacing: .02em">LB-W-014</div>
+              <div class="mono" style="font-size: 9px">Qora Choy</div>
+              <div class="mono" style="font-size: 8px; color: #4A4B4D; line-height: 11px">Bergamot<br/>Choy<br/>Sadr</div>
+            </div>
+            <div style="display: flex; gap: 2px; align-items: flex-end">
+              <div class="tick-on-s"></div><div class="tick-on-s"></div><div class="tick-on-s"></div><div class="tick-on-s"></div><div class="tick-off-s"></div>
+            </div>
+          </div>
+          <div class="micro" style="font-size: 9px">1 : 1</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+          <div style="width: 272px; height: 363px; background: #FFFFFF; border: 1px solid #DDD8CC; padding: 15px 15px 18px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box">
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <div class="mono" style="font-size: 34px; font-weight: 700; letter-spacing: .01em; line-height: 38px">LB-W-014</div>
+              <div class="mono" style="font-size: 26px; line-height: 30px">Qora Choy</div>
+              <div class="mono" style="font-size: 21px; color: #4A4B4D; line-height: 28px">Bergamot<br/>Choy<br/>Sadr</div>
+            </div>
+            <div style="display: flex; gap: 5px; align-items: flex-end">
+              <div style="width: 5px; height: 22px; background: #121212"></div>
+              <div style="width: 5px; height: 22px; background: #121212"></div>
+              <div style="width: 5px; height: 22px; background: #121212"></div>
+              <div style="width: 5px; height: 22px; background: #121212"></div>
+              <div style="width: 5px; height: 22px; background: #CFC9BC"></div>
+            </div>
+          </div>
+          <div class="micro" style="font-size: 9px">3 ×</div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; color: #4A4B4D; max-width: 400px; line-height: 20px; text-wrap: pretty">
+        Beyaz mat kâğıt, JetBrains Mono, marka adı yok. Merkezler arası 55 mm — komşusuna değmeden tek şişe kaldırılabilsin diye.
+      </div>
+    </div>
+
+    <!-- EKRAN -->
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <div class="micro">Ekran · ürün kartı</div>
+
+      <div style="width: 272px; border: 1px solid #DDD8CC; background: #F4F1EA; display: flex; flex-direction: column">
+        <div style="height: 200px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #DDD8CC">
+          <svg viewBox="0 0 120 190" width="90" height="143" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 128 H88 V172 H32 Z" fill="#D9C3A5"/>
+            <rect x="46" y="6" width="28" height="22" fill="none" stroke="#121212" stroke-width="1.4"/>
+            <rect x="52" y="28" width="16" height="14" fill="none" stroke="#121212" stroke-width="1.4"/>
+            <path d="M32 42 H88 V172 H32 Z" fill="none" stroke="#121212" stroke-width="1.4"/>
+            <path d="M44 88 H76" stroke="#121212" stroke-width="1"/>
+          </svg>
+        </div>
+        <div style="padding: 15px; display: flex; flex-direction: column; gap: 9px">
+          <div class="mono" style="font-size: 10px; letter-spacing: .12em; color: #4A4B4D">LB-W-014 · LABOR · EDP</div>
+          <div style="font-size: 16px; font-weight: 600; letter-spacing: -0.01em">Qora Choy</div>
+          <div class="mono" style="font-size: 11px; color: #4A4B4D; line-height: 16px">Bergamot · Çay · Sedir</div>
+          <div style="display: flex; gap: 4px; padding-top: 2px"><div class="tick-on"></div><div class="tick-on"></div><div class="tick-on"></div><div class="tick-on"></div><div class="tick-off"></div></div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 7px; border-top: 1px solid #DDD8CC">
+            <div class="mono" style="font-size: 10px; letter-spacing: .12em; color: #4A4B4D">10 ML</div>
+            <div class="mono" style="font-size: 14px; font-weight: 500">160 000</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; color: #4A4B4D; max-width: 272px; line-height: 20px; text-wrap: pretty">
+        Etiketteki kod kısa adrese çözülür: <span class="mono" style="font-size: 12px; color: #121212">laborparfum.com/f/014</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- MAPPING -->
+  <div style="display: grid; grid-template-columns: 130px 1fr 1fr 1.3fr; gap: 14px 24px; align-items: center">
+    <div class="micro">Öğe</div>
+    <div class="micro">Mağazada</div>
+    <div class="micro">Ekranda</div>
+    <div class="micro">Kural</div>
+
+    <div style="font-size: 14px; font-weight: 600">Kod</div>
+    <div class="mono" style="font-size: 13px">LB-W-014 · 9 pt</div>
+    <div class="mono" style="font-size: 13px">LB-W-014 · 10 px</div>
+    <div style="font-size: 13px; color: #4A4B4D">Tek nesne ikisini bağlar. Kartın ilk satırı, etiketin ilk satırı.</div>
+
+    <div style="font-size: 14px; font-weight: 600">İsim</div>
+    <div class="mono" style="font-size: 13px">Qora Choy · 7 pt</div>
+    <div style="font-size: 15px; font-weight: 600">Qora Choy</div>
+    <div style="font-size: 13px; color: #4A4B4D">Ekranda Archivo, kâğıtta mono — tek yer ayrılan kural, termoprinter için.</div>
+
+    <div style="font-size: 14px; font-weight: 600">Üç nota</div>
+    <div class="mono" style="font-size: 12px; color: #4A4B4D">Bergamot / Çay / Sedir</div>
+    <div class="mono" style="font-size: 12px; color: #4A4B4D">Bergamot · Çay · Sedir</div>
+    <div style="font-size: 13px; color: #4A4B4D">Üçten fazla değil. Kontrollü sözlükten, serbest metin değil.</div>
+
+    <div style="font-size: 14px; font-weight: 600">Tick</div>
+    <div style="display: flex; gap: 4px"><div class="tick-on"></div><div class="tick-on"></div><div class="tick-on"></div><div class="tick-on"></div><div class="tick-off"></div></div>
+    <div style="display: flex; gap: 4px"><div class="tick-on"></div><div class="tick-on"></div><div class="tick-on"></div><div class="tick-on"></div><div class="tick-off"></div></div>
+    <div style="font-size: 13px; color: #4A4B4D">Aynı çizim, aynı ölçü. Renk yok — renk iki ortamda asla aynı çıkmaz.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
