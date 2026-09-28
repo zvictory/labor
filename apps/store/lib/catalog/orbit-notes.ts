@@ -9,4 +9,8 @@ export const ORBIT_NOTE_FILES: Readonly<Record<string, string>> = {
   oud: 'oud.webp',
   raspberry: 'raspberry.webp',
   rose: 'rose.webp',
+  // The same ingredient under another note name (ALIASES in the script).
+  'agarwood-oud': 'agarwood.webp',
+  incense: 'frankincense.webp',
+  olibanum: 'frankincense.webp',
 };
