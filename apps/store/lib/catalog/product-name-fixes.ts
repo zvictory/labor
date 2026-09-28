@@ -160,4 +160,20 @@ export const PRODUCT_NAME_FIXES: readonly ProductNameFix[] = [
     from: 'Black pepper, amber, neroli',
     to: 'Black Pepper, Amber, Neroli',
   },
+
+  // Rows lib/catalog/duplicate-products.ts keeps although their twin read right:
+  // the twin was the thinner record.
+  { slug: 'silver-mountain', from: 'Silver Mountain', to: 'Silver Mountain Water' },
+  { slug: 'english-pear', from: 'English Pear', to: 'English Pear & Freesia' },
+  { slug: 'love-don-t-by-shy', from: 'Love Don’t BY ShY', to: 'Love Don’t Be Shy' },
+  {
+    slug: 'baccarat-rouge-540-maison',
+    from: 'Baccarat Rouge 540 Maison',
+    to: 'Baccarat Rouge 540',
+  },
+  {
+    slug: 'jump-up-and-kiss-me',
+    from: 'Jump Up And Kiss Me',
+    to: 'Jump Up And Kiss Me Hedonistic',
+  },
 ];

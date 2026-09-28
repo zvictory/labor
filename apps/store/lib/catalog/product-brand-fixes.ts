@@ -59,4 +59,8 @@ export const PRODUCT_BRAND_FIXES: readonly ProductBrandFix[] = [
 
   // спрей парфюм
   { slug: 'atelier-cologne', from: 'atelier-cologne', to: 'labor' },
+
+  // A designer fragrance under the wrong house: No.4 Après l'Amour is Thomas
+  // Kosmala's. This row stays in lib/catalog/duplicate-products.ts.
+  { slug: 'n4-apres-l-amour', from: 'histoires-de-parfums', to: 'thomas-kosmala' },
 ];
