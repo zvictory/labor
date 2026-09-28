@@ -125,7 +125,23 @@ const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
   };
 };
 
-const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
+// LIKE reads % and _ as wildcards and \ as its escape; in a customer's query they
+// are just characters.
+const escapeLike = (text: string): string => text.replace(/[\\%_]/g, '\\$&');
+
+// Prisma's JSON filters have no case-insensitive mode (`string_contains` compiles
+// to a plain LIKE), so "ombre" missed "Ombre Nomade". ILIKE folds case by the
+// database locale; under en_US.UTF-8 that covers Cyrillic too.
+const findProductIdsByName = async (q: string): Promise<number[]> => {
+  const pattern = `%${escapeLike(q)}%`;
+  const rows = await db.$queryRaw<{ id: number }[]>`
+    SELECT id FROM "Product"
+    WHERE name->>'ru' ILIKE ${pattern} OR name->>'uz' ILIKE ${pattern} OR name->>'en' ILIKE ${pattern}
+  `;
+  return rows.map((row) => row.id);
+};
+
+const buildWhere = async (params: ListProductsParams): Promise<Prisma.ProductWhereInput> => {
   const where: Prisma.ProductWhereInput = { status: 'active' };
   const fragrance: Prisma.FragranceDetailWhereInput = {};
 
@@ -152,11 +168,7 @@ const buildWhere = (params: ListProductsParams): Prisma.ProductWhereInput => {
   }
   if (params.q) {
     // name is per-locale JSON; match across stored locale strings.
-    where.OR = [
-      { name: { path: ['ru'], string_contains: params.q } },
-      { name: { path: ['uz'], string_contains: params.q } },
-      { name: { path: ['en'], string_contains: params.q } },
-    ];
+    where.id = { in: await findProductIdsByName(params.q) };
   }
   if (params.perfumer) {
     where.perfumers = { some: { perfumer: { slug: params.perfumer } } };
@@ -184,7 +196,7 @@ const buildOrderBy = (sort: ProductSort | undefined): Prisma.ProductOrderByWithR
 
 export const listProducts = async (params: ListProductsParams): Promise<ListProductsResult> => {
   const page = Math.max(1, params.page ?? 1);
-  const where = buildWhere(params);
+  const where = await buildWhere(params);
   const orderBy = buildOrderBy(params.sort);
 
   const [total, rows] = await Promise.all([
