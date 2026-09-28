@@ -1,6 +1,6 @@
 /**
  * Lists public/notes/orbit/*.webp to generate the orbit note manifest.
- * The illustrations are our own (generated, cut out to transparent WebP).
+ * The pictures are our own photographs (generated, cut out to transparent WebP).
  * The manifest exists so the card query knows which notes have one without
  * touching the filesystem at request time.
  *
