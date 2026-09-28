@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Search, ShoppingBag } from 'lucide-react';
@@ -7,7 +6,7 @@ import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
 import { SiteMenu } from '@/components/site-menu';
 
-// Site chrome. On a phone: menu and language left, the seal centred, search and
+// Site chrome. On a phone: menu and language left, the wordmark centred, search and
 // cart right — every target 44 × 44, the bar 56 px. From xl up the menu's pages
 // are listed inline instead; any narrower, six labels do not fit beside a
 // centred logo. Server-safe: useTranslations works in RSC under
@@ -50,19 +49,10 @@ export function SiteHeader({ locale }: { locale: string }) {
         </div>
 
         <Link href={href('')} aria-label={b('name')} className="flex justify-center">
-          {/* The seal is a black-on-white PNG; multiply drops the white onto
-              the off-white ground, and dark mode inverts it onto graphite. */}
-          <Image
-            src="/labor-seal.png"
-            alt=""
-            width={34}
-            height={34}
-            priority
-            className="mix-blend-multiply md:hidden dark:mix-blend-screen dark:invert"
-          />
-          {/* From md up the wordmark alone, without the circle: inside a 40 px
-              seal the lettering was too small to read. */}
-          <span className="font-logo text-ink dark:text-bone hidden text-[40px] leading-none md:block">
+          {/* The wordmark alone, without the circle, at every width: inside the
+              seal the lettering was too small to read. 36 px in the phone's
+              56 px bar, 40 px in the 64 px bar from md up. */}
+          <span className="font-logo text-ink dark:text-bone text-[36px] leading-none md:text-[40px]">
             {b('name')}
           </span>
         </Link>
