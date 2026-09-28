@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { ProductCard } from '@/components/catalog/product-card';
-import { AccordBarList } from '@/components/catalog/accord-bar-list';
+import { OlfactivePyramidView } from '@/components/catalog/olfactive-pyramid-view';
 import { ProductRecord } from '@/components/catalog/product-record';
 import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCart } from '@/components/cart/add-to-cart';
@@ -43,8 +43,9 @@ export default async function ProductPage({ params }: Props) {
   return (
     <div className="container space-y-16 py-10 md:py-16">
       <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Gallery Section */}
-        <div className="sticky top-24 space-y-4">
+        {/* Gallery Section — pinned only beside the label. Stacked on a phone,
+            a pinned picture covers the label as it scrolls up underneath. */}
+        <div className="space-y-4 lg:sticky lg:top-24">
           <div className="border-border bg-background relative aspect-[3/4] overflow-hidden border p-6">
             {gallery[0] ? (
               <Image
@@ -155,8 +156,8 @@ export default async function ProductPage({ params }: Props) {
             {describeProduct(product, locale)}
           </p>
 
-          {/* Main Accords Bars */}
-          {product.accords.length > 0 && <AccordBarList accords={product.accords} />}
+          {/* The notes, as pictures — in place of the accord measures */}
+          <OlfactivePyramidView notes={product.notes} locale={locale} />
 
           {/* Cart & Order Actions */}
           <div className="border-border flex flex-col gap-3 border-t pt-5">
@@ -193,7 +194,6 @@ export default async function ProductPage({ params }: Props) {
 
       {/* Layer two — everything that is reference rather than label */}
       <ProductRecord
-        notes={product.notes}
         perfumers={product.perfumers}
         locale={locale}
         avgRating={product.avg_rating}
