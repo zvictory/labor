@@ -10,7 +10,7 @@ import { SiteMenu } from '@/components/site-menu';
 // Site chrome. On a phone: menu and language left, the seal centred, search and
 // cart right — every target 44 × 44, the bar 56 px. From xl up the menu's pages
 // are listed inline instead; any narrower, six labels do not fit beside a
-// centred seal. Server-safe: useTranslations works in RSC under
+// centred logo. Server-safe: useTranslations works in RSC under
 // NextIntlClientProvider. All links are locale-prefixed.
 export function SiteHeader({ locale }: { locale: string }) {
   const t = useTranslations('nav');
@@ -58,8 +58,13 @@ export function SiteHeader({ locale }: { locale: string }) {
             width={34}
             height={34}
             priority
-            className="mix-blend-multiply md:h-10 md:w-10 dark:mix-blend-screen dark:invert"
+            className="mix-blend-multiply md:hidden dark:mix-blend-screen dark:invert"
           />
+          {/* From md up the wordmark alone, without the circle: inside a 40 px
+              seal the lettering was too small to read. */}
+          <span className="font-logo text-ink dark:text-bone hidden text-[40px] leading-none md:block">
+            {b('name')}
+          </span>
         </Link>
 
         <div className="flex items-center justify-end">
