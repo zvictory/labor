@@ -12,6 +12,7 @@ import { ShoppingBag } from 'lucide-react';
 import type { CartDTO } from '@/lib/cart/cart';
 import { emitCartUpdated } from '@/components/cart/cart-events';
 import { track } from '@/lib/analytics';
+import { useHydrated } from '@/lib/use-hydrated';
 
 type Lang = 'ru' | 'uz' | 'en';
 
@@ -49,6 +50,8 @@ function useAddToCart(productId: number, locale: string) {
   const [pending, startTransition] = useTransition();
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const lang = toLang(locale);
+  // Not clickable until the handler below is attached (see useHydrated).
+  const ready = useHydrated();
 
   const add = (isSample: boolean): void => {
     startTransition(async () => {
@@ -74,7 +77,7 @@ function useAddToCart(productId: number, locale: string) {
     });
   };
 
-  return { pending, toast, add };
+  return { pending: pending || !ready, toast, add };
 }
 
 /**

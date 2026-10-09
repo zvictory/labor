@@ -11,6 +11,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 
 import { updateCartItemAction, removeCartItemAction } from '@/lib/cart/actions';
 import { emitCartUpdated } from '@/components/cart/cart-events';
+import { useHydrated } from '@/lib/use-hydrated';
 
 export function CartLineControls({
   itemId,
@@ -23,7 +24,10 @@ export function CartLineControls({
   locale: string;
   removeLabel: string;
 }) {
-  const [pending, startTransition] = useTransition();
+  const [transitionPending, startTransition] = useTransition();
+  // Disabled until hydrated: before that a tap on − / + / remove did nothing.
+  const hydrated = useHydrated();
+  const pending = transitionPending || !hydrated;
   const revalidate = `/${locale}/cart`;
 
   const setQty = (next: number): void => {
