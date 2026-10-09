@@ -3,9 +3,12 @@ import { getLocale } from 'next-intl/server';
 
 import { localeHtmlLang, defaultLocale, type Locale } from '@/i18n/config';
 import { archivo, golosText, jetbrainsMono, literata, newsreader, storyScript } from '@/lib/fonts';
+import { SITE_URL } from '@/lib/seo';
 import './globals.css';
 
 export const metadata = {
+  // Resolves the relative Open Graph image paths pages pass in.
+  metadataBase: new URL(SITE_URL),
   title: { default: 'Labor — Parfumerie', template: '%s · Labor' },
   description: 'Multi-brand niche & selective fragrance in Uzbekistan',
   icons: { icon: '/favicon.ico' },

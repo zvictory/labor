@@ -25,6 +25,9 @@ export function SiteHeader({ locale }: { locale: string }) {
     { href: href('/find-your-perfume'), label: t('finder') },
     { href: href('/delivery'), label: t('delivery') },
   ];
+  // The inline xl nav has no room for a seventh label: in Uzbek it already
+  // pushes the logo off centre. Contacts sit in the menu and the footer.
+  const menuPages = [...pages, { href: href('/contacts'), label: t('contacts') }];
 
   // Solid, not frosted. A translucent blurred bar is the one texture the shop
   // has nowhere — the island is a single opaque surface, and the header is the
@@ -33,7 +36,7 @@ export function SiteHeader({ locale }: { locale: string }) {
     <header className="border-border bg-background sticky top-0 z-40 border-b">
       <div className="grid h-14 grid-cols-[88px_1fr_88px] items-center px-1.5 md:container md:h-16 md:grid-cols-[1fr_auto_1fr]">
         <div className="flex items-center xl:gap-6">
-          <SiteMenu items={pages} openLabel={t('menu')} closeLabel={t('closeMenu')} />
+          <SiteMenu items={menuPages} openLabel={t('menu')} closeLabel={t('closeMenu')} />
           <nav className="text-label hidden items-center gap-6 font-mono tracking-[0.1em] uppercase xl:flex">
             {pages.map((page) => (
               <Link

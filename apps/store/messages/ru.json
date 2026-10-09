@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "Labor",
-    "tagline": "Парфюмерия для тех, кто слышит запахи"
+    "tagline": "Парфюмерия для тех, кто слышит запахи",
+    "description": "Селективная и нишевая парфюмерия в Ташкенте: деканты по 10 мл и пробники по 2 мл. Доставка по всему Узбекистану, оплата Payme, Click или при получении."
   },
   "nav": {
     "menu": "Меню",
@@ -18,7 +19,8 @@
     "account": "Кабинет",
     "search": "Поиск",
     "login": "Войти",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "contacts": "Контакты"
   },
   "home": {
     "hero": {
@@ -448,6 +450,21 @@
   },
   "footer": {
     "telegram": "Откройте мини-приложение в Telegram:",
-    "copyright": "© {year} Labor. Ташкент, Узбекистан."
+    "copyright": "© {year} Labor. Ташкент, Узбекистан.",
+    "contactsTitle": "Связь",
+    "allContacts": "Все контакты"
+  },
+  "contacts": {
+    "title": "Контакты",
+    "subtitle": "Как с нами связаться и где забрать заказ.",
+    "phone": "Телефон",
+    "telegram": "Telegram",
+    "email": "Почта",
+    "instagram": "Instagram",
+    "address": "Адрес",
+    "hours": "Часы работы",
+    "map": "Открыть на карте",
+    "telegramNote": "Быстрее всего ответим в Telegram.",
+    "deliveryLink": "Доставка и оплата"
   }
 }

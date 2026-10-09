@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { MobileBottomNav } from '@/components/mobile-bottom-nav';
+import { AnalyticsScripts } from '@/components/analytics/analytics-scripts';
 
 // Store-group shell — wraps every storefront page (home, catalog, PDP) with the
 // shared header/footer chrome. The parent app/[locale]/layout.tsx already sets
@@ -23,6 +24,8 @@ export default async function StoreLayout({ children, params }: Props) {
       <main className="flex-1">{children}</main>
       <SiteFooter locale={locale} />
       <MobileBottomNav locale={locale} />
+      {/* Storefront only: staff working in /admin are not visitors. */}
+      <AnalyticsScripts />
     </div>
   );
 }

@@ -1,5 +1,7 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -15,16 +17,35 @@ import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
 import type { Gender } from '@/lib/catalog/types';
 import { TELEGRAM_URL } from '@/lib/telegram';
 import { describeProduct } from '@/lib/catalog/product-description';
+import { jsonLdScript, pageMetadata, productJsonLd } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
 };
 
+// generateMetadata and the page both need the product. Prisma calls are not
+// deduplicated the way fetch() is, so share one query per request.
+const loadProduct = cache(getProduct);
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const product = await loadProduct(slug, locale);
+  if (!product) return {};
+
+  return pageMetadata({
+    locale,
+    path: `/product/${product.slug}`,
+    title: product.brand ? `${product.name} — ${product.brand}` : product.name,
+    description: describeProduct(product, locale),
+    images: product.images.length > 0 ? product.images.slice(0, 1) : [product.image],
+  });
+}
+
 export default async function ProductPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const product = await getProduct(slug, locale);
+  const product = await loadProduct(slug, locale);
   if (!product) {
     notFound();
   }
@@ -39,9 +60,16 @@ export default async function ProductPage({ params }: Props) {
   };
 
   const gallery = product.images.length > 0 ? product.images : [product.image].filter(Boolean);
+  const description = describeProduct(product, locale);
 
   return (
     <div className="container space-y-16 py-10 md:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(productJsonLd(product, locale, description)),
+        }}
+      />
       <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
         {/* Gallery Section — pinned only beside the label. Stacked on a phone,
             a pinned picture covers the label as it scrolls up underneath. */}
@@ -153,7 +181,7 @@ export default async function ProductPage({ params }: Props) {
               description is Fragrantica's English template, filed under `ru` as
               well, and 133 products had none at all. */}
           <p className="text-muted-foreground max-w-prose font-serif text-base leading-relaxed">
-            {describeProduct(product, locale)}
+            {description}
           </p>
 
           {/* The notes, as pictures — in place of the accord measures */}

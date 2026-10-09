@@ -4,6 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
 import { readCart } from '@/lib/cart/cart';
+import { TrackEvent } from '@/components/analytics/track-event';
 import { CheckoutForm, type CheckoutCopy } from '@/components/checkout/checkout-form';
 
 type Props = {
@@ -149,6 +150,7 @@ export default async function CheckoutPage({ params }: Props) {
 
   return (
     <div className="container py-10 md:py-16">
+      <TrackEvent event="begin_checkout" params={{ value: cart.subtotal, currency: 'UZS' }} />
       <h1 className="font-display text-ink dark:text-bone mb-10 text-4xl md:text-5xl">
         {copy.heading}
       </h1>

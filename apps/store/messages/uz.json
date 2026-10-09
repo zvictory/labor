@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "Labor",
-    "tagline": "Hidlarni eshitganlar uchun parfyumeriya"
+    "tagline": "Hidlarni eshitganlar uchun parfyumeriya",
+    "description": "Toshkentda selektiv va nish parfyumeriya: 10 ml dekantlar va 2 ml probniklar. Butun Oʻzbekiston boʻylab yetkazib berish, Payme, Click yoki qabul qilishda toʻlov."
   },
   "nav": {
     "menu": "Menyu",
@@ -18,7 +19,8 @@
     "account": "Kabinet",
     "search": "Qidirish",
     "login": "Kirish",
-    "logout": "Chiqish"
+    "logout": "Chiqish",
+    "contacts": "Aloqa"
   },
   "home": {
     "hero": {
@@ -448,6 +450,21 @@
   },
   "footer": {
     "telegram": "Telegramda mini-ilovani oching:",
-    "copyright": "© {year} Labor. Toshkent, Oʻzbekiston."
+    "copyright": "© {year} Labor. Toshkent, Oʻzbekiston.",
+    "contactsTitle": "Aloqa",
+    "allContacts": "Barcha kontaktlar"
+  },
+  "contacts": {
+    "title": "Aloqa",
+    "subtitle": "Biz bilan qanday bogʻlanish va buyurtmani qayerdan olish mumkin.",
+    "phone": "Telefon",
+    "telegram": "Telegram",
+    "email": "Pochta",
+    "instagram": "Instagram",
+    "address": "Manzil",
+    "hours": "Ish vaqti",
+    "map": "Xaritada ochish",
+    "telegramNote": "Telegramda eng tez javob beramiz.",
+    "deliveryLink": "Yetkazib berish va toʻlov"
   }
 }

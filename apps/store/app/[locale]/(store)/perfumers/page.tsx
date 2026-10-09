@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -6,9 +7,16 @@ import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
 import { BlockMarker, chunk, pad } from '@/components/catalog/index-block';
 import { getPerfumers } from '@/lib/catalog/perfumers';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
+import { pageMetadata } from '@/lib/seo';
 import { countryName } from '@/lib/catalog/countries';
 
 type Props = { params: Promise<{ locale: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'perfumers' });
+  return pageMetadata({ locale, path: '/perfumers', title: t('title'), description: t('subtitle') });
+}
 
 // Same twelve-block rhythm as the catalogue and the brand index, so the three
 // indexes are one instrument rather than three walls of different heights.

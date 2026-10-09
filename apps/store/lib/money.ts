@@ -13,12 +13,24 @@ const GROUP_SEP: Record<string, string> = {
   uz: NBSP,
 };
 
+// The currency is always UZS; only the word printed after the number changes.
+// A buyer in Tashkent reads "сум" or "soʻm" on every price tag, receipt and
+// marketplace card, and "UZS" reads as a bank code. The Uzbek spelling uses
+// U+02BB, like the rest of the Uzbek copy (see i18n/config.ts). English keeps
+// the ISO code, which is what an English reader would recognise.
+const CURRENCY_LABEL: Record<string, string> = {
+  ru: 'сум',
+  uz: 'soʻm',
+  en: 'UZS',
+};
+
 export const formatUzs = (amount: number, locale: string = 'ru'): string => {
   const sep = GROUP_SEP[locale] ?? GROUP_SEP.ru!;
+  const label = CURRENCY_LABEL[locale] ?? CURRENCY_LABEL.ru!;
   const grouped = Math.round(amount)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-  return `${grouped}${NBSP}UZS`;
+  return `${grouped}${NBSP}${label}`;
 };
 
 // Labor sells by volume. The bench rate is the same one quoted at the counter,

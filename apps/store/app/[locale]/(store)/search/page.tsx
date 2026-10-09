@@ -1,7 +1,9 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchForm } from './search-form';
 import { listProducts } from '@/lib/catalog/products';
 import { ProductCard } from '@/components/catalog/product-card';
+import { pageMetadata } from '@/lib/seo';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -10,6 +12,12 @@ interface Props {
 
 const first = (v: string | string[] | undefined): string | undefined =>
   Array.isArray(v) ? v[0] : v;
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'search' });
+  return pageMetadata({ locale, path: '/search', title: t('title'), noindex: true });
+}
 
 export default async function SearchPage({ params, searchParams }: Props) {
   const { locale } = await params;

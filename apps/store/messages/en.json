@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "Labor",
-    "tagline": "Fragrance for those who listen to scent"
+    "tagline": "Fragrance for those who listen to scent",
+    "description": "Selective and niche fragrance in Tashkent: 10 ml decants and 2 ml samples. Delivery across Uzbekistan; pay with Payme, Click or on delivery."
   },
   "nav": {
     "menu": "Menu",
@@ -18,7 +19,8 @@
     "account": "Account",
     "search": "Search",
     "login": "Sign in",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "contacts": "Contacts"
   },
   "home": {
     "hero": {
@@ -448,6 +450,21 @@
   },
   "footer": {
     "telegram": "Open the mini-app in Telegram:",
-    "copyright": "© {year} Labor. Tashkent, Uzbekistan."
+    "copyright": "© {year} Labor. Tashkent, Uzbekistan.",
+    "contactsTitle": "Contact",
+    "allContacts": "All contacts"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "subtitle": "How to reach us and where to collect your order.",
+    "phone": "Phone",
+    "telegram": "Telegram",
+    "email": "Email",
+    "instagram": "Instagram",
+    "address": "Address",
+    "hours": "Opening hours",
+    "map": "Open on the map",
+    "telegramNote": "Telegram is the fastest way to reach us.",
+    "deliveryLink": "Delivery and payment"
   }
 }

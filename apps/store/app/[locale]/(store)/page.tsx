@@ -1,5 +1,6 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { locales, type Locale } from '@/i18n/config';
 import { Hero } from '@/components/home/hero';
@@ -7,6 +8,7 @@ import { SelectionCard } from '@/components/home/selection-card';
 import { CustomParfumCta } from '@/components/home/custom-parfum-cta';
 import { getHeroProducts, listProducts } from '@/lib/catalog/products';
 import { FAMILY_FILTERS, NOTE_FAMILIES, familyLabel } from '@/lib/catalog/note-families';
+import { pageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -57,6 +59,18 @@ const HOME_GRID = 12;
 
 const chipCls =
   'border-hairline dark:border-gunmetal inline-flex min-h-11 items-center border px-3.5 font-mono text-label tracking-[0.1em] uppercase transition-colors';
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'brand' });
+  return pageMetadata({
+    locale,
+    path: '',
+    title: `${t('name')} — ${t('tagline')}`,
+    description: t('description'),
+    absoluteTitle: true,
+  });
+}
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -6,9 +7,16 @@ import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
 import { BlockMarker, chunk, pad } from '@/components/catalog/index-block';
 import { getBrands } from '@/lib/catalog/brands';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
+import { pageMetadata } from '@/lib/seo';
 import { countryName } from '@/lib/catalog/countries';
 
 type Props = { params: Promise<{ locale: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'brands' });
+  return pageMetadata({ locale, path: '/brands', title: t('title'), description: t('subtitle') });
+}
 
 // Blocks of twelve, ordered by how much of the catalogue each house actually
 // holds. Alphabetical order gave a brand with one decant the same standing as

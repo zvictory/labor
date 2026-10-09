@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { listProducts } from '@/lib/catalog/products';
 import {
@@ -8,6 +9,7 @@ import {
 import type { ProductCardDTO } from '@/lib/catalog/types';
 import type { Locale } from '@/i18n/config';
 import { FAMILY_FILTERS } from '@/lib/catalog/note-families';
+import { pageMetadata } from '@/lib/seo';
 
 interface Props {
   params: Promise<{ locale: Locale }>;
@@ -446,6 +448,17 @@ const COPY: Record<Lang, FinderCopy> = {
     },
   },
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const copy = COPY[toLang(locale)];
+  return pageMetadata({
+    locale,
+    path: '/find-your-perfume',
+    title: copy.title,
+    description: copy.intro,
+  });
+}
 
 export default async function FindYourPerfumePage({ params }: Props) {
   const { locale } = await params;

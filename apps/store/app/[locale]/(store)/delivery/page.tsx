@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { locales, type Locale } from '@/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 import { TELEGRAM_URL } from '@/lib/telegram';
 
 type Props = { params: Promise<{ locale: Locale }> };
@@ -11,7 +12,7 @@ export const generateStaticParams = () => locales.map((locale) => ({ locale }));
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'delivery' });
-  return { title: t('title'), description: t('subtitle') };
+  return pageMetadata({ locale, path: '/delivery', title: t('title'), description: t('subtitle') });
 }
 
 // Two cards in the trust strip have linked here since the storefront was built,

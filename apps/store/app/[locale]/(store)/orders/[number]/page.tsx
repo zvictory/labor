@@ -6,6 +6,7 @@ import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
 import { getOrderByNumber, type OrderStatus, type OrderPaymentStatus } from '@/lib/orders/queries';
 import { TELEGRAM_URL } from '@/lib/telegram';
+import { TrackEvent } from '@/components/analytics/track-event';
 
 type Props = {
   params: Promise<{ locale: Locale; number: string }>;
@@ -120,6 +121,16 @@ export default async function OrderConfirmationPage({ params }: Props) {
 
   return (
     <div className="container max-w-3xl py-12 md:py-16">
+      {/* Checkout lands here for every payment method, so this is where an
+          order counts as placed. Once per order per browser: the page is
+          also where the customer comes back to check the status. */}
+      {order.status !== 'canceled' && (
+        <TrackEvent
+          event="purchase"
+          onceKey={`purchase:${order.number}`}
+          params={{ transaction_id: order.number, value: order.total, currency: 'UZS' }}
+        />
+      )}
       {/* Header */}
       <div className="space-y-2 text-center">
         <p className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
