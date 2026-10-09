@@ -34,7 +34,9 @@ export interface OrderDTO {
   status: OrderStatus;
   paymentStatus: OrderPaymentStatus;
   subtotal: number; // integer so'm (sum of line totals)
-  deliveryFee: number; // integer so'm (total - subtotal)
+  discount: number; // integer so'm taken off the items by a promo code
+  promoCode: string | null;
+  deliveryFee: number; // integer so'm (total - subtotal + discount)
   total: number; // integer so'm
   // shipping snapshot
   region: string | null;
@@ -53,6 +55,8 @@ const orderSelect = {
   status: true,
   paymentStatus: true,
   total: true,
+  discount: true,
+  promoCode: true,
   region: true,
   district: true,
   address: true,
@@ -79,6 +83,8 @@ type OrderRow = {
   status: string;
   paymentStatus: string;
   total: number;
+  discount: number;
+  promoCode: string | null;
   region: string | null;
   district: string | null;
   address: string | null;
@@ -107,7 +113,7 @@ function toDTO(order: OrderRow, locale: string): OrderDTO {
   }));
 
   const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
-  const deliveryFee = Math.max(0, order.total - subtotal);
+  const deliveryFee = Math.max(0, order.total - subtotal + order.discount);
 
   const method = order.deliveryMethod ? getDeliveryMethod(order.deliveryMethod) : undefined;
   const deliveryMethodLabel = method ? resolveLocaleText(method.label, locale) : null;
@@ -117,6 +123,8 @@ function toDTO(order: OrderRow, locale: string): OrderDTO {
     status: order.status as OrderStatus,
     paymentStatus: order.paymentStatus as OrderPaymentStatus,
     subtotal,
+    discount: order.discount,
+    promoCode: order.promoCode,
     deliveryFee,
     total: order.total,
     region: order.region,

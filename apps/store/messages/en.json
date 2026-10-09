@@ -198,7 +198,9 @@
     "remove": "Remove",
     "quantity": "Quantity",
     "promoCode": "Promo code",
-    "apply": "Apply"
+    "apply": "Apply",
+    "freeDeliveryLeft": "{amount} more for free delivery in Tashkent",
+    "freeDeliveryReached": "Delivery in Tashkent is free"
   },
   "checkout": {
     "title": "Checkout",
@@ -239,7 +241,7 @@
     "eyebrow": "Specials",
     "title": "Labor campaigns",
     "empty": "No active campaigns right now",
-    "itemsCount": "{count} fragrances",
+    "itemsCount": "{count, plural, one {# fragrance} other {# fragrances}}",
     "until": "until {date}"
   },
   "catalog": {
@@ -296,7 +298,11 @@
   },
   "campaign": {
     "useCode": "Use code",
-    "until": "Ends {date}"
+    "until": "Ends {date}",
+    "open": "View",
+    "back": "All offers",
+    "products": "Fragrances in this offer",
+    "metaDescription": "Labor offers and selections: discounted fragrances and seasonal edits."
   },
   "tg": {
     "tabs": {
@@ -454,7 +460,8 @@
     "authenticityBody": "Direct supply and authenticity checks on every batch.",
     "helpTitle": "Still have a question?",
     "helpBody": "Message us on Telegram — we answer and help you choose. You can take a decant to try a scent before committing to the full bottle.",
-    "helpCta": "Message on Telegram"
+    "helpCta": "Message on Telegram",
+    "tashkentFree": "Free on orders from {amount}."
   },
   "footer": {
     "telegram": "Open the mini-app in Telegram:",

@@ -198,7 +198,9 @@
     "remove": "Oʻchirish",
     "quantity": "Miqdor",
     "promoCode": "Promokod",
-    "apply": "Qoʻllash"
+    "apply": "Qoʻllash",
+    "freeDeliveryLeft": "Yana {amount} — va Toshkent boʻylab yetkazib berish bepul",
+    "freeDeliveryReached": "Toshkent boʻylab yetkazib berish — bepul"
   },
   "checkout": {
     "title": "Buyurtma rasmiylashtirish",
@@ -296,7 +298,11 @@
   },
   "campaign": {
     "useCode": "Promokod",
-    "until": "{date} gacha amal qiladi"
+    "until": "{date} gacha amal qiladi",
+    "open": "Batafsil",
+    "back": "Barcha aksiyalar",
+    "products": "Aksiya atirlari",
+    "metaDescription": "Labor aksiyalari va toʻplamlari: chegirmadagi atirlar va mavsumiy toʻplamlar."
   },
   "tg": {
     "tabs": {
@@ -454,7 +460,8 @@
     "authenticityBody": "Toʻgʻridan-toʻgʻri yetkazib berish va har partiyani tekshirish.",
     "helpTitle": "Savolingiz bormi?",
     "helpBody": "Telegramda yozing — javob beramiz va tanlashga yordam beramiz. Toʻliq flakondan oldin hidni sinab koʻrish uchun dekant olishingiz mumkin.",
-    "helpCta": "Telegramda yozish"
+    "helpCta": "Telegramda yozish",
+    "tashkentFree": "{amount} dan ortiq buyurtmada bepul."
   },
   "footer": {
     "telegram": "Telegramda mini-ilovani oching:",

@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { type Locale } from '@/i18n/config';
 import { readCart } from '@/lib/cart/cart';
 import { formatUzs } from '@/lib/money';
+import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { CartLineControls } from '@/components/cart/cart-line-controls';
 import { TELEGRAM_URL } from '@/lib/telegram';
 
@@ -33,6 +34,7 @@ export default async function CartPage({ params }: Props) {
   const cart = await readCart(locale);
   const t = await getTranslations('cart');
   const tpdp = await getTranslations('pdp');
+  const freeFrom = freeDeliveryThreshold();
   const lang = toLang(locale);
 
   return (
@@ -119,6 +121,14 @@ export default async function CartPage({ params }: Props) {
                 {formatUzs(cart.subtotal, locale)}
               </span>
             </div>
+            {/* Before a promo code: the checkout recounts after one. */}
+            {freeFrom !== null && (
+              <p className="text-ink-muted text-xs dark:text-stone-400">
+                {cart.subtotal >= freeFrom
+                  ? t('freeDeliveryReached')
+                  : t('freeDeliveryLeft', { amount: formatUzs(freeFrom - cart.subtotal, locale) })}
+              </p>
+            )}
             {/* The same promise the product page makes under its button, repeated
                 where the money is committed. */}
             <p className="text-muted-foreground text-micro font-mono leading-relaxed tracking-[0.12em] uppercase">

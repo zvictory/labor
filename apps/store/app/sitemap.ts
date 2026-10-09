@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next';
 import { locales } from '@/i18n/config';
 import { db } from '@/lib/db';
 import { absoluteUrl } from '@/lib/seo';
+import { liveCampaignWhere } from '@/lib/catalog/campaigns';
 
 // Read at request time: the catalogue lives in Postgres, and the build has no
 // database to read it from (the storefront group opts out of prerendering for
@@ -20,10 +21,11 @@ const STATIC_PATHS = [
   '/find-your-perfume',
   '/delivery',
   '/contacts',
+  '/campaigns',
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, brands] = await Promise.all([
+  const [products, brands, campaigns] = await Promise.all([
     db.product.findMany({
       where: { status: 'active' },
       select: { slug: true, updatedAt: true },
@@ -35,6 +37,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       select: { slug: true, updatedAt: true },
       orderBy: { id: 'asc' },
     }),
+    db.campaign.findMany({
+      where: liveCampaignWhere(new Date()),
+      select: { slug: true, updatedAt: true },
+      orderBy: { id: 'asc' },
+    }),
   ]);
 
   // One entry per locale, each listing its siblings, so every language version
@@ -42,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths: { path: string; lastModified?: Date }[] = [
     ...STATIC_PATHS.map((path) => ({ path })),
     ...brands.map((b) => ({ path: `/brands/${b.slug}`, lastModified: b.updatedAt })),
+    ...campaigns.map((c) => ({ path: `/campaigns/${c.slug}`, lastModified: c.updatedAt })),
     ...products.map((p) => ({ path: `/product/${p.slug}`, lastModified: p.updatedAt })),
   ];
 

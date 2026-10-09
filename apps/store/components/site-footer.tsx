@@ -42,6 +42,11 @@ export function SiteFooter({ locale }: { locale: string }) {
               </Link>
             </li>
             <li>
+              <Link href={href('/campaigns')} className="hover:underline hover:underline-offset-4">
+                {t('campaigns')}
+              </Link>
+            </li>
+            <li>
               <Link href={href('/delivery')} className="hover:underline hover:underline-offset-4">
                 {t('delivery')}
               </Link>

@@ -29,6 +29,7 @@ export function SiteHeader({ locale }: { locale: string }) {
   // pushes the logo off centre. Contacts sit in the menu and the footer.
   const menuPages = [
     ...pages,
+    { href: href('/campaigns'), label: t('campaigns') },
     { href: href('/wishlist'), label: t('wishlist') },
     { href: href('/contacts'), label: t('contacts') },
   ];

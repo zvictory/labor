@@ -7,6 +7,8 @@ import { Hero } from '@/components/home/hero';
 import { SelectionCard } from '@/components/home/selection-card';
 import { CustomParfumCta } from '@/components/home/custom-parfum-cta';
 import { getHeroProducts, listProducts } from '@/lib/catalog/products';
+import { getLiveCampaigns } from '@/lib/catalog/campaigns';
+import { CampaignCard } from '@/components/campaigns/campaign-card';
 import { FAMILY_FILTERS, NOTE_FAMILIES, familyLabel } from '@/lib/catalog/note-families';
 import { pageMetadata } from '@/lib/seo';
 
@@ -80,9 +82,10 @@ export default async function HomePage({ params }: Props) {
   const c = COPY[lang];
 
   // ── data-access layer: called directly from the RSC, no HTTP hop ──────────────
-  const [heroes, newRes] = await Promise.all([
+  const [heroes, newRes, campaigns] = await Promise.all([
     getHeroProducts(locale),
     listProducts({ locale, sort: 'new' }),
+    getLiveCampaigns(locale),
   ]);
 
   // The hero bottles are not repeated in the grid below them.
@@ -92,6 +95,18 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       {heroes.length > 0 && <Hero products={heroes} locale={locale} lang={lang} />}
+
+      {/* What staff are running right now (admin → Кампании). Two at most: the
+          rest are one click away. Nothing renders when none is live. */}
+      {campaigns.length > 0 && (
+        <section className="border-border border-b">
+          <div className="container grid gap-6 py-8 md:grid-cols-2 md:py-12">
+            {campaigns.slice(0, 2).map((campaign) => (
+              <CampaignCard key={campaign.slug} campaign={campaign} locale={locale} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="border-border border-b">
         <div className="container flex flex-col gap-3 pt-6 pb-8 md:gap-6 md:py-16">

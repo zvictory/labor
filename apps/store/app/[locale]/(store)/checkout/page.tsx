@@ -4,6 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
 import { readCart } from '@/lib/cart/cart';
+import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { CheckoutForm, type CheckoutCopy } from '@/components/checkout/checkout-form';
 
@@ -40,7 +41,23 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     submitting: 'Оформляем…',
     selectRegion: 'Выберите регион',
     selectDistrict: 'Выберите район',
+    promo: 'Промокод',
+    promoPlaceholder: 'Например, WELCOME10',
+    promoApply: 'Применить',
+    promoApplied: 'Код {code} применён',
+    promoRemove: 'Убрать',
+    subtotalLabel: 'Товары',
+    discountLabel: 'Скидка',
+    freeDeliveryLeft: 'Ещё {amount} — и доставка по Ташкенту бесплатно',
+    freeDeliveryReached: 'Доставка по Ташкенту — бесплатно',
     errors: {
+      promo_invalid: 'Такого промокода нет',
+      promo_inactive: 'Промокод больше не действует',
+      promo_not_started: 'Промокод ещё не начал действовать',
+      promo_expired: 'Срок действия промокода истёк',
+      promo_min_subtotal: 'Сумма заказа меньше минимальной для этого промокода',
+      promo_used_up: 'Промокод уже использован максимальное число раз',
+      promo_first_order_only: 'Этот промокод — только для первого заказа',
       cart_empty: 'Корзина пуста',
       address_required: 'Укажите адрес доставки',
       region_required: 'Выберите регион',
@@ -78,7 +95,23 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     submitting: 'Rasmiylashtirilmoqda…',
     selectRegion: 'Viloyatni tanlang',
     selectDistrict: 'Tumanni tanlang',
+    promo: 'Promokod',
+    promoPlaceholder: 'Masalan, WELCOME10',
+    promoApply: 'Qoʻllash',
+    promoApplied: '{code} kodi qoʻllandi',
+    promoRemove: 'Olib tashlash',
+    subtotalLabel: 'Mahsulotlar',
+    discountLabel: 'Chegirma',
+    freeDeliveryLeft: 'Yana {amount} — va Toshkent boʻylab yetkazib berish bepul',
+    freeDeliveryReached: 'Toshkent boʻylab yetkazib berish — bepul',
     errors: {
+      promo_invalid: 'Bunday promokod yoʻq',
+      promo_inactive: 'Promokod endi amal qilmaydi',
+      promo_not_started: 'Promokod hali amal qila boshlamagan',
+      promo_expired: 'Promokod muddati tugagan',
+      promo_min_subtotal: 'Buyurtma summasi bu promokod uchun yetarli emas',
+      promo_used_up: 'Promokoddan foydalanish soni tugagan',
+      promo_first_order_only: 'Bu promokod faqat birinchi buyurtma uchun',
       cart_empty: "Savat bo'sh",
       address_required: 'Manzilni kiriting',
       region_required: 'Viloyatni tanlang',
@@ -116,7 +149,23 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     submitting: 'Placing…',
     selectRegion: 'Select a region',
     selectDistrict: 'Select a district',
+    promo: 'Promo code',
+    promoPlaceholder: 'For example, WELCOME10',
+    promoApply: 'Apply',
+    promoApplied: 'Code {code} applied',
+    promoRemove: 'Remove',
+    subtotalLabel: 'Items',
+    discountLabel: 'Discount',
+    freeDeliveryLeft: '{amount} more for free delivery in Tashkent',
+    freeDeliveryReached: 'Delivery in Tashkent is free',
     errors: {
+      promo_invalid: 'There is no such promo code',
+      promo_inactive: 'This promo code is no longer active',
+      promo_not_started: 'This promo code is not active yet',
+      promo_expired: 'This promo code has expired',
+      promo_min_subtotal: 'The order is below the minimum for this code',
+      promo_used_up: 'This promo code has been used up',
+      promo_first_order_only: 'This promo code is for a first order only',
       cart_empty: 'Your cart is empty',
       address_required: 'Enter a delivery address',
       region_required: 'Select a region',
@@ -158,7 +207,12 @@ export default async function CheckoutPage({ params }: Props) {
       <div className="grid gap-12 lg:grid-cols-[1fr_minmax(320px,420px)] lg:gap-16">
         {/* Form */}
         <div className="order-2 lg:order-1">
-          <CheckoutForm locale={locale} subtotal={cart.subtotal} copy={copy} />
+          <CheckoutForm
+            locale={locale}
+            subtotal={cart.subtotal}
+            copy={copy}
+            freeDeliveryFrom={freeDeliveryThreshold()}
+          />
         </div>
 
         {/* Order summary */}

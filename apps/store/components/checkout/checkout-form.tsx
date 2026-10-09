@@ -10,12 +10,17 @@ import { useMemo, useState, useTransition } from 'react';
 
 import { UZ_REGIONS } from '@/lib/delivery/uz-regions';
 import { availableMethodsForRegion } from '@/lib/delivery/methods';
+import {
+  deliveryFee as feeAfterThreshold,
+  qualifiesForFreeDelivery,
+} from '@/lib/delivery/free-delivery';
 import { DeliveryQuote } from '@/components/checkout/delivery-quote';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { formatUzs } from '@/lib/money';
 import type { Locale } from '@/lib/catalog/locale';
 import {
   placeOrderAction,
+  previewPromoAction,
   type PaymentChoice,
   type PlaceOrderInput,
 } from '@/app/[locale]/(store)/checkout/actions';
@@ -41,6 +46,17 @@ export interface CheckoutCopy {
   submitting: string;
   selectRegion: string;
   selectDistrict: string;
+  promo: string;
+  promoPlaceholder: string;
+  promoApply: string;
+  /** `{code}` is replaced with the applied code. */
+  promoApplied: string;
+  promoRemove: string;
+  subtotalLabel: string;
+  discountLabel: string;
+  /** `{amount}` is replaced with what is left to reach free delivery. */
+  freeDeliveryLeft: string;
+  freeDeliveryReached: string;
   errors: Record<string, string>;
 }
 
@@ -48,6 +64,8 @@ interface Props {
   locale: Locale;
   subtotal: number;
   copy: CheckoutCopy;
+  /** Items total from which the Tashkent courier is free; null when off. */
+  freeDeliveryFrom: number | null;
 }
 
 const PAYMENT_OPTIONS: { id: PaymentChoice; key: 'payme' | 'click' | 'cod' }[] = [
@@ -56,7 +74,7 @@ const PAYMENT_OPTIONS: { id: PaymentChoice; key: 'payme' | 'click' | 'cod' }[] =
   { id: 'cod', key: 'cod' },
 ];
 
-export function CheckoutForm({ locale, subtotal, copy }: Props) {
+export function CheckoutForm({ locale, subtotal, copy, freeDeliveryFrom }: Props) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [regionName, setRegionName] = useState('');
@@ -66,6 +84,10 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
   const [payment, setPayment] = useState<PaymentChoice>('payme');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [promoInput, setPromoInput] = useState('');
+  const [promo, setPromo] = useState<{ code: string; discount: number } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [isPromoPending, startPromoTransition] = useTransition();
 
   // Region name stored as the locale-appropriate label so it round-trips through
   // findRegion() server-side (which matches uz OR ru names case-insensitively).
@@ -77,9 +99,34 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
   const districts = region?.districts ?? [];
   const methods = useMemo(() => availableMethodsForRegion(regionName || null), [regionName]);
 
+  // Same arithmetic as lib/orders/create.ts: the discount comes off the items,
+  // and the free-delivery threshold is measured on what is left.
+  const discount = promo?.discount ?? 0;
+  const itemsTotal = subtotal - discount;
+  const feeFor = (m: { id: string; baseFee: number }) =>
+    feeAfterThreshold(m, itemsTotal, freeDeliveryFrom);
   const selectedMethod = methods.find((m) => m.id === deliveryMethod);
-  const deliveryFee = selectedMethod?.baseFee ?? 0;
-  const total = subtotal + deliveryFee;
+  const deliveryFee = selectedMethod ? feeFor(selectedMethod) : 0;
+  const total = itemsTotal + deliveryFee;
+  const showFreeHint =
+    freeDeliveryFrom !== null &&
+    (deliveryMethod === '' || qualifiesForFreeDelivery(deliveryMethod));
+
+  function applyPromo() {
+    const code = promoInput.trim();
+    if (!code) return;
+    setPromoError(null);
+    startPromoTransition(async () => {
+      const result = await previewPromoAction(code, locale);
+      if (result.ok) {
+        setPromo({ code: result.code, discount: result.discount });
+        setPromoInput('');
+      } else {
+        setPromo(null);
+        setPromoError(copy.errors[result.error] ?? copy.errors.unexpected ?? result.error);
+      }
+    });
+  }
 
   const regionLabel = (r: (typeof UZ_REGIONS)[number]) => (locale === 'ru' ? r.name_ru : r.name_uz);
   const districtLabel = (d: { name_uz: string; name_ru: string }) =>
@@ -114,6 +161,7 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
       address: street.trim(),
       deliveryMethod,
       payment,
+      promoCode: promo?.code,
     };
 
     startTransition(async () => {
@@ -259,7 +307,7 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
                       {resolveLocaleText(m.label, locale)}
                     </span>
                     <span className="text-ink dark:text-bone text-sm font-medium">
-                      {m.baseFee > 0 ? formatUzs(m.baseFee, locale) : copy.free}
+                      {feeFor(m) > 0 ? formatUzs(feeFor(m), locale) : copy.free}
                     </span>
                   </span>
                   <span className="text-ink-muted mt-0.5 block text-xs dark:text-stone-400">
@@ -318,8 +366,86 @@ export function CheckoutForm({ locale, subtotal, copy }: Props) {
         </div>
       </section>
 
+      {/* Promo code */}
+      <section className="space-y-3">
+        <h2 className={sectionTitleCls}>{copy.promo}</h2>
+        {promo ? (
+          <div className="border-border flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm">
+            <span className="text-ink dark:text-bone">
+              {copy.promoApplied.replace('{code}', promo.code)}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPromo(null)}
+              className="text-ink-muted hover:text-foreground text-xs underline underline-offset-4"
+            >
+              {copy.promoRemove}
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <label htmlFor="co-promo" className="sr-only">
+              {copy.promo}
+            </label>
+            <input
+              id="co-promo"
+              className={fieldCls}
+              value={promoInput}
+              onChange={(e) => setPromoInput(e.target.value)}
+              onKeyDown={(e) => {
+                // Enter applies the code instead of submitting the order.
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  applyPromo();
+                }
+              }}
+              placeholder={copy.promoPlaceholder}
+              autoComplete="off"
+              autoCapitalize="characters"
+              aria-invalid={promoError !== null}
+              aria-describedby={promoError ? 'co-promo-error' : undefined}
+            />
+            <button
+              type="button"
+              onClick={applyPromo}
+              disabled={isPromoPending || promoInput.trim().length === 0}
+              className="border-border text-ink hover:border-foreground dark:text-bone h-11 shrink-0 rounded-md border px-4 text-xs font-semibold tracking-widest uppercase disabled:opacity-50"
+            >
+              {copy.promoApply}
+            </button>
+          </div>
+        )}
+        {promoError && (
+          <p id="co-promo-error" role="alert" className="text-sm text-red-700">
+            {promoError}
+          </p>
+        )}
+      </section>
+
       {/* Totals */}
       <section className="border-border space-y-2 border-t pt-6">
+        {discount > 0 && (
+          <>
+            <div className="text-ink-muted flex items-center justify-between text-sm dark:text-stone-400">
+              <span>{copy.subtotalLabel}</span>
+              <span>{formatUzs(subtotal, locale)}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm text-green-700 dark:text-green-400">
+              <span>{copy.discountLabel}</span>
+              <span>−{formatUzs(discount, locale)}</span>
+            </div>
+          </>
+        )}
+        {showFreeHint && freeDeliveryFrom !== null && (
+          <p className="text-ink-muted text-xs dark:text-stone-400">
+            {itemsTotal >= freeDeliveryFrom
+              ? copy.freeDeliveryReached
+              : copy.freeDeliveryLeft.replace(
+                  '{amount}',
+                  formatUzs(freeDeliveryFrom - itemsTotal, locale),
+                )}
+          </p>
+        )}
         <div className="text-ink-muted flex items-center justify-between text-sm dark:text-stone-400">
           <span>{copy.deliveryFeeLabel}</span>
           <span>{deliveryFee > 0 ? formatUzs(deliveryFee, locale) : copy.free}</span>

@@ -6,7 +6,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, ShoppingCart, Megaphone, PhoneCall } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Megaphone,
+  PhoneCall,
+  TicketPercent,
+  Send,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 interface NavItem {
@@ -27,6 +35,8 @@ export function AdminNav({ locale }: { locale: string }) {
     { href: `${base}/orders`, label: 'Заказы', icon: ShoppingCart },
     { href: `${base}/requests`, label: 'Заявки', icon: PhoneCall },
     { href: `${base}/campaigns`, label: 'Кампании', icon: Megaphone },
+    { href: `${base}/promo`, label: 'Промокоды', icon: TicketPercent },
+    { href: `${base}/broadcast`, label: 'Рассылка', icon: Send },
   ];
 
   const isActive = (item: NavItem): boolean =>

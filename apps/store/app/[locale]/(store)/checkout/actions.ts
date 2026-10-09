@@ -11,7 +11,11 @@
 
 import { redirect } from 'next/navigation';
 
+import { getCurrentUserId } from '@/lib/auth/session';
+import { readCart } from '@/lib/cart/cart';
 import { createOrderFromCart, OrderCreationError } from '@/lib/orders/create';
+import { findPromo, isFirstOrder } from '@/lib/promo/promo';
+import { evaluatePromo } from '@/lib/promo/rules';
 import { startPayment, PaymentInitiationError } from '@/lib/payments/initiate';
 import type { Locale } from '@/lib/catalog/locale';
 
@@ -28,6 +32,7 @@ export interface PlaceOrderInput {
   address: string;
   deliveryMethod: string;
   payment: PaymentChoice;
+  promoCode?: string;
 }
 
 export interface PlaceOrderResult {
@@ -55,6 +60,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
         address: input.address,
       },
       deliveryMethod: input.deliveryMethod,
+      promoCode: input.promoCode || undefined,
       // userId is resolved from the Auth.js session inside createOrderFromCart;
       // guests (no session) still place orders, tracked by phone.
     });
@@ -77,4 +83,39 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
 
   // Outside try/catch: redirect() throws NEXT_REDIRECT by design.
   redirect(destination);
+}
+
+export type PromoPreview =
+  | { ok: true; code: string; discount: number }
+  | { ok: false; error: string };
+
+/**
+ * What a code would take off the current cart, for the checkout's "apply"
+ * button. A first-order code is checked against the account when there is
+ * one; a guest's phone is checked when the order is placed.
+ */
+export async function previewPromoAction(code: string, locale: Locale): Promise<PromoPreview> {
+  try {
+    const [promo, cart, userId] = await Promise.all([
+      findPromo(code),
+      // Read only: a preview must never create a cart.
+      readCart(locale),
+      getCurrentUserId(),
+    ]);
+    const subtotal = cart.items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+    const firstOrder = promo?.firstOrderOnly
+      ? userId
+        ? await isFirstOrder({ userId })
+        : null
+      : true;
+    const check = evaluatePromo(promo, { subtotal, now: new Date(), isFirstOrder: firstOrder });
+    return check.ok && promo
+      ? { ok: true, code: promo.code, discount: check.discount }
+      : check.ok
+        ? { ok: false, error: 'promo_invalid' }
+        : check;
+  } catch (err) {
+    console.error('[checkout:previewPromo]', err);
+    return { ok: false, error: 'unexpected' };
+  }
 }

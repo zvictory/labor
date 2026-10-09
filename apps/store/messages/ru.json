@@ -198,7 +198,9 @@
     "remove": "Удалить",
     "quantity": "Количество",
     "promoCode": "Промокод",
-    "apply": "Применить"
+    "apply": "Применить",
+    "freeDeliveryLeft": "Ещё {amount} — и доставка по Ташкенту бесплатно",
+    "freeDeliveryReached": "Доставка по Ташкенту — бесплатно"
   },
   "checkout": {
     "title": "Оформление заказа",
@@ -239,7 +241,7 @@
     "eyebrow": "Акции",
     "title": "Кампании Labor",
     "empty": "Сейчас активных кампаний нет",
-    "itemsCount": "{count} ароматов",
+    "itemsCount": "{count, plural, one {# аромат} few {# аромата} many {# ароматов} other {# аромата}}",
     "until": "до {date}"
   },
   "catalog": {
@@ -296,7 +298,11 @@
   },
   "campaign": {
     "useCode": "Используйте код",
-    "until": "Действует до {date}"
+    "until": "Действует до {date}",
+    "open": "Подробнее",
+    "back": "Все акции",
+    "products": "Ароматы акции",
+    "metaDescription": "Акции и подборки Labor: ароматы со скидкой и сезонные подборки."
   },
   "tg": {
     "tabs": {
@@ -454,7 +460,8 @@
     "authenticityBody": "Прямые поставки и проверка подлинности каждой партии.",
     "helpTitle": "Остались вопросы?",
     "helpBody": "Напишите нам в Telegram — ответим и поможем выбрать. Можно взять декант, чтобы попробовать аромат до полного флакона.",
-    "helpCta": "Написать в Telegram"
+    "helpCta": "Написать в Telegram",
+    "tashkentFree": "Бесплатно при заказе от {amount}."
   },
   "footer": {
     "telegram": "Откройте мини-приложение в Telegram:",
