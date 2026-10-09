@@ -8,6 +8,7 @@ import { resolveLocaleText } from '@/lib/catalog/locale';
 import { SITE_NAME, absoluteUrl, jsonLdScript, pageMetadata } from '@/lib/seo';
 import { STORE_CONTACT, instagramUrl, telHref } from '@/lib/store-contact';
 import { TELEGRAM_HANDLE, TELEGRAM_URL } from '@/lib/telegram';
+import { ConsultForm } from '@/components/consult/consult-form';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -125,6 +126,10 @@ export default async function ContactsPage({ params }: Props) {
           </div>
         ))}
       </dl>
+
+      <section className="border-border border-t pt-8">
+        <ConsultForm locale={locale} source="contacts" />
+      </section>
 
       <p className="text-sm">
         <Link href={`/${locale}/delivery`} className={linkCls}>

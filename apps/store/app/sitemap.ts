@@ -9,8 +9,8 @@ import { absoluteUrl } from '@/lib/seo';
 // the same reason).
 export const dynamic = 'force-dynamic';
 
-// Pages that render content of their own. Brand, note and perfumer detail
-// routes are left out: today they only redirect to the filtered catalogue.
+// Pages that render content of their own. Note and perfumer detail routes are
+// left out: they only redirect to the filtered catalogue. Brands have pages.
 const STATIC_PATHS = [
   '',
   '/catalog',
@@ -23,16 +23,25 @@ const STATIC_PATHS = [
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await db.product.findMany({
-    where: { status: 'active' },
-    select: { slug: true, updatedAt: true },
-    orderBy: { id: 'asc' },
-  });
+  const [products, brands] = await Promise.all([
+    db.product.findMany({
+      where: { status: 'active' },
+      select: { slug: true, updatedAt: true },
+      orderBy: { id: 'asc' },
+    }),
+    // The same brands /brands lists: switched on, with something to sell.
+    db.brand.findMany({
+      where: { active: true, products: { some: { product: { status: 'active' } } } },
+      select: { slug: true, updatedAt: true },
+      orderBy: { id: 'asc' },
+    }),
+  ]);
 
   // One entry per locale, each listing its siblings, so every language version
   // is submitted rather than only the default one.
   const paths: { path: string; lastModified?: Date }[] = [
     ...STATIC_PATHS.map((path) => ({ path })),
+    ...brands.map((b) => ({ path: `/brands/${b.slug}`, lastModified: b.updatedAt })),
     ...products.map((p) => ({ path: `/product/${p.slug}`, lastModified: p.updatedAt })),
   ];
 

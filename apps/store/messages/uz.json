@@ -276,7 +276,12 @@
     "detailDescription": "Brend haqida",
     "detailProducts": "Atirlar",
     "errorLoading": "Brendlarni yuklab boʻlmadi",
-    "houseCount": "{count} ta brend"
+    "houseCount": "{count} ta brend",
+    "metaTitle": "{name} atirlari — narxlari",
+    "metaDescription": "Labor doʻkonida {name}: {count} ta atir. 10 ml dekant va 2 ml namuna, Oʻzbekiston boʻylab yetkazib berish.",
+    "backToBrands": "Barcha brendlar",
+    "filterInCatalog": "Katalogda saralash",
+    "emptyProducts": "Bu brend atirlari hozircha mavjud emas"
   },
   "perfumers": {
     "title": "Parfyumerlar",
@@ -430,7 +435,10 @@
     "clear": "Tozalash",
     "loading": "Yuklanmoqda…",
     "empty": "Sevimlilar roʻyxati boʻsh.",
-    "browse": "Katalogga oʻtish"
+    "browse": "Katalogga oʻtish",
+    "add": "Sevimlilarga",
+    "remove": "Sevimlilardan olib tashlash",
+    "saved": "Sevimlilarda"
   },
   "delivery": {
     "title": "Yetkazib berish va toʻlov",
@@ -466,5 +474,20 @@
     "map": "Xaritada ochish",
     "telegramNote": "Telegramda eng tez javob beramiz.",
     "deliveryLink": "Yetkazib berish va toʻlov"
+  },
+  "consult": {
+    "title": "Nimani tanlashni bilmayapsizmi?",
+    "lead": "Raqamingizni qoldiring — maslahatchi qoʻngʻiroq qiladi yoki Telegramga yozadi va didingiz hamda byudjetingizga mos atir tanlab beradi.",
+    "toggle": "Tanlashda yordam kerakmi?",
+    "name": "Ism",
+    "phone": "Telefon",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "message": "Sizga nima yoqadi? (ixtiyoriy)",
+    "messagePlaceholder": "Masalan: yogʻochli hidlarni yoqtiraman, sovgʻa qidiryapman",
+    "submit": "Qoʻngʻiroqni kutaman",
+    "sending": "Yuborilmoqda…",
+    "success": "Rahmat! Maslahatchi tez orada siz bilan bogʻlanadi.",
+    "errorPhone": "Raqamni tekshiring: Oʻzbekiston raqami kerak, masalan +998 90 123 45 67.",
+    "errorGeneric": "Yuborib boʻlmadi. Bizga Telegramda yozing."
   }
 }

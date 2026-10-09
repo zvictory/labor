@@ -276,7 +276,12 @@
     "detailDescription": "About the brand",
     "detailProducts": "Fragrances",
     "errorLoading": "Failed to load brands",
-    "houseCount": "{count, plural, one {# house} other {# houses}}"
+    "houseCount": "{count, plural, one {# house} other {# houses}}",
+    "metaTitle": "{name} fragrances and prices",
+    "metaDescription": "{name} at Labor: {count, plural, one {# fragrance} other {# fragrances}} as 10 ml decants and 2 ml samples, delivered across Uzbekistan.",
+    "backToBrands": "All brands",
+    "filterInCatalog": "Filter in the catalogue",
+    "emptyProducts": "No fragrances from this house are in stock right now"
   },
   "perfumers": {
     "title": "Perfumers",
@@ -430,7 +435,10 @@
     "clear": "Clear",
     "loading": "Loading…",
     "empty": "Your wishlist is empty.",
-    "browse": "Browse catalog"
+    "browse": "Browse catalog",
+    "add": "Save",
+    "remove": "Remove from wishlist",
+    "saved": "Saved"
   },
   "delivery": {
     "title": "Delivery & payment",
@@ -466,5 +474,20 @@
     "map": "Open on the map",
     "telegramNote": "Telegram is the fastest way to reach us.",
     "deliveryLink": "Delivery and payment"
+  },
+  "consult": {
+    "title": "Not sure what to choose?",
+    "lead": "Leave your number and a consultant will call or message you on Telegram to find a fragrance for your taste and budget.",
+    "toggle": "Need help choosing?",
+    "name": "Name",
+    "phone": "Phone",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "message": "What do you like? (optional)",
+    "messagePlaceholder": "For example: I like woody scents, looking for a gift",
+    "submit": "Call me back",
+    "sending": "Sending…",
+    "success": "Thank you! A consultant will be in touch shortly.",
+    "errorPhone": "Check the number: it needs to be an Uzbek number, for example +998 90 123 45 67.",
+    "errorGeneric": "Could not send. Please message us on Telegram."
   }
 }

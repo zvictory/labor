@@ -254,6 +254,25 @@ model WishlistItem {
   @@index([productId])
 }
 
+// "Help me choose": a visitor leaves a phone number and a few words, and a
+// consultant calls or writes back. Kept here as well as sent to the admin
+// Telegram chat, so a request is not lost when the bot is down or unconfigured.
+model ConsultRequest {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  phone       String // normalised +998XXXXXXXXX
+  message     String?
+  productSlug String? // the product page it was sent from, if any
+  source      String // product | finder | contacts
+  locale      String   @default("ru")
+  status      String   @default("new") // new | done
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([phone, createdAt])
+}
+
 // ───────────────────────── Commerce ─────────────────────────
 
 model Cart {

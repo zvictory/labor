@@ -10,6 +10,7 @@ import type { ProductCardDTO } from '@/lib/catalog/types';
 import type { Locale } from '@/i18n/config';
 import { FAMILY_FILTERS } from '@/lib/catalog/note-families';
 import { pageMetadata } from '@/lib/seo';
+import { ConsultForm } from '@/components/consult/consult-form';
 
 interface Props {
   params: Promise<{ locale: Locale }>;
@@ -466,7 +467,15 @@ export default async function FindYourPerfumePage({ params }: Props) {
   const lang = toLang(locale);
   const candidates = await loadCandidates(locale);
 
-  return <PerfumeFinderClient locale={locale} candidates={candidates} copy={COPY[lang]} />;
+  return (
+    <>
+      <PerfumeFinderClient locale={locale} candidates={candidates} copy={COPY[lang]} />
+      {/* Four questions narrow the shelf; a person narrows it further. */}
+      <section className="border-border mx-auto max-w-3xl border-t px-4 py-12 md:py-16">
+        <ConsultForm locale={locale} source="finder" />
+      </section>
+    </>
+  );
 }
 
 async function loadCandidates(locale: string): Promise<FinderCandidate[]> {

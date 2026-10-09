@@ -217,6 +217,27 @@ export const listProducts = async (params: ListProductsParams): Promise<ListProd
 };
 
 /**
+ * Cards for the given product ids, active products only, in the order the ids
+ * came in (the wishlist lists most recently saved first). Unknown or inactive
+ * ids are skipped.
+ */
+export const listProductsByIds = async (
+  ids: readonly number[],
+  locale: string,
+): Promise<ProductCardDTO[]> => {
+  if (ids.length === 0) return [];
+  const rows = await db.product.findMany({
+    where: { id: { in: [...ids] }, status: 'active' },
+    select: cardSelect,
+  });
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  return ids.flatMap((id) => {
+    const row = byId.get(id);
+    return row ? [toProductCard(row, locale)] : [];
+  });
+};
+
+/**
  * The home hero's slides, in order: the product staff ticked in the admin, the
  * hero lineup, then the highest-rated products that have a photograph.
  */

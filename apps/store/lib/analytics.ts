@@ -18,7 +18,12 @@ export const GA_MEASUREMENT_ID = read(
 );
 
 /** The funnel steps worth counting. Names follow GA4's recommended events. */
-export type AnalyticsEvent = 'add_to_cart' | 'begin_checkout' | 'purchase';
+export type AnalyticsEvent =
+  | 'add_to_cart'
+  | 'add_to_wishlist'
+  | 'begin_checkout'
+  | 'purchase'
+  | 'generate_lead';
 
 export type AnalyticsParams = Record<string, string | number | boolean>;
 

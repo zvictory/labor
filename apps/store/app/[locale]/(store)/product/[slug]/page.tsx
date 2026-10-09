@@ -11,6 +11,8 @@ import { OlfactivePyramidView } from '@/components/catalog/olfactive-pyramid-vie
 import { ProductRecord } from '@/components/catalog/product-record';
 import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCart } from '@/components/cart/add-to-cart';
+import { ConsultForm } from '@/components/consult/consult-form';
+import { WishlistButton } from '@/components/wishlist/wishlist-button';
 import { getProduct } from '@/lib/catalog/products';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
@@ -52,6 +54,7 @@ export default async function ProductPage({ params }: Props) {
 
   const tp = await getTranslations('product');
   const tpdp = await getTranslations('pdp');
+  const tconsult = await getTranslations('consult');
 
   const genderLabel: Record<Gender, string> = {
     men: tp('gender.men'),
@@ -196,6 +199,7 @@ export default async function ProductPage({ params }: Props) {
               volumeMl={product.volume_ml ?? null}
               sampleMl={SAMPLE_ML}
             />
+            <WishlistButton productId={product.id} variant="full" />
 
             {/* The label carries provenance. One mono line, under the action,
                 where the decision is actually made — not a block seven
@@ -216,6 +220,16 @@ export default async function ProductPage({ params }: Props) {
                 {tpdp('telegramLink')}
               </a>
             </p>
+
+            {/* Closed by default: the label stays the first thing read. */}
+            <details className="border-border group border-t pt-3">
+              <summary className="text-foreground cursor-pointer text-xs font-medium underline underline-offset-4">
+                {tconsult('toggle')}
+              </summary>
+              <div className="pt-4">
+                <ConsultForm locale={locale} source="product" productSlug={product.slug} showHeading={false} />
+              </div>
+            </details>
           </div>
         </div>
       </div>

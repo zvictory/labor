@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Search, ShoppingBag } from 'lucide-react';
+import { Heart, Search, ShoppingBag } from 'lucide-react';
 
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
@@ -27,7 +27,11 @@ export function SiteHeader({ locale }: { locale: string }) {
   ];
   // The inline xl nav has no room for a seventh label: in Uzbek it already
   // pushes the logo off centre. Contacts sit in the menu and the footer.
-  const menuPages = [...pages, { href: href('/contacts'), label: t('contacts') }];
+  const menuPages = [
+    ...pages,
+    { href: href('/wishlist'), label: t('wishlist') },
+    { href: href('/contacts'), label: t('contacts') },
+  ];
 
   // Solid, not frosted. A translucent blurred bar is the one texture the shop
   // has nowhere — the island is a single opaque surface, and the header is the
@@ -67,6 +71,15 @@ export function SiteHeader({ locale }: { locale: string }) {
             className="flex h-11 w-11 items-center justify-center"
           >
             <Search className="h-[18px] w-[18px]" strokeWidth={1.3} />
+          </Link>
+          {/* md+ only: the phone's right column holds two 44 px targets, and
+              the menu carries the wishlist there. */}
+          <Link
+            href={href('/wishlist')}
+            aria-label={t('wishlist')}
+            className="hidden h-11 w-11 items-center justify-center md:flex"
+          >
+            <Heart className="h-[18px] w-[18px]" strokeWidth={1.3} />
           </Link>
           <Link
             href={href('/cart')}

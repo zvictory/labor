@@ -142,10 +142,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     if (value) qs.set(key, value);
   }
   const query = qs.toString();
+  // A listing filtered to one brand and nothing else is that brand's page.
+  const brandOnly = qs.size === 1 ? qs.get('brand') : null;
 
   return pageMetadata({
     locale,
-    path: `/catalog${query ? `?${query}` : ''}`,
+    path: brandOnly
+      ? `/brands/${encodeURIComponent(brandOnly)}`
+      : `/catalog${query ? `?${query}` : ''}`,
     title: t('title'),
     description: tb('description'),
     // A free-text query is a search result, not a page.

@@ -6,7 +6,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, ShoppingCart, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Megaphone, PhoneCall } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 interface NavItem {
@@ -25,6 +25,7 @@ export function AdminNav({ locale }: { locale: string }) {
     { href: base, label: 'Обзор', icon: LayoutDashboard, exact: true },
     { href: `${base}/catalog`, label: 'Каталог', icon: Package },
     { href: `${base}/orders`, label: 'Заказы', icon: ShoppingCart },
+    { href: `${base}/requests`, label: 'Заявки', icon: PhoneCall },
     { href: `${base}/campaigns`, label: 'Кампании', icon: Megaphone },
   ];
 
