@@ -1,6 +1,8 @@
 // JSON cart API for the client islands (add-to-cart button, mini-cart, header
-// badge). All handlers operate on the caller's guest cart (resolved from the
-// `labor_cart` cookie; created + cookie-set on first write).
+// badge). All handlers operate on the caller's cart (resolved from the session
+// or the `labor_cart` cookie). Only POST creates a cart and sets the cookie:
+// several components GET at once on a first visit, and reads that created
+// carts raced the visitor's first add (see findCart in lib/cart/cart.ts).
 //
 //   GET    /api/cart            → current CartDTO
 //   POST   /api/cart            → add item   { productId, isSample?, quantity? }
@@ -13,7 +15,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
-import { getCart, addItem, updateItem, removeItem, type CartDTO } from '@/lib/cart/cart';
+import { getCart, readCart, addItem, updateItem, removeItem, type CartDTO } from '@/lib/cart/cart';
 
 const isLocale = (value: string): value is Locale => (locales as readonly string[]).includes(value);
 
@@ -35,7 +37,7 @@ const resolveLocale = (req: NextRequest): Locale => {
 const json = (cart: CartDTO): NextResponse => NextResponse.json(cart);
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const cart = await getCart(resolveLocale(req));
+  const cart = await readCart(resolveLocale(req));
   return json(cart);
 }
 
@@ -82,7 +84,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   }
 
   await updateItem(body.itemId, body.quantity);
-  return json(await getCart(resolveLocale(req)));
+  return json(await readCart(resolveLocale(req)));
 }
 
 interface DeleteBody {
@@ -114,5 +116,5 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
   }
 
   await removeItem(itemId);
-  return json(await getCart(resolveLocale(req)));
+  return json(await readCart(resolveLocale(req)));
 }
