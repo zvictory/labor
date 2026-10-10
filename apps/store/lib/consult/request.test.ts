@@ -1,24 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { consultAdminMessage, consultInputSchema, normalizeUzPhone } from './request';
-
-describe('normalizeUzPhone', () => {
-  it.each([
-    ['+998 90 123-45-67', '+998901234567'],
-    ['998901234567', '+998901234567'],
-    ['(90) 123 45 67', '+998901234567'],
-    ['901234567', '+998901234567'],
-  ])('reads %s', (raw, expected) => {
-    expect(normalizeUzPhone(raw)).toBe(expected);
-  });
-
-  it.each(['', '12345', '+7 912 345 67 89', '+998 90 123 45 6', '+998 90 123 45 678'])(
-    'rejects %s',
-    (raw) => {
-      expect(normalizeUzPhone(raw)).toBeNull();
-    },
-  );
-});
+import { consultAdminMessage, consultInputSchema } from './request';
 
 describe('consultInputSchema', () => {
   const base = { phone: '90 123 45 67', source: 'product', locale: 'uz' };

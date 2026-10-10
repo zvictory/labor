@@ -37,10 +37,13 @@ describe('missingCheckoutFields', () => {
     expect(missingCheckoutFields({ ...complete, name: '   ' })).toEqual(['name']);
   });
 
-  // lib/orders/create.ts refuses a phone shorter than 5 characters.
-  it('refuses a phone the server would refuse', () => {
-    expect(missingCheckoutFields({ ...complete, phone: '1234' })).toEqual(['phone']);
-    expect(missingCheckoutFields({ ...complete, phone: '12345' })).toEqual([]);
+  // The field starts as "+998 ". The server takes any five characters, so
+  // "+998 9" would go through and leave staff with a number they cannot call.
+  it('asks for the phone until it is a complete number', () => {
+    expect(missingCheckoutFields({ ...complete, phone: '+998 ' })).toEqual(['phone']);
+    expect(missingCheckoutFields({ ...complete, phone: '+998 9' })).toEqual(['phone']);
+    expect(missingCheckoutFields({ ...complete, phone: '+998 90 123 45 6' })).toEqual(['phone']);
+    expect(missingCheckoutFields({ ...complete, phone: '901234567' })).toEqual([]);
   });
 
   // Pickup is collected from the shop: asking for a street would block an order
