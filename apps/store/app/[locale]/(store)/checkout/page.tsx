@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
+import { getCurrentUser } from '@/lib/auth/session';
 import { readCart } from '@/lib/cart/cart';
+import { db } from '@/lib/db';
 import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { CheckoutForm, type CheckoutCopy } from '@/components/checkout/checkout-form';
@@ -68,7 +70,7 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       delivery_required: 'Выберите способ доставки',
       delivery_unknown: 'Недоступный способ доставки',
       name_required: 'Укажите имя',
-      phone_required: 'Укажите телефон',
+      phone_required: 'Укажите номер: +998 XX XXX XX XX',
       order_already_paid: 'Заказ уже оплачен',
       unexpected: 'Что-то пошло не так. Попробуйте ещё раз.',
     },
@@ -125,7 +127,7 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       delivery_required: 'Yetkazib berish usulini tanlang',
       delivery_unknown: 'Mavjud bo‘lmagan usul',
       name_required: 'Ismni kiriting',
-      phone_required: 'Telefonni kiriting',
+      phone_required: 'Raqamni kiriting: +998 XX XXX XX XX',
       order_already_paid: "Buyurtma allaqachon to'langan",
       unexpected: 'Xatolik yuz berdi. Qaytadan urinib ko‘ring.',
     },
@@ -182,7 +184,7 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       delivery_required: 'Select a delivery method',
       delivery_unknown: 'Unavailable delivery method',
       name_required: 'Enter your name',
-      phone_required: 'Enter your phone',
+      phone_required: 'Enter the number: +998 XX XXX XX XX',
       order_already_paid: 'Order already paid',
       unexpected: 'Something went wrong. Please try again.',
     },
@@ -204,6 +206,13 @@ export default async function CheckoutPage({ params }: Props) {
 
   const lang = toLang(locale);
   const copy = COPY[lang];
+  const tpdp = await getTranslations('pdp');
+
+  // A signed-in customer does not retype what the shop already knows.
+  const user = await getCurrentUser();
+  const profile = user
+    ? await db.user.findUnique({ where: { id: user.id }, select: { name: true, phone: true } })
+    : null;
 
   return (
     <div className="container py-10 md:py-16">
@@ -218,6 +227,9 @@ export default async function CheckoutPage({ params }: Props) {
         subtotal={cart.subtotal}
         copy={copy}
         freeDeliveryFrom={freeDeliveryThreshold()}
+        trustLine={tpdp('trustLine')}
+        initialName={profile?.name ?? ''}
+        initialPhone={profile?.phone ?? ''}
       />
     </div>
   );

@@ -7,6 +7,7 @@
 import { z } from 'zod';
 
 import { db } from '@/lib/db';
+import { normalizeUzPhone } from '@/lib/phone';
 import { getBot } from '@/lib/telegram/bot';
 
 export const CONSULT_SOURCES = ['product', 'finder', 'contacts', 'corporate'] as const;
@@ -14,17 +15,6 @@ export type ConsultSource = (typeof CONSULT_SOURCES)[number];
 
 /** Repeat requests from one number inside this window are acknowledged but not stored again. */
 export const REPEAT_WINDOW_MS = 10 * 60 * 1000;
-
-/**
- * An Uzbek mobile or landline number in the canonical `+998XXXXXXXXX` form, or
- * null. Accepts what people actually type: spaces, dashes, brackets, with or
- * without the +, or the nine local digits alone.
- */
-export const normalizeUzPhone = (raw: string): string | null => {
-  let digits = raw.replace(/\D/g, '');
-  if (digits.length === 9) digits = `998${digits}`;
-  return /^998\d{9}$/.test(digits) ? `+${digits}` : null;
-};
 
 const optionalText = (max: number) =>
   z

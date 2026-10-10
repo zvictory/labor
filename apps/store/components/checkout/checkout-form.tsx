@@ -7,7 +7,7 @@
 // action; success redirects server-side, failures surface inline.
 
 import Image from 'next/image';
-import { useMemo, useRef, useState, useTransition } from 'react';
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 
 import { UZ_REGIONS } from '@/lib/delivery/uz-regions';
 import { availableMethodsForRegion } from '@/lib/delivery/methods';
@@ -19,6 +19,7 @@ import { DeliveryQuote } from '@/components/checkout/delivery-quote';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { missingCheckoutFields, type CheckoutField } from '@/lib/checkout/missing-fields';
 import { formatUzs } from '@/lib/money';
+import { formatUzPhone, normalizeUzPhone } from '@/lib/phone';
 import { useHydrated } from '@/lib/use-hydrated';
 import type { CartLineDTO } from '@/lib/cart/cart';
 import type { Locale } from '@/lib/catalog/locale';
@@ -77,7 +78,16 @@ interface Props {
   copy: CheckoutCopy;
   /** Items total from which the Tashkent courier is free; null when off. */
   freeDeliveryFrom: number | null;
+  /** The promise made under the buy button, repeated where the money is committed. */
+  trustLine: string;
+  /** The signed-in customer's name and phone; empty for a guest. */
+  initialName: string;
+  initialPhone: string;
 }
+
+// A field that brings up the on-screen keyboard when it takes focus.
+const opensKeyboard = (el: EventTarget): boolean =>
+  el instanceof HTMLInputElement && el.type !== 'radio';
 
 const PAYMENT_OPTIONS: { id: PaymentChoice; key: 'payme' | 'click' | 'cod' }[] = [
   { id: 'payme', key: 'payme' },
@@ -95,11 +105,21 @@ const FOCUS_TARGET: Record<CheckoutField, string> = {
   delivery: 'input[name="deliveryMethod"]',
 };
 
-export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }: Props) {
+export function CheckoutForm({
+  locale,
+  items,
+  subtotal,
+  copy,
+  freeDeliveryFrom,
+  trustLine,
+  initialName,
+  initialPhone,
+}: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const hydrated = useHydrated();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState(initialName);
+  // A guest starts from the country code, so only the nine digits are left to type.
+  const [phone, setPhone] = useState(() => formatUzPhone(initialPhone) || '+998 ');
   const [regionName, setRegionName] = useState('');
   const [district, setDistrict] = useState('');
   const [street, setStreet] = useState('');
@@ -115,6 +135,23 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
   // the order; not while they are still on their way to it.
   const [touched, setTouched] = useState<ReadonlySet<CheckoutField>>(new Set());
   const [attempted, setAttempted] = useState(false);
+
+  // The bar a phone or tablet gets while the totals card, and the button in it,
+  // are still below the screen. It goes away once the card scrolls into view,
+  // and while the customer is typing: on Android the keyboard shrinks the
+  // screen, and the bar would ride up over the field being filled.
+  const totalsRef = useRef<HTMLDivElement>(null);
+  const [totalsBelow, setTotalsBelow] = useState(false);
+  const [typing, setTyping] = useState(false);
+  useEffect(() => {
+    const totals = totalsRef.current;
+    if (!totals) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry) setTotalsBelow(!entry.isIntersecting && entry.boundingClientRect.top > 0);
+    });
+    observer.observe(totals);
+    return () => observer.disconnect();
+  }, []);
 
   // Region name stored as the locale-appropriate label so it round-trips through
   // findRegion() server-side (which matches uz OR ru names case-insensitively).
@@ -220,7 +257,7 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
     const input: PlaceOrderInput = {
       locale,
       name: name.trim(),
-      phone: phone.trim(),
+      phone: normalizeUzPhone(phone) ?? phone.trim(),
       region: regionName,
       district,
       address: street.trim(),
@@ -247,6 +284,8 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
   const labelCls =
     'mb-1.5 block text-label font-semibold uppercase tracking-widest text-ink-muted dark:text-stone-400';
   const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
+  const submitCls =
+    'bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50';
   const cardCls = 'border-border dark:bg-ink/30 rounded-xl border bg-stone-50/50 p-6';
 
   return (
@@ -255,6 +294,8 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
     <form
       ref={formRef}
       onSubmit={onSubmit}
+      onFocus={(e) => setTyping(opensKeyboard(e.target))}
+      onBlur={() => setTyping(false)}
       noValidate
       className="flex flex-col gap-12 lg:grid lg:grid-cols-[1fr_minmax(320px,420px)] lg:items-start lg:gap-16"
     >
@@ -292,6 +333,10 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
                 placeholder="+998 90 123 45 67"
                 required
                 {...invalidProps('phone')}
+                onBlur={() => {
+                  touch('phone');
+                  setPhone(formatUzPhone(phone));
+                }}
               />
               {fieldError('phone')}
             </div>
@@ -532,7 +577,7 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
           </h2>
           {/* Capped from lg up: a long cart must not push the button below the
               screen, where a sticky column would keep it out of reach. */}
-          <ul className="space-y-4 lg:max-h-[max(10rem,calc(100vh_-_34rem))] lg:overflow-y-auto">
+          <ul className="space-y-4 lg:max-h-[max(10rem,calc(100vh_-_37rem))] lg:overflow-y-auto">
             {items.map((line) => (
               <li key={line.id} className="flex items-center gap-4 text-sm">
                 <span className="relative h-16 w-14 shrink-0 overflow-hidden rounded bg-stone-50">
@@ -565,7 +610,7 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
           </ul>
         </aside>
 
-        <div className={`${cardCls} order-3 space-y-4`}>
+        <div ref={totalsRef} className={`${cardCls} order-3 space-y-4`}>
           <div className="space-y-2">
             <div className="text-ink-muted flex items-center justify-between text-sm dark:text-stone-400">
               <span>{copy.subtotalLabel}</span>
@@ -620,7 +665,7 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
             type="submit"
             disabled={!hydrated || isPending}
             aria-describedby={missingHint ? 'co-missing' : undefined}
-            className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            className={submitCls}
           >
             {isPending ? copy.submitting : copy.submit}
           </button>
@@ -637,8 +682,25 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
               {missingHint}
             </p>
           )}
+          <p className="text-muted-foreground text-micro font-mono leading-relaxed tracking-[0.12em] uppercase">
+            {trustLine}
+          </p>
         </div>
       </div>
+
+      {totalsBelow && !typing && (
+        <div className="border-border bg-background fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-30 flex items-center gap-4 border-t px-4 py-3 md:bottom-0 md:pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden">
+          <div className="shrink-0">
+            <p className={sectionTitleCls}>{copy.totalLabel}</p>
+            <p className="text-ink dark:text-bone text-base font-medium whitespace-nowrap">
+              {formatUzs(total, locale)}
+            </p>
+          </div>
+          <button type="submit" disabled={!hydrated || isPending} className={submitCls}>
+            {isPending ? copy.submitting : copy.submit}
+          </button>
+        </div>
+      )}
     </form>
   );
 }
