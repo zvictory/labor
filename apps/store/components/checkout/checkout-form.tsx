@@ -19,6 +19,7 @@ import { DeliveryQuote } from '@/components/checkout/delivery-quote';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { missingCheckoutFields, type CheckoutField } from '@/lib/checkout/missing-fields';
 import { formatUzs } from '@/lib/money';
+import { useHydrated } from '@/lib/use-hydrated';
 import type { CartLineDTO } from '@/lib/cart/cart';
 import type { Locale } from '@/lib/catalog/locale';
 import {
@@ -96,6 +97,7 @@ const FOCUS_TARGET: Record<CheckoutField, string> = {
 
 export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
+  const hydrated = useHydrated();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [regionName, setRegionName] = useState('');
@@ -611,10 +613,12 @@ export function CheckoutForm({ locale, items, subtotal, copy, freeDeliveryFrom }
           )}
 
           {/* Never disabled for an unfinished form: a dead button cannot say
-              what is missing. A press sends the cursor to the first gap. */}
+              what is missing. A press sends the cursor to the first gap.
+              Disabled until hydrated: before that a press would send the form
+              the browser's way, reload the page and wipe what was typed. */}
           <button
             type="submit"
-            disabled={isPending}
+            disabled={!hydrated || isPending}
             aria-describedby={missingHint ? 'co-missing' : undefined}
             className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
