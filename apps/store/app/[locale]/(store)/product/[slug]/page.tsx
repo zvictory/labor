@@ -13,6 +13,8 @@ import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCart } from '@/components/cart/add-to-cart';
 import { ConsultForm } from '@/components/consult/consult-form';
 import { WishlistButton } from '@/components/wishlist/wishlist-button';
+import { ProductReviews } from '@/components/reviews/product-reviews';
+import { getProductReviews } from '@/lib/reviews/reviews';
 import { getProduct } from '@/lib/catalog/products';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
@@ -64,13 +66,14 @@ export default async function ProductPage({ params }: Props) {
 
   const gallery = product.images.length > 0 ? product.images : [product.image].filter(Boolean);
   const description = describeProduct(product, locale);
+  const { summary: ownRating, reviews } = await getProductReviews(product.id);
 
   return (
     <div className="container space-y-16 py-10 md:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: jsonLdScript(productJsonLd(product, locale, description)),
+          __html: jsonLdScript(productJsonLd(product, locale, description, ownRating)),
         }}
       />
       <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
@@ -242,6 +245,14 @@ export default async function ProductPage({ params }: Props) {
         avgLongevity={product.avg_longevity}
         avgSillage={product.avg_sillage}
         votesCount={product.votes_count}
+      />
+
+      <ProductReviews
+        productId={product.id}
+        slug={product.slug}
+        locale={locale}
+        summary={ownRating}
+        reviews={reviews}
       />
 
       {/* Similar Fragrances Carousel / Grid */}

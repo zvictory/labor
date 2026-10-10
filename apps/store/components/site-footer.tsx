@@ -13,6 +13,7 @@ export function SiteFooter({ locale }: { locale: string }) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
   const f = useTranslations('footer');
+  const c = useTranslations('corporate');
   const href = (path: string) => `/${locale}${path}`;
   const { phone, hours } = STORE_CONTACT;
 
@@ -82,6 +83,11 @@ export function SiteFooter({ locale }: { locale: string }) {
             <li>
               <Link href={href('/contacts')} className="hover:underline hover:underline-offset-4">
                 {f('allContacts')}
+              </Link>
+            </li>
+            <li>
+              <Link href={href('/corporate')} className="hover:underline hover:underline-offset-4">
+                {c('nav')}
               </Link>
             </li>
           </ul>

@@ -39,8 +39,8 @@ describe('consultInputSchema', () => {
     expect(consultInputSchema.safeParse({ ...base, source: 'home' }).success).toBe(false);
   });
 
-  it('caps the message length', () => {
-    expect(consultInputSchema.safeParse({ ...base, message: 'x'.repeat(1001) }).success).toBe(false);
+  it('caps the message length (1600, room for the corporate fields)', () => {
+    expect(consultInputSchema.safeParse({ ...base, message: 'x'.repeat(1601) }).success).toBe(false);
   });
 });
 

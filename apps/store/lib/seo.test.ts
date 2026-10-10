@@ -77,6 +77,20 @@ describe('productJsonLd', () => {
 
   it('never carries the imported rating', () => {
     expect(productJsonLd(product, 'ru', '')).not.toHaveProperty('aggregateRating');
+    expect(productJsonLd(product, 'ru', '', { average: 0, count: 0 })).not.toHaveProperty(
+      'aggregateRating',
+    );
+  });
+
+  it('carries the rating from Labor buyers when there is one', () => {
+    expect(productJsonLd(product, 'ru', '', { average: 4.5, count: 2 })).toMatchObject({
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: 4.5,
+        ratingCount: 2,
+        bestRating: 5,
+      },
+    });
   });
 
   it('omits image when the product has none', () => {

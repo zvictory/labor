@@ -495,6 +495,33 @@
     "sending": "Sending…",
     "success": "Thank you! A consultant will be in touch shortly.",
     "errorPhone": "Check the number: it needs to be an Uzbek number, for example +998 90 123 45 67.",
-    "errorGeneric": "Could not send. Please message us on Telegram."
+    "errorGeneric": "Could not send. Please message us on Telegram.",
+    "company": "Company",
+    "quantity": "Number of gifts or budget",
+    "date": "Needed by"
+  },
+  "corporate": {
+    "title": "Corporate gifts and large orders",
+    "lead": "Decant sets for staff and partners, weddings and celebrations. Leave a request and a consultant will get in touch, choose the fragrances and agree packaging and dates.",
+    "nav": "Corporate orders"
+  },
+  "reviews": {
+    "title": "Reviews from Labor buyers",
+    "summary": "{average} out of 5 · {count, plural, one {# rating} other {# ratings}}",
+    "none": "No ratings from Labor buyers yet.",
+    "buyer": "A buyer",
+    "onlyBuyers": "Labor buyers can rate a fragrance once their order has been delivered.",
+    "signIn": "Sign in",
+    "formTitle": "Your rating",
+    "rating": "Rating",
+    "stars": "{n, plural, one {# star} other {# stars}}",
+    "comment": "Review (optional)",
+    "commentPlaceholder": "Longevity, sillage, who it would suit…",
+    "submit": "Save",
+    "saved": "Thank you! Your rating counts now; the text appears after a check.",
+    "pending": "Your text is being checked.",
+    "errorRating": "Choose a rating from 1 to 5.",
+    "errorBuyer": "Only a delivered order can be rated.",
+    "errorGeneric": "Could not save. Please try again."
   }
 }

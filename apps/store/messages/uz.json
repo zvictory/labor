@@ -495,6 +495,33 @@
     "sending": "Yuborilmoqda…",
     "success": "Rahmat! Maslahatchi tez orada siz bilan bogʻlanadi.",
     "errorPhone": "Raqamni tekshiring: Oʻzbekiston raqami kerak, masalan +998 90 123 45 67.",
-    "errorGeneric": "Yuborib boʻlmadi. Bizga Telegramda yozing."
+    "errorGeneric": "Yuborib boʻlmadi. Bizga Telegramda yozing.",
+    "company": "Kompaniya",
+    "quantity": "Sovgʻalar soni yoki byudjet",
+    "date": "Qaysi sanaga"
+  },
+  "corporate": {
+    "title": "Korporativ sovgʻalar va katta buyurtmalar",
+    "lead": "Xodimlar va hamkorlar, toʻylar va bayramlar uchun dekant toʻplamlari. Ariza qoldiring — maslahatchi bogʻlanadi, atirlarni tanlaydi, qadoq va muddatlarni kelishadi.",
+    "nav": "Korporativ mijozlarga"
+  },
+  "reviews": {
+    "title": "Labor xaridorlari sharhlari",
+    "summary": "{average} / 5 · {count} ta baho",
+    "none": "Labor xaridorlaridan hali baho yoʻq.",
+    "buyer": "Xaridor",
+    "onlyBuyers": "Atirni buyurtmasi yetkazilgan Labor xaridorlari baholay oladi.",
+    "signIn": "Kirish",
+    "formTitle": "Sizning bahoingiz",
+    "rating": "Baho",
+    "stars": "{n} yulduz",
+    "comment": "Sharh (ixtiyoriy)",
+    "commentPlaceholder": "Turgʻunlik, iz, bu atir kimga mos keladi…",
+    "submit": "Saqlash",
+    "saved": "Rahmat! Baho hisobga olindi. Matn tekshiruvdan soʻng sahifada chiqadi.",
+    "pending": "Matningiz tekshirilmoqda.",
+    "errorRating": "1 dan 5 gacha baho tanlang.",
+    "errorBuyer": "Faqat qabul qilingan buyurtmani baholash mumkin.",
+    "errorGeneric": "Saqlab boʻlmadi. Qaytadan urinib koʻring."
   }
 }

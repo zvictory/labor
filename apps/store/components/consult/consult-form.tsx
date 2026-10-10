@@ -29,6 +29,9 @@ export function ConsultForm({
   productSlug?: string;
   showHeading?: boolean;
 }) {
+  // The corporate page asks three more things; they reach staff as labelled
+  // lines of the message (lib/consult/actions.ts).
+  const corporate = source === 'corporate';
   const t = useTranslations('consult');
   const id = useId();
   const [state, action, pending] = useActionState<ConsultFormState, FormData>(
@@ -100,6 +103,25 @@ export function ConsultForm({
           />
         </div>
       </div>
+
+      {corporate && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {(['company', 'quantity', 'date'] as const).map((field) => (
+            <div key={field}>
+              <label htmlFor={`${id}-${field}`} className={labelCls}>
+                {t(field)}
+              </label>
+              <input
+                id={`${id}-${field}`}
+                name={field}
+                maxLength={160}
+                className={fieldCls}
+                defaultValue={state?.values?.[field]}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div>
         <label htmlFor={`${id}-message`} className={labelCls}>

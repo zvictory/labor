@@ -11,19 +11,12 @@
 import { db } from '@/lib/db';
 import { getOrderByNumber, type OrderDTO } from '@/lib/orders/queries';
 import { formatUzs } from '@/lib/money';
+import { SITE_URL } from '@/lib/seo';
 import { getBot } from '@/lib/telegram/bot';
-import {
-  NOTIFY_MESSAGES,
-  statusLabel,
-  toBotLocale,
-  type BotLocale,
-} from '@/lib/telegram/messages';
+import { NOTIFY_MESSAGES, statusLabel, toBotLocale, type BotLocale } from '@/lib/telegram/messages';
 
 function escapeHtml(value: string | number): string {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 interface Recipient {
@@ -103,7 +96,7 @@ export async function notifyOrderPaid(orderNumber: string): Promise<void> {
       const order =
         recipient.locale === 'ru'
           ? orderRu
-          : (await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu;
+          : ((await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu);
       await send(recipient.telegramId, paidBody(order, recipient.locale));
     }
 
@@ -115,11 +108,22 @@ export async function notifyOrderPaid(orderNumber: string): Promise<void> {
   }
 }
 
+/// Under a "delivered" update to the customer: an invitation to rate what
+/// arrived, one link per product (at most three), straight to its reviews.
+function reviewInvite(order: OrderDTO, locale: BotLocale): string {
+  const seen = new Set<string>();
+  const links = order.items
+    .filter((it) => !seen.has(it.slug) && seen.add(it.slug))
+    .slice(0, 3)
+    .map(
+      (it) =>
+        `• <a href="${escapeHtml(`${SITE_URL}/${locale}/product/${encodeURIComponent(it.slug)}#reviews`)}">${escapeHtml(it.name)}</a>`,
+    );
+  return links.length > 0 ? `\n\n${NOTIFY_MESSAGES[locale].reviewPrompt}\n${links.join('\n')}` : '';
+}
+
 /// Notify customer + admin of a generic status change. Best-effort throughout.
-export async function notifyOrderStatus(
-  orderNumber: string,
-  status: string,
-): Promise<void> {
+export async function notifyOrderStatus(orderNumber: string, status: string): Promise<void> {
   try {
     const recipient = await customerRecipient(orderNumber);
     const adminId = adminChatId();
@@ -132,8 +136,9 @@ export async function notifyOrderStatus(
       const order =
         recipient.locale === 'ru'
           ? orderRu
-          : (await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu;
-      await send(recipient.telegramId, statusBody(order, status, recipient.locale));
+          : ((await getOrderByNumber(orderNumber, recipient.locale)) ?? orderRu);
+      const invite = status === 'delivered' ? reviewInvite(order, recipient.locale) : '';
+      await send(recipient.telegramId, statusBody(order, status, recipient.locale) + invite);
     }
 
     if (adminId) {

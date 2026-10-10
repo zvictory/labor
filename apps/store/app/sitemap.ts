@@ -22,6 +22,7 @@ const STATIC_PATHS = [
   '/delivery',
   '/contacts',
   '/campaigns',
+  '/corporate',
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

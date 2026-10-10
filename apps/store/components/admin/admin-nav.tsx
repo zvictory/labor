@@ -14,6 +14,7 @@ import {
   PhoneCall,
   TicketPercent,
   Send,
+  Star,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -34,6 +35,7 @@ export function AdminNav({ locale }: { locale: string }) {
     { href: `${base}/catalog`, label: 'Каталог', icon: Package },
     { href: `${base}/orders`, label: 'Заказы', icon: ShoppingCart },
     { href: `${base}/requests`, label: 'Заявки', icon: PhoneCall },
+    { href: `${base}/reviews`, label: 'Отзывы', icon: Star },
     { href: `${base}/campaigns`, label: 'Кампании', icon: Megaphone },
     { href: `${base}/promo`, label: 'Промокоды', icon: TicketPercent },
     { href: `${base}/broadcast`, label: 'Рассылка', icon: Send },

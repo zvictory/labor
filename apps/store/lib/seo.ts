@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 
 import { defaultLocale, locales, type Locale } from '@/i18n/config';
 import type { ProductDetailDTO } from '@/lib/catalog/types';
+import type { RatingSummary } from '@/lib/reviews/reviews';
 
 /** Public origin, no trailing slash. The production image is built with NEXT_PUBLIC_APP_URL. */
 export const SITE_URL = (
@@ -85,19 +86,23 @@ export const pageMetadata = ({
   };
 };
 
-type ProductForJsonLd = Pick<ProductDetailDTO, 'slug' | 'name' | 'brand' | 'price' | 'image' | 'images'>;
+type ProductForJsonLd = Pick<
+  ProductDetailDTO,
+  'slug' | 'name' | 'brand' | 'price' | 'image' | 'images'
+>;
 
 /**
  * schema.org Product for the product page, so a search result can show the
- * price. There is deliberately no aggregateRating: the stars on the page are
- * Fragrantica's votes, imported, and Google's review-snippet rules forbid
- * marking up ratings collected on another site. It goes in once the rating
- * comes from Labor's own buyers (the Vote model).
+ * price and rating. The rating is Labor's own buyers' (lib/reviews), and only
+ * when there is one. The stars in the product record are Fragrantica's votes,
+ * imported, and Google's review-snippet rules forbid marking up ratings
+ * collected on another site, so those never go in.
  */
 export const productJsonLd = (
   product: ProductForJsonLd,
   locale: string,
   description: string,
+  ownRating?: RatingSummary,
 ): Record<string, unknown> => {
   const url = absoluteUrl(`/${locale}/product/${product.slug}`);
   const images = (product.images.length > 0 ? product.images : [product.image])
@@ -120,6 +125,17 @@ export const productJsonLd = (
       availability: 'https://schema.org/InStock',
       seller: { '@type': 'Organization', name: SITE_NAME },
     },
+    ...(ownRating && ownRating.count > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: ownRating.average,
+            ratingCount: ownRating.count,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
   };
 };
 

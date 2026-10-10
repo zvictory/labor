@@ -13,8 +13,35 @@ import { consultInputSchema, createConsultRequest, type ConsultResult } from './
 
 // On an error the typed values come back, because React resets a form after its
 // action runs and the visitor would otherwise retype everything to fix one digit.
-type Typed = { name: string; phone: string; message: string };
+type Typed = {
+  name: string;
+  phone: string;
+  message: string;
+  company: string;
+  quantity: string;
+  date: string;
+};
 export type ConsultFormState = (ConsultResult & { values?: Typed }) | null;
+
+// The corporate form's extra fields, as labelled lines above the visitor's own
+// note, so staff read one message in the admin and in Telegram.
+const EXTRA_FIELDS = [
+  ['company', 'Компания'],
+  ['quantity', 'Количество / бюджет'],
+  ['date', 'К какой дате'],
+] as const;
+
+const composeMessage = (formData: FormData): string | undefined => {
+  const lines = EXTRA_FIELDS.flatMap(([field, label]) => {
+    const value = String(formData.get(field) ?? '')
+      .trim()
+      .slice(0, 160);
+    return value ? [`${label}: ${value}`] : [];
+  });
+  const note = String(formData.get('message') ?? '').trim();
+  const text = [...lines, note].filter(Boolean).join('\n');
+  return text || undefined;
+};
 
 /** Storefront form submit (useActionState signature). */
 export async function submitConsultRequest(
@@ -29,12 +56,15 @@ export async function submitConsultRequest(
     name: String(formData.get('name') ?? ''),
     phone: String(formData.get('phone') ?? ''),
     message: String(formData.get('message') ?? ''),
+    company: String(formData.get('company') ?? ''),
+    quantity: String(formData.get('quantity') ?? ''),
+    date: String(formData.get('date') ?? ''),
   };
 
   const parsed = consultInputSchema.safeParse({
     name: formData.get('name') ?? undefined,
     phone: formData.get('phone') ?? '',
-    message: formData.get('message') ?? undefined,
+    message: composeMessage(formData),
     productSlug: formData.get('productSlug') ?? undefined,
     source: formData.get('source'),
     locale: formData.get('locale'),
@@ -48,7 +78,10 @@ export async function submitConsultRequest(
   return result.ok ? result : { ...result, values };
 }
 
-const statusSchema = z.object({ id: z.coerce.number().int().positive(), status: z.enum(['new', 'done']) });
+const statusSchema = z.object({
+  id: z.coerce.number().int().positive(),
+  status: z.enum(['new', 'done']),
+});
 
 /** Admin: mark a request handled, or back to new. */
 export async function setConsultStatus(formData: FormData): Promise<void> {

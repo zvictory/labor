@@ -25,6 +25,7 @@ const SOURCE_LABEL: Record<string, string> = {
   product: 'Аромат',
   finder: 'Подбор',
   contacts: 'Контакты',
+  corporate: 'Корпоративный',
 };
 
 function formatDate(date: Date): string {

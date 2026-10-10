@@ -43,12 +43,21 @@ export default async function AdminCatalogPage({ params, searchParams }: PagePro
           <h1 className="text-ink text-xl font-medium">Продукты</h1>
           <p className="text-ink-muted text-sm">{meta.total} всего</p>
         </div>
-        <Link
-          href={`/${locale}/admin/catalog/new`}
-          className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-5 text-xs leading-10 font-semibold tracking-widest uppercase"
-        >
-          Новый продукт
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* For marketplace seller cabinets; the same rows are public at /feed.yml. */}
+          <a
+            href="/api/admin/products-csv?locale=ru"
+            className="border-border text-ink hover:border-foreground h-10 rounded-md border px-4 text-sm leading-10"
+          >
+            Выгрузка CSV
+          </a>
+          <Link
+            href={`/${locale}/admin/catalog/new`}
+            className="bg-ink text-bone hover:bg-brass h-10 rounded-md px-5 text-xs leading-10 font-semibold tracking-widest uppercase"
+          >
+            Новый продукт
+          </Link>
+        </div>
       </div>
 
       <form method="get" className="flex gap-2">

@@ -103,6 +103,8 @@ interface NotifyStrings {
   itemsLabel: string;
   totalLabel: string;
   statusFieldLabel: string;
+  /** Sent to the customer under a "delivered" update, above the product links. */
+  reviewPrompt: string;
 }
 
 export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
@@ -113,6 +115,7 @@ export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
     itemsLabel: 'Товаров',
     totalLabel: 'Итого',
     statusFieldLabel: 'Статус',
+    reviewPrompt: 'Как вам аромат? Оцените его на сайте — это поможет другим с выбором:',
   },
   uz: {
     paidTitle: 'To‘lov qabul qilindi ✅',
@@ -121,6 +124,7 @@ export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
     itemsLabel: 'Mahsulotlar',
     totalLabel: 'Jami',
     statusFieldLabel: 'Holat',
+    reviewPrompt: 'Atir sizga yoqdimi? Saytda baholang — bu boshqalarga tanlashda yordam beradi:',
   },
   en: {
     paidTitle: 'Payment received ✅',
@@ -129,5 +133,6 @@ export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
     itemsLabel: 'Items',
     totalLabel: 'Total',
     statusFieldLabel: 'Status',
+    reviewPrompt: 'How do you like it? Rate it on the site — it helps others choose:',
   },
 };

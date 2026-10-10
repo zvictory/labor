@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { db } from '@/lib/db';
 import { getBot } from '@/lib/telegram/bot';
 
-export const CONSULT_SOURCES = ['product', 'finder', 'contacts'] as const;
+export const CONSULT_SOURCES = ['product', 'finder', 'contacts', 'corporate'] as const;
 export type ConsultSource = (typeof CONSULT_SOURCES)[number];
 
 /** Repeat requests from one number inside this window are acknowledged but not stored again. */
@@ -46,7 +46,8 @@ export const consultInputSchema = z.object({
       }
       return phone;
     }),
-  message: optionalText(1000),
+  // Corporate requests fold company, quantity and date into the message.
+  message: optionalText(1600),
   productSlug: optionalText(200),
   source: z.enum(CONSULT_SOURCES),
   locale: z.enum(['ru', 'uz', 'en']).catch('ru'),
@@ -63,6 +64,7 @@ const SOURCE_LABEL: Record<ConsultSource, string> = {
   product: 'страница аромата',
   finder: 'подбор аромата',
   contacts: 'контакты',
+  corporate: 'корпоративный заказ',
 };
 
 /** The admin chat message, in Russian like the order notifications. */

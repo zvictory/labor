@@ -270,10 +270,10 @@ export const getHeroProducts = async (locale: string): Promise<ProductDetailDTO[
 
 // ── product detail ─────────────────────────────────────────────────────────────
 
-const normalizeGender = (value: string | undefined): Gender =>
+export const normalizeGender = (value: string | undefined): Gender =>
   value === 'men' || value === 'women' || value === 'unisex' ? value : 'unisex';
 
-const toProductNote = (
+export const toProductNote = (
   note: { slug: string; name: Prisma.JsonValue; family: string | null; iconUrl: string | null },
   locale: string,
 ): ProductNoteDTO => ({

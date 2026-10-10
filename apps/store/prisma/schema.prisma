@@ -237,11 +237,16 @@ model Vote {
   loveLevel String?
   seasons   Json     @default("[]")
   timeOfDay Json     @default("[]")
+  // A buyer's review text. Shown on the product page only once staff publish
+  // it (/admin/reviews); the star rating counts straight away.
+  comment       String?
+  commentStatus String   @default("none") // none | pending | published | hidden
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, productId])
   @@index([productId])
+  @@index([commentStatus])
 }
 
 model WishlistItem {
