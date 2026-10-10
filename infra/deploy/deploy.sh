@@ -65,12 +65,17 @@ docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:
 docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear < /dev/null
 docker image prune -f
 
-# Fail the deploy if the site is not actually answering. Everything above can
-# report success while nginx serves 502s to every visitor.
+# Fail the deploy if the store is not actually rendering pages. Everything above
+# can report success while nginx serves 502s to every visitor. The request goes
+# to port 443 for a store page, and only 200 passes: on port 80 nginx answers
+# every path with a 301 to https by itself, so that check passed with the store
+# down. /ru is rendered per request from the database (the store layout is
+# force-dynamic), so a 200 means nginx, the store and Postgres all answered.
+# -k because the certificate is issued for the domain, not for localhost.
 for i in 1 2 3 4 5 6 7 8 9 10; do
-  code=\$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://localhost/ || echo 000)
+  code=\$(curl -sk -o /dev/null -w '%{http_code}' --max-time 10 https://localhost/ru || true)
   case "\$code" in
-    2*|3*) echo "--> site answering: \$code"; break ;;
+    200) echo "--> site answering: \$code"; break ;;
     *) if [ "\$i" = 10 ]; then echo "--> site NOT answering after 10 tries (last: \$code)" >&2; exit 1; fi
        sleep 3 ;;
   esac
