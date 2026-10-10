@@ -1,9 +1,10 @@
 // Server-side cart access for Labor Parfum.
 //
 // Guest carts are keyed by a uuid `token` stored in an httpOnly cookie
-// (`labor_cart`). The server resolves-or-creates a Cart by that token. When an
-// authenticated session lands later, the userId should be attached and any
-// pre-existing guest cart merged — see the user-merge TODO in getOrCreateCart().
+// (`labor_cart`). Only adding a product creates a cart and sets the cookie;
+// reading, changing a quantity, removing a line and clearing never do (see
+// findCart). When an authenticated session lands later, any guest cart is
+// merged into the user's — see mergeGuestCartIntoUser().
 //
 // Money is integer UZS minor units. A sample/decant is priced at ~8% of the
 // product price (matches the prototype): see lineUnitPrice().
@@ -309,6 +310,25 @@ export const getCart = async (locale: string): Promise<CartDTO> => {
 const EMPTY_CART: CartDTO = { items: [], itemCount: 0, subtotal: 0 };
 
 /**
+ * The caller's existing cart, or null. Never creates one and never sets the
+ * cookie.
+ *
+ * Creating on read lost baskets. On a first visit the header badge, the mobile
+ * nav and the mini-cart each GET /api/cart at once; each request minted its own
+ * cart and set the cookie, and on a slow connection those answers could land
+ * after the visitor's "add to cart" — the last Set-Cookie won and pointed the
+ * browser at an empty cart. Only addItem may create.
+ */
+const findCart = async (): Promise<CartWithItems | null> => {
+  const userId = await resolveSessionUserId();
+  if (userId !== undefined) {
+    return db.cart.findFirst({ where: { userId }, include: cartInclude, orderBy: { id: 'asc' } });
+  }
+  const token = await getCartToken();
+  return token ? db.cart.findUnique({ where: { token }, include: cartInclude }) : null;
+};
+
+/**
  * Read the cart without ever writing.
  *
  * `getOrCreateCart` mints a cart and calls `setCartToken`, and Next 15 throws
@@ -319,20 +339,7 @@ const EMPTY_CART: CartDTO = { items: [], itemCount: 0, subtotal: 0 };
  * the first POST /api/cart, which is allowed to write.
  */
 export const readCart = async (locale: string): Promise<CartDTO> => {
-  const userId = await resolveSessionUserId();
-  const token = await getCartToken();
-
-  const cart =
-    userId !== undefined
-      ? await db.cart.findFirst({
-          where: { userId },
-          include: cartInclude,
-          orderBy: { id: 'asc' },
-        })
-      : token
-        ? await db.cart.findUnique({ where: { token }, include: cartInclude })
-        : null;
-
+  const cart = await findCart();
   return cart ? projectCart(cart, locale) : EMPTY_CART;
 };
 
@@ -388,8 +395,8 @@ export const addItem = async (
  * caller's cart so a stray itemId from another cart cannot be mutated.
  */
 export const updateItem = async (itemId: number, quantity: number): Promise<CartDTO> => {
-  const cart = await getOrCreateCart();
-  const item = cart.items.find((i) => i.id === itemId);
+  const cart = await findCart();
+  const item = cart?.items.find((i) => i.id === itemId);
 
   if (item) {
     if (quantity <= 0) {
@@ -399,21 +406,21 @@ export const updateItem = async (itemId: number, quantity: number): Promise<Cart
     }
   }
 
-  return getCart('ru');
+  return readCart('ru');
 };
 
 /** Remove a single line from the caller's cart. */
 export const removeItem = async (itemId: number): Promise<CartDTO> => {
-  const cart = await getOrCreateCart();
-  const item = cart.items.find((i) => i.id === itemId);
+  const cart = await findCart();
+  const item = cart?.items.find((i) => i.id === itemId);
   if (item) {
     await db.cartItem.delete({ where: { id: itemId } });
   }
-  return getCart('ru');
+  return readCart('ru');
 };
 
 /** Empty the caller's cart (used by checkout after an order is placed). */
 export const clearCart = async (): Promise<void> => {
-  const cart = await getOrCreateCart();
-  await db.cartItem.deleteMany({ where: { cartId: cart.id } });
+  const cart = await findCart();
+  if (cart) await db.cartItem.deleteMany({ where: { cartId: cart.id } });
 };

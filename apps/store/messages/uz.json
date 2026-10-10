@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "Labor",
-    "tagline": "Hidlarni eshitganlar uchun parfyumeriya"
+    "tagline": "Hidlarni eshitganlar uchun parfyumeriya",
+    "description": "Toshkentda selektiv va nish parfyumeriya: 10 ml dekantlar va 2 ml probniklar. Butun Oʻzbekiston boʻylab yetkazib berish, Payme, Click yoki qabul qilishda toʻlov."
   },
   "nav": {
     "menu": "Menyu",
@@ -18,7 +19,8 @@
     "account": "Kabinet",
     "search": "Qidirish",
     "login": "Kirish",
-    "logout": "Chiqish"
+    "logout": "Chiqish",
+    "contacts": "Aloqa"
   },
   "home": {
     "hero": {
@@ -196,7 +198,9 @@
     "remove": "Oʻchirish",
     "quantity": "Miqdor",
     "promoCode": "Promokod",
-    "apply": "Qoʻllash"
+    "apply": "Qoʻllash",
+    "freeDeliveryLeft": "Yana {amount} — va Toshkent boʻylab yetkazib berish bepul",
+    "freeDeliveryReached": "Toshkent boʻylab yetkazib berish — bepul"
   },
   "checkout": {
     "title": "Buyurtma rasmiylashtirish",
@@ -274,7 +278,12 @@
     "detailDescription": "Brend haqida",
     "detailProducts": "Atirlar",
     "errorLoading": "Brendlarni yuklab boʻlmadi",
-    "houseCount": "{count} ta brend"
+    "houseCount": "{count} ta brend",
+    "metaTitle": "{name} atirlari — narxlari",
+    "metaDescription": "Labor doʻkonida {name}: {count} ta atir. 10 ml dekant va 2 ml namuna, Oʻzbekiston boʻylab yetkazib berish.",
+    "backToBrands": "Barcha brendlar",
+    "filterInCatalog": "Katalogda saralash",
+    "emptyProducts": "Bu brend atirlari hozircha mavjud emas"
   },
   "perfumers": {
     "title": "Parfyumerlar",
@@ -289,7 +298,11 @@
   },
   "campaign": {
     "useCode": "Promokod",
-    "until": "{date} gacha amal qiladi"
+    "until": "{date} gacha amal qiladi",
+    "open": "Batafsil",
+    "back": "Barcha aksiyalar",
+    "products": "Aksiya atirlari",
+    "metaDescription": "Labor aksiyalari va toʻplamlari: chegirmadagi atirlar va mavsumiy toʻplamlar."
   },
   "tg": {
     "tabs": {
@@ -428,7 +441,10 @@
     "clear": "Tozalash",
     "loading": "Yuklanmoqda…",
     "empty": "Sevimlilar roʻyxati boʻsh.",
-    "browse": "Katalogga oʻtish"
+    "browse": "Katalogga oʻtish",
+    "add": "Sevimlilarga",
+    "remove": "Sevimlilardan olib tashlash",
+    "saved": "Sevimlilarda"
   },
   "delivery": {
     "title": "Yetkazib berish va toʻlov",
@@ -444,10 +460,68 @@
     "authenticityBody": "Toʻgʻridan-toʻgʻri yetkazib berish va har partiyani tekshirish.",
     "helpTitle": "Savolingiz bormi?",
     "helpBody": "Telegramda yozing — javob beramiz va tanlashga yordam beramiz. Toʻliq flakondan oldin hidni sinab koʻrish uchun dekant olishingiz mumkin.",
-    "helpCta": "Telegramda yozish"
+    "helpCta": "Telegramda yozish",
+    "tashkentFree": "{amount} dan ortiq buyurtmada bepul."
   },
   "footer": {
     "telegram": "Telegramda mini-ilovani oching:",
-    "copyright": "© {year} Labor. Toshkent, Oʻzbekiston."
+    "copyright": "© {year} Labor. Toshkent, Oʻzbekiston.",
+    "contactsTitle": "Aloqa",
+    "allContacts": "Barcha kontaktlar"
+  },
+  "contacts": {
+    "title": "Aloqa",
+    "subtitle": "Biz bilan qanday bogʻlanish va buyurtmani qayerdan olish mumkin.",
+    "phone": "Telefon",
+    "telegram": "Telegram",
+    "email": "Pochta",
+    "instagram": "Instagram",
+    "address": "Manzil",
+    "hours": "Ish vaqti",
+    "map": "Xaritada ochish",
+    "telegramNote": "Telegramda eng tez javob beramiz.",
+    "deliveryLink": "Yetkazib berish va toʻlov"
+  },
+  "consult": {
+    "title": "Nimani tanlashni bilmayapsizmi?",
+    "lead": "Raqamingizni qoldiring — maslahatchi qoʻngʻiroq qiladi yoki Telegramga yozadi va didingiz hamda byudjetingizga mos atir tanlab beradi.",
+    "toggle": "Tanlashda yordam kerakmi?",
+    "name": "Ism",
+    "phone": "Telefon",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "message": "Sizga nima yoqadi? (ixtiyoriy)",
+    "messagePlaceholder": "Masalan: yogʻochli hidlarni yoqtiraman, sovgʻa qidiryapman",
+    "submit": "Qoʻngʻiroqni kutaman",
+    "sending": "Yuborilmoqda…",
+    "success": "Rahmat! Maslahatchi tez orada siz bilan bogʻlanadi.",
+    "errorPhone": "Raqamni tekshiring: Oʻzbekiston raqami kerak, masalan +998 90 123 45 67.",
+    "errorGeneric": "Yuborib boʻlmadi. Bizga Telegramda yozing.",
+    "company": "Kompaniya",
+    "quantity": "Sovgʻalar soni yoki byudjet",
+    "date": "Qaysi sanaga"
+  },
+  "corporate": {
+    "title": "Korporativ sovgʻalar va katta buyurtmalar",
+    "lead": "Xodimlar va hamkorlar, toʻylar va bayramlar uchun dekant toʻplamlari. Ariza qoldiring — maslahatchi bogʻlanadi, atirlarni tanlaydi, qadoq va muddatlarni kelishadi.",
+    "nav": "Korporativ mijozlarga"
+  },
+  "reviews": {
+    "title": "Labor xaridorlari sharhlari",
+    "summary": "{average} / 5 · {count} ta baho",
+    "none": "Labor xaridorlaridan hali baho yoʻq.",
+    "buyer": "Xaridor",
+    "onlyBuyers": "Atirni buyurtmasi yetkazilgan Labor xaridorlari baholay oladi.",
+    "signIn": "Kirish",
+    "formTitle": "Sizning bahoingiz",
+    "rating": "Baho",
+    "stars": "{n} yulduz",
+    "comment": "Sharh (ixtiyoriy)",
+    "commentPlaceholder": "Turgʻunlik, iz, bu atir kimga mos keladi…",
+    "submit": "Saqlash",
+    "saved": "Rahmat! Baho hisobga olindi. Matn tekshiruvdan soʻng sahifada chiqadi.",
+    "pending": "Matningiz tekshirilmoqda.",
+    "errorRating": "1 dan 5 gacha baho tanlang.",
+    "errorBuyer": "Faqat qabul qilingan buyurtmani baholash mumkin.",
+    "errorGeneric": "Saqlab boʻlmadi. Qaytadan urinib koʻring."
   }
 }

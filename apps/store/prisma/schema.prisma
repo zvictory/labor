@@ -198,6 +198,8 @@ model User {
   phone           String?        @unique
   name            String?
   preferredLocale String         @default("ru") // ru | uz | en
+  // Set by /stop in the bot: no more announcements (order updates still arrive).
+  broadcastOptOut Boolean        @default(false)
   role            String         @default("customer") // customer | staff | admin
   passwordHash    String? // staff only
   carts           Cart[]
@@ -235,11 +237,16 @@ model Vote {
   loveLevel String?
   seasons   Json     @default("[]")
   timeOfDay Json     @default("[]")
+  // A buyer's review text. Shown on the product page only once staff publish
+  // it (/admin/reviews); the star rating counts straight away.
+  comment       String?
+  commentStatus String   @default("none") // none | pending | published | hidden
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, productId])
   @@index([productId])
+  @@index([commentStatus])
 }
 
 model WishlistItem {
@@ -252,6 +259,25 @@ model WishlistItem {
 
   @@unique([userId, productId])
   @@index([productId])
+}
+
+// "Help me choose": a visitor leaves a phone number and a few words, and a
+// consultant calls or writes back. Kept here as well as sent to the admin
+// Telegram chat, so a request is not lost when the bot is down or unconfigured.
+model ConsultRequest {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  phone       String // normalised +998XXXXXXXXX
+  message     String?
+  productSlug String? // the product page it was sent from, if any
+  source      String // product | finder | contacts
+  locale      String   @default("ru")
+  status      String   @default("new") // new | done
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([phone, createdAt])
 }
 
 // ───────────────────────── Commerce ─────────────────────────
@@ -289,7 +315,10 @@ model Order {
   user           User?                 @relation(fields: [userId], references: [id])
   status         String                @default("pending") // pending|confirmed|paid|shipped|delivered|canceled
   paymentStatus  String                @default("unpaid") // unpaid|paid|refunded
-  total          Int                   @default(0) // UZS minor units
+  total          Int                   @default(0) // UZS minor units: items - discount + delivery
+  // promo snapshot: the code as applied and the so'm it took off the items
+  promoCode      String?
+  discount       Int                   @default(0)
   // shipping snapshot
   region         String?
   district       String?
@@ -356,6 +385,39 @@ model PaymentWebhookEvent {
 }
 
 // ───────────────────────── Marketing / campaigns ─────────────────────────
+
+// A code entered at checkout. Takes `value` percent or `value` so'm off the
+// items (never the delivery). `firstOrderOnly` codes work only for a phone or
+// account with no earlier order — the first-purchase bonus.
+model PromoCode {
+  id             Int       @id @default(autoincrement())
+  code           String    @unique // upper-case, A–Z 0–9 _ -
+  kind           String // percent | fixed
+  value          Int
+  minSubtotal    Int       @default(0)
+  maxUses        Int? // null = unlimited
+  usedCount      Int       @default(0)
+  firstOrderOnly Boolean   @default(false)
+  active         Boolean   @default(true)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  note           String? // staff only
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// One announcement sent from the admin to everyone who talks to the bot.
+model Broadcast {
+  id         Int       @id @default(autoincrement())
+  text       Json // { ru, uz, en }
+  status     String    @default("sending") // sending | done
+  recipients Int       @default(0)
+  sent       Int       @default(0)
+  failed     Int       @default(0)
+  createdBy  String?
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+}
 
 model Campaign {
   id        Int               @id @default(autoincrement())

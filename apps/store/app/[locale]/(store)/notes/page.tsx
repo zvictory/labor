@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -6,10 +7,17 @@ import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
 import { BlockMarker } from '@/components/catalog/index-block';
 import { getNotes } from '@/lib/catalog/notes';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
+import { pageMetadata } from '@/lib/seo';
 import { familyLabel } from '@/lib/catalog/note-families';
 import type { NoteDTO } from '@/lib/catalog/types';
 
 type Props = { params: Promise<{ locale: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'notes' });
+  return pageMetadata({ locale, path: '/notes', title: t('title'), description: t('subtitle') });
+}
 
 // 411 notes used to arrive as one 24 000-pixel wall with 411 <h2> headings in
 // it — no grouping, no way in, and a document outline that told a screen reader

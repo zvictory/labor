@@ -6,6 +6,7 @@ import type { ProductCardDTO } from '@/lib/catalog/types';
 import { formatUzs } from '@/lib/money';
 import { StarRating } from '@/components/catalog/star-rating';
 import { AddToCartIcon } from '@/components/cart/add-to-cart';
+import { WishlistButton } from '@/components/wishlist/wishlist-button';
 import { NoteOrbit } from '@/components/catalog/note-orbit';
 
 // The screen form of the shop's 24 × 32 mm tester label: code line, name,
@@ -39,8 +40,9 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
       data-orbit-card
       className="group border-hairline bg-background hover:border-graphite dark:border-gunmetal dark:hover:border-offwhite relative border transition-colors duration-200"
     >
-      <div className="absolute top-3 right-3 z-10">
+      <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
         <AddToCartIcon productId={product.id} locale={locale} />
+        <WishlistButton productId={product.id} />
       </div>
 
       <Link href={`/${locale}/product/${product.slug}`} className="block">

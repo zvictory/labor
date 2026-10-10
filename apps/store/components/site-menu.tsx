@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+import { useHydrated } from '@/lib/use-hydrated';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 
@@ -17,6 +19,7 @@ export function SiteMenu({
   closeLabel: string;
 }) {
   const [open, setOpen] = useState(false);
+  const ready = useHydrated();
 
   useEffect(() => {
     if (!open) return;
@@ -35,6 +38,7 @@ export function SiteMenu({
         aria-controls="site-menu"
         aria-label={open ? closeLabel : openLabel}
         onClick={() => setOpen((o) => !o)}
+        disabled={!ready}
         className="flex h-11 w-11 items-center justify-center xl:hidden"
       >
         {open ? (

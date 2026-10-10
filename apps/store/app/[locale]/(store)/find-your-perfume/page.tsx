@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { listProducts } from '@/lib/catalog/products';
 import {
@@ -8,6 +9,8 @@ import {
 import type { ProductCardDTO } from '@/lib/catalog/types';
 import type { Locale } from '@/i18n/config';
 import { FAMILY_FILTERS } from '@/lib/catalog/note-families';
+import { pageMetadata } from '@/lib/seo';
+import { ConsultForm } from '@/components/consult/consult-form';
 
 interface Props {
   params: Promise<{ locale: Locale }>;
@@ -447,13 +450,32 @@ const COPY: Record<Lang, FinderCopy> = {
   },
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const copy = COPY[toLang(locale)];
+  return pageMetadata({
+    locale,
+    path: '/find-your-perfume',
+    title: copy.title,
+    description: copy.intro,
+  });
+}
+
 export default async function FindYourPerfumePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const lang = toLang(locale);
   const candidates = await loadCandidates(locale);
 
-  return <PerfumeFinderClient locale={locale} candidates={candidates} copy={COPY[lang]} />;
+  return (
+    <>
+      <PerfumeFinderClient locale={locale} candidates={candidates} copy={COPY[lang]} />
+      {/* Four questions narrow the shelf; a person narrows it further. */}
+      <section className="border-border mx-auto max-w-3xl border-t px-4 py-12 md:py-16">
+        <ConsultForm locale={locale} source="finder" />
+      </section>
+    </>
+  );
 }
 
 async function loadCandidates(locale: string): Promise<FinderCandidate[]> {

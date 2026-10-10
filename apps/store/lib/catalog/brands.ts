@@ -102,8 +102,9 @@ export const getBrand = async (
   slug: string,
   locale: string,
 ): Promise<(BrandDTO & { description: string }) | null> => {
-  const row = await db.brand.findUnique({
-    where: { slug },
+  // A brand switched off in the admin has no page, the way it has no card on /brands.
+  const row = await db.brand.findFirst({
+    where: { slug, active: true },
     select: brandSelect,
   });
 

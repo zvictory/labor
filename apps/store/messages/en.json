@@ -1,7 +1,8 @@
 {
   "brand": {
     "name": "Labor",
-    "tagline": "Fragrance for those who listen to scent"
+    "tagline": "Fragrance for those who listen to scent",
+    "description": "Selective and niche fragrance in Tashkent: 10 ml decants and 2 ml samples. Delivery across Uzbekistan; pay with Payme, Click or on delivery."
   },
   "nav": {
     "menu": "Menu",
@@ -18,7 +19,8 @@
     "account": "Account",
     "search": "Search",
     "login": "Sign in",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "contacts": "Contacts"
   },
   "home": {
     "hero": {
@@ -196,7 +198,9 @@
     "remove": "Remove",
     "quantity": "Quantity",
     "promoCode": "Promo code",
-    "apply": "Apply"
+    "apply": "Apply",
+    "freeDeliveryLeft": "{amount} more for free delivery in Tashkent",
+    "freeDeliveryReached": "Delivery in Tashkent is free"
   },
   "checkout": {
     "title": "Checkout",
@@ -237,7 +241,7 @@
     "eyebrow": "Specials",
     "title": "Labor campaigns",
     "empty": "No active campaigns right now",
-    "itemsCount": "{count} fragrances",
+    "itemsCount": "{count, plural, one {# fragrance} other {# fragrances}}",
     "until": "until {date}"
   },
   "catalog": {
@@ -274,7 +278,12 @@
     "detailDescription": "About the brand",
     "detailProducts": "Fragrances",
     "errorLoading": "Failed to load brands",
-    "houseCount": "{count, plural, one {# house} other {# houses}}"
+    "houseCount": "{count, plural, one {# house} other {# houses}}",
+    "metaTitle": "{name} fragrances and prices",
+    "metaDescription": "{name} at Labor: {count, plural, one {# fragrance} other {# fragrances}} as 10 ml decants and 2 ml samples, delivered across Uzbekistan.",
+    "backToBrands": "All brands",
+    "filterInCatalog": "Filter in the catalogue",
+    "emptyProducts": "No fragrances from this house are in stock right now"
   },
   "perfumers": {
     "title": "Perfumers",
@@ -289,7 +298,11 @@
   },
   "campaign": {
     "useCode": "Use code",
-    "until": "Ends {date}"
+    "until": "Ends {date}",
+    "open": "View",
+    "back": "All offers",
+    "products": "Fragrances in this offer",
+    "metaDescription": "Labor offers and selections: discounted fragrances and seasonal edits."
   },
   "tg": {
     "tabs": {
@@ -428,7 +441,10 @@
     "clear": "Clear",
     "loading": "Loading…",
     "empty": "Your wishlist is empty.",
-    "browse": "Browse catalog"
+    "browse": "Browse catalog",
+    "add": "Save",
+    "remove": "Remove from wishlist",
+    "saved": "Saved"
   },
   "delivery": {
     "title": "Delivery & payment",
@@ -444,10 +460,68 @@
     "authenticityBody": "Direct supply and authenticity checks on every batch.",
     "helpTitle": "Still have a question?",
     "helpBody": "Message us on Telegram — we answer and help you choose. You can take a decant to try a scent before committing to the full bottle.",
-    "helpCta": "Message on Telegram"
+    "helpCta": "Message on Telegram",
+    "tashkentFree": "Free on orders from {amount}."
   },
   "footer": {
     "telegram": "Open the mini-app in Telegram:",
-    "copyright": "© {year} Labor. Tashkent, Uzbekistan."
+    "copyright": "© {year} Labor. Tashkent, Uzbekistan.",
+    "contactsTitle": "Contact",
+    "allContacts": "All contacts"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "subtitle": "How to reach us and where to collect your order.",
+    "phone": "Phone",
+    "telegram": "Telegram",
+    "email": "Email",
+    "instagram": "Instagram",
+    "address": "Address",
+    "hours": "Opening hours",
+    "map": "Open on the map",
+    "telegramNote": "Telegram is the fastest way to reach us.",
+    "deliveryLink": "Delivery and payment"
+  },
+  "consult": {
+    "title": "Not sure what to choose?",
+    "lead": "Leave your number and a consultant will call or message you on Telegram to find a fragrance for your taste and budget.",
+    "toggle": "Need help choosing?",
+    "name": "Name",
+    "phone": "Phone",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "message": "What do you like? (optional)",
+    "messagePlaceholder": "For example: I like woody scents, looking for a gift",
+    "submit": "Call me back",
+    "sending": "Sending…",
+    "success": "Thank you! A consultant will be in touch shortly.",
+    "errorPhone": "Check the number: it needs to be an Uzbek number, for example +998 90 123 45 67.",
+    "errorGeneric": "Could not send. Please message us on Telegram.",
+    "company": "Company",
+    "quantity": "Number of gifts or budget",
+    "date": "Needed by"
+  },
+  "corporate": {
+    "title": "Corporate gifts and large orders",
+    "lead": "Decant sets for staff and partners, weddings and celebrations. Leave a request and a consultant will get in touch, choose the fragrances and agree packaging and dates.",
+    "nav": "Corporate orders"
+  },
+  "reviews": {
+    "title": "Reviews from Labor buyers",
+    "summary": "{average} out of 5 · {count, plural, one {# rating} other {# ratings}}",
+    "none": "No ratings from Labor buyers yet.",
+    "buyer": "A buyer",
+    "onlyBuyers": "Labor buyers can rate a fragrance once their order has been delivered.",
+    "signIn": "Sign in",
+    "formTitle": "Your rating",
+    "rating": "Rating",
+    "stars": "{n, plural, one {# star} other {# stars}}",
+    "comment": "Review (optional)",
+    "commentPlaceholder": "Longevity, sillage, who it would suit…",
+    "submit": "Save",
+    "saved": "Thank you! Your rating counts now; the text appears after a check.",
+    "pending": "Your text is being checked.",
+    "errorRating": "Choose a rating from 1 to 5.",
+    "errorBuyer": "Only a delivered order can be rated.",
+    "errorGeneric": "Could not save. Please try again."
   }
 }

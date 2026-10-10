@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
+import { resolveLocaleText } from '@/lib/catalog/locale';
+import { STORE_CONTACT, telHref } from '@/lib/store-contact';
 import { TELEGRAM_HANDLE, TELEGRAM_URL } from '@/lib/telegram';
 
 // Footer chrome ported from apps/web. Server-safe (useTranslations in RSC). All
@@ -11,7 +13,9 @@ export function SiteFooter({ locale }: { locale: string }) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
   const f = useTranslations('footer');
+  const c = useTranslations('corporate');
   const href = (path: string) => `/${locale}${path}`;
+  const { phone, hours } = STORE_CONTACT;
 
   return (
     <footer className="border-border bg-bone mt-20 border-t py-12">
@@ -39,23 +43,54 @@ export function SiteFooter({ locale }: { locale: string }) {
               </Link>
             </li>
             <li>
+              <Link href={href('/campaigns')} className="hover:underline hover:underline-offset-4">
+                {t('campaigns')}
+              </Link>
+            </li>
+            <li>
               <Link href={href('/delivery')} className="hover:underline hover:underline-offset-4">
                 {t('delivery')}
               </Link>
             </li>
           </ul>
         </div>
+        {/* Phone and hours appear once they are filled in lib/store-contact.ts. */}
         <div>
-          <h4 className="text-ink-muted mb-3 text-xs tracking-widest uppercase">Telegram</h4>
-          <p className="text-ink-muted text-sm">
-            {f('telegram')}{' '}
-            <a
-              href={TELEGRAM_URL}
-              className="text-ink font-medium hover:underline hover:underline-offset-4"
-            >
-              {TELEGRAM_HANDLE}
-            </a>
-          </p>
+          <h4 className="text-ink-muted mb-3 text-xs tracking-widest uppercase">
+            {f('contactsTitle')}
+          </h4>
+          <ul className="text-ink-muted space-y-2 text-sm">
+            {phone && (
+              <li>
+                <a
+                  href={telHref(phone)}
+                  className="text-ink font-medium hover:underline hover:underline-offset-4"
+                >
+                  {phone}
+                </a>
+              </li>
+            )}
+            {hours && <li>{resolveLocaleText(hours, locale)}</li>}
+            <li>
+              {f('telegram')}{' '}
+              <a
+                href={TELEGRAM_URL}
+                className="text-ink font-medium hover:underline hover:underline-offset-4"
+              >
+                {TELEGRAM_HANDLE}
+              </a>
+            </li>
+            <li>
+              <Link href={href('/contacts')} className="hover:underline hover:underline-offset-4">
+                {f('allContacts')}
+              </Link>
+            </li>
+            <li>
+              <Link href={href('/corporate')} className="hover:underline hover:underline-offset-4">
+                {c('nav')}
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
       <div className="border-border text-ink-muted container mt-10 border-t pt-6 text-xs">

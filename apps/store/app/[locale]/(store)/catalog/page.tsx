@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -8,6 +9,7 @@ import { getNotes } from '@/lib/catalog/notes';
 import { getBrands } from '@/lib/catalog/brands';
 import { FAMILY_FILTERS, FAMILY_LABELS } from '@/lib/catalog/note-families';
 import type { Gender } from '@/lib/catalog/types';
+import { pageMetadata } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: Locale }>;
@@ -122,6 +124,38 @@ const buildHref = (
   const qs = sp.toString();
   return `/${locale}/catalog${qs ? `?${qs}` : ''}`;
 };
+
+// Filters that define what the page is about stay in the canonical URL, so a
+// brand's or a note's listing can rank on its own. Paging and sort orders do
+// not: they are the same listing, reshuffled.
+const CANONICAL_FILTERS = ['brand', 'note', 'family', 'gender', 'perfumer'] as const;
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const sp = await searchParams;
+  const t = await getTranslations({ locale, namespace: 'catalog' });
+  const tb = await getTranslations({ locale, namespace: 'brand' });
+
+  const qs = new URLSearchParams();
+  for (const key of CANONICAL_FILTERS) {
+    const value = first(sp[key]);
+    if (value) qs.set(key, value);
+  }
+  const query = qs.toString();
+  // A listing filtered to one brand and nothing else is that brand's page.
+  const brandOnly = qs.size === 1 ? qs.get('brand') : null;
+
+  return pageMetadata({
+    locale,
+    path: brandOnly
+      ? `/brands/${encodeURIComponent(brandOnly)}`
+      : `/catalog${query ? `?${query}` : ''}`,
+    title: t('title'),
+    description: tb('description'),
+    // A free-text query is a search result, not a page.
+    noindex: Boolean(first(sp.q)),
+  });
+}
 
 export default async function CatalogPage({ params, searchParams }: Props) {
   const { locale } = await params;

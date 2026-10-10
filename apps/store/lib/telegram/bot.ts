@@ -12,6 +12,7 @@ import { Bot, InlineKeyboard, type Context } from 'grammy';
 import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db';
 import { BOT_MESSAGES, toBotLocale, type BotLocale } from '@/lib/telegram/messages';
+import { liveFirstOrderCode } from '@/lib/promo/promo';
 
 const generateCode = (): string => {
   const max = 10 ** 6;
@@ -57,6 +58,47 @@ async function persistLocale(telegramId: number, locale: BotLocale): Promise<voi
       preferredLocale: locale,
     },
   });
+}
+
+/// Remember everyone who opens the bot, so announcements (lib/telegram/broadcast)
+/// can reach them. Creates the row only; an existing one — its locale, its
+/// /stop choice — is left as it is.
+async function rememberChat(ctx: Context, locale: BotLocale): Promise<void> {
+  const from = ctx.from;
+  if (!from || from.is_bot) return;
+  const tgId = BigInt(from.id);
+  await db.user
+    .upsert({
+      where: { telegramId: tgId },
+      update: {},
+      create: {
+        telegramId: tgId,
+        email: `tg_${from.id}@labor.local`,
+        name: from.first_name || null,
+        preferredLocale: locale,
+      },
+    })
+    .catch((err) => console.error('[telegram] could not remember chat', err));
+}
+
+/// /stop and /subscribe: announcements off or back on for this chat.
+async function setBroadcastOptOut(ctx: Context, optOut: boolean): Promise<void> {
+  const locale = await resolveLocale(ctx);
+  const from = ctx.from;
+  if (!from) return;
+  const tgId = BigInt(from.id);
+  await db.user.upsert({
+    where: { telegramId: tgId },
+    update: { broadcastOptOut: optOut },
+    create: {
+      telegramId: tgId,
+      email: `tg_${from.id}@labor.local`,
+      name: from.first_name || null,
+      preferredLocale: locale,
+      broadcastOptOut: optOut,
+    },
+  });
+  await ctx.reply(optOut ? BOT_MESSAGES[locale].stopDone : BOT_MESSAGES[locale].subscribeDone);
 }
 
 function langKeyboard(): InlineKeyboard {
@@ -122,10 +164,22 @@ function registerHandlers(bot: Bot): void {
         catalogUrl
       );
 
-    await ctx.reply(BOT_MESSAGES[locale].start(storeUrl()), {
+    await rememberChat(ctx, locale);
+    const promoCode = await liveFirstOrderCode().catch(() => null);
+    const text = [
+      BOT_MESSAGES[locale].start(storeUrl()),
+      promoCode ? BOT_MESSAGES[locale].firstOrderPromo(promoCode) : null,
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
+    await ctx.reply(text, {
       reply_markup: kb,
     });
   });
+
+  bot.command('stop', (ctx) => setBroadcastOptOut(ctx, true));
+  bot.command('subscribe', (ctx) => setBroadcastOptOut(ctx, false));
 
   bot.command('help', async (ctx) => {
     const locale = await resolveLocale(ctx);

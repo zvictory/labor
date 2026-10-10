@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { type Locale } from '@/i18n/config';
 import { readCart } from '@/lib/cart/cart';
 import { formatUzs } from '@/lib/money';
+import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { CartLineControls } from '@/components/cart/cart-line-controls';
 import { TELEGRAM_URL } from '@/lib/telegram';
 
@@ -32,6 +33,8 @@ export default async function CartPage({ params }: Props) {
 
   const cart = await readCart(locale);
   const t = await getTranslations('cart');
+  const tpdp = await getTranslations('pdp');
+  const freeFrom = freeDeliveryThreshold();
   const lang = toLang(locale);
 
   return (
@@ -118,7 +121,19 @@ export default async function CartPage({ params }: Props) {
                 {formatUzs(cart.subtotal, locale)}
               </span>
             </div>
-            <p className="text-xs text-stone-400">{/* delivery added at checkout */}</p>
+            {/* Before a promo code: the checkout recounts after one. */}
+            {freeFrom !== null && (
+              <p className="text-ink-muted text-xs dark:text-stone-400">
+                {cart.subtotal >= freeFrom
+                  ? t('freeDeliveryReached')
+                  : t('freeDeliveryLeft', { amount: formatUzs(freeFrom - cart.subtotal, locale) })}
+              </p>
+            )}
+            {/* The same promise the product page makes under its button, repeated
+                where the money is committed. */}
+            <p className="text-muted-foreground text-micro font-mono leading-relaxed tracking-[0.12em] uppercase">
+              {tpdp('trustLine')}
+            </p>
             <Link
               href={`/${locale}/checkout`}
               className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center text-xs font-semibold tracking-widest uppercase transition-colors"

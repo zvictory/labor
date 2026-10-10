@@ -6,6 +6,7 @@ import { type Locale } from '@/i18n/config';
 import { formatUzs } from '@/lib/money';
 import { getOrderByNumber, type OrderStatus, type OrderPaymentStatus } from '@/lib/orders/queries';
 import { TELEGRAM_URL } from '@/lib/telegram';
+import { TrackEvent } from '@/components/analytics/track-event';
 
 type Props = {
   params: Promise<{ locale: Locale; number: string }>;
@@ -28,6 +29,7 @@ const COPY: Record<
     contact: string;
     subtotal: string;
     deliveryFee: string;
+    discount: string;
     total: string;
     free: string;
     track: string;
@@ -45,6 +47,7 @@ const COPY: Record<
     contact: 'Контакт',
     subtotal: 'Сумма',
     deliveryFee: 'Доставка',
+    discount: 'Скидка',
     total: 'Итого',
     free: 'Бесплатно',
     track: 'Отслеживайте статус заказа в нашем Telegram-боте.',
@@ -68,6 +71,7 @@ const COPY: Record<
     contact: 'Aloqa',
     subtotal: 'Summa',
     deliveryFee: 'Yetkazib berish',
+    discount: 'Chegirma',
     total: 'Jami',
     free: 'Bepul',
     track: 'Buyurtma holatini Telegram-botimizda kuzating.',
@@ -91,6 +95,7 @@ const COPY: Record<
     contact: 'Contact',
     subtotal: 'Subtotal',
     deliveryFee: 'Delivery',
+    discount: 'Discount',
     total: 'Total',
     free: 'Free',
     track: 'Track your order status in our Telegram bot.',
@@ -120,6 +125,16 @@ export default async function OrderConfirmationPage({ params }: Props) {
 
   return (
     <div className="container max-w-3xl py-12 md:py-16">
+      {/* Checkout lands here for every payment method, so this is where an
+          order counts as placed. Once per order per browser: the page is
+          also where the customer comes back to check the status. */}
+      {order.status !== 'canceled' && (
+        <TrackEvent
+          event="purchase"
+          onceKey={`purchase:${order.number}`}
+          params={{ transaction_id: order.number, value: order.total, currency: 'UZS' }}
+        />
+      )}
       {/* Header */}
       <div className="space-y-2 text-center">
         <p className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
@@ -180,6 +195,12 @@ export default async function OrderConfirmationPage({ params }: Props) {
       {/* Totals */}
       <section className="border-border dark:bg-ink/30 mt-6 space-y-2 rounded-xl border bg-stone-50/50 p-5">
         <Row label={copy.subtotal} value={formatUzs(order.subtotal, locale)} />
+        {order.discount > 0 && (
+          <Row
+            label={`${copy.discount}${order.promoCode ? ` · ${order.promoCode}` : ''}`}
+            value={`−${formatUzs(order.discount, locale)}`}
+          />
+        )}
         <Row
           label={`${copy.deliveryFee}${order.deliveryMethodLabel ? ` · ${order.deliveryMethodLabel}` : ''}`}
           value={order.deliveryFee > 0 ? formatUzs(order.deliveryFee, locale) : copy.free}

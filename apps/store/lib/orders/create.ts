@@ -4,7 +4,7 @@
 //
 //   new Order  → status 'pending', paymentStatus 'unpaid'
 //   Order.number is the PUBLIC id Payme/Click reference (lib/orders/number.ts)
-//   Order.total = items subtotal + delivery price (integer UZS / so'm)
+//   Order.total = items subtotal - promo discount + delivery price (integer UZS / so'm)
 //
 // Item prices are snapshotted from the cart lines (unitPrice), NOT re-read from
 // the live Product, so a later price change never alters a placed order.
@@ -15,7 +15,13 @@ import { z } from 'zod';
 
 import { db } from '@/lib/db';
 import { generateOrderNumber } from '@/lib/orders/number';
-import { getDeliveryMethod } from '@/lib/delivery/methods';
+import { getDeliveryMethod, type DeliveryMethod } from '@/lib/delivery/methods';
+import {
+  deliveryFee as feeAfterThreshold,
+  freeDeliveryThreshold,
+} from '@/lib/delivery/free-delivery';
+import { claimPromoUse, findPromo, isFirstOrder } from '@/lib/promo/promo';
+import { evaluatePromo } from '@/lib/promo/rules';
 import { findRegion } from '@/lib/delivery/uz-regions';
 // Cart module (built in parallel by another agent). ASSUMED exports:
 //   getCart(locale): Promise<CartDTO>   CartDTO { items: CartLineDTO[]; itemCount; subtotal }
@@ -44,6 +50,8 @@ export const createOrderInputSchema = z.object({
   }),
   deliveryMethod: z.string().trim().min(1, 'delivery_required'),
   userId: z.number().int().positive().optional(),
+  // Checked again here whatever the checkout preview said.
+  promoCode: z.string().trim().max(64).optional(),
 });
 
 export type CreateOrderInput = z.infer<typeof createOrderInputSchema>;
@@ -60,22 +68,22 @@ export class OrderCreationError extends Error {
 
 const MAX_NUMBER_RETRIES = 5;
 
-/// Resolve the delivery fee (integer so'm) for a method id. Unknown method ids
-/// are rejected — never trust the client to name a method we don't ship.
-function deliveryFeeFor(methodId: string): number {
+/// Resolve a delivery method by id. Unknown method ids are rejected — never
+/// trust the client to name a method we don't ship.
+function deliveryMethodFor(methodId: string): DeliveryMethod {
   const method = getDeliveryMethod(methodId);
   if (!method) {
     throw new OrderCreationError('delivery_unknown', `Unknown delivery method: ${methodId}`);
   }
-  // baseFee is the flat fee; courier `quoted` methods would refine this via a
-  // live quote (lib/delivery/yandex.ts) — not wired yet, so baseFee stands.
-  return method.baseFee;
+  return method;
 }
 
 /**
  * Create an Order from the current cart in a single transaction, then clear the
  * cart. Validates a non-empty cart and all required fields. Item unit prices are
- * snapshotted from the cart lines; the order total is `subtotal + deliveryFee`.
+ * snapshotted from the cart lines; the order total is
+ * `subtotal - discount + deliveryFee`. A promo code is re-validated here and its
+ * use is counted in the same transaction as the order.
  *
  * @throws OrderCreationError on empty cart, bad input, or unknown delivery method.
  */
@@ -103,15 +111,28 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
   // otherwise we read it from the session. Guests fall through to undefined.
   const userId = parsed.userId ?? (await getCurrentUserId());
 
-  const deliveryFee = deliveryFeeFor(parsed.deliveryMethod);
+  const method = deliveryMethodFor(parsed.deliveryMethod);
 
   // Recompute subtotal from line snapshots rather than trusting cart.subtotal,
   // so the persisted total is internally consistent with the OrderItems.
-  const subtotal = cart.items.reduce(
-    (sum, line) => sum + line.unitPrice * line.quantity,
-    0,
-  );
-  const total = subtotal + deliveryFee;
+  const subtotal = cart.items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+
+  const promo = parsed.promoCode ? await findPromo(parsed.promoCode) : null;
+  let discount = 0;
+  if (parsed.promoCode) {
+    const firstOrder = promo?.firstOrderOnly
+      ? await isFirstOrder({ userId, phone: parsed.customer.phone })
+      : true;
+    const check = evaluatePromo(promo, { subtotal, now: new Date(), isFirstOrder: firstOrder });
+    if (!check.ok) throw new OrderCreationError(check.error);
+    discount = check.discount;
+  }
+
+  // baseFee is the flat fee; courier `quoted` methods would refine it via a live
+  // quote (lib/delivery/yandex.ts) — not wired yet. The free-delivery threshold
+  // is measured on the items after the discount.
+  const deliveryFee = feeAfterThreshold(method, subtotal - discount, freeDeliveryThreshold());
+  const total = subtotal - discount + deliveryFee;
 
   const itemsData = cart.items.map((line) => ({
     productId: line.productId,
@@ -126,22 +147,32 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
   for (let attempt = 0; attempt < MAX_NUMBER_RETRIES; attempt += 1) {
     const number = generateOrderNumber();
     try {
-      const order = await db.order.create({
-        data: {
-          number,
-          // Session user (or explicit override); guest orders carry undefined
-          // and are tracked by phone.
-          userId,
-          status: 'pending',
-          paymentStatus: 'unpaid',
-          total,
-          region: parsed.address.region,
-          district: parsed.address.district,
-          address: parsed.address.address || null,
-          phone: parsed.customer.phone,
-          deliveryMethod: parsed.deliveryMethod,
-          items: { create: itemsData },
-        },
+      const order = await db.$transaction(async (tx) => {
+        // The last use of a limited code can go between the check above and
+        // here; the claim is decided by the database, inside this transaction,
+        // so a failed order also gives the use back.
+        if (promo && discount > 0 && !(await claimPromoUse(tx, promo.id))) {
+          throw new OrderCreationError('promo_used_up');
+        }
+        return tx.order.create({
+          data: {
+            number,
+            // Session user (or explicit override); guest orders carry undefined
+            // and are tracked by phone.
+            userId,
+            status: 'pending',
+            paymentStatus: 'unpaid',
+            total,
+            promoCode: promo && discount > 0 ? promo.code : null,
+            discount,
+            region: parsed.address.region,
+            district: parsed.address.district,
+            address: parsed.address.address || null,
+            phone: parsed.customer.phone,
+            deliveryMethod: parsed.deliveryMethod,
+            items: { create: itemsData },
+          },
+        });
       });
 
       // Cart consumed — clear it so a refresh doesn't re-order. Best-effort:

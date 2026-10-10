@@ -146,7 +146,9 @@ export interface AdminOrderDetail {
   status: OrderStatus;
   paymentStatus: OrderPaymentStatus;
   subtotal: number; // sum of line totals (integer so'm)
-  deliveryFee: number; // total - subtotal (clamped >= 0)
+  discount: number; // promo discount on the items
+  promoCode: string | null;
+  deliveryFee: number; // total - subtotal + discount (clamped >= 0)
   total: number;
   // customer / shipping snapshot
   customerName: string | null;
@@ -176,6 +178,8 @@ export async function getAdminOrder(
       status: true,
       paymentStatus: true,
       total: true,
+      discount: true,
+      promoCode: true,
       region: true,
       district: true,
       address: true,
@@ -218,7 +222,7 @@ export async function getAdminOrder(
   }));
 
   const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
-  const deliveryFee = Math.max(0, order.total - subtotal);
+  const deliveryFee = Math.max(0, order.total - subtotal + order.discount);
 
   const method = order.deliveryMethod ? getDeliveryMethod(order.deliveryMethod) : undefined;
   const deliveryMethodLabel = method ? resolveLocaleText(method.label, locale) : null;
@@ -228,6 +232,8 @@ export async function getAdminOrder(
     status: order.status as OrderStatus,
     paymentStatus: order.paymentStatus as OrderPaymentStatus,
     subtotal,
+    discount: order.discount,
+    promoCode: order.promoCode,
     deliveryFee,
     total: order.total,
     customerName: order.user?.name ?? null,

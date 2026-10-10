@@ -17,32 +17,50 @@ interface BotStrings {
   langPrompt: string;
   langSet: string;
   fallback: string;
+  /** Appended to /start while a first-order promo code is live. */
+  firstOrderPromo: (code: string) => string;
+  /** Footer under every announcement. */
+  broadcastFooter: string;
+  stopDone: string;
+  subscribeDone: string;
 }
 
 export const BOT_MESSAGES: Record<BotLocale, BotStrings> = {
   ru: {
     start: (url) =>
       `Добро пожаловать в Labor Parfum!\n\nОткройте каталог и оформите заказ:\n${url}\n\nКоманды: /help — помощь, /lang — сменить язык.`,
-    help: 'Labor Parfum — бот.\n\n/start — открыть магазин\n/lang — сменить язык (ru/uz/en)\n/help — это сообщение\n\nУведомления о статусе заказа приходят сюда автоматически.',
+    help: 'Labor Parfum — бот.\n\n/start — открыть магазин\n/lang — сменить язык (ru/uz/en)\n/stop — не получать новости и акции\n/subscribe — снова получать новости\n/help — это сообщение\n\nУведомления о статусе заказа приходят сюда автоматически.',
     langPrompt: 'Выберите язык:',
     langSet: 'Язык переключён на русский.',
     fallback: 'Не понял команду. Наберите /help для списка команд.',
+    firstOrderPromo: (code) => `🎁 Скидка на первый заказ — промокод ${code}.`,
+    broadcastFooter: '/stop — не получать новости и акции',
+    stopDone: 'Готово: новости и акции больше не придут. Уведомления о заказах останутся. Вернуться — /subscribe.',
+    subscribeDone: 'Готово: вы снова получаете новости и акции Labor.',
   },
   uz: {
     start: (url) =>
       `Labor Parfum’ga xush kelibsiz!\n\nKatalogni oching va buyurtma bering:\n${url}\n\nBuyruqlar: /help — yordam, /lang — tilni almashtirish.`,
-    help: 'Labor Parfum — bot.\n\n/start — do‘konni ochish\n/lang — tilni almashtirish (ru/uz/en)\n/help — ushbu xabar\n\nBuyurtma holati haqida bildirishnomalar bu yerga avtomatik keladi.',
+    help: 'Labor Parfum — bot.\n\n/start — do‘konni ochish\n/lang — tilni almashtirish (ru/uz/en)\n/stop — yangilik va aksiyalarni olmaslik\n/subscribe — yangiliklarni qayta olish\n/help — ushbu xabar\n\nBuyurtma holati haqida bildirishnomalar bu yerga avtomatik keladi.',
     langPrompt: 'Tilni tanlang:',
     langSet: 'Til o‘zbek tiliga o‘zgartirildi.',
     fallback: 'Buyruq tushunilmadi. Buyruqlar ro‘yxati uchun /help.',
+    firstOrderPromo: (code) => `🎁 Birinchi buyurtmaga chegirma — ${code} promokodi.`,
+    broadcastFooter: '/stop — yangilik va aksiyalarni olmaslik',
+    stopDone: 'Tayyor: yangilik va aksiyalar endi kelmaydi. Buyurtma bildirishnomalari qoladi. Qaytish — /subscribe.',
+    subscribeDone: 'Tayyor: Labor yangiliklari va aksiyalari yana keladi.',
   },
   en: {
     start: (url) =>
       `Welcome to Labor Parfum!\n\nBrowse the catalog and place an order:\n${url}\n\nCommands: /help — help, /lang — change language.`,
-    help: 'Labor Parfum bot.\n\n/start — open the store\n/lang — change language (ru/uz/en)\n/help — this message\n\nOrder status notifications arrive here automatically.',
+    help: 'Labor Parfum bot.\n\n/start — open the store\n/lang — change language (ru/uz/en)\n/stop — stop news and offers\n/subscribe — get news again\n/help — this message\n\nOrder status notifications arrive here automatically.',
     langPrompt: 'Choose a language:',
     langSet: 'Language switched to English.',
     fallback: 'Unknown command. Type /help for the list of commands.',
+    firstOrderPromo: (code) => `🎁 A discount on your first order — promo code ${code}.`,
+    broadcastFooter: '/stop — stop news and offers',
+    stopDone: 'Done: no more news or offers. Order updates will still arrive. To come back — /subscribe.',
+    subscribeDone: 'Done: you will get Labor news and offers again.',
   },
 };
 
@@ -85,6 +103,8 @@ interface NotifyStrings {
   itemsLabel: string;
   totalLabel: string;
   statusFieldLabel: string;
+  /** Sent to the customer under a "delivered" update, above the product links. */
+  reviewPrompt: string;
 }
 
 export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
@@ -95,6 +115,7 @@ export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
     itemsLabel: 'Товаров',
     totalLabel: 'Итого',
     statusFieldLabel: 'Статус',
+    reviewPrompt: 'Как вам аромат? Оцените его на сайте — это поможет другим с выбором:',
   },
   uz: {
     paidTitle: 'To‘lov qabul qilindi ✅',
@@ -103,6 +124,7 @@ export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
     itemsLabel: 'Mahsulotlar',
     totalLabel: 'Jami',
     statusFieldLabel: 'Holat',
+    reviewPrompt: 'Atir sizga yoqdimi? Saytda baholang — bu boshqalarga tanlashda yordam beradi:',
   },
   en: {
     paidTitle: 'Payment received ✅',
@@ -111,5 +133,6 @@ export const NOTIFY_MESSAGES: Record<BotLocale, NotifyStrings> = {
     itemsLabel: 'Items',
     totalLabel: 'Total',
     statusFieldLabel: 'Status',
+    reviewPrompt: 'How do you like it? Rate it on the site — it helps others choose:',
   },
 };

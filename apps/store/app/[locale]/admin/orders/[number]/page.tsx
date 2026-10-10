@@ -105,6 +105,12 @@ export default async function AdminOrderDetailPage({ params }: Props) {
 
           <div className="border-border dark:bg-ink/30 space-y-2 rounded-xl border bg-stone-50/50 p-5">
             <Row label="Сумма" value={formatUzs(order.subtotal, locale)} />
+            {order.discount > 0 && (
+              <Row
+                label={`Скидка${order.promoCode ? ` · ${order.promoCode}` : ''}`}
+                value={`−${formatUzs(order.discount, locale)}`}
+              />
+            )}
             <Row
               label={`Доставка${order.deliveryMethodLabel ? ` · ${order.deliveryMethodLabel}` : ''}`}
               value={order.deliveryFee > 0 ? formatUzs(order.deliveryFee, locale) : 'Бесплатно'}

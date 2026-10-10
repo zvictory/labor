@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { locales, type Locale } from '@/i18n/config';
+import { pageMetadata } from '@/lib/seo';
+import { formatUzs } from '@/lib/money';
+import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { TELEGRAM_URL } from '@/lib/telegram';
 
 type Props = { params: Promise<{ locale: Locale }> };
@@ -11,7 +14,7 @@ export const generateStaticParams = () => locales.map((locale) => ({ locale }));
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'delivery' });
-  return { title: t('title'), description: t('subtitle') };
+  return pageMetadata({ locale, path: '/delivery', title: t('title'), description: t('subtitle') });
 }
 
 // Two cards in the trust strip have linked here since the storefront was built,
@@ -26,6 +29,7 @@ export default async function DeliveryPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('delivery');
+  const freeFrom = freeDeliveryThreshold();
 
   return (
     <main className="container max-w-3xl space-y-12 py-12">
@@ -41,7 +45,12 @@ export default async function DeliveryPage({ params }: Props) {
         <dl className="grid gap-px sm:grid-cols-2">
           <div className="border-border space-y-1 border p-6">
             <dt className="text-base font-medium">{t('tashkentTerm')}</dt>
-            <dd className="text-muted-foreground text-sm">{t('tashkentBody')}</dd>
+            <dd className="text-muted-foreground text-sm">
+              {t('tashkentBody')}
+              {freeFrom !== null && (
+                <> {t('tashkentFree', { amount: formatUzs(freeFrom, locale) })}</>
+              )}
+            </dd>
           </div>
           <div className="border-border space-y-1 border p-6 sm:border-l-0">
             <dt className="text-base font-medium">{t('regionsTerm')}</dt>
