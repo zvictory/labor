@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
-import { formatUzs } from '@/lib/money';
 import { readCart } from '@/lib/cart/cart';
 import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { TrackEvent } from '@/components/analytics/track-event';
@@ -16,11 +15,12 @@ type Lang = 'ru' | 'uz' | 'en';
 
 // Inline copy (no checkout namespace in messages yet). ru-default, uz/en mirror.
 // TODO(i18n): move to next-intl messages under a `checkout` namespace.
-const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empty: string }> = {
+const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
   ru: {
     heading: 'Оформление заказа',
     summary: 'Ваш заказ',
     empty: 'Корзина пуста',
+    sample: 'Пробник',
     contact: 'Контакты',
     name: 'Имя',
     phone: 'Телефон',
@@ -35,10 +35,12 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     click: 'Click',
     cod: 'При получении',
     deliveryFeeLabel: 'Доставка',
+    deliveryPending: 'Не выбрана',
     free: 'Бесплатно',
     totalLabel: 'Итого',
     submit: 'Подтвердить заказ',
     submitting: 'Оформляем…',
+    missingPrefix: 'Осталось указать:',
     selectRegion: 'Выберите регион',
     selectDistrict: 'Выберите район',
     promo: 'Промокод',
@@ -75,6 +77,7 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     heading: 'Buyurtmani rasmiylashtirish',
     summary: 'Sizning buyurtmangiz',
     empty: "Savat bo'sh",
+    sample: 'Namuna',
     contact: 'Aloqa',
     name: 'Ism',
     phone: 'Telefon',
@@ -89,10 +92,12 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     click: 'Click',
     cod: 'Yetkazib berishda',
     deliveryFeeLabel: 'Yetkazib berish',
+    deliveryPending: 'Tanlanmagan',
     free: 'Bepul',
     totalLabel: 'Jami',
     submit: 'Buyurtmani tasdiqlash',
     submitting: 'Rasmiylashtirilmoqda…',
+    missingPrefix: 'Toʻldirilmagan:',
     selectRegion: 'Viloyatni tanlang',
     selectDistrict: 'Tumanni tanlang',
     promo: 'Promokod',
@@ -129,6 +134,7 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     heading: 'Checkout',
     summary: 'Your order',
     empty: 'Your cart is empty',
+    sample: 'Sample',
     contact: 'Contact',
     name: 'Name',
     phone: 'Phone',
@@ -143,10 +149,12 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; summary: string; empt
     click: 'Click',
     cod: 'Cash on delivery',
     deliveryFeeLabel: 'Delivery',
+    deliveryPending: 'Not selected',
     free: 'Free',
     totalLabel: 'Total',
     submit: 'Place order',
     submitting: 'Placing…',
+    missingPrefix: 'Still needed:',
     selectRegion: 'Select a region',
     selectDistrict: 'Select a district',
     promo: 'Promo code',
@@ -204,46 +212,13 @@ export default async function CheckoutPage({ params }: Props) {
         {copy.heading}
       </h1>
 
-      <div className="grid gap-12 lg:grid-cols-[1fr_minmax(320px,420px)] lg:gap-16">
-        {/* Form */}
-        <div className="order-2 lg:order-1">
-          <CheckoutForm
-            locale={locale}
-            subtotal={cart.subtotal}
-            copy={copy}
-            freeDeliveryFrom={freeDeliveryThreshold()}
-          />
-        </div>
-
-        {/* Order summary */}
-        <aside className="border-border dark:bg-ink/30 order-1 h-fit space-y-6 rounded-xl border bg-stone-50/50 p-6 lg:order-2">
-          <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-            {copy.summary}
-          </h2>
-          <ul className="space-y-4">
-            {cart.items.map((line) => (
-              <li
-                key={`${line.productId}-${line.isSample ? 'sample' : 'full'}`}
-                className="flex items-start justify-between gap-4 text-sm"
-              >
-                <span className="text-ink dark:text-bone">
-                  <span className="block leading-tight">{line.name}</span>
-                  <span className="text-ink-muted text-xs dark:text-stone-400">
-                    {line.isSample ? '· sample' : ''} × {line.quantity}
-                  </span>
-                </span>
-                <span className="text-ink dark:text-bone font-medium whitespace-nowrap">
-                  {formatUzs(line.unitPrice * line.quantity, locale)}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div className="border-border text-ink-muted flex items-center justify-between border-t pt-4 text-sm dark:text-stone-400">
-            <span>{copy.summary}</span>
-            <span>{formatUzs(cart.subtotal, locale)}</span>
-          </div>
-        </aside>
-      </div>
+      <CheckoutForm
+        locale={locale}
+        items={cart.items}
+        subtotal={cart.subtotal}
+        copy={copy}
+        freeDeliveryFrom={freeDeliveryThreshold()}
+      />
     </div>
   );
 }
