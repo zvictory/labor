@@ -40,6 +40,15 @@ git reset --hard origin/main
 # code: without it 'up -d' sees the same compose definition, leaves the running
 # containers alone, and the deploy reports success having shipped nothing.
 docker compose -f infra/docker-compose.yml pull --ignore-buildable
+# The store's Prisma migrations, run from the freshly built image before any
+# container is replaced, so the new code never starts on the old schema; the old
+# store keeps serving meanwhile, as long as migrations stay additive. prisma is a
+# devDependency, absent from the runtime image, so npx fetches it, pinned to the
+# @prisma/client version the image ships, never latest. A failure stops the
+# deploy here under set -e, with the old containers still up.
+docker compose -f infra/docker-compose.yml build store
+docker compose -f infra/docker-compose.yml run --rm -T store \
+  sh -c 'npx -y prisma@\$(node -p "require(\"@prisma/client/package.json\").version") migrate deploy' < /dev/null
 docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 # nginx resolves its upstreams once, at startup, and holds the addresses. The
 # rebuild above recreates every application container on a new address, so nginx
