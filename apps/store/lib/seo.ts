@@ -143,5 +143,5 @@ export const productJsonLd = (
  * Serialise JSON-LD for a <script> tag. `<` is escaped so a product name can
  * never close the script element early.
  */
-export const jsonLdScript = (data: Record<string, unknown>): string =>
+export const jsonLdScript = (data: Record<string, unknown> | Record<string, unknown>[]): string =>
   JSON.stringify(data).replace(/</g, '\\u003c');

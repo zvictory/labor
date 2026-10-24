@@ -12,10 +12,12 @@
 import { redirect } from 'next/navigation';
 
 import { getCurrentUserId } from '@/lib/auth/session';
+import { readAttribution } from '@/lib/attribution/server';
 import { readCart } from '@/lib/cart/cart';
+import { reportPurchase } from '@/lib/meta/events';
 import { createOrderFromCart, OrderCreationError } from '@/lib/orders/create';
 import { findPromo, isFirstOrder } from '@/lib/promo/promo';
-import { evaluatePromo } from '@/lib/promo/rules';
+import { evaluatePromo, fullSizeUnits } from '@/lib/promo/rules';
 import { startPayment, PaymentInitiationError } from '@/lib/payments/initiate';
 import type { Locale } from '@/lib/catalog/locale';
 
@@ -49,21 +51,26 @@ export interface PlaceOrderResult {
  */
 export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrderResult> {
   let destination: string;
+  const attribution = await readAttribution();
 
   try {
-    const order = await createOrderFromCart({
-      locale: input.locale,
-      customer: { name: input.name, phone: input.phone },
-      address: {
-        region: input.region,
-        district: input.district,
-        address: input.address,
+    const order = await createOrderFromCart(
+      {
+        locale: input.locale,
+        customer: { name: input.name, phone: input.phone },
+        address: {
+          region: input.region,
+          district: input.district,
+          address: input.address,
+        },
+        deliveryMethod: input.deliveryMethod,
+        promoCode: input.promoCode || undefined,
+        // userId is resolved from the Auth.js session inside createOrderFromCart;
+        // guests (no session) still place orders, tracked by phone.
       },
-      deliveryMethod: input.deliveryMethod,
-      promoCode: input.promoCode || undefined,
-      // userId is resolved from the Auth.js session inside createOrderFromCart;
-      // guests (no session) still place orders, tracked by phone.
-    });
+      { attribution },
+    );
+    await reportPurchase(order, { locale: input.locale, attribution });
 
     if (input.payment === 'cod') {
       // Cash on delivery: no Payment row, order stays pending/unpaid until an
@@ -108,7 +115,12 @@ export async function previewPromoAction(code: string, locale: Locale): Promise<
         ? await isFirstOrder({ userId })
         : null
       : true;
-    const check = evaluatePromo(promo, { subtotal, now: new Date(), isFirstOrder: firstOrder });
+    const check = evaluatePromo(promo, {
+      subtotal,
+      now: new Date(),
+      isFirstOrder: firstOrder,
+      unitPrices: fullSizeUnits(cart.items),
+    });
     return check.ok && promo
       ? { ok: true, code: promo.code, discount: check.discount }
       : check.ok

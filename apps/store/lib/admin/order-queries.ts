@@ -9,13 +9,10 @@
 import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
+import { describeAttribution } from '@/lib/attribution/attribution';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { getDeliveryMethod } from '@/lib/delivery/methods';
-import type {
-  OrderStatus,
-  OrderPaymentStatus,
-  PaymentState,
-} from '@/lib/orders/queries';
+import type { OrderStatus, OrderPaymentStatus, PaymentState } from '@/lib/orders/queries';
 
 export const ADMIN_ORDERS_PAGE_SIZE = 20;
 
@@ -158,6 +155,8 @@ export interface AdminOrderDetail {
   address: string | null;
   deliveryMethod: string | null;
   deliveryMethodLabel: string | null; // localized, from the registry
+  /** Ad tags the order came with (lib/attribution), or null for a direct visit. */
+  adSource: string | null;
   items: AdminOrderLine[];
   payments: AdminOrderPayment[];
   createdAt: Date;
@@ -185,6 +184,11 @@ export async function getAdminOrder(
       address: true,
       phone: true,
       deliveryMethod: true,
+      utmSource: true,
+      utmMedium: true,
+      utmCampaign: true,
+      utmContent: true,
+      fbclid: true,
       createdAt: true,
       user: { select: { name: true } },
       items: {
@@ -243,6 +247,7 @@ export async function getAdminOrder(
     address: order.address,
     deliveryMethod: order.deliveryMethod,
     deliveryMethodLabel,
+    adSource: describeAttribution(order),
     items,
     payments: order.payments.map((p) => ({
       provider: p.provider,

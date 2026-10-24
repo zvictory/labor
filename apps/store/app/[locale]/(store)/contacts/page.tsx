@@ -30,12 +30,25 @@ export default async function ContactsPage({ params }: Props) {
   const t = await getTranslations('contacts');
   const c = STORE_CONTACT;
 
-  const address = c.address ? resolveLocaleText(c.address, locale) : null;
   const hours = c.hours ? resolveLocaleText(c.hours, locale) : null;
+  const branches = c.branches.map((b) => ({
+    name: resolveLocaleText(b.name, locale),
+    address: resolveLocaleText(b.address, locale),
+    mapUrl: b.mapUrl,
+  }));
 
   const rows: { label: string; value: ReactNode }[] = [
     ...(c.phone
-      ? [{ label: t('phone'), value: <a href={telHref(c.phone)} className={linkCls}>{c.phone}</a> }]
+      ? [
+          {
+            label: t('phone'),
+            value: (
+              <a href={telHref(c.phone)} className={linkCls}>
+                {c.phone}
+              </a>
+            ),
+          },
+        ]
       : []),
     {
       label: t('telegram'),
@@ -48,38 +61,48 @@ export default async function ContactsPage({ params }: Props) {
         </>
       ),
     },
-    ...(address
+    ...branches.map((b) => ({
+      label: b.name,
+      value: (
+        <>
+          {b.address}
+          {b.mapUrl && (
+            <a
+              href={b.mapUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={`${linkCls} block text-sm`}
+            >
+              {t('map')}
+            </a>
+          )}
+        </>
+      ),
+    })),
+    ...(hours ? [{ label: t('hours'), value: hours }] : []),
+    ...(c.email
       ? [
           {
-            label: t('address'),
+            label: t('email'),
             value: (
-              <>
-                {address}
-                {c.mapUrl && (
-                  <a
-                    href={c.mapUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`${linkCls} block text-sm`}
-                  >
-                    {t('map')}
-                  </a>
-                )}
-              </>
+              <a href={`mailto:${c.email}`} className={linkCls}>
+                {c.email}
+              </a>
             ),
           },
         ]
-      : []),
-    ...(hours ? [{ label: t('hours'), value: hours }] : []),
-    ...(c.email
-      ? [{ label: t('email'), value: <a href={`mailto:${c.email}`} className={linkCls}>{c.email}</a> }]
       : []),
     ...(c.instagram
       ? [
           {
             label: t('instagram'),
             value: (
-              <a href={instagramUrl(c.instagram)} target="_blank" rel="noreferrer" className={linkCls}>
+              <a
+                href={instagramUrl(c.instagram)}
+                target="_blank"
+                rel="noreferrer"
+                className={linkCls}
+              >
                 @{c.instagram.replace(/^@/, '')}
               </a>
             ),
@@ -88,20 +111,22 @@ export default async function ContactsPage({ params }: Props) {
       : []),
   ];
 
-  // A local-business record lets a search engine show the shop with its
-  // address and phone. It only makes sense once there is an address.
-  const storeLd = address
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Store',
-        name: SITE_NAME,
-        url: absoluteUrl(`/${locale}`),
-        address,
-        ...(c.phone ? { telephone: c.phone } : {}),
-        ...(c.email ? { email: c.email } : {}),
-        sameAs: [TELEGRAM_URL, ...(c.instagram ? [instagramUrl(c.instagram)] : [])],
-      }
-    : null;
+  // One local-business record per branch lets a search engine show each shop
+  // with its address and phone.
+  const sameAs = [TELEGRAM_URL, ...(c.instagram ? [instagramUrl(c.instagram)] : [])];
+  const storeLd =
+    branches.length > 0
+      ? branches.map((b) => ({
+          '@context': 'https://schema.org',
+          '@type': 'Store',
+          name: `${SITE_NAME} — ${b.name}`,
+          url: absoluteUrl(`/${locale}`),
+          address: b.address,
+          ...(c.phone ? { telephone: c.phone } : {}),
+          ...(c.email ? { email: c.email } : {}),
+          sameAs,
+        }))
+      : null;
 
   return (
     <div className="container max-w-3xl space-y-12 py-12">

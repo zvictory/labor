@@ -9,6 +9,11 @@ import { z } from 'zod';
 import { db } from '@/lib/db';
 import { normalizeUzPhone } from '@/lib/phone';
 import { getBot } from '@/lib/telegram/bot';
+import {
+  attributionColumns,
+  describeAttribution,
+  type Attribution,
+} from '@/lib/attribution/attribution';
 
 export const CONSULT_SOURCES = ['product', 'finder', 'contacts', 'corporate'] as const;
 export type ConsultSource = (typeof CONSULT_SOURCES)[number];
@@ -26,16 +31,14 @@ const optionalText = (max: number) =>
 
 export const consultInputSchema = z.object({
   name: optionalText(80),
-  phone: z
-    .string()
-    .transform((v, ctx) => {
-      const phone = normalizeUzPhone(v);
-      if (!phone) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'invalid_phone' });
-        return z.NEVER;
-      }
-      return phone;
-    }),
+  phone: z.string().transform((v, ctx) => {
+    const phone = normalizeUzPhone(v);
+    if (!phone) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'invalid_phone' });
+      return z.NEVER;
+    }
+    return phone;
+  }),
   // Corporate requests fold company, quantity and date into the message.
   message: optionalText(1600),
   productSlug: optionalText(200),
@@ -45,7 +48,13 @@ export const consultInputSchema = z.object({
 
 export type ConsultInput = z.infer<typeof consultInputSchema>;
 
-export type ConsultResult = { ok: true } | { ok: false; error: 'invalid_phone' | 'unexpected' };
+/**
+ * `eventId` is the id the request was reported to Meta under (lib/meta), so
+ * the browser's pixel sends its Lead with the same one; absent for a repeat.
+ */
+export type ConsultResult =
+  | { ok: true; eventId?: string }
+  | { ok: false; error: 'invalid_phone' | 'unexpected' };
 
 const escapeHtml = (value: string): string =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -58,7 +67,12 @@ const SOURCE_LABEL: Record<ConsultSource, string> = {
 };
 
 /** The admin chat message, in Russian like the order notifications. */
-export const consultAdminMessage = (input: ConsultInput, siteUrl: string): string => {
+export const consultAdminMessage = (
+  input: ConsultInput,
+  siteUrl: string,
+  attribution: Attribution | null = null,
+): string => {
+  const ad = attribution ? describeAttribution(attribution) : null;
   const lines = [
     '<b>Заявка на подбор аромата</b>',
     `Телефон: ${escapeHtml(input.phone)}`,
@@ -68,15 +82,20 @@ export const consultAdminMessage = (input: ConsultInput, siteUrl: string): strin
       ? `Аромат: ${escapeHtml(`${siteUrl}/ru/product/${input.productSlug}`)}`
       : null,
     `Откуда: ${SOURCE_LABEL[input.source]} · ${input.locale}`,
+    ad ? `Реклама: ${escapeHtml(ad)}` : null,
   ];
   return lines.filter(Boolean).join('\n');
 };
 
-const notifyAdmin = async (input: ConsultInput, siteUrl: string): Promise<void> => {
+const notifyAdmin = async (
+  input: ConsultInput,
+  siteUrl: string,
+  attribution: Attribution | null,
+): Promise<void> => {
   const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID?.trim();
   if (!chatId) return;
   try {
-    await getBot().api.sendMessage(chatId, consultAdminMessage(input, siteUrl), {
+    await getBot().api.sendMessage(chatId, consultAdminMessage(input, siteUrl, attribution), {
       parse_mode: 'HTML',
     });
   } catch (err) {
@@ -87,18 +106,20 @@ const notifyAdmin = async (input: ConsultInput, siteUrl: string): Promise<void> 
 /**
  * Store a validated request and tell the admin chat. A second request from the
  * same number within REPEAT_WINDOW_MS is a double submit or an impatient
- * visitor: it is acknowledged without a second row or a second ping.
+ * visitor: it is acknowledged without a second row or a second ping, and
+ * `stored` is false.
  */
 export const createConsultRequest = async (
   input: ConsultInput,
   siteUrl: string,
-): Promise<ConsultResult> => {
+  attribution: Attribution | null = null,
+): Promise<{ ok: true; stored: boolean } | Extract<ConsultResult, { ok: false }>> => {
   try {
     const recent = await db.consultRequest.findFirst({
       where: { phone: input.phone, createdAt: { gte: new Date(Date.now() - REPEAT_WINDOW_MS) } },
       select: { id: true },
     });
-    if (recent) return { ok: true };
+    if (recent) return { ok: true, stored: false };
 
     await db.consultRequest.create({
       data: {
@@ -108,6 +129,7 @@ export const createConsultRequest = async (
         productSlug: input.productSlug ?? null,
         source: input.source,
         locale: input.locale,
+        ...attributionColumns(attribution),
       },
     });
   } catch (err) {
@@ -115,6 +137,6 @@ export const createConsultRequest = async (
     return { ok: false, error: 'unexpected' };
   }
 
-  await notifyAdmin(input, siteUrl);
-  return { ok: true };
+  await notifyAdmin(input, siteUrl, attribution);
+  return { ok: true, stored: true };
 };

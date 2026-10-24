@@ -21,7 +21,7 @@ import {
   freeDeliveryThreshold,
 } from '@/lib/delivery/free-delivery';
 import { claimPromoUse, findPromo, isFirstOrder } from '@/lib/promo/promo';
-import { evaluatePromo } from '@/lib/promo/rules';
+import { evaluatePromo, fullSizeUnits } from '@/lib/promo/rules';
 import { findRegion } from '@/lib/delivery/uz-regions';
 // Cart module (built in parallel by another agent). ASSUMED exports:
 //   getCart(locale): Promise<CartDTO>   CartDTO { items: CartLineDTO[]; itemCount; subtotal }
@@ -32,6 +32,7 @@ import { findRegion } from '@/lib/delivery/uz-regions';
 // isSample.) If these names drift, this import is the single point to re-align.
 import { getCart, clearCart } from '@/lib/cart/cart';
 import { getCurrentUserId } from '@/lib/auth/session';
+import { attributionColumns, type Attribution } from '@/lib/attribution/attribution';
 
 // ── input validation ────────────────────────────────────────────────────────
 
@@ -83,11 +84,15 @@ function deliveryMethodFor(methodId: string): DeliveryMethod {
  * cart. Validates a non-empty cart and all required fields. Item unit prices are
  * snapshotted from the cart lines; the order total is
  * `subtotal - discount + deliveryFee`. A promo code is re-validated here and its
- * use is counted in the same transaction as the order.
+ * use is counted in the same transaction as the order. `opts.attribution` is
+ * the visitor's ad tags (lib/attribution), stored with the order.
  *
  * @throws OrderCreationError on empty cart, bad input, or unknown delivery method.
  */
-export async function createOrderFromCart(input: CreateOrderInput): Promise<Order> {
+export async function createOrderFromCart(
+  input: CreateOrderInput,
+  opts: { attribution?: Attribution | null } = {},
+): Promise<Order> {
   const parsed = createOrderInputSchema.parse(input);
 
   // Pickup needs no street; every other method requires a non-empty address.
@@ -123,7 +128,12 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
     const firstOrder = promo?.firstOrderOnly
       ? await isFirstOrder({ userId, phone: parsed.customer.phone })
       : true;
-    const check = evaluatePromo(promo, { subtotal, now: new Date(), isFirstOrder: firstOrder });
+    const check = evaluatePromo(promo, {
+      subtotal,
+      now: new Date(),
+      isFirstOrder: firstOrder,
+      unitPrices: fullSizeUnits(cart.items),
+    });
     if (!check.ok) throw new OrderCreationError(check.error);
     discount = check.discount;
   }
@@ -170,6 +180,7 @@ export async function createOrderFromCart(input: CreateOrderInput): Promise<Orde
             address: parsed.address.address || null,
             phone: parsed.customer.phone,
             deliveryMethod: parsed.deliveryMethod,
+            ...attributionColumns(opts.attribution ?? null),
             items: { create: itemsData },
           },
         });

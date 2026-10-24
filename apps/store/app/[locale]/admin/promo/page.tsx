@@ -15,7 +15,8 @@ type Props = {
 
 const ERRORS: Record<string, string> = {
   invalid_code: 'Код: 3–32 символа, латиница, цифры, _ и -.',
-  invalid_value: 'Размер скидки: целое число больше нуля, для процента — не больше 100.',
+  invalid_value:
+    'Размер скидки: целое число больше нуля, для процента — не больше 100, для «N+1» — от 2 до 10.',
   invalid_number: 'Мин. сумма и лимит — целые числа.',
   invalid_date: 'Неверная дата.',
   duplicate_code: 'Такой код уже есть.',
@@ -51,7 +52,9 @@ export default async function AdminPromoPage({ params, searchParams }: Props) {
         <h1 className="font-display text-ink dark:text-bone text-3xl">Промокоды</h1>
         <p className="text-ink-muted mt-1 max-w-2xl text-sm dark:text-stone-400">
           Скидка считается от суммы товаров, доставка не дисконтируется. «Только первый заказ» —
-          бонус к первой покупке: код примут, если у телефона или аккаунта ещё нет заказов.
+          бонус к первой покупке: код примут, если у телефона или аккаунта ещё нет заказов. «N+1» —
+          в каждой группе из N флаконов самый дешёвый бесплатно (для акции 2+1 размер 3); пробники
+          не считаются.
         </p>
       </header>
 
@@ -79,11 +82,12 @@ export default async function AdminPromoPage({ params, searchParams }: Props) {
           <select id="promo-kind" name="kind" className={fieldCls} defaultValue="percent">
             <option value="percent">Процент</option>
             <option value="fixed">Сумма, сум</option>
+            <option value="bundle">N+1, каждый N-й бесплатно</option>
           </select>
         </div>
         <div>
           <label htmlFor="promo-value" className={labelCls}>
-            Размер (% или сум)
+            Размер (%, сум или N)
           </label>
           <input id="promo-value" name="value" required inputMode="numeric" className={fieldCls} />
         </div>
@@ -171,7 +175,11 @@ export default async function AdminPromoPage({ params, searchParams }: Props) {
                     )}
                   </td>
                   <td className="text-ink dark:text-bone px-4 py-3 whitespace-nowrap">
-                    {c.kind === 'percent' ? `${c.value}%` : formatUzs(c.value, locale)}
+                    {c.kind === 'percent'
+                      ? `${c.value}%`
+                      : c.kind === 'bundle'
+                        ? `${c.value - 1}+1`
+                        : formatUzs(c.value, locale)}
                   </td>
                   <td className="text-ink-muted px-4 py-3 dark:text-stone-400">
                     {[

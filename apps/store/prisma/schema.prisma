@@ -273,6 +273,12 @@ model ConsultRequest {
   source      String // product | finder | contacts
   locale      String   @default("ru")
   status      String   @default("new") // new | done
+  // ad attribution snapshot (lib/attribution)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  fbclid      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -325,6 +331,12 @@ model Order {
   address        String?
   phone          String?
   deliveryMethod String?
+  // ad attribution snapshot: the tags of the visitor's latest tagged visit (lib/attribution)
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  utmContent     String?
+  fbclid         String?
   items          OrderItem[]
   payments       Payment[]
   webhookEvents  PaymentWebhookEvent[]
@@ -334,6 +346,7 @@ model Order {
   @@index([userId])
   @@index([status])
   @@index([paymentStatus])
+  @@index([createdAt])
 }
 
 model OrderItem {

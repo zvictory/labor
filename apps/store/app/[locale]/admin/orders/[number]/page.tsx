@@ -139,6 +139,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                   {order.deliveryMethodLabel}
                 </p>
               )}
+              <p className="text-ink-muted mt-2 text-xs dark:text-stone-400">
+                Источник: {order.adSource ?? 'прямой заход'}
+              </p>
             </div>
           </section>
 
