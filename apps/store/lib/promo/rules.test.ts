@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { discountFor, evaluatePromo, normalizePromoCode, type PromoRule } from './rules';
+import {
+  bundleDiscount,
+  discountFor,
+  evaluatePromo,
+  fullSizeUnits,
+  normalizePromoCode,
+  type PromoRule,
+} from './rules';
 
 const rule = (over: Partial<PromoRule> = {}): PromoRule => ({
   code: 'WELCOME10',
@@ -70,5 +77,50 @@ describe('evaluatePromo', () => {
     });
     // Unknown buyer (guest preview): passes now, checked again on the order.
     expect(evaluatePromo(first, { ...ctx, isFirstOrder: null }).ok).toBe(true);
+  });
+});
+
+describe('bundle (N+1)', () => {
+  it('frees the cheapest item of each full group of three', () => {
+    expect(bundleDiscount(3, [300_000, 100_000, 200_000])).toBe(100_000);
+    expect(bundleDiscount(3, [300_000, 300_000, 300_000, 100_000, 100_000, 100_000])).toBe(400_000);
+    expect(bundleDiscount(3, [300_000, 200_000, 100_000, 50_000])).toBe(100_000);
+  });
+
+  it('frees nothing for an incomplete group or an impossible size', () => {
+    expect(bundleDiscount(3, [300_000, 200_000])).toBe(0);
+    expect(bundleDiscount(1, [300_000])).toBe(0);
+    expect(bundleDiscount(11, Array(11).fill(1000))).toBe(0);
+  });
+
+  it('counts each unit of a line and never a sample', () => {
+    expect(
+      fullSizeUnits([
+        { unitPrice: 160_000, quantity: 2, isSample: false },
+        { unitPrice: 30_000, quantity: 3, isSample: true },
+        { unitPrice: 90_000, quantity: 1 },
+      ]),
+    ).toEqual([160_000, 160_000, 90_000]);
+  });
+
+  it('applies through evaluatePromo, and asks for more items when the group is not full', () => {
+    const twoPlusOne = rule({ code: '2PLUS1', kind: 'bundle', value: 3 });
+    expect(
+      evaluatePromo(twoPlusOne, {
+        subtotal: 410_000,
+        now,
+        isFirstOrder: true,
+        unitPrices: [160_000, 160_000, 90_000],
+      }),
+    ).toEqual({ ok: true, discount: 90_000 });
+    expect(
+      evaluatePromo(twoPlusOne, {
+        subtotal: 320_000,
+        now,
+        isFirstOrder: true,
+        unitPrices: [160_000, 160_000],
+      }),
+    ).toEqual({ ok: false, error: 'promo_bundle_short' });
+    expect(discountFor({ kind: 'bundle', value: 3 }, 410_000)).toBe(0);
   });
 });

@@ -3,12 +3,15 @@
 // Server actions for "help me choose" requests. A 'use server' module exports
 // only async functions; validation and storage live in lib/consult/request.ts.
 
+import { randomUUID } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import { requireStaff } from '@/lib/admin/guard';
 import { db } from '@/lib/db';
 import { SITE_URL } from '@/lib/seo';
+import { readAttribution } from '@/lib/attribution/server';
+import { reportLead } from '@/lib/meta/events';
 import { consultInputSchema, createConsultRequest, type ConsultResult } from './request';
 
 // On an error the typed values come back, because React resets a form after its
@@ -74,8 +77,20 @@ export async function submitConsultRequest(
     return { ok: false, error: phoneIssue ? 'invalid_phone' : 'unexpected', values };
   }
 
-  const result = await createConsultRequest(parsed.data, SITE_URL);
-  return result.ok ? result : { ...result, values };
+  const attribution = await readAttribution();
+  const result = await createConsultRequest(parsed.data, SITE_URL, attribution);
+  if (!result.ok) return { ...result, values };
+  if (!result.stored) return { ok: true };
+
+  const eventId = `lead-${randomUUID()}`;
+  await reportLead({
+    eventId,
+    phone: parsed.data.phone,
+    source: parsed.data.source,
+    locale: parsed.data.locale,
+    attribution,
+  });
+  return { ok: true, eventId };
 }
 
 const statusSchema = z.object({

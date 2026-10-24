@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 import { resolveLocaleText } from '@/lib/catalog/locale';
-import { STORE_CONTACT, telHref } from '@/lib/store-contact';
+import { STORE_CONTACT, instagramUrl, telHref } from '@/lib/store-contact';
 import { TELEGRAM_HANDLE, TELEGRAM_URL } from '@/lib/telegram';
 
 // Footer chrome ported from apps/web. Server-safe (useTranslations in RSC). All
@@ -15,7 +15,7 @@ export function SiteFooter({ locale }: { locale: string }) {
   const f = useTranslations('footer');
   const c = useTranslations('corporate');
   const href = (path: string) => `/${locale}${path}`;
-  const { phone, hours } = STORE_CONTACT;
+  const { phone, hours, instagram } = STORE_CONTACT;
 
   return (
     <footer className="border-border bg-bone mt-20 border-t py-12">
@@ -54,7 +54,7 @@ export function SiteFooter({ locale }: { locale: string }) {
             </li>
           </ul>
         </div>
-        {/* Phone and hours appear once they are filled in lib/store-contact.ts. */}
+        {/* Each line appears once it is filled in lib/store-contact.ts. */}
         <div>
           <h4 className="text-ink-muted mb-3 text-xs tracking-widest uppercase">
             {f('contactsTitle')}
@@ -80,6 +80,19 @@ export function SiteFooter({ locale }: { locale: string }) {
                 {TELEGRAM_HANDLE}
               </a>
             </li>
+            {instagram && (
+              <li>
+                Instagram{' '}
+                <a
+                  href={instagramUrl(instagram)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-ink font-medium hover:underline hover:underline-offset-4"
+                >
+                  @{instagram}
+                </a>
+              </li>
+            )}
             <li>
               <Link href={href('/contacts')} className="hover:underline hover:underline-offset-4">
                 {f('allContacts')}

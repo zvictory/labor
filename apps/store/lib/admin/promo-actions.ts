@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 import { requireStaff } from '@/lib/admin/guard';
 import { db } from '@/lib/db';
-import { normalizePromoCode } from '@/lib/promo/rules';
+import { BUNDLE_MAX, BUNDLE_MIN, normalizePromoCode } from '@/lib/promo/rules';
 
 const optionalInt = z
   .string()
@@ -34,7 +34,7 @@ const createSchema = z
       }
       return code;
     }),
-    kind: z.enum(['percent', 'fixed']),
+    kind: z.enum(['percent', 'fixed', 'bundle']),
     value: z.coerce.number().int().positive('invalid_value'),
     minSubtotal: optionalInt,
     maxUses: optionalInt,
@@ -48,7 +48,10 @@ const createSchema = z
       .refine((v) => v === null || !Number.isNaN(v.getTime()), 'invalid_date'),
     note: z.string().trim().max(200),
   })
-  .refine((v) => v.kind !== 'percent' || v.value <= 100, { message: 'invalid_value' });
+  .refine((v) => v.kind !== 'percent' || v.value <= 100, { message: 'invalid_value' })
+  .refine((v) => v.kind !== 'bundle' || (v.value >= BUNDLE_MIN && v.value <= BUNDLE_MAX), {
+    message: 'invalid_value',
+  });
 
 const base = (locale: string) => `/${locale}/admin/promo`;
 

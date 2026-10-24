@@ -8,6 +8,7 @@ import { requireStaff } from '@/lib/admin/guard';
 import { setConsultStatus } from '@/lib/consult/actions';
 import { telHref } from '@/lib/store-contact';
 import { db } from '@/lib/db';
+import { describeAttribution } from '@/lib/attribution/attribution';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -124,6 +125,9 @@ export default async function AdminRequestsPage({ params, searchParams }: Props)
                   </td>
                   <td className="text-ink-muted px-4 py-3 dark:text-stone-400">
                     {SOURCE_LABEL[r.source] ?? r.source} · {r.locale}
+                    {describeAttribution(r) && (
+                      <span className="block text-xs">Реклама: {describeAttribution(r)}</span>
+                    )}
                     {r.productSlug && (
                       <Link
                         href={`/${locale}/product/${r.productSlug}`}

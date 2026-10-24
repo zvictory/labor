@@ -8,7 +8,11 @@ const load = async (env: Record<string, string>) => {
   return import('./analytics');
 };
 
-type FakeWindow = { ym?: ReturnType<typeof vi.fn>; gtag?: ReturnType<typeof vi.fn> };
+type FakeWindow = {
+  ym?: ReturnType<typeof vi.fn>;
+  gtag?: ReturnType<typeof vi.fn>;
+  fbq?: ReturnType<typeof vi.fn>;
+};
 
 describe('analytics', () => {
   let win: FakeWindow & { setTimeout: typeof setTimeout };
@@ -79,5 +83,48 @@ describe('analytics', () => {
       throw new Error('blocked');
     });
     expect(() => a.trackPageView('https://laborparfum.com/ru/catalog')).not.toThrow();
+  });
+
+  it('sends Meta its standard event, with the order number as the event id', async () => {
+    const a = await load({ NEXT_PUBLIC_META_PIXEL_ID: '1234567890123456' });
+    win.fbq = vi.fn();
+
+    a.track('purchase', { transaction_id: 'L-7', value: 320000, currency: 'UZS' });
+    a.track('view_item', { item_id: 42, value: 160000, currency: 'UZS' });
+    a.track('generate_lead', { source: 'finder' }, { eventId: 'lead-9' });
+
+    expect(win.fbq).toHaveBeenNthCalledWith(
+      1,
+      'track',
+      'Purchase',
+      { value: 320000, currency: 'UZS', order_id: 'L-7' },
+      { eventID: 'L-7' },
+    );
+    expect(win.fbq).toHaveBeenNthCalledWith(
+      2,
+      'track',
+      'ViewContent',
+      { value: 160000, currency: 'UZS', content_ids: ['42'], content_type: 'product' },
+      {},
+    );
+    expect(win.fbq).toHaveBeenNthCalledWith(
+      3,
+      'track',
+      'Lead',
+      { content_category: 'finder' },
+      { eventID: 'lead-9' },
+    );
+  });
+
+  it('counts a client-side navigation as a Meta page view', async () => {
+    const a = await load({ NEXT_PUBLIC_META_PIXEL_ID: '1234567890123456' });
+    win.fbq = vi.fn();
+    a.trackPageView('https://laborparfum.com/ru/catalog');
+    expect(win.fbq).toHaveBeenCalledWith('track', 'PageView');
+  });
+
+  it('drops a pixel id that is not a number', async () => {
+    const a = await load({ NEXT_PUBLIC_META_PIXEL_ID: "1');alert(1)//" });
+    expect(a.META_PIXEL_ID).toBeNull();
   });
 });

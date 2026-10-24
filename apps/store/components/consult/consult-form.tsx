@@ -40,7 +40,7 @@ export function ConsultForm({
   );
 
   useEffect(() => {
-    if (state?.ok) track('generate_lead', { source });
+    if (state?.ok) track('generate_lead', { source }, { eventId: state.eventId });
   }, [state, source]);
 
   if (state?.ok) {

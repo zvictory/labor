@@ -14,6 +14,7 @@ import { AddToCart } from '@/components/cart/add-to-cart';
 import { ConsultForm } from '@/components/consult/consult-form';
 import { WishlistButton } from '@/components/wishlist/wishlist-button';
 import { ProductReviews } from '@/components/reviews/product-reviews';
+import { TrackEvent } from '@/components/analytics/track-event';
 import { getProductReviews } from '@/lib/reviews/reviews';
 import { getProduct } from '@/lib/catalog/products';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
@@ -70,6 +71,10 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="container space-y-16 py-10 md:py-16">
+      <TrackEvent
+        event="view_item"
+        params={{ item_id: String(product.id), value: product.price, currency: 'UZS' }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -230,7 +235,12 @@ export default async function ProductPage({ params }: Props) {
                 {tconsult('toggle')}
               </summary>
               <div className="pt-4">
-                <ConsultForm locale={locale} source="product" productSlug={product.slug} showHeading={false} />
+                <ConsultForm
+                  locale={locale}
+                  source="product"
+                  productSlug={product.slug}
+                  showHeading={false}
+                />
               </div>
             </details>
           </div>
