@@ -108,6 +108,12 @@ const COPY: Record<
 };
 
 const HEX = /^#[0-9a-f]{6}$/i;
+const CREAM = '#f4efe7';
+const INK = '#1b1712';
+
+/** `color` blended toward `base`, as CSS: accord colours are loud at full strength. */
+const mix = (color: string, pct: number, base: string = CREAM): string =>
+  `color-mix(in oklab, ${color} ${pct}%, ${base})`;
 
 /** Two colours for the hero, from the strongest accords; a warm neutral without them. */
 const moodColors = (accords: { color_hex: string; weight: number }[]): [string, string] => {
@@ -184,27 +190,43 @@ export default async function ProductStoryPage({ params }: Props) {
 
   return (
     <div className="pb-28 lg:pb-8">
-      {/* Hero: the perfume's own colours, from its two strongest accords. */}
+      {/* Hero: cream, with a halo of the perfume's own colour behind the
+          bottle, its name written large and faint, the bottle floating over
+          a soft floor shadow. */}
       <section
         className="relative overflow-hidden"
         style={{
-          background: `linear-gradient(135deg, ${moodA}55 0%, ${moodB}40 55%, #f4efe7 100%)`,
+          background: `radial-gradient(60% 70% at 72% 42%, ${mix(moodA, 38)} 0%, ${mix(moodB, 14)} 45%, ${CREAM} 75%)`,
         }}
       >
-        <div className="container grid items-center gap-8 py-10 md:grid-cols-[1.1fr_1fr] md:gap-16 md:py-20">
-          <div className="order-2 space-y-5 md:order-1">
+        <div className="relative container grid items-center gap-6 pt-8 pb-10 md:grid-cols-[1fr_1fr] md:gap-12 md:py-24">
+          {/* The name, set vertically along the right edge so it never sits
+              behind the copy; the bottle column paints over it. */}
+          <p
+            aria-hidden
+            className="font-display pointer-events-none absolute top-1/2 right-0 hidden -translate-y-1/2 rotate-180 text-[9rem] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap select-none [writing-mode:vertical-rl] md:block lg:text-[11rem]"
+            style={{ color: mix(moodA, 30, 'transparent') }}
+          >
+            {product.name}
+          </p>
+          <div className="order-2 space-y-6 md:order-1">
             <p className={`${eyebrowCls} text-ink-muted`}>
               {product.brand}
               {meta ? ` · ${meta}` : ''}
             </p>
-            <h1 className="font-display text-ink text-5xl leading-[0.95] tracking-[-0.03em] md:text-7xl">
+            <h1 className="font-display text-ink text-6xl leading-[0.9] tracking-[-0.04em] md:text-8xl">
               {product.name}
             </h1>
             {story && (
-              <p className="text-ink max-w-lg font-serif text-xl leading-snug md:text-2xl">
+              <p className="text-ink/90 max-w-md font-serif text-xl leading-snug italic md:text-2xl">
                 {resolveLocaleText(story.hook, locale)}
               </p>
             )}
+            <span
+              aria-hidden
+              className="block h-px w-16"
+              style={{ background: mix(moodA, 70, INK) }}
+            />
             {product.perfumers.length > 0 && (
               <p className="text-ink-muted text-sm">
                 {c.by}:{' '}
@@ -235,44 +257,56 @@ export default async function ProductStoryPage({ params }: Props) {
               <WishlistButton productId={product.id} variant="full" />
             </div>
           </div>
-          <div className="relative order-1 mx-auto aspect-square w-full max-w-[16rem] md:order-2 md:max-w-md">
-            {image && (
-              <Image
-                src={image}
-                alt={`${product.brand} ${product.name}`}
-                fill
-                priority
-                sizes="(min-width: 768px) 28rem, 16rem"
-                className="object-contain drop-shadow-[0_40px_40px_rgba(40,30,20,0.25)]"
-              />
-            )}
+
+          <div className="relative order-1 mx-auto w-full max-w-[15rem] md:order-2 md:max-w-sm">
+            <div className="relative aspect-[3/4] w-full motion-safe:[animation:story-float_7s_ease-in-out_infinite]">
+              {image && (
+                <Image
+                  src={image}
+                  alt={`${product.brand} ${product.name}`}
+                  fill
+                  priority
+                  sizes="(min-width: 768px) 24rem, 15rem"
+                  className="object-contain"
+                />
+              )}
+            </div>
+            {/* The floor the bottle stands over. */}
+            <span
+              aria-hidden
+              className="mx-auto -mt-2 block h-5 w-2/3 rounded-[50%] blur-md"
+              style={{ background: 'rgba(40,30,20,0.22)' }}
+            />
           </div>
         </div>
 
-        {/* The accords as one band of colour, widths by weight. */}
+        {/* The accords, softened to the page's cream, with their share. */}
         {accords.length > 0 && accordTotal > 0 && (
-          <div className="container pb-10">
-            <p className={`${eyebrowCls} text-ink-muted mb-3`}>{c.accords}</p>
-            <div className="flex h-3 w-full overflow-hidden rounded-full">
+          <div className="relative container pb-12">
+            <p className={`${eyebrowCls} text-ink-muted mb-4`}>{c.accords}</p>
+            <div className="flex h-1.5 w-full gap-1">
               {accords.map((a) => (
                 <span
                   key={a.name}
                   title={a.name}
                   style={{
                     width: `${(a.weight / accordTotal) * 100}%`,
-                    background: HEX.test(a.color_hex) ? a.color_hex : '#c8bba8',
+                    background: mix(HEX.test(a.color_hex) ? a.color_hex : '#c8bba8', 75, INK),
                   }}
                 />
               ))}
             </div>
-            <ul className="text-ink-muted mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs">
+            <ul className="mt-4 flex flex-wrap gap-2">
               {accords.map((a) => (
-                <li key={a.name} className="flex items-center gap-1.5">
-                  <span
-                    className="inline-block size-2 rounded-full"
-                    style={{ background: HEX.test(a.color_hex) ? a.color_hex : '#c8bba8' }}
-                  />
+                <li
+                  key={a.name}
+                  className="text-ink px-3 py-1 text-xs"
+                  style={{ background: mix(HEX.test(a.color_hex) ? a.color_hex : '#c8bba8', 22) }}
+                >
                   {a.name}
+                  <span className="text-ink-muted ml-1.5 font-mono tabular-nums">
+                    {Math.round((a.weight / accordTotal) * 100)}%
+                  </span>
                 </li>
               ))}
             </ul>
@@ -280,15 +314,20 @@ export default async function ProductStoryPage({ params }: Props) {
         )}
       </section>
 
-      {/* The story in our words, when there is one. */}
+      {/* The story in our words: a drop cap, a rule, then the quieter second voice. */}
       {story && story.chapters.length > 0 && (
-        <section className="container max-w-3xl space-y-6 py-16 md:py-24">
+        <section className="container max-w-2xl space-y-8 py-20 md:py-28">
+          <span
+            aria-hidden
+            className="block h-px w-16"
+            style={{ background: mix(moodA, 70, INK) }}
+          />
           {story.chapters.map((ch, i) => (
             <p
               key={i}
               className={
                 i === 0
-                  ? 'text-ink font-serif text-2xl leading-snug md:text-3xl'
+                  ? 'text-ink font-serif text-2xl leading-[1.45] md:text-[1.85rem] first-letter:float-left first-letter:mt-1 first-letter:mr-3 first-letter:font-display first-letter:text-7xl first-letter:leading-[0.8]'
                   : 'text-ink-muted text-lg leading-relaxed'
               }
             >
@@ -298,26 +337,33 @@ export default async function ProductStoryPage({ params }: Props) {
         </section>
       )}
 
-      {/* Top, heart and base as three moments of the day on the skin. */}
+      {/* Top, heart and base as three moments of the day on the skin, on one line. */}
       {hasJourney && (
-        <section className="bg-bone border-border border-y">
-          <div className="container space-y-10 py-16 md:py-24">
+        <section style={{ background: mix(moodA, 12) }}>
+          <div className="container space-y-12 py-20 md:py-28">
             <header className="max-w-2xl space-y-3">
               <h2 className={`${h2Cls} text-ink`}>{c.journey}</h2>
               <p className="text-ink-muted text-base">{c.journeyLead}</p>
             </header>
-            <ol className="grid gap-10 md:grid-cols-3 md:gap-6">
+            <ol className="relative grid gap-12 md:grid-cols-3 md:gap-8">
+              <span
+                aria-hidden
+                className="absolute top-[7px] right-0 left-0 hidden h-px md:block"
+                style={{ background: mix(moodA, 60, INK) }}
+              />
               {stages.map((stage, i) =>
                 stage.notes.length === 0 ? null : (
-                  <li
-                    key={c.stages[i]}
-                    className="relative space-y-4 md:border-l md:border-[var(--color-border)] md:pl-6"
-                  >
+                  <li key={c.stages[i]} className="relative space-y-5">
+                    <span
+                      aria-hidden
+                      className="relative block size-[15px] border-2"
+                      style={{ background: CREAM, borderColor: mix(moodA, 60, INK) }}
+                    />
                     <div>
-                      <p className={`${eyebrowCls} text-ink-muted`}>
-                        0{i + 1} · {c.stageTimes[i]}
-                      </p>
-                      <h3 className="font-display text-ink mt-1 text-2xl">{c.stages[i]}</h3>
+                      <p className={`${eyebrowCls} text-ink-muted`}>{c.stageTimes[i]}</p>
+                      <h3 className="font-display text-ink mt-1 text-3xl tracking-[-0.02em]">
+                        {c.stages[i]}
+                      </h3>
                     </div>
                     <div className="flex flex-wrap gap-x-2 gap-y-4">
                       {stage.notes.map((n) => (
@@ -350,10 +396,10 @@ export default async function ProductStoryPage({ params }: Props) {
                     className="grid grid-cols-[6rem_1fr_3rem] items-center gap-3 text-sm"
                   >
                     <span className="text-ink">{row.label}</span>
-                    <span className="bg-ink/10 h-2 overflow-hidden rounded-full">
+                    <span className="bg-ink/10 h-2 overflow-hidden">
                       <span
-                        className="block h-full rounded-full"
-                        style={{ width: `${row.value}%`, background: moodA }}
+                        className="block h-full"
+                        style={{ width: `${row.value}%`, background: mix(moodA, 60, INK) }}
                       />
                     </span>
                     <span className="text-ink-muted text-right font-mono text-xs tabular-nums">
@@ -375,9 +421,12 @@ export default async function ProductStoryPage({ params }: Props) {
                       {Array.from({ length: 10 }, (_, i) => (
                         <span
                           key={i}
-                          className="h-2 flex-1 rounded-full"
+                          className="h-2 flex-1"
                           style={{
-                            background: i < Math.round(Number(value)) ? moodA : 'rgba(0,0,0,0.08)',
+                            background:
+                              i < Math.round(Number(value))
+                                ? mix(moodA, 60, INK)
+                                : 'rgba(0,0,0,0.08)',
                           }}
                         />
                       ))}
