@@ -22,11 +22,18 @@ import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
 import type { Gender } from '@/lib/catalog/types';
 import { TELEGRAM_URL } from '@/lib/telegram';
 import { describeProduct } from '@/lib/catalog/product-description';
+import { getProductStory } from '@/lib/catalog/stories';
 import { jsonLdScript, pageMetadata, productJsonLd } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
 };
+
+const STORY_LINK = {
+  ru: 'История аромата',
+  uz: 'Atir hikoyasi',
+  en: 'The story of this perfume',
+} as const;
 
 // generateMetadata and the page both need the product. Prisma calls are not
 // deduplicated the way fetch() is, so share one query per request.
@@ -194,6 +201,15 @@ export default async function ProductPage({ params }: Props) {
           <p className="text-muted-foreground max-w-prose font-serif text-base leading-relaxed">
             {description}
           </p>
+
+          {getProductStory(product.slug) && (
+            <Link
+              href={`/${locale}/product/${product.slug}/story`}
+              className="text-foreground text-sm font-medium underline underline-offset-4"
+            >
+              {STORY_LINK[locale === 'uz' || locale === 'en' ? locale : 'ru']} →
+            </Link>
+          )}
 
           {/* The notes, as pictures — in place of the accord measures */}
           <OlfactivePyramidView notes={product.notes} locale={locale} />

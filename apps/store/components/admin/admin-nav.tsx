@@ -16,6 +16,7 @@ import {
   Send,
   Star,
   ChartColumn,
+  BellRing,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -41,6 +42,7 @@ export function AdminNav({ locale }: { locale: string }) {
     { href: `${base}/campaigns`, label: 'Кампании', icon: Megaphone },
     { href: `${base}/promo`, label: 'Промокоды', icon: TicketPercent },
     { href: `${base}/broadcast`, label: 'Рассылка', icon: Send },
+    { href: `${base}/reminders`, label: 'Напоминания', icon: BellRing },
   ];
 
   const isActive = (item: NavItem): boolean =>

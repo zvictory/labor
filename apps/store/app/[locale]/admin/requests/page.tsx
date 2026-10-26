@@ -27,6 +27,7 @@ const SOURCE_LABEL: Record<string, string> = {
   finder: 'Подбор',
   contacts: 'Контакты',
   corporate: 'Корпоративный',
+  launch: 'Лист ожидания',
 };
 
 function formatDate(date: Date): string {
