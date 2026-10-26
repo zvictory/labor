@@ -34,7 +34,7 @@ export interface OlfactivePyramidProps {
 // those beads carry the initial: a picture of nothing in particular teaches the
 // reader nothing and makes the row look uniform when it is not.
 
-function NoteBead({ note, locale }: { note: NoteItem; locale: string }) {
+export function NoteBead({ note, locale }: { note: NoteItem; locale: string }) {
   const picture = notePicture(note);
 
   return (
