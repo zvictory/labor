@@ -137,7 +137,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/product/${product.slug}/story`,
     title: product.brand ? `${product.name} — ${product.brand}` : product.name,
     description: story ? resolveLocaleText(story.hook, locale) : undefined,
-    images: product.images.length > 0 ? product.images.slice(0, 1) : [product.image],
+    images: story?.image
+      ? [story.image]
+      : product.images.length > 0
+        ? product.images.slice(0, 1)
+        : [product.image],
   });
 }
 
@@ -164,7 +168,7 @@ export default async function ProductStoryPage({ params }: Props) {
     { notes: product.notes.base },
   ];
   const hasJourney = stages.some((s) => s.notes.length > 0);
-  const image = product.images[0] ?? product.image;
+  const image = story?.image ?? product.images[0] ?? product.image;
   const meta = [
     product.concentration,
     product.release_year,

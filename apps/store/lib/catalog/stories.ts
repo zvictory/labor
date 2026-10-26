@@ -11,10 +11,16 @@ export interface ProductStory {
   hook: LocaleText;
   /** Two or three short paragraphs. */
   chapters: LocaleText[];
+  /**
+   * A bottle shot for the story's hero, on a transparent background, served
+   * from public/; the catalogue's first image is used without one.
+   */
+  image?: string;
 }
 
 export const PRODUCT_STORIES: Record<string, ProductStory> = {
   risvelium: {
+    image: '/stories/risvelium.png',
     hook: {
       ru: 'Аромат пробуждения: первый свет, цитрус и дерево.',
       uz: 'Uygʻonish hidi: ilk yorugʻlik, sitrus va yogʻoch.',
