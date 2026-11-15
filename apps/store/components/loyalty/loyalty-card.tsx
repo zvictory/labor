@@ -24,6 +24,8 @@ interface CardCopy {
   showAtTill: string;
   history: string;
   noHistory: string;
+  googleWallet: string;
+  walletError: string;
   kinds: Record<string, string>;
   settings: LoyaltySettingsCopy;
 }
@@ -40,6 +42,8 @@ const COPY: Record<Lang, CardCopy> = {
     expiring: '{amount} сгорят {date}',
     showAtTill: 'Покажите код на кассе в магазине Labor',
     history: 'История',
+    googleWallet: 'Добавить в Google Wallet',
+    walletError: 'Не удалось связаться с Google Wallet. Попробуйте позже.',
     noHistory: 'Пока пусто: бонусы начисляются после доставки заказа или покупки в магазине.',
     kinds: {
       earn: 'Начислено',
@@ -73,6 +77,8 @@ const COPY: Record<Lang, CardCopy> = {
     expiring: '{amount} {date} kuni yonadi',
     showAtTill: 'Labor doʻkonida kassada kodni koʻrsating',
     history: 'Tarix',
+    googleWallet: 'Google Wallet’ga qoʻshish',
+    walletError: 'Google Wallet bilan bogʻlanib boʻlmadi. Keyinroq urinib koʻring.',
     noHistory:
       'Hozircha boʻsh: bonus buyurtma yetkazilgach yoki doʻkondagi xariddan keyin yoziladi.',
     kinds: {
@@ -108,6 +114,8 @@ const COPY: Record<Lang, CardCopy> = {
     expiring: '{amount} expires on {date}',
     showAtTill: 'Show the code at the till in a Labor shop',
     history: 'History',
+    googleWallet: 'Add to Google Wallet',
+    walletError: 'Could not reach Google Wallet. Please try again later.',
     noHistory: 'Nothing yet: bonus comes after an order is delivered or a purchase in the shop.',
     kinds: {
       earn: 'Earned',
@@ -158,12 +166,17 @@ export async function LoyaltyCard({
   history,
   birthDate,
   consent,
+  googleWallet,
+  walletError,
 }: {
   locale: string;
   state: LoyaltyState;
   history: CardHistoryRow[];
   birthDate: Date | null;
   consent: boolean;
+  /** Show the "Add to Google Wallet" button (Google Wallet is configured). */
+  googleWallet: boolean;
+  walletError: boolean;
 }) {
   const copy = COPY[toLang(locale)];
   const qr = await QRCode.toString(state.cardNumber, {
@@ -234,6 +247,28 @@ export async function LoyaltyCard({
           </figcaption>
         </figure>
       </div>
+
+      {googleWallet && (
+        <div className="space-y-2">
+          {/* Google's own button, as its brand guidelines require: not redrawn. */}
+          <a
+            href={`/api/wallet/google/save?locale=${toLang(locale)}`}
+            className="inline-block"
+            aria-label={copy.googleWallet}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/wallet/google/add-${toLang(locale)}.svg`}
+              alt={copy.googleWallet}
+              height={48}
+              className="h-12 w-auto"
+            />
+          </a>
+          {walletError && (
+            <p className="text-xs text-red-700 dark:text-red-400">{copy.walletError}</p>
+          )}
+        </div>
+      )}
 
       <LoyaltySettings
         copy={copy.settings}

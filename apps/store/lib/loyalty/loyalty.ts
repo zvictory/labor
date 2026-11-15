@@ -180,17 +180,21 @@ export const recordOrderSpend = async (
  * Give back the bonus a canceled order used, once. A new lot: the customer gets
  * the full lifetime again rather than the remainder of the old one.
  */
-export const refundForOrder = async (tx: Tx, orderId: number, now: Date): Promise<number> => {
+export const refundForOrder = async (
+  tx: Tx,
+  orderId: number,
+  now: Date,
+): Promise<{ accountId: number; amount: number } | null> => {
   const spend = await tx.loyaltyEntry.findUnique({
     where: { orderId_kind: { orderId, kind: 'spend' } },
     select: { accountId: true, amount: true },
   });
-  if (!spend) return 0;
+  if (!spend) return null;
   const done = await tx.loyaltyEntry.findUnique({
     where: { orderId_kind: { orderId, kind: 'refund' } },
     select: { id: true },
   });
-  if (done) return 0;
+  if (done) return null;
   await tx.loyaltyEntry.create({
     data: {
       accountId: spend.accountId,
@@ -200,7 +204,7 @@ export const refundForOrder = async (tx: Tx, orderId: number, now: Date): Promis
       expiresAt: addDays(now, BONUS_LIFETIME_DAYS),
     },
   });
-  return -spend.amount;
+  return { accountId: spend.accountId, amount: -spend.amount };
 };
 
 /**
@@ -212,7 +216,7 @@ export const earnForOrder = async (
   tx: Tx,
   orderId: number,
   now: Date,
-): Promise<{ userId: number; amount: number; balance: number } | null> => {
+): Promise<{ userId: number; accountId: number; amount: number; balance: number } | null> => {
   const order = await tx.order.findUnique({
     where: { id: orderId },
     select: {
@@ -251,7 +255,7 @@ export const earnForOrder = async (
       expiresAt: addDays(now, BONUS_LIFETIME_DAYS),
     },
   });
-  return { userId, amount, balance: before.available + amount };
+  return { userId, accountId: account.id, amount, balance: before.available + amount };
 };
 
 // ── the counter ─────────────────────────────────────────────────────────────
@@ -343,6 +347,8 @@ export const adjustBalance = async (input: {
 
 export interface DailyRunResult {
   expiredLots: number;
+  /** Members whose ledger changed, for the Wallet cards to follow. */
+  changed: { accountId: number; reason: 'expire' | 'birthday' }[];
   expiredAmount: number;
   birthdays: number;
   /** Who to tell, after the writes are committed. */
@@ -357,7 +363,13 @@ export interface DailyRunResult {
  * soon" notices (each lot is announced once). Safe to run more than once a day.
  */
 export const runLoyaltyDay = async (now: Date = new Date()): Promise<DailyRunResult> => {
-  const result: DailyRunResult = { expiredLots: 0, expiredAmount: 0, birthdays: 0, notices: [] };
+  const result: DailyRunResult = {
+    expiredLots: 0,
+    expiredAmount: 0,
+    birthdays: 0,
+    notices: [],
+    changed: [],
+  };
 
   // Members with a lot that has expired or will within the notice window.
   const soon = addDays(now, EXPIRY_NOTICE_DAYS);
@@ -375,6 +387,9 @@ export const runLoyaltyDay = async (now: Date = new Date()): Promise<DailyRunRes
           data: { accountId, kind: 'expire', amount: -lot.remaining, lotId: lot.id },
         });
         result.expiredLots += 1;
+        if (!result.changed.some((c) => c.accountId === accountId)) {
+          result.changed.push({ accountId, reason: 'expire' });
+        }
         result.expiredAmount += lot.remaining;
       }
       const due = lotsExpiringSoon(state.lots, now).map((l) => l.id);
@@ -427,6 +442,7 @@ export const runLoyaltyDay = async (now: Date = new Date()): Promise<DailyRunRes
     });
     if (given > 0) {
       result.birthdays += 1;
+      result.changed.push({ accountId, reason: 'birthday' });
       result.notices.push({
         kind: 'birthday',
         userId: person.id,

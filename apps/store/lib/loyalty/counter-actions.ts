@@ -19,6 +19,7 @@ import {
   LoyaltyError,
 } from '@/lib/loyalty/loyalty';
 import { notifyEarned } from '@/lib/loyalty/notify';
+import { syncWalletPasses } from '@/lib/wallet/google/sync';
 import { parseCardNumber, type Tier } from '@/lib/loyalty/rules';
 
 export interface CounterMember {
@@ -98,6 +99,7 @@ export async function recordPurchase(
     if (account && result.earned > 0) {
       await notifyEarned(account.userId, result.earned, result.balance).catch(() => undefined);
     }
+    syncWalletPasses(parsed.data.accountId, result.earned > 0 ? 'earn' : 'spend');
     revalidatePath('/[locale]/admin/loyalty', 'page');
     return { ok: true, data: result };
   } catch (err) {

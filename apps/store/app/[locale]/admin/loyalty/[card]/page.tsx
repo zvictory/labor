@@ -5,7 +5,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { isAdmin, requireStaff } from '@/lib/admin/guard';
-import { AdjustForm, MessageForm } from '@/components/admin/loyalty/member-forms';
+import {
+  AdjustForm,
+  MessageForm,
+  WalletMessageForm,
+} from '@/components/admin/loyalty/member-forms';
+import { googleWalletEnabled } from '@/lib/wallet/google/config';
+import { db } from '@/lib/db';
 import { formatUzs } from '@/lib/money';
 import { getMemberByCard, KIND_LABEL } from '@/lib/loyalty/admin';
 import { getLoyaltyState } from '@/lib/loyalty/loyalty';
@@ -31,7 +37,13 @@ export default async function AdminLoyaltyMemberPage({ params }: Props) {
   if (!cardNumber) notFound();
   const member = await getMemberByCard(cardNumber);
   if (!member) notFound();
-  const state = await getLoyaltyState(member.id);
+  const [state, googlePass] = await Promise.all([
+    getLoyaltyState(member.id),
+    db.walletPass.findUnique({
+      where: { accountId_platform: { accountId: member.id, platform: 'google' } },
+      select: { hasUsers: true, lastSyncedAt: true, lastError: true },
+    }),
+  ]);
   const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
   const cellCls = 'px-4 py-2';
 
@@ -102,6 +114,19 @@ export default async function AdminLoyaltyMemberPage({ params }: Props) {
         <section className="space-y-3">
           <h2 className={sectionTitleCls}>Личное сообщение</h2>
           <MessageForm accountId={member.id} disabled={messageBlocked} />
+          {googleWalletEnabled() && (
+            <div className="space-y-2 pt-2">
+              <p className="text-ink-muted text-xs">
+                Google Wallet:{' '}
+                {googlePass
+                  ? `${googlePass.hasUsers ? 'карта сохранена' : 'ссылка открыта, сохранение не подтверждено'}${googlePass.lastError ? ' · последняя синхронизация с ошибкой' : ''}`
+                  : 'карты нет'}
+              </p>
+              {googlePass && member.marketingConsentAt && (
+                <WalletMessageForm accountId={member.id} />
+              )}
+            </div>
+          )}
           {member.messages.length > 0 && (
             <ul className="divide-border divide-y text-sm">
               {member.messages.map((m) => (

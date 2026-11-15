@@ -16,6 +16,9 @@ export interface StoreBranch {
   address: LocaleText;
   /** A 2GIS or Yandex Maps link to the branch. */
   mapUrl: string | null;
+  /** Where the branch is, for the Wallet card's "you are near" reminder. Not confirmed yet. */
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface StoreContact {
@@ -43,6 +46,8 @@ export const STORE_CONTACT: StoreContact = {
         en: '34 Shota Rustaveli St, Tashkent',
       },
       mapUrl: null,
+      latitude: null,
+      longitude: null,
     },
     {
       id: 'gulzor',
@@ -53,6 +58,8 @@ export const STORE_CONTACT: StoreContact = {
         en: '60A General Uzakov St, Tashkent',
       },
       mapUrl: null,
+      latitude: null,
+      longitude: null,
     },
   ],
   hours: null,

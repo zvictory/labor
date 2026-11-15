@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { runLoyaltyDay } from '@/lib/loyalty/loyalty';
 import { sendDailyNotices } from '@/lib/loyalty/notify';
+import { syncGooglePass } from '@/lib/wallet/google/sync';
 import { isCronAuthorized } from '@/lib/reminders/cron-auth';
 
 export const dynamic = 'force-dynamic';
@@ -18,6 +19,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
   const run = await runLoyaltyDay();
   const messages = await sendDailyNotices(run.notices);
+  for (const c of run.changed) await syncGooglePass(c.accountId, c.reason);
   const result = {
     expiredLots: run.expiredLots,
     expiredAmount: run.expiredAmount,
