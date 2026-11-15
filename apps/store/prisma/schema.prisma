@@ -192,22 +192,25 @@ model ProductImage {
 // ───────────────────────── Users & engagement ─────────────────────────
 
 model User {
-  id              Int            @id @default(autoincrement())
-  telegramId      BigInt?        @unique // SOURCE OF TRUTH for Telegram users
-  email           String?        @unique // may be synthesized tg_{id}@labor.local
-  phone           String?        @unique
+  id              Int             @id @default(autoincrement())
+  telegramId      BigInt?         @unique // SOURCE OF TRUTH for Telegram users
+  email           String?         @unique // may be synthesized tg_{id}@labor.local
+  phone           String?         @unique
   name            String?
-  preferredLocale String         @default("ru") // ru | uz | en
+  preferredLocale String          @default("ru") // ru | uz | en
   // Set by /stop in the bot: no more announcements (order updates still arrive).
-  broadcastOptOut Boolean        @default(false)
-  role            String         @default("customer") // customer | staff | admin
+  broadcastOptOut Boolean         @default(false)
+  // Day and month matter (the birthday bonus); the year is kept as given.
+  birthDate       DateTime?       @db.Date
+  role            String          @default("customer") // customer | staff | admin
   passwordHash    String? // staff only
+  loyalty         LoyaltyAccount? @relation("loyaltyMember")
   carts           Cart[]
   orders          Order[]
   votes           Vote[]
   wishlistItems   WishlistItem[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 /// Short-lived phone OTP challenges for customer sign-in. The plaintext code is
@@ -321,12 +324,14 @@ model Order {
   user               User?                 @relation(fields: [userId], references: [id])
   status             String                @default("pending") // pending|confirmed|paid|shipped|delivered|canceled
   paymentStatus      String                @default("unpaid") // unpaid|paid|refunded
-  total              Int                   @default(0) // UZS minor units: items - setDiscount - discount + delivery
+  total              Int                   @default(0) // UZS minor units: items - setDiscount - discount - bonusSpent + delivery
   // promo snapshot: the code as applied and the so'm it took off the items
   promoCode          String?
   discount           Int                   @default(0)
   // what complete discovery sets took off the items (lib/sets), apart from the promo
   setDiscount        Int                   @default(0)
+  // Labor bonus the customer paid part of the items with (lib/loyalty)
+  bonusSpent         Int                   @default(0)
   // a gift: the card text, and who receives it when that is not the buyer
   isGift             Boolean               @default(false)
   giftNote           String?
@@ -490,4 +495,68 @@ model CampaignProduct {
 
   @@unique([campaignId, productId])
   @@index([productId])
+}
+
+// ───────────────────────── Loyalty ─────────────────────────
+
+// A member of the Labor loyalty programme: one per customer account. The card
+// number is what the branch scans; tier and balance are worked out from the
+// entries (lib/loyalty/rules.ts), never stored.
+model LoyaltyAccount {
+  id                     Int              @id @default(autoincrement())
+  userId                 Int              @unique
+  user                   User             @relation("loyaltyMember", fields: [userId], references: [id], onDelete: Cascade)
+  cardNumber             String           @unique // 8 digits, the last a Luhn check digit
+  // Consent to promotional messages (Telegram, Wallet), apart from membership.
+  marketingConsentAt     DateTime?
+  marketingConsentSource String? // site | bot | branch
+  entries                LoyaltyEntry[]
+  messages               LoyaltyMessage[]
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+}
+
+// The bonus ledger. Rows are only ever added. Positive rows (earn, refund,
+// birthday, a positive adjust) are lots that expire; negative rows (spend,
+// expire, a negative adjust) use them up, soonest-expiring first.
+model LoyaltyEntry {
+  id             Int            @id @default(autoincrement())
+  accountId      Int
+  account        LoyaltyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  kind           String // earn | spend | refund | expire | adjust | birthday
+  amount         Int // so'm, signed
+  // What was paid for the purchase that earned this, in so'm (earn only); the
+  // tier counts these over the last 12 months.
+  purchaseAmount Int?
+  orderId        Int?
+  branch         String? // ocean | gulzor, for purchases at the counter
+  staffUserId    Int?
+  note           String?
+  expiresAt      DateTime? // positive rows only
+  // An expire row names the lot it closes.
+  lotId          Int?           @unique
+  // A birthday row names its year, so a member gets one a year.
+  birthdayYear   Int?
+  // When the "this bonus expires soon" message went out for this lot.
+  expiryNoticeAt DateTime?
+  createdAt      DateTime       @default(now())
+
+  @@unique([orderId, kind])
+  @@unique([accountId, birthdayYear])
+  @@index([accountId, createdAt])
+  @@index([expiresAt])
+}
+
+// A message staff sent to one member from the admin (Telegram today, Wallet later).
+model LoyaltyMessage {
+  id          Int            @id @default(autoincrement())
+  accountId   Int
+  account     LoyaltyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  channel     String // telegram
+  text        String
+  status      String // sent | failed | no_channel
+  staffUserId Int?
+  createdAt   DateTime       @default(now())
+
+  @@index([accountId, createdAt])
 }

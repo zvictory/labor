@@ -28,6 +28,7 @@ import { revalidatePath } from 'next/cache';
 
 import { db } from '@/lib/db';
 import { requireStaff } from '@/lib/admin/guard';
+import { earnForOrder, refundForOrder } from '@/lib/loyalty/loyalty';
 import {
   canTransition,
   type AdminOrderStatus,
@@ -76,15 +77,20 @@ async function applyTransition(
 
     const nextPaymentStatus = paymentStatusFor?.({ paymentStatus: order.paymentStatus });
 
+    const now = new Date();
     await tx.order.update({
       where: { id: order.id },
       data: {
         status: target,
-        ...(target === 'delivered' ? { deliveredAt: new Date() } : {}),
+        ...(target === 'delivered' ? { deliveredAt: now } : {}),
         ...(nextPaymentStatus ? { paymentStatus: nextPaymentStatus } : {}),
       },
     });
-    return { kind: 'updated' as const };
+    // The loyalty ledger moves with the status, in the same transaction: a
+    // delivered order earns its bonus, a canceled one gives back what it used.
+    const earned = target === 'delivered' ? await earnForOrder(tx, order.id, now) : null;
+    if (target === 'canceled') await refundForOrder(tx, order.id, now);
+    return { kind: 'updated' as const, earned };
   });
 
   if (outcome.kind === 'not_found') return { ok: false, error: 'not_found' };
@@ -98,6 +104,10 @@ async function applyTransition(
     try {
       const { notifyOrderStatus } = await import('@/lib/telegram/notify');
       await notifyOrderStatus(number, target);
+      if (outcome.earned) {
+        const { notifyEarned } = await import('@/lib/loyalty/notify');
+        await notifyEarned(outcome.earned.userId, outcome.earned.amount, outcome.earned.balance);
+      }
     } catch (err) {
       console.error('[admin/order-actions] notifyOrderStatus failed:', err);
     }

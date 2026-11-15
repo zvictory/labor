@@ -10,6 +10,8 @@
 import type { LocaleText } from '@/lib/catalog/types';
 
 export interface StoreBranch {
+  /** Stable key: the loyalty ledger records which branch a purchase was made in. */
+  id: string;
   name: LocaleText;
   address: LocaleText;
   /** A 2GIS or Yandex Maps link to the branch. */
@@ -33,6 +35,7 @@ export const STORE_CONTACT: StoreContact = {
   instagram: 'labor_parfum',
   branches: [
     {
+      id: 'ocean',
       name: { ru: 'Филиал Ocean', uz: 'Ocean filiali', en: 'Ocean branch' },
       address: {
         ru: 'Ташкент, ул. Шота Руставели, 34',
@@ -42,6 +45,7 @@ export const STORE_CONTACT: StoreContact = {
       mapUrl: null,
     },
     {
+      id: 'gulzor',
       name: { ru: 'Филиал Gulzor', uz: 'Gulzor filiali', en: 'Gulzor branch' },
       address: {
         ru: 'Ташкент, ул. Генерала Узакова, 60А',

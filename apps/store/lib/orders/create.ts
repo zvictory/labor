@@ -4,8 +4,8 @@
 //
 //   new Order  → status 'pending', paymentStatus 'unpaid'
 //   Order.number is the PUBLIC id Payme/Click reference (lib/orders/number.ts)
-//   Order.total = items subtotal - set discount - promo discount + delivery price
-//                 (integer UZS / so'm)
+//   Order.total = items subtotal - set discount - promo discount - bonus + delivery
+//                 price (integer UZS / so'm)
 //
 // Item prices are snapshotted from the cart lines (unitPrice), NOT re-read from
 // the live Product, so a later price change never alters a placed order.
@@ -26,6 +26,7 @@ import { evaluatePromo, fullSizeUnits } from '@/lib/promo/rules';
 import { findRegion } from '@/lib/delivery/uz-regions';
 import { normalizeUzPhone } from '@/lib/phone';
 import { GIFT_NOTE_MAX } from '@/lib/checkout/gift';
+import { bonusForOrder, recordOrderSpend } from '@/lib/loyalty/loyalty';
 // Cart module (built in parallel by another agent). ASSUMED exports:
 //   getCart(locale): Promise<CartDTO>   CartDTO { items: CartLineDTO[]; itemCount; subtotal }
 //   clearCart(): Promise<void>
@@ -56,6 +57,9 @@ export const createOrderInputSchema = z.object({
   userId: z.number().int().positive().optional(),
   // Checked again here whatever the checkout preview said.
   promoCode: z.string().trim().max(64).optional(),
+  // Pay part of the items with Labor bonus: as much as the 30% limit and the
+  // balance allow. Members only; not together with a promo code.
+  useBonus: z.boolean().optional(),
   // A gift: the card text and, when it goes to someone else, who receives it.
   gift: z
     .object({
@@ -137,6 +141,13 @@ export async function createOrderFromCart(
 
   const method = deliveryMethodFor(parsed.deliveryMethod);
 
+  if (parsed.useBonus && parsed.promoCode) {
+    throw new OrderCreationError('bonus_with_promo');
+  }
+  if (parsed.useBonus && !userId) {
+    throw new OrderCreationError('bonus_needs_account');
+  }
+
   // Recompute the lines from their snapshots rather than trusting cart.subtotal,
   // so the persisted total is internally consistent with the OrderItems. What
   // the discovery sets take off comes first; a promo code works on what is left.
@@ -162,9 +173,9 @@ export async function createOrderFromCart(
 
   // baseFee is the flat fee; courier `quoted` methods would refine it via a live
   // quote (lib/delivery/yandex.ts) — not wired yet. The free-delivery threshold
-  // is measured on the items after the discount.
+  // is measured on the items after the discount; bonus is a way of paying, so
+  // it does not move an order below the threshold.
   const deliveryFee = feeAfterThreshold(method, subtotal - discount, freeDeliveryThreshold());
-  const total = subtotal - discount + deliveryFee;
 
   const itemsData = cart.items.map((line) => ({
     productId: line.productId,
@@ -186,7 +197,15 @@ export async function createOrderFromCart(
         if (promo && discount > 0 && !(await claimPromoUse(tx, promo.id))) {
           throw new OrderCreationError('promo_used_up');
         }
-        return tx.order.create({
+        // The bonus is worked out here, under the member's lock, so two orders
+        // placed at once cannot use the same balance.
+        const bonus =
+          parsed.useBonus && userId
+            ? await bonusForOrder(tx, { userId, itemsTotal: subtotal, now: new Date() })
+            : null;
+        const bonusSpent = bonus?.amount ?? 0;
+        const total = subtotal - discount - bonusSpent + deliveryFee;
+        const created = await tx.order.create({
           data: {
             number,
             // Session user (or explicit override); guest orders carry undefined
@@ -198,6 +217,7 @@ export async function createOrderFromCart(
             promoCode: promo && discount > 0 ? promo.code : null,
             discount,
             setDiscount,
+            bonusSpent,
             isGift: gift !== undefined,
             giftNote: gift?.note || null,
             giftRecipientName: gift?.recipientName || null,
@@ -211,6 +231,14 @@ export async function createOrderFromCart(
             items: { create: itemsData },
           },
         });
+        if (bonus && bonusSpent > 0) {
+          await recordOrderSpend(tx, {
+            accountId: bonus.accountId,
+            orderId: created.id,
+            amount: bonusSpent,
+          });
+        }
+        return created;
       });
 
       // Cart consumed — clear it so a refresh doesn't re-order. Best-effort:
