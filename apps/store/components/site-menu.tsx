@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { useHydrated } from '@/lib/use-hydrated';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ export function SiteMenu({
   openLabel,
   closeLabel,
 }: {
-  items: { href: string; label: string }[];
+  items: { href: string; label: string; icon?: ReactNode }[];
   openLabel: string;
   closeLabel: string;
 }) {
@@ -58,7 +58,7 @@ export function SiteMenu({
           />
           <nav
             id="site-menu"
-            className="border-border bg-background absolute inset-x-0 top-full border-b 2xl:hidden"
+            className="border-border bg-background absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b md:max-h-[calc(100dvh-5rem)] 2xl:hidden"
           >
             <ul className="container">
               {items.map((item) => (
@@ -66,8 +66,9 @@ export function SiteMenu({
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="flex min-h-12 items-center text-base font-medium"
+                    className="flex min-h-12 items-center gap-3 text-base font-medium [&>svg]:size-4"
                   >
+                    {item.icon}
                     {item.label}
                   </Link>
                 </li>

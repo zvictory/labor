@@ -1,6 +1,20 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Heart, Search, ShoppingBag, UserRound } from 'lucide-react';
+import {
+  BookOpen,
+  Boxes,
+  FlaskConical,
+  Gift,
+  Heart,
+  MapPin,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Tag,
+  Truck,
+  UserRound,
+  type LucideIcon,
+} from 'lucide-react';
 
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
@@ -24,24 +38,26 @@ export function SiteHeader({
   const b = useTranslations('brand');
   const href = (path: string) => `/${locale}${path}`;
 
+  const item = (path: string, label: string, Icon: LucideIcon) => ({
+    href: href(path),
+    label,
+    icon: <Icon aria-hidden="true" className="size-3.5 shrink-0" strokeWidth={1.45} />,
+  });
   const pages = [
-    { href: href('/catalog'), label: t('shop') },
-    { href: href('/brands'), label: t('brands') },
-    { href: href('/notes'), label: t('notes') },
-    { href: href('/perfumers'), label: t('perfumers') },
-    // 450 lines of working guided search that nothing linked to.
-    { href: href('/find-your-perfume'), label: t('finder') },
-    { href: href('/delivery'), label: t('delivery') },
+    item('/catalog', t('shop'), ShoppingBag),
+    item('/brands', t('brands'), Boxes),
+    item('/notes', t('notes'), BookOpen),
+    item('/perfumers', t('perfumers'), FlaskConical),
+    item('/find-your-perfume', t('finder'), Sparkles),
+    item('/delivery', t('delivery'), Truck),
   ];
-  // The inline xl nav has no room for a seventh label: in Uzbek it already
-  // pushes the logo off centre. Contacts sit in the menu and the footer.
   const menuPages = [
-    { href: account.href, label: account.label },
+    { ...item('', account.label, UserRound), href: account.href },
     ...pages,
-    { href: href('/sets'), label: t('sets') },
-    { href: href('/campaigns'), label: t('campaigns') },
-    { href: href('/wishlist'), label: t('wishlist') },
-    { href: href('/contacts'), label: t('contacts') },
+    item('/sets', t('sets'), Gift),
+    item('/campaigns', t('campaigns'), Tag),
+    item('/wishlist', t('wishlist'), Heart),
+    item('/contacts', t('contacts'), MapPin),
   ];
 
   // Solid, not frosted. A translucent blurred bar is the one texture the shop
@@ -52,13 +68,14 @@ export function SiteHeader({
       <div className="grid h-16 grid-cols-[88px_1fr_88px] items-center px-1.5 md:container md:h-20 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
         <div className="flex items-center 2xl:gap-4">
           <SiteMenu items={menuPages} openLabel={t('menu')} closeLabel={t('closeMenu')} />
-          <nav className="hidden items-center gap-4 text-xs font-medium 2xl:flex">
+          <nav className="hidden items-center gap-3 text-xs font-medium 2xl:flex">
             {pages.map((page) => (
               <Link
                 key={page.href}
                 href={page.href}
-                className="hover:underline hover:underline-offset-4"
+                className="inline-flex min-h-11 items-center gap-1 whitespace-nowrap hover:underline hover:underline-offset-4"
               >
+                {page.icon}
                 {page.label}
               </Link>
             ))}
