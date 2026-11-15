@@ -181,6 +181,52 @@ Raqamlar taklif; qarorni Zafar qabul qiladi:
 - Har bir Wallet xabaridan keyingi 7 kundagi buyurtmalar: `/admin/sources` da `utm_source=wallet` boʻyicha.
 - Bonus majburiyati va yonish ulushi.
 
+## 4a. Geozona, mikrolokatsiya, shaxsiy xabar va tugʻilgan kun
+
+Zafarning qoʻshimcha talablari (15-noyabr): filial yonida push, telefon raqami boʻyicha har bir karta egasiga shaxsiy xabar, keshbek balansi doim koʻrinib turishi, tugʻilgan kun bonusi va eslatmasi. Har biri qaysi platformada qanday ishlashi:
+
+| Talab                          | Apple Wallet                                                                                                                                                                                    | Google Wallet                                                          | Telegram (bugun)                                             |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Filial yonida eslatma          | Karta qulf ekranida oʻzi chiqadi: `locations` (10 tagacha manzil, har biriga oʻz matni) va `beacons` (10 tagacha iBeacon). Bu ovozli bildirishnoma emas, karta taklifi; tizim oʻzi qaror qiladi | Geozona FAQ'da "qoʻllab-quvvatlanadi" deyilgan; amalda sinab koʻriladi | Joylashuvni bilmaydi                                         |
+| Bitta odamga shaxsiy xabar     | Reklama matni taqiqlangan. Faqat ovozsiz "Siz uchun taklif" maydoni yoki bonus oʻzgarishi xabari                                                                                                | Bitta kartaga `TEXT_AND_NOTIFY`, sutkasiga koʻpi bilan 3 ta            | Erkin matn; **1-bosqichda qilindi** (admin'da aʼzo sahifasi) |
+| Keshbek balansi doim koʻrinadi | Kartaning old tomonida; yozilganda "Bonusingiz: %@" xabari                                                                                                                                      | `loyaltyPoints`, yangilanganda bildirishnoma                           | `/karta` buyrugʻi; **qilindi**                               |
+| Tugʻilgan kun bonusi           | Balans oʻzgarishi xabari (ruxsat etilgan)                                                                                                                                                       | Xabar va balans yangilanishi                                           | Bot xabari; **qilindi**                                      |
+
+**Mikrolokatsiya (doʻkon ichida) uchun tavsiyalar:**
+
+1. **iBeacon (BLE mayoq):**
+   - Har bir filialga 1–2 ta arzon mayoq, kassa yoniga.
+   - Mijoz doʻkonga kirganda Apple Wallet kartasi qulf ekranida chiqadi. Kassada kartani qidirib oʻtirmaydi, QR darhol tayyor.
+   - Google Wallet mayoqlarni ishlatmaydi; Android uchun bu foyda yoʻq.
+2. **Joylashuv matni:**
+   - Har bir filialning `locations` yozuviga oʻz matni: "Ocean filiali yonidasiz: kartangizda 48 000 soʻm bonus".
+   - Balans oʻzgarganda karta yangilanadi, matn ham yangi balansni koʻrsatadi.
+3. **NFC (telefonni tekkizish):**
+   - Apple'da `nfc` maydoni bor; Apple'ning alohida ruxsati va mos kassa qurilmasi kerak.
+   - Google'da Smart Tap ham alohida roʻyxatdan oʻtishni talab qiladi.
+   - Tavsiya: avval QR; NFC filiallar oqimi yoʻlga qoʻyilgandan keyin.
+4. **Doʻkondagi tadbirlar:**
+   - Parfyumer bilan uchrashuv yoki yangi kolleksiya taqdimoti uchun alohida `eventTicket` kartasi (sana va manzil bilan).
+   - Tadbir kuni qulf ekranida oʻzi chiqadi.
+   - Bu Apple qoidalariga toʻliq mos keladigan "tirik" eslatma.
+5. **Google Wallet modullari:**
+   - Kartaning pastki qismiga 10 tagacha bosiladigan modul qoʻyish mumkin: "Yangi kelganlar", "Namunalar toʻplamlari", "Yaqin filial".
+   - Ular ovozsiz yangilanadi va limitga kirmaydi.
+
+**Rasmiy cheklovlar oʻzgarmaydi:**
+
+- Apple'da reklama matnini bildirishnoma qilib yuborish taqiqlangan.
+- Google'da sutkasiga 3 ta bildirishnoma.
+- Shuning uchun shaxsiy reklama xabarining asosiy kanali Telegram (erkin matn) va Google Wallet boʻladi.
+- Apple Wallet kartasi esa "doim koʻrinadigan balans + filial yonida chiqish + muhim oʻzgarishlar" vazifasini bajaradi.
+
+**1-bosqichda allaqachon qilinganlar:**
+
+- Tugʻilgan kun sanasi (kabinetda bir marta yoki kassada) va har yili avtomatik bonus.
+- Bonus yonishidan 14 kun oldin ogohlantirish.
+- Admin'da aʼzoga shaxsiy Telegram xabari (faqat rozilik bilan, tarix saqlanadi).
+- Botda `/karta`.
+
 ## 5. Xavflar
 
 | Xavf                                                  | Nima qilamiz                                                                                          |
