@@ -75,6 +75,13 @@ function statusBody(order: OrderDTO, status: string, locale: BotLocale): string 
   ].join('\n');
 }
 
+/// For the admin chat only: a gift is packed differently, so it says so.
+function adminGiftLine(order: OrderDTO): string {
+  if (!order.gift) return '';
+  const who = [order.gift.recipientName, order.gift.recipientPhone].filter(Boolean).join(', ');
+  return `\n🎁 Подарок${who ? `: ${escapeHtml(who)}` : ''}`;
+}
+
 function adminChatId(): string | null {
   const id = process.env.TELEGRAM_ADMIN_CHAT_ID?.trim();
   return id ? id : null;
@@ -101,7 +108,7 @@ export async function notifyOrderPaid(orderNumber: string): Promise<void> {
     }
 
     if (adminId) {
-      await send(adminId, paidBody(orderRu, 'ru'));
+      await send(adminId, paidBody(orderRu, 'ru') + adminGiftLine(orderRu));
     }
   } catch (err) {
     console.error('[telegram/notify] notifyOrderPaid failed:', err);
@@ -142,7 +149,7 @@ export async function notifyOrderStatus(orderNumber: string, status: string): Pr
     }
 
     if (adminId) {
-      await send(adminId, statusBody(orderRu, status, 'ru'));
+      await send(adminId, statusBody(orderRu, status, 'ru') + adminGiftLine(orderRu));
     }
   } catch (err) {
     console.error('[telegram/notify] notifyOrderStatus failed:', err);

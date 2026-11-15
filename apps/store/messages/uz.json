@@ -14,6 +14,7 @@
     "finder": "Tanlash",
     "delivery": "Yetkazish",
     "campaigns": "Aksiyalar",
+    "sets": "Namunalar toʻplamlari",
     "wishlist": "Sevimlilar",
     "cart": "Savat",
     "account": "Kabinet",
@@ -200,7 +201,8 @@
     "promoCode": "Promokod",
     "apply": "Qoʻllash",
     "freeDeliveryLeft": "Yana {amount} — va Toshkent boʻylab yetkazib berish bepul",
-    "freeDeliveryReached": "Toshkent boʻylab yetkazib berish — bepul"
+    "freeDeliveryReached": "Toshkent boʻylab yetkazib berish — bepul",
+    "set": "«{title}» toʻplami"
   },
   "checkout": {
     "title": "Buyurtma rasmiylashtirish",
@@ -242,7 +244,8 @@
     "title": "Labor kampaniyalari",
     "empty": "Hozircha faol kampaniya yoʻq",
     "itemsCount": "{count} ta atir",
-    "until": "{date} gacha"
+    "until": "{date} gacha",
+    "setFact": "toʻplam {price}"
   },
   "catalog": {
     "title": "Katalog",
@@ -302,7 +305,18 @@
     "open": "Batafsil",
     "back": "Barcha aksiyalar",
     "products": "Aksiya atirlari",
-    "metaDescription": "Labor aksiyalari va toʻplamlari: chegirmadagi atirlar va mavsumiy toʻplamlar."
+    "metaDescription": "Labor aksiyalari va toʻplamlari: chegirmadagi atirlar va mavsumiy toʻplamlar.",
+    "setEyebrow": "Namunalar toʻplami",
+    "setSize": "{count} ta namuna, har biri {ml} ml",
+    "setSaving": "{amount} tejaysiz",
+    "setAdd": "Toʻplamni savatga",
+    "setNote": "Toʻplam narxi savatda undagi har bir atirning namunasi turganda amal qiladi."
+  },
+  "sets": {
+    "title": "Namunalar toʻplamlari",
+    "lead": "Bir nechta atir 2 ml dan, bitta narxda: 10 ml tanlashdan oldin ular bilan tanishing.",
+    "empty": "Hozircha toʻplam yoʻq. Istalgan atirning namunasini uning sahifasidan qoʻshish mumkin.",
+    "metaDescription": "Labor namunalar toʻplamlari: bir nechta atir 2 ml dan, bitta narxda, Oʻzbekiston boʻylab yetkazib berish bilan."
   },
   "tg": {
     "tabs": {

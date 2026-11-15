@@ -24,6 +24,7 @@ export interface AdminOrderRow {
   total: number;
   phone: string | null;
   itemsCount: number;
+  isGift: boolean;
   createdAt: Date;
 }
 
@@ -92,6 +93,7 @@ export async function listAdminOrders(
         paymentStatus: true,
         total: true,
         phone: true,
+        isGift: true,
         createdAt: true,
         items: { select: { quantity: true } },
       },
@@ -105,6 +107,7 @@ export async function listAdminOrders(
     total: r.total,
     phone: r.phone,
     itemsCount: r.items.reduce((sum, it) => sum + it.quantity, 0),
+    isGift: r.isGift,
     createdAt: r.createdAt,
   }));
 
@@ -145,7 +148,8 @@ export interface AdminOrderDetail {
   subtotal: number; // sum of line totals (integer so'm)
   discount: number; // promo discount on the items
   promoCode: string | null;
-  deliveryFee: number; // total - subtotal + discount (clamped >= 0)
+  setDiscount: number; // what complete discovery sets took off
+  deliveryFee: number; // total - subtotal + discount + setDiscount (clamped >= 0)
   total: number;
   // customer / shipping snapshot
   customerName: string | null;
@@ -155,6 +159,8 @@ export interface AdminOrderDetail {
   address: string | null;
   deliveryMethod: string | null;
   deliveryMethodLabel: string | null; // localized, from the registry
+  /** A gift: the card text and, when it goes to someone else, who receives it. */
+  gift: { note: string | null; recipientName: string | null; recipientPhone: string | null } | null;
   /** Ad tags the order came with (lib/attribution), or null for a direct visit. */
   adSource: string | null;
   items: AdminOrderLine[];
@@ -179,6 +185,11 @@ export async function getAdminOrder(
       total: true,
       discount: true,
       promoCode: true,
+      setDiscount: true,
+      isGift: true,
+      giftNote: true,
+      giftRecipientName: true,
+      giftRecipientPhone: true,
       region: true,
       district: true,
       address: true,
@@ -226,7 +237,7 @@ export async function getAdminOrder(
   }));
 
   const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
-  const deliveryFee = Math.max(0, order.total - subtotal + order.discount);
+  const deliveryFee = Math.max(0, order.total - subtotal + order.discount + order.setDiscount);
 
   const method = order.deliveryMethod ? getDeliveryMethod(order.deliveryMethod) : undefined;
   const deliveryMethodLabel = method ? resolveLocaleText(method.label, locale) : null;
@@ -238,6 +249,7 @@ export async function getAdminOrder(
     subtotal,
     discount: order.discount,
     promoCode: order.promoCode,
+    setDiscount: order.setDiscount,
     deliveryFee,
     total: order.total,
     customerName: order.user?.name ?? null,
@@ -247,6 +259,13 @@ export async function getAdminOrder(
     address: order.address,
     deliveryMethod: order.deliveryMethod,
     deliveryMethodLabel,
+    gift: order.isGift
+      ? {
+          note: order.giftNote,
+          recipientName: order.giftRecipientName,
+          recipientPhone: order.giftRecipientPhone,
+        }
+      : null,
     adSource: describeAttribution(order),
     items,
     payments: order.payments.map((p) => ({

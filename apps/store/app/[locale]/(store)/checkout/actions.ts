@@ -13,7 +13,7 @@ import { redirect } from 'next/navigation';
 
 import { getCurrentUserId } from '@/lib/auth/session';
 import { readAttribution } from '@/lib/attribution/server';
-import { readCart } from '@/lib/cart/cart';
+import { cartItemsTotal, readCart } from '@/lib/cart/cart';
 import { reportPurchase } from '@/lib/meta/events';
 import { createOrderFromCart, OrderCreationError } from '@/lib/orders/create';
 import { findPromo, isFirstOrder } from '@/lib/promo/promo';
@@ -35,6 +35,8 @@ export interface PlaceOrderInput {
   deliveryMethod: string;
   payment: PaymentChoice;
   promoCode?: string;
+  /** Present when the order is a gift. */
+  gift?: { note: string; recipientName: string; recipientPhone: string };
 }
 
 export interface PlaceOrderResult {
@@ -65,6 +67,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
         },
         deliveryMethod: input.deliveryMethod,
         promoCode: input.promoCode || undefined,
+        gift: input.gift,
         // userId is resolved from the Auth.js session inside createOrderFromCart;
         // guests (no session) still place orders, tracked by phone.
       },
@@ -109,7 +112,8 @@ export async function previewPromoAction(code: string, locale: Locale): Promise<
       readCart(locale),
       getCurrentUserId(),
     ]);
-    const subtotal = cart.items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+    // The same base as lib/orders/create.ts: the items after the discovery sets.
+    const subtotal = cartItemsTotal(cart);
     const firstOrder = promo?.firstOrderOnly
       ? userId
         ? await isFirstOrder({ userId })

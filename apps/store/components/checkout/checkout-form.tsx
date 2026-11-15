@@ -22,6 +22,8 @@ import { formatUzs } from '@/lib/money';
 import { formatUzPhone, normalizeUzPhone } from '@/lib/phone';
 import { useHydrated } from '@/lib/use-hydrated';
 import type { CartLineDTO } from '@/lib/cart/cart';
+import { GIFT_NOTE_MAX } from '@/lib/checkout/gift';
+import type { AppliedSet } from '@/lib/sets/rules';
 import type { Locale } from '@/lib/catalog/locale';
 import {
   placeOrderAction,
@@ -65,6 +67,16 @@ export interface CheckoutCopy {
   promoRemove: string;
   subtotalLabel: string;
   discountLabel: string;
+  /** A discovery set's row in the totals; `{title}` is the set's name. */
+  setLine: string;
+  gift: string;
+  giftToggle: string;
+  giftNote: string;
+  giftNoteHint: string;
+  giftRecipientName: string;
+  giftRecipientPhone: string;
+  giftRecipientHint: string;
+  giftNoPrices: string;
   /** `{amount}` is replaced with what is left to reach free delivery. */
   freeDeliveryLeft: string;
   freeDeliveryReached: string;
@@ -75,6 +87,9 @@ interface Props {
   locale: Locale;
   items: CartLineDTO[];
   subtotal: number;
+  /** The discovery sets the samples complete, and what they take off together. */
+  sets: AppliedSet[];
+  setDiscount: number;
   copy: CheckoutCopy;
   /** Items total from which the Tashkent courier is free; null when off. */
   freeDeliveryFrom: number | null;
@@ -87,7 +102,8 @@ interface Props {
 
 // A field that brings up the on-screen keyboard when it takes focus.
 const opensKeyboard = (el: EventTarget): boolean =>
-  el instanceof HTMLInputElement && el.type !== 'radio';
+  el instanceof HTMLTextAreaElement ||
+  (el instanceof HTMLInputElement && el.type !== 'radio' && el.type !== 'checkbox');
 
 const PAYMENT_OPTIONS: { id: PaymentChoice; key: 'payme' | 'click' | 'cod' }[] = [
   { id: 'payme', key: 'payme' },
@@ -109,6 +125,8 @@ export function CheckoutForm({
   locale,
   items,
   subtotal,
+  sets,
+  setDiscount,
   copy,
   freeDeliveryFrom,
   trustLine,
@@ -131,6 +149,11 @@ export function CheckoutForm({
   const [promo, setPromo] = useState<{ code: string; discount: number } | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [isPromoPending, startPromoTransition] = useTransition();
+  const [isGift, setIsGift] = useState(false);
+  const [giftNote, setGiftNote] = useState('');
+  const [giftName, setGiftName] = useState('');
+  const [giftPhone, setGiftPhone] = useState('');
+  const [giftPhoneError, setGiftPhoneError] = useState(false);
   // A field's error shows once the customer has left it, or has tried to send
   // the order; not while they are still on their way to it.
   const [touched, setTouched] = useState<ReadonlySet<CheckoutField>>(new Set());
@@ -163,10 +186,11 @@ export function CheckoutForm({
   const districts = region?.districts ?? [];
   const methods = useMemo(() => availableMethodsForRegion(regionName || null), [regionName]);
 
-  // Same arithmetic as lib/orders/create.ts: the discount comes off the items,
-  // and the free-delivery threshold is measured on what is left.
+  // Same arithmetic as lib/orders/create.ts: the sets and then the promo code
+  // come off the items, and the free-delivery threshold is measured on what is
+  // left.
   const discount = promo?.discount ?? 0;
-  const itemsTotal = subtotal - discount;
+  const itemsTotal = subtotal - setDiscount - discount;
   const feeFor = (m: { id: string; baseFee: number }) =>
     feeAfterThreshold(m, itemsTotal, freeDeliveryFrom);
   const selectedMethod = methods.find((m) => m.id === deliveryMethod);
@@ -254,6 +278,17 @@ export function CheckoutForm({
       return;
     }
 
+    // A recipient's number is optional; a wrong one would send the courier's
+    // call nowhere.
+    const recipientPhone = giftPhone.trim();
+    if (isGift && recipientPhone && normalizeUzPhone(recipientPhone) === null) {
+      setGiftPhoneError(true);
+      const target = formRef.current?.querySelector<HTMLElement>('#co-gift-phone');
+      target?.scrollIntoView({ block: 'center' });
+      target?.focus({ preventScroll: true });
+      return;
+    }
+
     const input: PlaceOrderInput = {
       locale,
       name: name.trim(),
@@ -264,6 +299,15 @@ export function CheckoutForm({
       deliveryMethod,
       payment,
       promoCode: promo?.code,
+      ...(isGift
+        ? {
+            gift: {
+              note: giftNote.trim(),
+              recipientName: giftName.trim(),
+              recipientPhone: normalizeUzPhone(recipientPhone) ?? '',
+            },
+          }
+        : {}),
     };
 
     startTransition(async () => {
@@ -507,6 +551,96 @@ export function CheckoutForm({
           </div>
         </section>
 
+        {/* Gift */}
+        <section className="space-y-4">
+          <h2 className={sectionTitleCls}>{copy.gift}</h2>
+          <label className="text-ink dark:text-bone flex cursor-pointer items-center gap-3 text-sm">
+            <input
+              type="checkbox"
+              className="accent-brass h-4 w-4"
+              checked={isGift}
+              onChange={(e) => setIsGift(e.target.checked)}
+            />
+            {copy.giftToggle}
+          </label>
+          {isGift && (
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="co-gift-note" className={labelCls}>
+                  {copy.giftNote}
+                </label>
+                <textarea
+                  id="co-gift-note"
+                  rows={3}
+                  maxLength={GIFT_NOTE_MAX}
+                  className={`${fieldCls()} h-auto py-2.5`}
+                  value={giftNote}
+                  onChange={(e) => setGiftNote(e.target.value)}
+                  aria-describedby="co-gift-note-hint"
+                />
+                <p
+                  id="co-gift-note-hint"
+                  className="text-ink-muted mt-1.5 flex justify-between gap-4 text-xs dark:text-stone-400"
+                >
+                  <span>{copy.giftNoteHint}</span>
+                  <span className="font-mono tabular-nums">
+                    {giftNote.length}/{GIFT_NOTE_MAX}
+                  </span>
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="co-gift-name" className={labelCls}>
+                    {copy.giftRecipientName}
+                  </label>
+                  <input
+                    id="co-gift-name"
+                    className={fieldCls()}
+                    value={giftName}
+                    onChange={(e) => setGiftName(e.target.value)}
+                    maxLength={80}
+                    autoComplete="off"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="co-gift-phone" className={labelCls}>
+                    {copy.giftRecipientPhone}
+                  </label>
+                  <input
+                    id="co-gift-phone"
+                    className={
+                      fieldBaseCls +
+                      (giftPhoneError ? 'border-red-600' : 'border-border focus:border-foreground')
+                    }
+                    value={giftPhone}
+                    onChange={(e) => {
+                      setGiftPhone(e.target.value);
+                      setGiftPhoneError(false);
+                    }}
+                    onBlur={() => setGiftPhone(formatUzPhone(giftPhone))}
+                    inputMode="tel"
+                    autoComplete="off"
+                    placeholder="+998 90 123 45 67"
+                    aria-invalid={giftPhoneError || undefined}
+                    aria-describedby={giftPhoneError ? 'co-gift-phone-error' : 'co-gift-hint'}
+                  />
+                  {giftPhoneError && (
+                    <p
+                      id="co-gift-phone-error"
+                      className="mt-1.5 text-xs text-red-700 dark:text-red-400"
+                    >
+                      {copy.errors.gift_phone_invalid}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <p id="co-gift-hint" className="text-ink-muted text-xs dark:text-stone-400">
+                {copy.giftRecipientHint} {copy.giftNoPrices}
+              </p>
+            </div>
+          )}
+        </section>
+
         {/* Promo code */}
         <section className="space-y-3">
           <h2 className={sectionTitleCls}>{copy.promo}</h2>
@@ -616,6 +750,18 @@ export function CheckoutForm({
               <span>{copy.subtotalLabel}</span>
               <span>{formatUzs(subtotal, locale)}</span>
             </div>
+            {sets.map((set) => (
+              <div
+                key={set.slug}
+                className="flex items-center justify-between gap-4 text-sm text-green-700 dark:text-green-400"
+              >
+                <span>
+                  {copy.setLine.replace('{title}', set.title)}
+                  {set.count > 1 ? ` × ${set.count}` : ''}
+                </span>
+                <span className="whitespace-nowrap">−{formatUzs(set.saving, locale)}</span>
+              </div>
+            ))}
             {discount > 0 && (
               <div className="flex items-center justify-between text-sm text-green-700 dark:text-green-400">
                 <span>{copy.discountLabel}</span>

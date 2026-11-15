@@ -315,37 +315,44 @@ model CartItem {
 }
 
 model Order {
-  id               Int                   @id @default(autoincrement())
-  number           String                @unique
-  userId           Int?
-  user             User?                 @relation(fields: [userId], references: [id])
-  status           String                @default("pending") // pending|confirmed|paid|shipped|delivered|canceled
-  paymentStatus    String                @default("unpaid") // unpaid|paid|refunded
-  total            Int                   @default(0) // UZS minor units: items - discount + delivery
+  id                 Int                   @id @default(autoincrement())
+  number             String                @unique
+  userId             Int?
+  user               User?                 @relation(fields: [userId], references: [id])
+  status             String                @default("pending") // pending|confirmed|paid|shipped|delivered|canceled
+  paymentStatus      String                @default("unpaid") // unpaid|paid|refunded
+  total              Int                   @default(0) // UZS minor units: items - setDiscount - discount + delivery
   // promo snapshot: the code as applied and the so'm it took off the items
-  promoCode        String?
-  discount         Int                   @default(0)
+  promoCode          String?
+  discount           Int                   @default(0)
+  // what complete discovery sets took off the items (lib/sets), apart from the promo
+  setDiscount        Int                   @default(0)
+  // a gift: the card text, and who receives it when that is not the buyer
+  isGift             Boolean               @default(false)
+  giftNote           String?
+  giftRecipientName  String?
+  giftRecipientPhone String?
   // shipping snapshot
-  region           String?
-  district         String?
-  address          String?
-  phone            String?
-  deliveryMethod   String?
+  region             String?
+  district           String?
+  address            String?
+  phone              String?
+  deliveryMethod     String?
   // ad attribution snapshot: the tags of the visitor's latest tagged visit (lib/attribution)
-  utmSource        String?
-  utmMedium        String?
-  utmCampaign      String?
-  utmContent       String?
-  fbclid           String?
+  utmSource          String?
+  utmMedium          String?
+  utmCampaign        String?
+  utmContent         String?
+  fbclid             String?
   // set when the order moves to 'delivered'; the refill reminder counts from it
-  deliveredAt      DateTime?
+  deliveredAt        DateTime?
   // when the "time to refill" Telegram reminder went out (lib/reminders/refill.ts)
-  refillReminderAt DateTime?
-  items            OrderItem[]
-  payments         Payment[]
-  webhookEvents    PaymentWebhookEvent[]
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
+  refillReminderAt   DateTime?
+  items              OrderItem[]
+  payments           Payment[]
+  webhookEvents      PaymentWebhookEvent[]
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 
   @@index([userId])
   @@index([status])
@@ -445,6 +452,9 @@ model Campaign {
   body      Json?
   ctaLabel  Json?
   heroImage String?
+  // A discovery set: with a price here, one 2 ml sample of each of the
+  // campaign's products costs this much together (lib/sets). Null = no set.
+  setPrice  Int?
   active    Boolean           @default(true)
   startsAt  DateTime?
   endsAt    DateTime?

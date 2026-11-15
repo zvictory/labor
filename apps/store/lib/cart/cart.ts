@@ -6,8 +6,10 @@
 // findCart). When an authenticated session lands later, any guest cart is
 // merged into the user's — see mergeGuestCartIntoUser().
 //
-// Money is integer UZS minor units. A sample/decant is priced at ~8% of the
-// product price (matches the prototype): see lineUnitPrice().
+// Money is integer UZS minor units. A sample is priced by its volume, the
+// listed decant by the product: see lineUnitPrice(). Samples that complete a
+// discovery set cost the set price together; the difference is `setDiscount`
+// (lib/sets).
 
 import { randomUUID } from 'node:crypto';
 import { cookies } from 'next/headers';
@@ -16,7 +18,9 @@ import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
-import { PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
+import { SAMPLE_PRICE } from '@/lib/money';
+import { applySampleSets, SET_MAX_ITEMS, SET_MIN_ITEMS, type AppliedSet } from '@/lib/sets/rules';
+import { liveSampleSets } from '@/lib/sets/sets';
 
 export const CART_COOKIE = 'labor_cart';
 
@@ -33,7 +37,7 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 /** Unit price for a cart line: the 2 ml tester, or the listed decant. */
 export const lineUnitPrice = (product: { price: number }, isSample: boolean): number =>
-  isSample ? SAMPLE_ML * PRICE_PER_ML : product.price;
+  isSample ? SAMPLE_PRICE : product.price;
 
 // ── cookie helpers ──────────────────────────────────────────────────────────
 
@@ -75,8 +79,16 @@ export interface CartLineDTO {
 export interface CartDTO {
   items: CartLineDTO[];
   itemCount: number;
+  /** The lines added up, before any set. */
   subtotal: number;
+  /** The discovery sets the samples complete, and what they take off together. */
+  sets: AppliedSet[];
+  setDiscount: number;
 }
+
+/** What the items cost: the lines less the discovery sets, before a promo code. */
+export const cartItemsTotal = (cart: Pick<CartDTO, 'subtotal' | 'setDiscount'>): number =>
+  cart.subtotal - cart.setDiscount;
 
 // ── cart row shape (items + product + first image) ───────────────────────────
 
@@ -287,12 +299,24 @@ const toCartLine = (item: CartWithItems['items'][number], locale: string): CartL
   };
 };
 
-const projectCart = (cart: CartWithItems, locale: string): CartDTO => {
+const projectCart = async (cart: CartWithItems, locale: string): Promise<CartDTO> => {
   const items = cart.items.map((item) => toCartLine(item, locale));
+  const samples = items.filter((line) => line.isSample);
+  // No set is smaller than SET_MIN_ITEMS perfumes: most carts skip the query.
+  const { discount, applied } =
+    samples.length >= SET_MIN_ITEMS
+      ? applySampleSets(
+          await liveSampleSets(locale),
+          new Map(samples.map((line) => [line.productId, line.quantity])),
+          SAMPLE_PRICE,
+        )
+      : { discount: 0, applied: [] };
   return {
     items,
     itemCount: items.reduce((sum, line) => sum + line.quantity, 0),
     subtotal: items.reduce((sum, line) => sum + line.lineTotal, 0),
+    sets: applied,
+    setDiscount: discount,
   };
 };
 
@@ -307,7 +331,7 @@ export const getCart = async (locale: string): Promise<CartDTO> => {
   return projectCart(cart, locale);
 };
 
-const EMPTY_CART: CartDTO = { items: [], itemCount: 0, subtotal: 0 };
+const EMPTY_CART: CartDTO = { items: [], itemCount: 0, subtotal: 0, sets: [], setDiscount: 0 };
 
 /**
  * The caller's existing cart, or null. Never creates one and never sets the
@@ -388,6 +412,28 @@ export const addItem = async (
   }
 
   return getCart('ru');
+};
+
+/**
+ * Add one 2 ml sample of each product in one go: a discovery set, or the scent
+ * quiz's picks. Products that are unknown or not on sale are left out.
+ */
+export const addSamples = async (productIds: readonly number[]): Promise<void> => {
+  const ids = [...new Set(productIds)].slice(0, SET_MAX_ITEMS);
+  const products = await db.product.findMany({
+    where: { id: { in: ids }, status: 'active' },
+    select: { id: true },
+  });
+  if (products.length === 0) return;
+
+  const cart = await getOrCreateCart();
+  for (const { id } of products) {
+    await db.cartItem.upsert({
+      where: { cartId_productId_isSample: { cartId: cart.id, productId: id, isSample: true } },
+      create: { cartId: cart.id, productId: id, isSample: true, quantity: 1 },
+      update: { quantity: { increment: 1 } },
+    });
+  }
 };
 
 /**

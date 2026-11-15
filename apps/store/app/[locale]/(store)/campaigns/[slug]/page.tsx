@@ -6,8 +6,10 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { formatCampaignDate } from '@/components/campaigns/campaign-card';
+import { AddSamples } from '@/components/cart/add-to-cart';
 import { TaxonomyProductGrid } from '@/components/catalog/taxonomy-product-grid';
 import { getLiveCampaign } from '@/lib/catalog/campaigns';
+import { formatUzs, SAMPLE_ML } from '@/lib/money';
 import { pageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ locale: Locale; slug: string }> };
@@ -73,6 +75,31 @@ export default async function CampaignPage({ params }: Props) {
           </p>
         )}
       </header>
+
+      {/* The discovery set: one sample of each perfume below, for one price. */}
+      {campaign.set && (
+        <section className="border-foreground flex flex-col gap-6 border p-6 md:flex-row md:items-end md:justify-between md:p-8">
+          <div className="space-y-3">
+            <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
+              {tc('setEyebrow')} ·{' '}
+              {tc('setSize', { count: campaign.set.productIds.length, ml: SAMPLE_ML })}
+            </p>
+            <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <span className="font-mono text-3xl font-semibold tabular-nums md:text-4xl">
+                {formatUzs(campaign.set.price, locale)}
+              </span>
+              <s className="text-muted-foreground font-mono text-base tabular-nums">
+                {formatUzs(campaign.set.regular, locale)}
+              </s>
+              <span className="text-label font-mono tracking-[0.12em] uppercase">
+                {tc('setSaving', { amount: formatUzs(campaign.set.saving, locale) })}
+              </span>
+            </p>
+            <p className="text-muted-foreground max-w-prose text-sm">{tc('setNote')}</p>
+          </div>
+          <AddSamples productIds={campaign.set.productIds} locale={locale} label={tc('setAdd')} />
+        </section>
+      )}
 
       {campaign.slides.length > 0 && (
         <section className="grid gap-6 md:grid-cols-2">

@@ -105,6 +105,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
 
           <div className="border-border dark:bg-ink/30 space-y-2 rounded-xl border bg-stone-50/50 p-5">
             <Row label="Сумма" value={formatUzs(order.subtotal, locale)} />
+            {order.setDiscount > 0 && (
+              <Row label="Наборы пробников" value={`−${formatUzs(order.setDiscount, locale)}`} />
+            )}
             {order.discount > 0 && (
               <Row
                 label={`Скидка${order.promoCode ? ` · ${order.promoCode}` : ''}`}
@@ -124,6 +127,32 @@ export default async function AdminOrderDetailPage({ params }: Props) {
 
         {/* Customer + payments */}
         <aside className="space-y-8">
+          {/* What staff do differently for a gift, where they pack the order. */}
+          {order.gift && (
+            <section className="space-y-2">
+              <h2 className={sectionTitleCls}>Подарок</h2>
+              <div className="border-brass bg-brass/5 space-y-2 rounded-xl border p-4 text-sm">
+                <p className="text-ink dark:text-bone font-medium">Чек с ценами не вкладывать.</p>
+                {(order.gift.recipientName || order.gift.recipientPhone) && (
+                  <p className="text-ink dark:text-bone">
+                    Получатель:{' '}
+                    {[order.gift.recipientName, order.gift.recipientPhone]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </p>
+                )}
+                {order.gift.note ? (
+                  <p className="text-ink dark:text-bone">
+                    Открытка:{' '}
+                    <span className="font-serif whitespace-pre-line italic">{order.gift.note}</span>
+                  </p>
+                ) : (
+                  <p className="text-ink-muted dark:text-stone-400">Без открытки.</p>
+                )}
+              </div>
+            </section>
+          )}
+
           <section className="space-y-2">
             <h2 className={sectionTitleCls}>Клиент</h2>
             <div className="border-border rounded-xl border p-4 text-sm">

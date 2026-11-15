@@ -121,6 +121,8 @@ export const loadDueReminders = async (now: Date = new Date()): Promise<RefillCa
     where: {
       status: 'delivered',
       refillReminderAt: null,
+      // A gift went to someone else: the buyer has nothing to refill.
+      isGift: false,
       deliveredAt: {
         lte: new Date(now.getTime() - days * DAY_MS),
         gte: new Date(now.getTime() - (days + REFILL_WINDOW_DAYS) * DAY_MS),

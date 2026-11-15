@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState, useTransition } from 'react';
 import { ArrowLeft, Check, RotateCcw, ShoppingBag, Award, Quote } from 'lucide-react';
-import { formatRating, formatUzs } from '@/lib/money';
+import { formatRating, formatUzs, SAMPLE_PRICE } from '@/lib/money';
+import { AddSamples } from '@/components/cart/add-to-cart';
 import { emitCartUpdated } from '@/components/cart/cart-events';
 
 export interface FinderCandidate {
@@ -51,6 +52,10 @@ export interface FinderCopy {
   resultsEyebrow: string;
   resultsTitle: string;
   resultsIntro: string;
+  /** Above the results: the same perfumes as 2 ml samples, added together. */
+  samplesLead: string;
+  /** `{price}` is replaced with what the samples cost. */
+  samplesCta: string;
   match: string;
   view: string;
   add: string;
@@ -899,6 +904,22 @@ export function PerfumeFinderClient({ locale, candidates, copy }: Props) {
                     {copy.resultsTitle}
                   </h3>
                 </div>
+
+                {/* The cheapest way to act on the answer: all of them at 2 ml. */}
+                {results.length > 1 && (
+                  <div className="border-border flex flex-col gap-4 border p-5 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-ink-muted max-w-md text-sm">{copy.samplesLead}</p>
+                    <AddSamples
+                      productIds={results.map((r) => r.product.id)}
+                      locale={locale}
+                      variant="outline"
+                      label={copy.samplesCta.replace(
+                        '{price}',
+                        formatUzs(results.length * SAMPLE_PRICE, locale),
+                      )}
+                    />
+                  </div>
+                )}
 
                 <div className="grid gap-6">
                   {results.map(({ product, score, reasons, breakdown, sommelierNote }, index) => (

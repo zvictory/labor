@@ -9,6 +9,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { MoneyInput } from '@/components/admin/money-input';
 import { upsertCampaign, type UpsertCampaignInput } from '@/lib/admin/campaign-actions';
 import type { LocaleText } from '@/lib/catalog/types';
 
@@ -27,6 +28,7 @@ export interface CampaignFormInitial {
   body: LocaleText | null;
   ctaLabel: LocaleText | null;
   heroImage: string | null;
+  setPrice: number | null;
   active: boolean;
   startsAt: string | null; // yyyy-mm-dd
   endsAt: string | null;
@@ -64,6 +66,7 @@ export function CampaignForm({ locale, initial }: Props) {
   const [body, setBody] = useState<LocaleState>(toLocaleState(initial?.body));
   const [cta, setCta] = useState<LocaleState>(toLocaleState(initial?.ctaLabel));
   const [heroImage, setHeroImage] = useState(initial?.heroImage ?? '');
+  const [setPrice, setSetPrice] = useState<number | null>(initial?.setPrice ?? null);
   const [active, setActive] = useState(initial?.active ?? true);
   const [startsAt, setStartsAt] = useState(initial?.startsAt ?? '');
   const [endsAt, setEndsAt] = useState(initial?.endsAt ?? '');
@@ -140,6 +143,7 @@ export function CampaignForm({ locale, initial }: Props) {
       body: buildLocaleText(body),
       ctaLabel: buildLocaleText(cta),
       heroImage: heroImage.trim(),
+      setPrice,
       active,
       startsAt: startsAt ? new Date(startsAt) : null,
       endsAt: endsAt ? new Date(endsAt) : null,
@@ -211,6 +215,27 @@ export function CampaignForm({ locale, initial }: Props) {
       <section className="space-y-3">
         <h2 className={sectionTitleCls}>Кнопка (CTA)</h2>
         {localeRow('cf-cta', cta, setCta)}
+      </section>
+
+      <section className="space-y-3">
+        <h2 className={sectionTitleCls}>Набор пробников</h2>
+        <div className="sm:max-w-xs">
+          <label htmlFor="cf-set-price" className={labelCls}>
+            Цена набора
+          </label>
+          <MoneyInput
+            id="cf-set-price"
+            className={fieldCls}
+            value={setPrice}
+            onChange={setSetPrice}
+            placeholder="85 000"
+          />
+        </div>
+        <p className="text-ink-muted max-w-prose text-xs dark:text-stone-400">
+          С ценой кампания продаёт набор: по одному пробнику 2 мл каждого её аромата (от 2 до 10)
+          вместе стоят столько. Цена должна быть ниже суммы пробников по отдельности. Пусто — набора
+          нет.
+        </p>
       </section>
 
       <section className="space-y-4">

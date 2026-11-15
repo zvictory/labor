@@ -94,6 +94,8 @@ export interface AdminCampaignProduct {
   price: number; // integer so'm
   image: string | null;
   position: number;
+  /** On sale; a set with a perfume off sale is not sold (lib/sets). */
+  active: boolean;
 }
 
 export interface AdminCampaignDetail {
@@ -104,6 +106,8 @@ export interface AdminCampaignDetail {
   body: LocaleText | null;
   ctaLabel: LocaleText | null;
   heroImage: string | null;
+  /** Discovery set price in so'm, or null when the campaign sells no set. */
+  setPrice: number | null;
   active: boolean;
   startsAt: Date | null;
   endsAt: Date | null;
@@ -123,6 +127,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
       body: true,
       ctaLabel: true,
       heroImage: true,
+      setPrice: true,
       active: true,
       startsAt: true,
       endsAt: true,
@@ -148,6 +153,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
               slug: true,
               name: true,
               price: true,
+              status: true,
               images: { orderBy: { position: 'asc' }, take: 1, select: { url: true } },
             },
           },
@@ -166,6 +172,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
     body: optionalLocaleText(c.body),
     ctaLabel: optionalLocaleText(c.ctaLabel),
     heroImage: c.heroImage,
+    setPrice: c.setPrice,
     active: c.active,
     startsAt: c.startsAt,
     endsAt: c.endsAt,
@@ -185,6 +192,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
       price: p.product.price,
       image: p.product.images[0]?.url ?? null,
       position: p.position,
+      active: p.product.status === 'active',
     })),
   };
 }

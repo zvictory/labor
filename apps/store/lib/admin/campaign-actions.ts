@@ -72,6 +72,8 @@ const upsertCampaignSchema = z.object({
   body: localeTextSchema.optional(),
   ctaLabel: localeTextSchema.optional(),
   heroImage: z.string().trim().url().optional().or(z.literal('')),
+  // Discovery set price in so'm; null or absent = the campaign sells no set.
+  setPrice: z.number().int().positive().max(100_000_000).nullable().optional(),
   active: z.boolean().optional(),
   startsAt: z.coerce.date().nullable().optional(),
   endsAt: z.coerce.date().nullable().optional(),
@@ -102,6 +104,7 @@ export async function upsertCampaign(
     body: v.body ? JSON.stringify(v.body) : undefined,
     ctaLabel: v.ctaLabel ? JSON.stringify(v.ctaLabel) : undefined,
     heroImage: v.heroImage ? v.heroImage : null,
+    setPrice: v.setPrice ?? null,
     ...(v.active !== undefined ? { active: v.active } : {}),
     startsAt: v.startsAt ?? null,
     endsAt: v.endsAt ?? null,

@@ -6,6 +6,7 @@
 //
 //   GET    /api/cart            → current CartDTO
 //   POST   /api/cart            → add item   { productId, isSample?, quantity? }
+//                                  or one sample of each { sampleProductIds }
 //   PATCH  /api/cart            → set qty     { itemId, quantity }
 //   DELETE /api/cart            → remove line { itemId }   (or ?itemId=)
 //
@@ -15,7 +16,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
-import { getCart, readCart, addItem, updateItem, removeItem, type CartDTO } from '@/lib/cart/cart';
+import {
+  getCart,
+  readCart,
+  addItem,
+  addSamples,
+  updateItem,
+  removeItem,
+  type CartDTO,
+} from '@/lib/cart/cart';
+import { SET_MAX_ITEMS } from '@/lib/sets/rules';
 
 const isLocale = (value: string): value is Locale => (locales as readonly string[]).includes(value);
 
@@ -45,7 +55,14 @@ interface PostBody {
   productId?: number;
   isSample?: boolean;
   quantity?: number;
+  sampleProductIds?: unknown;
 }
+
+const isIdList = (value: unknown): value is number[] =>
+  Array.isArray(value) &&
+  value.length > 0 &&
+  value.length <= SET_MAX_ITEMS &&
+  value.every((id) => typeof id === 'number' && Number.isInteger(id) && id > 0);
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   let body: PostBody;
@@ -53,6 +70,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     body = (await req.json()) as PostBody;
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  if (body.sampleProductIds !== undefined) {
+    if (!isIdList(body.sampleProductIds)) {
+      return NextResponse.json(
+        { error: `sampleProductIds must be 1–${SET_MAX_ITEMS} ids` },
+        { status: 400 },
+      );
+    }
+    await addSamples(body.sampleProductIds);
+    return json(await getCart(resolveLocale(req)));
   }
 
   if (typeof body.productId !== 'number') {

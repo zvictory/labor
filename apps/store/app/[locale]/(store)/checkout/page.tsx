@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { getCurrentUser } from '@/lib/auth/session';
-import { readCart } from '@/lib/cart/cart';
+import { cartItemsTotal, readCart } from '@/lib/cart/cart';
 import { db } from '@/lib/db';
 import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { TrackEvent } from '@/components/analytics/track-event';
@@ -54,6 +54,15 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
     discountLabel: 'Скидка',
     freeDeliveryLeft: 'Ещё {amount} — и доставка по Ташкенту бесплатно',
     freeDeliveryReached: 'Доставка по Ташкенту — бесплатно',
+    setLine: 'Набор «{title}»',
+    gift: 'Подарок',
+    giftToggle: 'Это подарок',
+    giftNote: 'Текст открытки',
+    giftNoteHint: 'Вложим в заказ открытку с этим текстом.',
+    giftRecipientName: 'Имя получателя',
+    giftRecipientPhone: 'Телефон получателя',
+    giftRecipientHint: 'Заполните, если заказ примет другой человек: курьер позвонит ему.',
+    giftNoPrices: 'В подарочный заказ не кладём чек с ценами.',
     errors: {
       promo_invalid: 'Такого промокода нет',
       promo_inactive: 'Промокод больше не действует',
@@ -63,6 +72,8 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       promo_used_up: 'Промокод уже использован максимальное число раз',
       promo_first_order_only: 'Этот промокод — только для первого заказа',
       promo_bundle_short: 'Для этой акции в корзине пока мало ароматов: добавьте ещё',
+      gift_phone_invalid: 'Проверьте номер получателя: +998 XX XXX XX XX',
+      gift_note_long: 'Текст открытки слишком длинный',
       cart_empty: 'Корзина пуста',
       address_required: 'Укажите адрес доставки',
       region_required: 'Выберите регион',
@@ -112,6 +123,16 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
     discountLabel: 'Chegirma',
     freeDeliveryLeft: 'Yana {amount} — va Toshkent boʻylab yetkazib berish bepul',
     freeDeliveryReached: 'Toshkent boʻylab yetkazib berish — bepul',
+    setLine: '«{title}» toʻplami',
+    gift: 'Sovgʻa',
+    giftToggle: 'Bu sovgʻa',
+    giftNote: 'Otkritka matni',
+    giftNoteHint: 'Buyurtmaga shu matn yozilgan otkritka solamiz.',
+    giftRecipientName: 'Qabul qiluvchining ismi',
+    giftRecipientPhone: 'Qabul qiluvchining telefoni',
+    giftRecipientHint:
+      'Buyurtmani boshqa kishi qabul qilsa, toʻldiring: kuryer unga qoʻngʻiroq qiladi.',
+    giftNoPrices: 'Sovgʻa buyurtmasiga narxlar yozilgan chek solinmaydi.',
     errors: {
       promo_invalid: 'Bunday promokod yoʻq',
       promo_inactive: 'Promokod endi amal qilmaydi',
@@ -121,6 +142,8 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       promo_used_up: 'Promokoddan foydalanish soni tugagan',
       promo_first_order_only: 'Bu promokod faqat birinchi buyurtma uchun',
       promo_bundle_short: 'Bu aksiya uchun savatda atirlar hali kam: yana qoʻshing',
+      gift_phone_invalid: 'Qabul qiluvchining raqamini tekshiring: +998 XX XXX XX XX',
+      gift_note_long: 'Otkritka matni juda uzun',
       cart_empty: "Savat bo'sh",
       address_required: 'Manzilni kiriting',
       region_required: 'Viloyatni tanlang',
@@ -170,6 +193,15 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
     discountLabel: 'Discount',
     freeDeliveryLeft: '{amount} more for free delivery in Tashkent',
     freeDeliveryReached: 'Delivery in Tashkent is free',
+    setLine: 'Set: {title}',
+    gift: 'Gift',
+    giftToggle: 'This is a gift',
+    giftNote: 'Card text',
+    giftNoteHint: 'We put a card with this text in the order.',
+    giftRecipientName: "Recipient's name",
+    giftRecipientPhone: "Recipient's phone",
+    giftRecipientHint: 'Fill these in if someone else receives the order: the courier calls them.',
+    giftNoPrices: 'A gift order goes out without a receipt showing prices.',
     errors: {
       promo_invalid: 'There is no such promo code',
       promo_inactive: 'This promo code is no longer active',
@@ -179,6 +211,8 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       promo_used_up: 'This promo code has been used up',
       promo_first_order_only: 'This promo code is for a first order only',
       promo_bundle_short: 'This offer needs more perfumes in the cart: add another',
+      gift_phone_invalid: "Check the recipient's number: +998 XX XXX XX XX",
+      gift_note_long: 'The card text is too long',
       cart_empty: 'Your cart is empty',
       address_required: 'Enter a delivery address',
       region_required: 'Select a region',
@@ -219,7 +253,10 @@ export default async function CheckoutPage({ params }: Props) {
 
   return (
     <div className="container py-10 md:py-16">
-      <TrackEvent event="begin_checkout" params={{ value: cart.subtotal, currency: 'UZS' }} />
+      <TrackEvent
+        event="begin_checkout"
+        params={{ value: cartItemsTotal(cart), currency: 'UZS' }}
+      />
       <h1 className="font-display text-ink dark:text-bone mb-10 text-4xl md:text-5xl">
         {copy.heading}
       </h1>
@@ -228,6 +265,8 @@ export default async function CheckoutPage({ params }: Props) {
         locale={locale}
         items={cart.items}
         subtotal={cart.subtotal}
+        sets={cart.sets}
+        setDiscount={cart.setDiscount}
         copy={copy}
         freeDeliveryFrom={freeDeliveryThreshold()}
         trustLine={tpdp('trustLine')}

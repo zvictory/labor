@@ -22,6 +22,7 @@ const STATIC_PATHS = [
   '/delivery',
   '/contacts',
   '/campaigns',
+  '/sets',
   '/corporate',
   '/deodorant',
 ] as const;

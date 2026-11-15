@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 import type { CampaignSummaryDTO } from '@/lib/catalog/campaigns';
+import { formatUzs } from '@/lib/money';
 
 // Tashkent dates, whatever the server's clock zone.
 export const formatCampaignDate = (date: Date, locale: string): string =>
@@ -27,6 +28,7 @@ export function CampaignCard({
   const facts = [
     campaign.endsAt ? t('until', { date: formatCampaignDate(campaign.endsAt, locale) }) : null,
     campaign.productCount > 0 ? t('itemsCount', { count: campaign.productCount }) : null,
+    campaign.set ? t('setFact', { price: formatUzs(campaign.set.price, locale) }) : null,
   ].filter(Boolean);
 
   return (

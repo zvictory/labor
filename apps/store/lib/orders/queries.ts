@@ -36,7 +36,8 @@ export interface OrderDTO {
   subtotal: number; // integer so'm (sum of line totals)
   discount: number; // integer so'm taken off the items by a promo code
   promoCode: string | null;
-  deliveryFee: number; // integer so'm (total - subtotal + discount)
+  setDiscount: number; // integer so'm taken off by complete discovery sets
+  deliveryFee: number; // integer so'm (total - subtotal + discount + setDiscount)
   total: number; // integer so'm
   // shipping snapshot
   region: string | null;
@@ -45,6 +46,8 @@ export interface OrderDTO {
   phone: string | null;
   deliveryMethod: string | null;
   deliveryMethodLabel: string | null; // localized, from the registry
+  /** A gift: the card text and, when it goes to someone else, who receives it. */
+  gift: { note: string | null; recipientName: string | null; recipientPhone: string | null } | null;
   items: OrderLineDTO[];
   payments: OrderPaymentDTO[];
   createdAt: Date;
@@ -57,6 +60,11 @@ const orderSelect = {
   total: true,
   discount: true,
   promoCode: true,
+  setDiscount: true,
+  isGift: true,
+  giftNote: true,
+  giftRecipientName: true,
+  giftRecipientPhone: true,
   region: true,
   district: true,
   address: true,
@@ -85,6 +93,11 @@ type OrderRow = {
   total: number;
   discount: number;
   promoCode: string | null;
+  setDiscount: number;
+  isGift: boolean;
+  giftNote: string | null;
+  giftRecipientName: string | null;
+  giftRecipientPhone: string | null;
   region: string | null;
   district: string | null;
   address: string | null;
@@ -113,7 +126,7 @@ function toDTO(order: OrderRow, locale: string): OrderDTO {
   }));
 
   const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
-  const deliveryFee = Math.max(0, order.total - subtotal + order.discount);
+  const deliveryFee = Math.max(0, order.total - subtotal + order.discount + order.setDiscount);
 
   const method = order.deliveryMethod ? getDeliveryMethod(order.deliveryMethod) : undefined;
   const deliveryMethodLabel = method ? resolveLocaleText(method.label, locale) : null;
@@ -125,6 +138,7 @@ function toDTO(order: OrderRow, locale: string): OrderDTO {
     subtotal,
     discount: order.discount,
     promoCode: order.promoCode,
+    setDiscount: order.setDiscount,
     deliveryFee,
     total: order.total,
     region: order.region,
@@ -133,6 +147,13 @@ function toDTO(order: OrderRow, locale: string): OrderDTO {
     phone: order.phone,
     deliveryMethod: order.deliveryMethod,
     deliveryMethodLabel,
+    gift: order.isGift
+      ? {
+          note: order.giftNote,
+          recipientName: order.giftRecipientName,
+          recipientPhone: order.giftRecipientPhone,
+        }
+      : null,
     items,
     payments: order.payments.map((p) => ({
       provider: p.provider,

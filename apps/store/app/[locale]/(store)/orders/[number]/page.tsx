@@ -30,6 +30,10 @@ const COPY: Record<
     subtotal: string;
     deliveryFee: string;
     discount: string;
+    sets: string;
+    gift: string;
+    giftCard: string;
+    giftRecipient: string;
     total: string;
     free: string;
     track: string;
@@ -48,6 +52,10 @@ const COPY: Record<
     subtotal: 'Сумма',
     deliveryFee: 'Доставка',
     discount: 'Скидка',
+    sets: 'Наборы пробников',
+    gift: 'Подарок',
+    giftCard: 'Открытка',
+    giftRecipient: 'Получатель',
     total: 'Итого',
     free: 'Бесплатно',
     track: 'Отслеживайте статус заказа в нашем Telegram-боте.',
@@ -72,6 +80,10 @@ const COPY: Record<
     subtotal: 'Summa',
     deliveryFee: 'Yetkazib berish',
     discount: 'Chegirma',
+    sets: 'Namunalar toʻplamlari',
+    gift: 'Sovgʻa',
+    giftCard: 'Otkritka',
+    giftRecipient: 'Qabul qiluvchi',
     total: 'Jami',
     free: 'Bepul',
     track: 'Buyurtma holatini Telegram-botimizda kuzating.',
@@ -96,6 +108,10 @@ const COPY: Record<
     subtotal: 'Subtotal',
     deliveryFee: 'Delivery',
     discount: 'Discount',
+    sets: 'Discovery sets',
+    gift: 'Gift',
+    giftCard: 'Card',
+    giftRecipient: 'Recipient',
     total: 'Total',
     free: 'Free',
     track: 'Track your order status in our Telegram bot.',
@@ -195,6 +211,9 @@ export default async function OrderConfirmationPage({ params }: Props) {
       {/* Totals */}
       <section className="border-border dark:bg-ink/30 mt-6 space-y-2 rounded-xl border bg-stone-50/50 p-5">
         <Row label={copy.subtotal} value={formatUzs(order.subtotal, locale)} />
+        {order.setDiscount > 0 && (
+          <Row label={copy.sets} value={`−${formatUzs(order.setDiscount, locale)}`} />
+        )}
         {order.discount > 0 && (
           <Row
             label={`${copy.discount}${order.promoCode ? ` · ${order.promoCode}` : ''}`}
@@ -232,6 +251,25 @@ export default async function OrderConfirmationPage({ params }: Props) {
           </h3>
           {order.phone && <p className="text-ink dark:text-bone text-sm">{order.phone}</p>}
         </div>
+        {order.gift && (
+          <div className="space-y-1.5 sm:col-span-2">
+            <h3 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
+              {copy.gift}
+            </h3>
+            {(order.gift.recipientName || order.gift.recipientPhone) && (
+              <p className="text-ink dark:text-bone text-sm">
+                {copy.giftRecipient}:{' '}
+                {[order.gift.recipientName, order.gift.recipientPhone].filter(Boolean).join(', ')}
+              </p>
+            )}
+            {order.gift.note && (
+              <p className="text-ink dark:text-bone text-sm">
+                {copy.giftCard}:{' '}
+                <span className="font-serif whitespace-pre-line italic">{order.gift.note}</span>
+              </p>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Telegram tracking note */}
