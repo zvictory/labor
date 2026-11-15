@@ -34,7 +34,7 @@ _Tarih: 2026-11-15 · Önceki belge: `2026-10-09-exzap-benchmark.md` · Kapsam: 
 | 11 | Analitik (Metrica, GA4, Meta Pixel + CAPI) | main'de (Meta #18'de) | ID'ler `.env`'de yoksa hiçbir şey ölçülmez |
 | 12 | Uzum ödemesi, taksit | Yapılmadı | Bilinçli (bkz. bölüm 6) |
 | 13 | Ürün feed'i (`/feed.yml`, admin CSV) | main'de | Uzum'da mağaza açılmadı (bkz. bölüm 6) |
-| 14 | Alıcı yorumları | main'de | Yorum isteyen mesaj yok; form kalıcılık ve yayılımı sormuyor |
+| 14 | Alıcı yorumları | main'de | Form kalıcılık ve yayılımı sormuyor (teslim bildirimi yorum davetini zaten içeriyor) |
 | 15 | Kurumsal talep formu | main'de | — |
 
 **PR #19'da bekleyenler (24 Ekim'den beri taslak):** 25. gün "yenileme" hatırlatması, deodorant lansman sayfası, parfüm hikâye sayfası, Antigravity kuralları.
@@ -92,6 +92,8 @@ Listede hiç çıkmayan değişken dosyada yok demektir.
 
 ### Adım 1 — 17–30 Kasım: Yeni Yıl'a yetişecekler
 
+_Durum (15 Kasım): 4.1 ve 4.4 kodlandı, PR #19'da. Set, admin'de bir kampanyaya "set fiyatı" girilerek açılır; hediye paketi ücretsiz._
+
 - **4.1 Keşif setleri (M).** 3 veya 5 numuneden oluşan, tek tuşla sepete giren, set fiyatlı ürün. İlk setler: "Yeni Yıl hediyesi (kadın / erkek)", "Kış", "İlk niş". Kviz sonucu da "bu üçünü numune olarak al" tuşuyla bitsin. Ölçü: set siparişlerinin payı, ortalama sepet.
 - **4.4 Hediye seçeneği (S–M).** Checkout'ta "hediye" işareti: not kartı metni, fiyatsız fiş, alıcı farklıysa adı ve telefonu. Hediye paketi ücretli mi, mağaza kararı.
 - **Yeni Yıl kampanyası (kod yok).** Mevcut kampanya sayfasıyla; teslimat son günü hero'da ve teslimat sayfasında yazsın. Reklamlar `ANTIGRAVITY.md` kurallarıyla.
@@ -99,7 +101,7 @@ Listede hiç çıkmayan değişken dosyada yok demektir.
 ### Adım 2 — Aralık: numuneden 10 ml'ye
 
 - **4.2 Numune kredisi (M).** Numune siparişi teslim edilince alıcıya kişisel kod: numunenin bedeli (32 000 soʻm) aynı kokunun 10 ml'sinden düşer, 60 gün geçerli. Teslimde ve 7. günde Telegram mesajı. Promo ve hatırlatma altyapısı hazır. Ölçü: numune alanların 60 günde 10 ml alma oranı.
-- **4.3 Yorum isteme (S–M).** Teslimden 7 gün sonra bot mesajı; forma kalıcılık, yayılım ve mevsim soruları eklenir. Ürün sayfasında Fragrantica oylarının yanında "Labor alıcıları" görünür.
+- **4.3 Yorumları zenginleştir (S–M).** "Teslim edildi" bildirimi yorum davetini zaten içeriyor (`lib/telegram/notify.ts`). Eksik olan: forma kalıcılık, yayılım ve mevsim soruları, ve yorum bırakmayanlara 7. günde tek bir hatırlatma. Ürün sayfasında Fragrantica oylarının yanında "Labor alıcıları" görünür.
 - **4.5 Hatırlatma v2 (S).** 25. gün mesajına benzer bir koku eklenir (`ProductSimilar` hazır); 75. günde sipariş vermeyenlere ikinci ve son mesaj.
 
 ### Adım 3 — Ocak: arama ve vitrin
