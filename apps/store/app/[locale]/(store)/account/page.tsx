@@ -5,6 +5,9 @@ import { setRequestLocale } from 'next-intl/server';
 import { type Locale, localeNames } from '@/i18n/config';
 import { getCurrentUser } from '@/lib/auth/session';
 import { SignOutButton } from '@/components/account/sign-out-button';
+import { LoyaltyCard } from '@/components/loyalty/loyalty-card';
+import { db } from '@/lib/db';
+import { ensureAccount, getLoyaltyState } from '@/lib/loyalty/loyalty';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -79,12 +82,26 @@ export default async function AccountPage({ params }: Props) {
   const isSyntheticEmail = (user.email ?? '').endsWith('@labor.local');
   const contactEmail = !isSyntheticEmail ? user.email : null;
 
+  // Every customer is a member: the card exists from the first visit here, so
+  // it can be shown at the till before anything was bought.
+  const loyalty = user.role === 'customer' ? await loadCard(user.id) : null;
+
   return (
     <div className="container max-w-2xl py-12 md:py-16">
       <div className="flex items-start justify-between gap-4">
         <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{copy.title}</h1>
         <SignOutButton locale={locale} />
       </div>
+
+      {loyalty && (
+        <LoyaltyCard
+          locale={locale}
+          state={loyalty.state}
+          history={loyalty.member?.loyalty?.entries ?? []}
+          birthDate={loyalty.member?.birthDate ?? null}
+          consent={loyalty.member?.loyalty?.marketingConsentAt != null}
+        />
+      )}
 
       {/* Profile */}
       <section className="border-border mt-10 space-y-3 rounded-xl border p-6">
@@ -112,6 +129,30 @@ export default async function AccountPage({ params }: Props) {
       </section>
     </div>
   );
+}
+
+async function loadCard(userId: number) {
+  const account = await ensureAccount(userId);
+  const [state, member] = await Promise.all([
+    getLoyaltyState(account.id),
+    db.user.findUnique({
+      where: { id: userId },
+      select: {
+        birthDate: true,
+        loyalty: {
+          select: {
+            marketingConsentAt: true,
+            entries: {
+              orderBy: { createdAt: 'desc' },
+              take: 10,
+              select: { id: true, kind: true, amount: true, createdAt: true },
+            },
+          },
+        },
+      },
+    }),
+  ]);
+  return { state, member };
 }
 
 function Row({ label, value }: { label: string; value: string }) {

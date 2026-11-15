@@ -35,6 +35,8 @@ export interface PlaceOrderInput {
   deliveryMethod: string;
   payment: PaymentChoice;
   promoCode?: string;
+  /** Pay part of the items with Labor bonus (members only, not with a promo code). */
+  useBonus?: boolean;
   /** Present when the order is a gift. */
   gift?: { note: string; recipientName: string; recipientPhone: string };
 }
@@ -68,6 +70,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
         deliveryMethod: input.deliveryMethod,
         promoCode: input.promoCode || undefined,
         gift: input.gift,
+        useBonus: input.useBonus,
         // userId is resolved from the Auth.js session inside createOrderFromCart;
         // guests (no session) still place orders, tracked by phone.
       },

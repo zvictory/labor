@@ -5,6 +5,7 @@ import { type Locale } from '@/i18n/config';
 import { getCurrentUser } from '@/lib/auth/session';
 import { cartItemsTotal, readCart } from '@/lib/cart/cart';
 import { db } from '@/lib/db';
+import { getLoyaltyState } from '@/lib/loyalty/loyalty';
 import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { CheckoutForm, type CheckoutCopy } from '@/components/checkout/checkout-form';
@@ -63,6 +64,10 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
     giftRecipientPhone: 'Телефон получателя',
     giftRecipientHint: 'Заполните, если заказ примет другой человек: курьер позвонит ему.',
     giftNoPrices: 'В подарочный заказ не кладём чек с ценами.',
+    bonus: 'Бонусы Labor',
+    bonusUse: 'Оплатить бонусами {amount} (на карте {balance})',
+    bonusNotWithPromo: 'Бонусы и промокод вместе не действуют: выберите что-то одно.',
+    bonusLine: 'Бонусы',
     errors: {
       promo_invalid: 'Такого промокода нет',
       promo_inactive: 'Промокод больше не действует',
@@ -74,6 +79,8 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       promo_bundle_short: 'Для этой акции в корзине пока мало ароматов: добавьте ещё',
       gift_phone_invalid: 'Проверьте номер получателя: +998 XX XXX XX XX',
       gift_note_long: 'Текст открытки слишком длинный',
+      bonus_with_promo: 'Бонусы и промокод вместе не действуют',
+      bonus_needs_account: 'Чтобы платить бонусами, войдите в кабинет',
       cart_empty: 'Корзина пуста',
       address_required: 'Укажите адрес доставки',
       region_required: 'Выберите регион',
@@ -133,6 +140,10 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
     giftRecipientHint:
       'Buyurtmani boshqa kishi qabul qilsa, toʻldiring: kuryer unga qoʻngʻiroq qiladi.',
     giftNoPrices: 'Sovgʻa buyurtmasiga narxlar yozilgan chek solinmaydi.',
+    bonus: 'Labor bonuslari',
+    bonusUse: 'Bonus bilan {amount} toʻlash (kartada {balance})',
+    bonusNotWithPromo: 'Bonus va promokod birga ishlamaydi: bittasini tanlang.',
+    bonusLine: 'Bonus',
     errors: {
       promo_invalid: 'Bunday promokod yoʻq',
       promo_inactive: 'Promokod endi amal qilmaydi',
@@ -144,6 +155,8 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       promo_bundle_short: 'Bu aksiya uchun savatda atirlar hali kam: yana qoʻshing',
       gift_phone_invalid: 'Qabul qiluvchining raqamini tekshiring: +998 XX XXX XX XX',
       gift_note_long: 'Otkritka matni juda uzun',
+      bonus_with_promo: 'Bonus va promokod birga ishlamaydi',
+      bonus_needs_account: 'Bonus bilan toʻlash uchun kabinetga kiring',
       cart_empty: "Savat bo'sh",
       address_required: 'Manzilni kiriting',
       region_required: 'Viloyatni tanlang',
@@ -202,6 +215,10 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
     giftRecipientPhone: "Recipient's phone",
     giftRecipientHint: 'Fill these in if someone else receives the order: the courier calls them.',
     giftNoPrices: 'A gift order goes out without a receipt showing prices.',
+    bonus: 'Labor bonus',
+    bonusUse: 'Pay {amount} with bonus (your card holds {balance})',
+    bonusNotWithPromo: 'Bonus and a promo code do not combine: choose one.',
+    bonusLine: 'Bonus',
     errors: {
       promo_invalid: 'There is no such promo code',
       promo_inactive: 'This promo code is no longer active',
@@ -213,6 +230,8 @@ const COPY: Record<Lang, CheckoutCopy & { heading: string; empty: string }> = {
       promo_bundle_short: 'This offer needs more perfumes in the cart: add another',
       gift_phone_invalid: "Check the recipient's number: +998 XX XXX XX XX",
       gift_note_long: 'The card text is too long',
+      bonus_with_promo: 'Bonus and a promo code do not combine',
+      bonus_needs_account: 'Sign in to pay with bonus',
       cart_empty: 'Your cart is empty',
       address_required: 'Enter a delivery address',
       region_required: 'Select a region',
@@ -248,8 +267,15 @@ export default async function CheckoutPage({ params }: Props) {
   // A signed-in customer does not retype what the shop already knows.
   const user = await getCurrentUser();
   const profile = user
-    ? await db.user.findUnique({ where: { id: user.id }, select: { name: true, phone: true } })
+    ? await db.user.findUnique({
+        where: { id: user.id },
+        select: { name: true, phone: true, loyalty: { select: { id: true } } },
+      })
     : null;
+  // Read only: a member account is created when bonus is first earned or used.
+  const bonusAvailable = profile?.loyalty
+    ? (await getLoyaltyState(profile.loyalty.id)).available
+    : 0;
 
   return (
     <div className="container py-10 md:py-16">
@@ -270,6 +296,7 @@ export default async function CheckoutPage({ params }: Props) {
         copy={copy}
         freeDeliveryFrom={freeDeliveryThreshold()}
         trustLine={tpdp('trustLine')}
+        bonusAvailable={bonusAvailable}
         initialName={profile?.name ?? ''}
         initialPhone={profile?.phone ?? ''}
       />

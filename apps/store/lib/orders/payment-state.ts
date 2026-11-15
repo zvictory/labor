@@ -19,6 +19,7 @@
 
 import type { Order, Payment, Prisma, PrismaClient } from '@prisma/client';
 import { db } from '@/lib/db';
+import { refundForOrder } from '@/lib/loyalty/loyalty';
 
 /// Provider identifiers stored on Payment.provider / PaymentWebhookEvent.provider.
 export type PaymentProvider = 'payme' | 'click' | 'uzum';
@@ -219,6 +220,10 @@ export async function markPaymentCanceled(
 
     // Don't cancel an order that has physically shipped/delivered.
     const nextStatus = SHIPPED_OR_LATER.has(order.status) ? order.status : 'canceled';
+
+    // A canceled order gives back the Labor bonus it used (once; a repeated
+    // webhook finds the refund already written).
+    if (nextStatus === 'canceled') await refundForOrder(tx, order.id, new Date());
 
     return tx.order.update({
       where: { id: order.id },

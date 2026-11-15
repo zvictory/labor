@@ -13,6 +13,8 @@ import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db';
 import { BOT_MESSAGES, toBotLocale, type BotLocale } from '@/lib/telegram/messages';
 import { liveFirstOrderCode } from '@/lib/promo/promo';
+import { ensureAccount, getLoyaltyState } from '@/lib/loyalty/loyalty';
+import { LOYALTY_MESSAGES } from '@/lib/loyalty/messages';
 
 const generateCode = (): string => {
   const max = 10 ** 6;
@@ -133,14 +135,14 @@ function registerHandlers(bot: Bot): void {
         locale === 'ru'
           ? 'Пожалуйста, поделитесь своим номером телефона, чтобы получить код подтверждения для входа:'
           : locale === 'uz'
-          ? 'Kirish tasdiqlash kodini olish uchun telefon raqamingizni yuboring:'
-          : 'Please share your phone number to receive the login verification code:';
+            ? 'Kirish tasdiqlash kodini olish uchun telefon raqamingizni yuboring:'
+            : 'Please share your phone number to receive the login verification code:';
       const btnText =
         locale === 'ru'
           ? '📱 Поделиться номером'
           : locale === 'uz'
-          ? '📱 Raqamni yuborish'
-          : '📱 Share Number';
+            ? '📱 Raqamni yuborish'
+            : '📱 Share Number';
       await ctx.reply(promptText, {
         reply_markup: {
           keyboard: [[{ text: btnText, request_contact: true }]],
@@ -155,13 +157,17 @@ function registerHandlers(bot: Bot): void {
 
     const kb = new InlineKeyboard()
       .webApp(
-        locale === 'ru' ? '🛍️ Открыть магазин' : locale === 'uz' ? '🛍️ Do‘konni ochish' : '🛍️ Open Store',
-        startUrl
+        locale === 'ru'
+          ? '🛍️ Открыть магазин'
+          : locale === 'uz'
+            ? '🛍️ Do‘konni ochish'
+            : '🛍️ Open Store',
+        startUrl,
       )
       .row()
       .webApp(
         locale === 'ru' ? '📖 Каталог' : locale === 'uz' ? '📖 Katalog' : '📖 Catalog',
-        catalogUrl
+        catalogUrl,
       );
 
     await rememberChat(ctx, locale);
@@ -176,6 +182,34 @@ function registerHandlers(bot: Bot): void {
     await ctx.reply(text, {
       reply_markup: kb,
     });
+  });
+
+  // The member's Labor card: number, tier, bonus. The QR code is on the site.
+  bot.command(['karta', 'card'], async (ctx) => {
+    const locale = await resolveLocale(ctx);
+    const tgId = ctx.from?.id;
+    const user = tgId
+      ? await db.user.findUnique({
+          where: { telegramId: BigInt(tgId) },
+          select: { id: true, role: true },
+        })
+      : null;
+    const m = LOYALTY_MESSAGES[locale];
+    if (!user || user.role !== 'customer') {
+      await ctx.reply(m.noCard(`${storeUrl()}/${locale}/account/login`));
+      return;
+    }
+    const account = await ensureAccount(user.id);
+    const state = await getLoyaltyState(account.id);
+    await ctx.reply(
+      m.card({
+        cardNumber: state.cardNumber,
+        tier: state.tier,
+        available: state.available,
+        accountUrl: `${storeUrl()}/${locale}/account`,
+      }),
+      { link_preview_options: { is_disabled: true } },
+    );
   });
 
   bot.command('stop', (ctx) => setBroadcastOptOut(ctx, true));
@@ -209,7 +243,7 @@ function registerHandlers(bot: Bot): void {
       await ctx.reply(
         locale === 'ru'
           ? 'Ошибка: можно отправлять только свой собственный контакт.'
-          : 'Error: you can only share your own contact.'
+          : 'Error: you can only share your own contact.',
       );
       return;
     }
@@ -274,8 +308,8 @@ function registerHandlers(bot: Bot): void {
       locale === 'ru'
         ? `Ваш код подтверждения для входа: *${code}*\n\nВведите этот код на сайте.`
         : locale === 'uz'
-        ? `Kirish tasdiqlash kodingiz: *${code}*\n\nUshbu kodni saytga kiriting.`
-        : `Your login verification code is: *${code}*\n\nEnter this code on the website.`;
+          ? `Kirish tasdiqlash kodingiz: *${code}*\n\nUshbu kodni saytga kiriting.`
+          : `Your login verification code is: *${code}*\n\nEnter this code on the website.`;
 
     await ctx.reply(replyText, { parse_mode: 'Markdown' });
   });

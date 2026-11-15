@@ -114,6 +114,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                 value={`−${formatUzs(order.discount, locale)}`}
               />
             )}
+            {order.bonusSpent > 0 && (
+              <Row label="Оплачено бонусами" value={`−${formatUzs(order.bonusSpent, locale)}`} />
+            )}
             <Row
               label={`Доставка${order.deliveryMethodLabel ? ` · ${order.deliveryMethodLabel}` : ''}`}
               value={order.deliveryFee > 0 ? formatUzs(order.deliveryFee, locale) : 'Бесплатно'}

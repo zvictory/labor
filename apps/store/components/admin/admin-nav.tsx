@@ -17,6 +17,8 @@ import {
   Star,
   ChartColumn,
   BellRing,
+  ScanLine,
+  Award,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -36,6 +38,8 @@ export function AdminNav({ locale }: { locale: string }) {
     { href: base, label: 'Обзор', icon: LayoutDashboard, exact: true },
     { href: `${base}/catalog`, label: 'Каталог', icon: Package },
     { href: `${base}/orders`, label: 'Заказы', icon: ShoppingCart },
+    { href: `${base}/scan`, label: 'Касса', icon: ScanLine },
+    { href: `${base}/loyalty`, label: 'Лояльность', icon: Award },
     { href: `${base}/requests`, label: 'Заявки', icon: PhoneCall },
     { href: `${base}/sources`, label: 'Источники', icon: ChartColumn },
     { href: `${base}/reviews`, label: 'Отзывы', icon: Star },

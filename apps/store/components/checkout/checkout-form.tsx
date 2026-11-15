@@ -24,6 +24,7 @@ import { useHydrated } from '@/lib/use-hydrated';
 import type { CartLineDTO } from '@/lib/cart/cart';
 import { GIFT_NOTE_MAX } from '@/lib/checkout/gift';
 import type { AppliedSet } from '@/lib/sets/rules';
+import { maxSpend } from '@/lib/loyalty/rules';
 import type { Locale } from '@/lib/catalog/locale';
 import {
   placeOrderAction,
@@ -77,6 +78,11 @@ export interface CheckoutCopy {
   giftRecipientPhone: string;
   giftRecipientHint: string;
   giftNoPrices: string;
+  bonus: string;
+  /** `{amount}` is what the bonus takes off, `{balance}` what the card holds. */
+  bonusUse: string;
+  bonusNotWithPromo: string;
+  bonusLine: string;
   /** `{amount}` is replaced with what is left to reach free delivery. */
   freeDeliveryLeft: string;
   freeDeliveryReached: string;
@@ -93,6 +99,8 @@ interface Props {
   copy: CheckoutCopy;
   /** Items total from which the Tashkent courier is free; null when off. */
   freeDeliveryFrom: number | null;
+  /** The signed-in member's Labor bonus balance; 0 for a guest. */
+  bonusAvailable: number;
   /** The promise made under the buy button, repeated where the money is committed. */
   trustLine: string;
   /** The signed-in customer's name and phone; empty for a guest. */
@@ -129,6 +137,7 @@ export function CheckoutForm({
   setDiscount,
   copy,
   freeDeliveryFrom,
+  bonusAvailable,
   trustLine,
   initialName,
   initialPhone,
@@ -149,6 +158,7 @@ export function CheckoutForm({
   const [promo, setPromo] = useState<{ code: string; discount: number } | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [isPromoPending, startPromoTransition] = useTransition();
+  const [useBonus, setUseBonus] = useState(false);
   const [isGift, setIsGift] = useState(false);
   const [giftNote, setGiftNote] = useState('');
   const [giftName, setGiftName] = useState('');
@@ -191,11 +201,16 @@ export function CheckoutForm({
   // left.
   const discount = promo?.discount ?? 0;
   const itemsTotal = subtotal - setDiscount - discount;
+  // Bonus pays up to 30% of the items after the sets (lib/loyalty/rules.ts) and
+  // never together with a promo code. It is a way of paying, so the
+  // free-delivery threshold is measured before it, as on the server.
+  const bonusMax = maxSpend(subtotal - setDiscount, bonusAvailable);
+  const bonus = useBonus && !promo ? bonusMax : 0;
   const feeFor = (m: { id: string; baseFee: number }) =>
     feeAfterThreshold(m, itemsTotal, freeDeliveryFrom);
   const selectedMethod = methods.find((m) => m.id === deliveryMethod);
   const deliveryFee = selectedMethod ? feeFor(selectedMethod) : 0;
-  const total = itemsTotal + deliveryFee;
+  const total = itemsTotal - bonus + deliveryFee;
   const showFreeHint =
     freeDeliveryFrom !== null &&
     (deliveryMethod === '' || qualifiesForFreeDelivery(deliveryMethod));
@@ -299,6 +314,7 @@ export function CheckoutForm({
       deliveryMethod,
       payment,
       promoCode: promo?.code,
+      useBonus: bonus > 0,
       ...(isGift
         ? {
             gift: {
@@ -641,10 +657,41 @@ export function CheckoutForm({
           )}
         </section>
 
+        {/* Labor bonus */}
+        {bonusMax > 0 && (
+          <section className="space-y-3">
+            <h2 className={sectionTitleCls}>{copy.bonus}</h2>
+            <label
+              className={
+                'flex items-center gap-3 text-sm ' +
+                (promo
+                  ? 'text-ink-muted cursor-not-allowed'
+                  : 'text-ink dark:text-bone cursor-pointer')
+              }
+            >
+              <input
+                type="checkbox"
+                className="accent-brass h-4 w-4"
+                checked={useBonus && !promo}
+                disabled={promo !== null}
+                onChange={(e) => setUseBonus(e.target.checked)}
+              />
+              {copy.bonusUse
+                .replace('{amount}', formatUzs(bonusMax, locale))
+                .replace('{balance}', formatUzs(bonusAvailable, locale))}
+            </label>
+            {promo && (
+              <p className="text-ink-muted text-xs dark:text-stone-400">{copy.bonusNotWithPromo}</p>
+            )}
+          </section>
+        )}
+
         {/* Promo code */}
         <section className="space-y-3">
           <h2 className={sectionTitleCls}>{copy.promo}</h2>
-          {promo ? (
+          {bonus > 0 ? (
+            <p className="text-ink-muted text-xs dark:text-stone-400">{copy.bonusNotWithPromo}</p>
+          ) : promo ? (
             <div className="border-border flex items-center justify-between gap-3 rounded-md border px-3 py-2.5 text-sm">
               <span className="text-ink dark:text-bone">
                 {copy.promoApplied.replace('{code}', promo.code)}
@@ -766,6 +813,12 @@ export function CheckoutForm({
               <div className="flex items-center justify-between text-sm text-green-700 dark:text-green-400">
                 <span>{copy.discountLabel}</span>
                 <span>−{formatUzs(discount, locale)}</span>
+              </div>
+            )}
+            {bonus > 0 && (
+              <div className="flex items-center justify-between text-sm text-green-700 dark:text-green-400">
+                <span>{copy.bonusLine}</span>
+                <span>−{formatUzs(bonus, locale)}</span>
               </div>
             )}
             <div className="text-ink-muted flex items-center justify-between text-sm dark:text-stone-400">

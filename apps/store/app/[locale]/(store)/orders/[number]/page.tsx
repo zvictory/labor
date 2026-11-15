@@ -31,6 +31,7 @@ const COPY: Record<
     deliveryFee: string;
     discount: string;
     sets: string;
+    bonus: string;
     gift: string;
     giftCard: string;
     giftRecipient: string;
@@ -53,6 +54,7 @@ const COPY: Record<
     deliveryFee: 'Доставка',
     discount: 'Скидка',
     sets: 'Наборы пробников',
+    bonus: 'Оплачено бонусами',
     gift: 'Подарок',
     giftCard: 'Открытка',
     giftRecipient: 'Получатель',
@@ -81,6 +83,7 @@ const COPY: Record<
     deliveryFee: 'Yetkazib berish',
     discount: 'Chegirma',
     sets: 'Namunalar toʻplamlari',
+    bonus: 'Bonus bilan toʻlandi',
     gift: 'Sovgʻa',
     giftCard: 'Otkritka',
     giftRecipient: 'Qabul qiluvchi',
@@ -109,6 +112,7 @@ const COPY: Record<
     deliveryFee: 'Delivery',
     discount: 'Discount',
     sets: 'Discovery sets',
+    bonus: 'Paid with bonus',
     gift: 'Gift',
     giftCard: 'Card',
     giftRecipient: 'Recipient',
@@ -219,6 +223,9 @@ export default async function OrderConfirmationPage({ params }: Props) {
             label={`${copy.discount}${order.promoCode ? ` · ${order.promoCode}` : ''}`}
             value={`−${formatUzs(order.discount, locale)}`}
           />
+        )}
+        {order.bonusSpent > 0 && (
+          <Row label={copy.bonus} value={`−${formatUzs(order.bonusSpent, locale)}`} />
         )}
         <Row
           label={`${copy.deliveryFee}${order.deliveryMethodLabel ? ` · ${order.deliveryMethodLabel}` : ''}`}

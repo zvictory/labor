@@ -149,6 +149,7 @@ export interface AdminOrderDetail {
   discount: number; // promo discount on the items
   promoCode: string | null;
   setDiscount: number; // what complete discovery sets took off
+  bonusSpent: number; // Labor bonus the items were partly paid with
   deliveryFee: number; // total - subtotal + discount + setDiscount (clamped >= 0)
   total: number;
   // customer / shipping snapshot
@@ -186,6 +187,7 @@ export async function getAdminOrder(
       discount: true,
       promoCode: true,
       setDiscount: true,
+      bonusSpent: true,
       isGift: true,
       giftNote: true,
       giftRecipientName: true,
@@ -237,7 +239,10 @@ export async function getAdminOrder(
   }));
 
   const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
-  const deliveryFee = Math.max(0, order.total - subtotal + order.discount + order.setDiscount);
+  const deliveryFee = Math.max(
+    0,
+    order.total - subtotal + order.discount + order.setDiscount + order.bonusSpent,
+  );
 
   const method = order.deliveryMethod ? getDeliveryMethod(order.deliveryMethod) : undefined;
   const deliveryMethodLabel = method ? resolveLocaleText(method.label, locale) : null;
@@ -250,6 +255,7 @@ export async function getAdminOrder(
     discount: order.discount,
     promoCode: order.promoCode,
     setDiscount: order.setDiscount,
+    bonusSpent: order.bonusSpent,
     deliveryFee,
     total: order.total,
     customerName: order.user?.name ?? null,
