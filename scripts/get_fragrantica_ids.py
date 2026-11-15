@@ -46,9 +46,9 @@ def verify_image_url(fragrantica_id):
     return ""
 
 def main():
-    input_file = "apps/backend/db/catalog/billz_catalog.csv"
-    output_file = "apps/backend/db/catalog/billz_catalog_with_images.csv"
-    progress_file = "apps/backend/db/catalog/.fragrantica_progress.csv"
+    input_file = "data/catalog/billz_catalog.csv"
+    output_file = "data/catalog/billz_catalog_with_images.csv"
+    progress_file = "data/catalog/.fragrantica_progress.csv"
 
     # Read catalog
     with open(input_file, "r", encoding="utf-8") as f:

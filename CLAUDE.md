@@ -40,18 +40,22 @@ Reference design: `docs/plans/2026-05-21-labor-parfum-design.md`.
 | Dev server | `npm run dev -w apps/store` → http://localhost:3012 (`PORT_STORE` overrides). Stop with Ctrl-C                                                        |
 | Checks     | `npm run typecheck -w apps/store`, `npm test -w apps/store`                                                                                           |
 
-Do **not** start Docker, `npm run dev:all` / `scripts/dev.sh` (it brings up the Docker stack),
-or the root `npm run dev` (turbo also starts the legacy `apps/web` and `apps/bot`).
+Do **not** start Docker locally: `infra/docker-compose.yml` is the production stack.
 
-## Legacy — not run locally
+## Production
 
-`apps/backend` (Spree/Rails), `apps/web` (Next.js 14 storefront for Spree), `apps/bot`,
-`packages/*` and `infra/docker-compose.yml` are the earlier Spree stack. The store does not
-call them at runtime; only `apps/store/scripts/etl` reads the Spree database (read-only,
-`SPREE_DATABASE_URL`). `docs/architecture.md` maps this legacy stack only.
+The VPS runs Docker: `store`, `postgres` and `nginx` (`infra/docker-compose.yml`).
+`infra/deploy/deploy.sh`, run from the Mac, builds and migrates there, keeps the Telegram
+webhook on `/api/telegram/webhook` (`apps/store/scripts/telegram-webhook.mjs`) and fails
+unless `/ru` answers 200. Never deploy without Zafar's approval.
 
-Production still runs in Docker on the VPS: `infra/deploy/deploy.sh` builds the compose
-stack there. Never deploy without Zafar's approval.
+- Product photos are the files behind the `/storage/...` URLs in the catalog: the Docker
+  volume `labor_backend_storage`, served by nginx. Declared `external`, never remove it.
+- The Postgres container also keeps the old Spree database (`POSTGRES_DB`, labor_production).
+  Nothing reads it at runtime; only `apps/store/scripts/etl` can (`SPREE_DATABASE_URL`).
+- The earlier Spree stack (Rails, the Next.js 14 storefront, the old bot, `packages/*`,
+  Redis, Sidekiq) was removed from the repository; it is in git history if ever needed.
+- Catalog source files (Billz export, Parfumo data, image manifest) are in `data/catalog/`.
 
 ## Conventions
 
@@ -81,7 +85,7 @@ Click and Payme each have their own route handlers. All webhooks are **idempoten
 
 ## Don'ts
 
-- Don't use Docker locally or start the legacy apps.
+- Don't use Docker locally.
 - Don't add multi-currency.
 - Don't bypass `resolveLocaleText` for catalog translations.
 - Don't commit `.env`.

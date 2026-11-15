@@ -48,7 +48,7 @@ def main():
     # Load Parfumo dataset
     print("Loading Parfumo dataset...")
     parfumo_rows = []
-    with open("apps/backend/db/catalog/parfumo_data_clean.csv", "r", encoding="utf-8") as f:
+    with open("data/catalog/parfumo_data_clean.csv", "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         parfumo_rows = list(reader)
     print(f"  Loaded {len(parfumo_rows)} perfumes")
@@ -62,7 +62,7 @@ def main():
         parfumo_by_name[key].append(row)
     
     # Load catalog
-    with open("apps/backend/db/catalog/billz_catalog.csv", "r", encoding="utf-8") as f:
+    with open("data/catalog/billz_catalog.csv", "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         catalog_rows = list(reader)
     
@@ -143,7 +143,7 @@ def main():
     
     # Write output
     fieldnames = list(catalog_rows[0].keys()) + ["parfumo_url", "match_type"]
-    with open("apps/backend/db/catalog/billz_catalog_with_parfumo.csv", "w", encoding="utf-8", newline="") as f:
+    with open("data/catalog/billz_catalog_with_parfumo.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for r in results:
@@ -153,7 +153,7 @@ def main():
     print(f"  Matched: {matched}")
     print(f"  Not found: {not_found}")
     print(f"  Skipped: {skipped}")
-    print(f"  Results saved to apps/backend/db/catalog/billz_catalog_with_parfumo.csv")
+    print(f"  Results saved to data/catalog/billz_catalog_with_parfumo.csv")
 
 if __name__ == "__main__":
     main()

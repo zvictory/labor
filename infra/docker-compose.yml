@@ -1,5 +1,9 @@
 name: labor
 
+# Production: the store, its Postgres and nginx in front. Nothing else runs here;
+# the earlier Spree stack (Rails, Sidekiq, the old storefront and bot, Redis) is gone.
+# Locally the store runs without Docker (see CLAUDE.md).
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -10,10 +14,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     volumes:
       - pgdata:/var/lib/postgresql/data
-    # Postgres is NOT published to the host by default. Other compose services
-    # reach it on the internal network at postgres:5432. For local dev host
-    # access, copy docker-compose.override.yml.example to
-    # docker-compose.override.yml.
+    # Not published to the host: the store reaches it at postgres:5432.
     expose:
       - "5432"
     healthcheck:
@@ -21,113 +22,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    command: redis-server --appendonly yes
-    volumes:
-      - redisdata:/data
-    # Redis is NOT published to the host by default. See note on postgres
-    # service above.
-    expose:
-      - "6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  backend:
-    build:
-      context: ../apps/backend
-      dockerfile: Dockerfile
-      target: app
-    command: >
-      bash -c "rm -f tmp/pids/server.pid &&
-               bundle exec rails server -b 0.0.0.0"
-    restart: unless-stopped
-    env_file: ../.env
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-labor_dev}
-      REDIS_URL: redis://redis:6379/0
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    ports:
-      - "4000:3000"
-    volumes:
-      - backend_storage:/app/storage
-      - backend_uploads:/app/public/uploads
-
-  # Sidekiq is split into two processes so a 10k-row Telegram broadcast on
-  # the LOW process cannot starve payment webhook processing on the HIGH
-  # process. Each process gets its own AR connection pool sized via
-  # RAILS_MAX_THREADS (see apps/backend/config/database.yml).
-  sidekiq-high:
-    build:
-      context: ../apps/backend
-      dockerfile: Dockerfile
-      target: app
-    restart: unless-stopped
-    command: bundle exec sidekiq -C config/sidekiq_high.yml
-    env_file: ../.env
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-labor_dev}
-      REDIS_URL: redis://redis:6379/0
-      RAILS_MAX_THREADS: "5"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - backend_storage:/app/storage
-      - backend_uploads:/app/public/uploads
-
-  sidekiq-low:
-    build:
-      context: ../apps/backend
-      dockerfile: Dockerfile
-      target: app
-    restart: unless-stopped
-    command: bundle exec sidekiq -C config/sidekiq_low.yml
-    env_file: ../.env
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-labor_dev}
-      REDIS_URL: redis://redis:6379/0
-      RAILS_MAX_THREADS: "5"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - backend_storage:/app/storage
-      - backend_uploads:/app/public/uploads
-
-  web:
-    build:
-      context: ..
-      dockerfile: apps/web/Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000/api}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3001}
-        NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID:-}
-        NEXT_PUBLIC_META_PIXEL_ID: ${NEXT_PUBLIC_META_PIXEL_ID:-}
-        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
-        NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: ${NEXT_PUBLIC_TELEGRAM_BOT_USERNAME:-}
-        NEXT_PUBLIC_MINIAPP_URL: ${NEXT_PUBLIC_MINIAPP_URL:-}
-    restart: unless-stopped
-    env_file: ../.env
-    environment:
-      INTERNAL_API_URL: http://backend:3000
-    depends_on:
-      - backend
-    ports:
-      - "3001:3001"
 
   store:
     build:
@@ -143,7 +37,8 @@ services:
     restart: unless-stopped
     env_file: ../.env
     environment:
-      # Separate DB from Spree (labor_production) so Prisma never touches Spree tables.
+      # The store's own database. POSTGRES_DB (labor_production) still holds the old
+      # Spree data, kept for the record and for scripts/etl; nothing reads it at runtime.
       DATABASE_URL: postgres://${POSTGRES_USER:-labor}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${STORE_DB:-labor_store}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-https://laborparfum.com}
     depends_on:
@@ -151,19 +46,6 @@ services:
         condition: service_healthy
     expose:
       - "3002"
-
-  bot:
-    build:
-      context: ..
-      dockerfile: apps/bot/Dockerfile
-    restart: on-failure
-    env_file: ../.env
-    environment:
-      INTERNAL_API_URL: http://backend:3000
-      REDIS_URL: redis://redis:6379/1
-    depends_on:
-      - backend
-      - redis
 
   nginx:
     image: nginx:1.27-alpine
@@ -174,13 +56,17 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/nginx/certs:ro
-      - backend_storage:/usr/share/nginx/html/storage:ro
+      # The catalog photos, served at /storage/... (the URLs in the database).
+      - product_images:/usr/share/nginx/html/storage:ro
     depends_on:
       - store
-      - backend
 
 volumes:
   pgdata:
-  redisdata:
-  backend_storage:
-  backend_uploads:
+  # The product photos, uploaded through the old Spree admin and still the files
+  # behind every /storage/... image URL. External, so compose never creates or
+  # removes it: a missing volume stops the deploy instead of serving a site with
+  # no pictures. On a fresh server: docker volume create labor_backend_storage
+  product_images:
+    external: true
+    name: labor_backend_storage

@@ -51,4 +51,4 @@ Then verify: row-count parity in `etl-report.json` + spot-check ~10 products (3 
 - Delivery fee is the method base fee (live Yandex quote is display-only for now).
 - `cancelOrder` of a paid order doesn't auto-refund (provider refund not wired).
 - Storefront hero still uses local slides; campaigns are admin-manageable but not yet read by the hero.
-- The old Spree app (`apps/backend`) is untouched — keep it serving until this is validated in prod.
+- The old Spree stack has since been removed from the repository; production runs only this store (see the root CLAUDE.md).

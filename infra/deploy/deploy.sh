@@ -34,11 +34,11 @@ set -euo pipefail
 cd "$REMOTE_DIR"
 git fetch --all --prune
 git reset --hard origin/main
-# Only postgres, redis and nginx come from a registry. The other seven services
-# are built from this checkout, so --ignore-buildable keeps pull from warning
-# about images that will never exist, and --build is what actually deploys the
-# code: without it 'up -d' sees the same compose definition, leaves the running
-# containers alone, and the deploy reports success having shipped nothing.
+# postgres and nginx come from a registry; the store is built from this
+# checkout, so --ignore-buildable keeps pull from warning about an image that
+# will never exist there, and --build is what actually deploys the code:
+# without it 'up -d' sees the same compose definition, leaves the running
+# container alone, and the deploy reports success having shipped nothing.
 docker compose -f infra/docker-compose.yml pull --ignore-buildable
 # The store's Prisma migrations, run from the freshly built image before any
 # container is replaced, so the new code never starts on the old schema; the old
@@ -56,13 +56,13 @@ docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 # down this way the first time --build was used. It is not restarted by the line
 # above because its own image and config did not change.
 docker compose -f infra/docker-compose.yml restart nginx
-# '< /dev/null' on both, and it is load-bearing. This script reaches the server
-# as ssh's stdin, and 'exec -T' reads stdin — so without it the rails command
-# swallows the rest of the script. Everything below these two lines silently
-# never ran, including the image prune that has been in this script from the
-# start, and the shell then reached EOF and exited 0.
-docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:migrate < /dev/null
-docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear < /dev/null
+# Telegram delivers the bot's updates to the store. The old bot container
+# re-registered its own address each time it started; with it gone this keeps
+# the webhook on /api/telegram/webhook. '< /dev/null' is load-bearing: this
+# script reaches the server as ssh's stdin and 'exec -T' would read the rest of
+# it. A failure here is reported but does not stop the deploy: the site is up.
+docker compose -f infra/docker-compose.yml exec -T store node scripts/telegram-webhook.mjs < /dev/null \
+  || echo "--> WARNING: the Telegram webhook was not set; the bot gets no messages" >&2
 docker image prune -f
 
 # Fail the deploy if the store is not actually rendering pages. Everything above

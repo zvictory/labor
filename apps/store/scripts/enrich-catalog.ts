@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-const billzPath = '/Users/zafar/Documents/labor/apps/backend/db/catalog/billz_catalog_with_parfumo.csv';
-const parfumoPath = '/Users/zafar/Documents/labor/apps/backend/db/catalog/parfumo_data_clean.csv';
-const manifestPath = '/Users/zafar/Documents/labor/apps/backend/db/data/product_image_manifest.json';
+const billzPath = '/Users/zafar/Documents/labor/data/catalog/billz_catalog_with_parfumo.csv';
+const parfumoPath = '/Users/zafar/Documents/labor/data/catalog/parfumo_data_clean.csv';
+const manifestPath = '/Users/zafar/Documents/labor/data/catalog/product_image_manifest.json';
 const outputPath = '/Users/zafar/Documents/labor/apps/store/lib/catalog/full-catalog.json';
 
 const ACCORD_COLORS: Record<string, string> = {

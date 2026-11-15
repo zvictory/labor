@@ -1,7 +1,7 @@
 import json
 import os
 
-MANIFEST_PATH = "apps/backend/db/data/product_image_manifest.json"
+MANIFEST_PATH = "data/catalog/product_image_manifest.json"
 
 NEW_MAPPINGS = [
   {

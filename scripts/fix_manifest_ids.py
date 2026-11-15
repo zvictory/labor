@@ -1,7 +1,7 @@
 import json
 import os
 
-manifest_path = "apps/backend/db/data/product_image_manifest.json"
+manifest_path = "data/catalog/product_image_manifest.json"
 
 if not os.path.exists(manifest_path):
     print(f"Manifest not found at {manifest_path}")

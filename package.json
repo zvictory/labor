@@ -2,25 +2,20 @@
   "name": "labor",
   "version": "0.1.0",
   "private": true,
-  "description": "Labor — multi-brand fragrance ecommerce for Uzbekistan (Spree + Next.js + Telegram)",
+  "description": "Labor — multi-brand fragrance ecommerce for Uzbekistan (Next.js store, Telegram bot inside)",
   "workspaces": [
-    "apps/web",
-    "apps/bot",
-    "apps/store",
-    "packages/*"
+    "apps/store"
   ],
   "scripts": {
-    "dev:all": "bash scripts/dev.sh",
-    "dev": "turbo run dev --parallel",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
+    "dev": "npm run dev -w apps/store",
+    "build": "npm run build -w apps/store",
+    "lint": "npm run lint -w apps/store",
+    "typecheck": "npm run typecheck -w apps/store",
+    "test": "npm test -w apps/store",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "devDependencies": {
     "prettier": "^3.3.3",
-    "turbo": "^2.1.0",
     "typescript": "^5.6.2"
   },
   "engines": {

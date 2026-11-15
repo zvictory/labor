@@ -52,6 +52,8 @@ COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=builder /app/apps/store/.next apps/store/.next
 COPY --from=builder /app/apps/store/public apps/store/public
 COPY apps/store/next.config.mjs apps/store/
+# Run by the deploy to point the Telegram webhook at the store.
+COPY apps/store/scripts/telegram-webhook.mjs apps/store/scripts/
 WORKDIR /app/apps/store
 EXPOSE 3002
 CMD ["/app/node_modules/.bin/next", "start", "-p", "3002"]

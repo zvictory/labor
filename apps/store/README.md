@@ -97,6 +97,6 @@ apps/store/
 
 ## Notes
 
-- Port is **3002** to avoid colliding with `apps/web` (`3001`) and `apps/bot` (`8080`).
+- Locally the dev server listens on **3012** (`PORT_STORE` overrides); in the production container it is 3002.
 - Story Script is Latin-only; RU/UZ headings fall back to Georgia (handled in the
   Tailwind `display` font stack).

@@ -5,7 +5,7 @@
 //      checked each photograph by eye against the house's own Fragrantica page.
 //      Authoritative; nothing here overrides it.
 //   2. spree — a unique name match against the legacy Spree manifest
-//      (`apps/backend/db/data/product_image_manifest.json`). Not independently
+//      (`data/catalog/product_image_manifest.json`). Not independently
 //      re-verified except for a random 30-row sample (2026-09-29): 28 were right; two
 //      were wrong and are recorded below with basis 'search' and a note giving the old
 //      id. Two more turned up outside the sample: both Baccarat Rouge 540 rows carried
