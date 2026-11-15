@@ -1,81 +1,95 @@
 'use client';
 
-// Quantity stepper + remove control for a single line on the full cart page.
-// Invokes the cart Server Actions (updateCartItemAction / removeCartItemAction)
-// inside a transition; the actions revalidatePath('/[locale]/cart') so the RSC
-// page re-renders with fresh totals. Also broadcasts so header/mini-cart stay
-// in sync within the same navigation.
-
-import { useTransition } from 'react';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { useRef, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
+import { Minus, Plus } from 'lucide-react';
 
 import { updateCartItemAction, removeCartItemAction } from '@/lib/cart/actions';
 import { emitCartUpdated } from '@/components/cart/cart-events';
 import { useHydrated } from '@/lib/use-hydrated';
+import type { CartDTO } from '@/lib/cart/cart';
 
 export function CartLineControls({
   itemId,
   quantity,
   locale,
-  removeLabel,
+  itemLabel,
 }: {
   itemId: number;
   quantity: number;
   locale: string;
-  removeLabel: string;
+  itemLabel: string;
 }) {
+  const t = useTranslations('cart');
   const [transitionPending, startTransition] = useTransition();
-  // Disabled until hydrated: before that a tap on − / + / remove did nothing.
+  const [failed, setFailed] = useState(false);
+  const inFlight = useRef(false);
   const hydrated = useHydrated();
   const pending = transitionPending || !hydrated;
   const revalidate = `/${locale}/cart`;
+  const controlClass =
+    'inline-flex size-11 shrink-0 items-center justify-center hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-40';
 
-  const setQty = (next: number): void => {
+  const mutate = (action: () => Promise<CartDTO>) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setFailed(false);
     startTransition(async () => {
-      const cart = await updateCartItemAction(itemId, next, revalidate);
-      emitCartUpdated(cart);
-    });
-  };
-
-  const remove = (): void => {
-    startTransition(async () => {
-      const cart = await removeCartItemAction(itemId, revalidate);
-      emitCartUpdated(cart);
+      try {
+        emitCartUpdated(await action());
+      } catch {
+        setFailed(true);
+      } finally {
+        inFlight.current = false;
+      }
     });
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="border-border inline-flex items-center rounded border">
+    <div className="space-y-1" aria-busy={transitionPending}>
+      <div className="flex flex-wrap items-center gap-x-4">
+        <div
+          className="border-border inline-flex h-11 items-center border"
+          role="group"
+          aria-label={t('quantityFor', { item: itemLabel })}
+        >
+          <button
+            type="button"
+            aria-label={t('decrease', { item: itemLabel })}
+            disabled={pending || quantity <= 1}
+            onClick={() => mutate(() => updateCartItemAction(itemId, quantity - 1, revalidate))}
+            className={controlClass}
+          >
+            <Minus aria-hidden="true" className="size-3.5" />
+          </button>
+          <span className="min-w-6 text-center font-mono text-sm" aria-live="polite">
+            {quantity}
+          </span>
+          <button
+            type="button"
+            aria-label={t('increase', { item: itemLabel })}
+            disabled={pending}
+            onClick={() => mutate(() => updateCartItemAction(itemId, quantity + 1, revalidate))}
+            className={controlClass}
+          >
+            <Plus aria-hidden="true" className="size-3.5" />
+          </button>
+        </div>
         <button
           type="button"
-          aria-label="decrease"
+          aria-label={t('removeItem', { item: itemLabel })}
           disabled={pending}
-          onClick={() => setQty(quantity - 1)}
-          className="px-2.5 py-1.5 hover:underline hover:underline-offset-4 disabled:opacity-50"
+          onClick={() => mutate(() => removeCartItemAction(itemId, revalidate))}
+          className="text-muted-foreground hover:text-foreground inline-flex min-h-11 items-center text-xs underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50"
         >
-          <Minus className="h-3.5 w-3.5" />
-        </button>
-        <span className="min-w-7 text-center text-sm tabular-nums">{quantity}</span>
-        <button
-          type="button"
-          aria-label="increase"
-          disabled={pending}
-          onClick={() => setQty(quantity + 1)}
-          className="px-2.5 py-1.5 hover:underline hover:underline-offset-4 disabled:opacity-50"
-        >
-          <Plus className="h-3.5 w-3.5" />
+          {t('remove')}
         </button>
       </div>
-      <button
-        type="button"
-        disabled={pending}
-        onClick={remove}
-        className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-red-600 disabled:opacity-50"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-        {removeLabel}
-      </button>
+      {failed ? (
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
+          {t('updateError')}
+        </p>
+      ) : null}
     </div>
   );
 }

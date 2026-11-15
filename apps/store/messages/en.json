@@ -88,6 +88,12 @@
     "volumeShort": "{ml} ml"
   },
   "pdp": {
+    "sampleSize": "Sample · {amount} ml",
+    "fullSize": "Full size",
+    "packageMl": "{amount} ml",
+    "packageGrams": "{amount} g",
+    "availableSizes": "Available sizes",
+    "relatedFormats": "Related products",
     "longevityShort": "Long.",
     "sillageShort": "Sillage",
     "cart": {
@@ -186,6 +192,19 @@
     }
   },
   "cart": {
+    "itemCount": "{count, plural, one {# item} other {# items}}",
+    "continueShopping": "Continue shopping",
+    "sample": "Sample",
+    "summaryTitle": "Order summary",
+    "productsTotal": "Items total",
+    "shippingAtCheckout": "Delivery calculated at checkout",
+    "deliveryThresholdReached": "Eligible for free delivery in Tashkent",
+    "telegramHelp": "Need help? Telegram",
+    "quantityFor": "Quantity for {item}",
+    "decrease": "Decrease quantity for {item}",
+    "increase": "Increase quantity for {item}",
+    "removeItem": "Remove {item}",
+    "updateError": "Could not update the cart. Try again.",
     "title": "Cart",
     "empty": "Your cart is empty",
     "emptyCta": "Go to catalog",
@@ -203,6 +222,34 @@
     "freeDeliveryLeft": "{amount} more for free delivery in Tashkent",
     "freeDeliveryReached": "Delivery in Tashkent is free",
     "set": "Set: {title}"
+  },
+  "finderAtelier": {
+    "scene0": "Laying out your choices",
+    "scene1": "Preparing three tester strips",
+    "scene2": "The selection is ready",
+    "resume": "Continue where you left off",
+    "workbench": "Scent atelier",
+    "resetBody": "Clear your saved choices and start again?",
+    "cancel": "Keep my choices",
+    "preparing": "Putting your selection together",
+    "skip": "Show results",
+    "samples": "Get all three as 2 ml samples · {price}",
+    "choices": "Your choices · {count}"
+  },
+  "deliveryPin": {
+    "useCenter": "Use map center",
+    "open": "Mark on map · optional",
+    "close": "Close map",
+    "edit": "Change pin",
+    "remove": "Remove pin",
+    "saved": "Delivery pin saved.",
+    "instruction": "Mark the building entrance and confirm the pin.",
+    "confirm": "Confirm pin",
+    "unavailable": "The map is unavailable. You can continue with your written address.",
+    "mapLabel": "Delivery location map",
+    "loading": "Loading map…",
+    "openInYandex": "Open in Yandex Maps",
+    "qrAlt": "QR code for the courier to open the delivery location"
   },
   "checkout": {
     "title": "Checkout",

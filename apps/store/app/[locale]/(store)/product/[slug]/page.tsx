@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cache } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
@@ -16,10 +16,10 @@ import { WishlistButton } from '@/components/wishlist/wishlist-button';
 import { ProductReviews } from '@/components/reviews/product-reviews';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { getProductReviews } from '@/lib/reviews/reviews';
-import { getProduct } from '@/lib/catalog/products';
+import { collapseVolumeListings, listingSlug } from '@/lib/catalog/product-formats';
+import { getProduct, getProductFormats } from '@/lib/catalog/products';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
-import { formatUzs, formatRating, PRICE_PER_ML, SAMPLE_ML } from '@/lib/money';
-import type { Gender } from '@/lib/catalog/types';
+import { formatUzs, formatRating, SAMPLE_ML, SAMPLE_PRICE } from '@/lib/money';
 import { TELEGRAM_URL } from '@/lib/telegram';
 import { describeProduct } from '@/lib/catalog/product-description';
 import { getProductStory } from '@/lib/catalog/stories';
@@ -27,6 +27,7 @@ import { jsonLdScript, pageMetadata, productJsonLd } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ locale: Locale; slug: string }>;
+  searchParams: Promise<{ size?: string | string[] }>;
 };
 
 const STORY_LINK = {
@@ -35,52 +36,90 @@ const STORY_LINK = {
   en: 'The story of this perfume',
 } as const;
 
-// generateMetadata and the page both need the product. Prisma calls are not
-// deduplicated the way fetch() is, so share one query per request.
 const loadProduct = cache(getProduct);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const product = await loadProduct(slug, locale);
+  const canonicalSlug = listingSlug(slug);
+  const product = await loadProduct(canonicalSlug, locale);
   if (!product) return {};
 
   return pageMetadata({
     locale,
-    path: `/product/${product.slug}`,
+    path: `/product/${canonicalSlug}`,
     title: product.brand ? `${product.name} — ${product.brand}` : product.name,
     description: describeProduct(product, locale),
-    images: product.images.length > 0 ? product.images.slice(0, 1) : [product.image],
+    images: product.image ? [product.image] : [],
   });
 }
 
-export default async function ProductPage({ params }: Props) {
-  const { locale, slug } = await params;
+export default async function ProductPage({ params, searchParams }: Props) {
+  const [{ locale, slug }, { size }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
+  const canonicalSlug = listingSlug(slug);
+  const path = `/${locale}/product/${canonicalSlug}`;
+  const [product, { sizes, related }] = await Promise.all([
+    loadProduct(canonicalSlug, locale),
+    getProductFormats(canonicalSlug, locale),
+  ]);
+  if (!product) notFound();
 
-  const product = await loadProduct(slug, locale);
-  if (!product) {
-    notFound();
+  const fullSizes = sizes.length
+    ? sizes
+    : product.active !== false && product.volume_ml && !product.separate_format
+      ? [{ id: product.id, slug: product.slug, ml: product.volume_ml, price: product.price }]
+      : [];
+  const preferred = fullSizes.find((option) => option.slug === canonicalSlug) ?? fullSizes[0];
+  const canSample = !product.separate_format && product.active !== false;
+  const sampleHref = `${path}?size=${SAMPLE_ML}`;
+  const isSample = canSample && size === String(SAMPLE_ML);
+  const requested = fullSizes.find((option) => String(option.ml) === size);
+  const optionHref = (option: { slug: string; ml: number }) =>
+    option.slug === preferred?.slug ? path : `${path}?size=${option.ml}`;
+
+  if (slug !== canonicalSlug) {
+    const legacy = fullSizes.find((option) => option.slug === slug);
+    redirect(isSample ? sampleHref : legacy ? optionHref(legacy) : path);
+  }
+  if (size !== undefined && !isSample && (!requested || requested.slug === preferred?.slug)) {
+    redirect(path);
   }
 
-  const tp = await getTranslations('product');
-  const tpdp = await getTranslations('pdp');
-  const tconsult = await getTranslations('consult');
-
-  const genderLabel: Record<Gender, string> = {
-    men: tp('gender.men'),
-    women: tp('gender.women'),
-    unisex: tp('gender.unisex'),
-  };
-
-  const gallery = product.images.length > 0 ? product.images : [product.image].filter(Boolean);
+  const selected = requested ?? preferred;
+  const selectedId = isSample ? product.id : (selected?.id ?? product.id);
+  const price = isSample ? SAMPLE_PRICE : (selected?.price ?? product.price);
+  const volume = isSample ? SAMPLE_ML : (selected?.ml ?? product.volume_ml);
+  const purchasable = Boolean(selected) || product.active !== false;
+  const sizeOptions = [
+    ...(canSample ? [{ key: 'sample', href: sampleHref, ml: SAMPLE_ML, current: isSample }] : []),
+    ...(canSample && !fullSizes.length
+      ? [{ key: 'full', href: path, ml: null, current: !isSample }]
+      : []),
+    ...fullSizes.map((option) => ({
+      key: option.slug,
+      href: optionHref(option),
+      ml: option.ml,
+      current: !isSample && option.slug === selected?.slug,
+    })),
+  ];
+  const gallery = product.images.length ? product.images : [product.image].filter(Boolean);
   const description = describeProduct(product, locale);
-  const { summary: ownRating, reviews } = await getProductReviews(product.id);
+  const [tp, tpdp, tconsult, { summary: ownRating, reviews }] = await Promise.all([
+    getTranslations('product'),
+    getTranslations('pdp'),
+    getTranslations('consult'),
+    getProductReviews(product.id),
+  ]);
+  const packageSize = product.package_size;
+  const similar = collapseVolumeListings(product.similar).filter(
+    (item) => listingSlug(item.slug) !== canonicalSlug,
+  );
 
   return (
-    <div className="container space-y-16 py-10 md:py-16">
+    <div className="container mx-auto max-w-7xl space-y-12 py-6 md:space-y-16 md:py-12">
       <TrackEvent
         event="view_item"
-        params={{ item_id: String(product.id), value: product.price, currency: 'UZS' }}
+        params={{ item_id: String(selectedId), value: price, currency: 'UZS' }}
       />
       <script
         type="application/ld+json"
@@ -88,182 +127,162 @@ export default async function ProductPage({ params }: Props) {
           __html: jsonLdScript(productJsonLd(product, locale, description, ownRating)),
         }}
       />
-      <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Gallery Section — pinned only beside the label. Stacked on a phone,
-            a pinned picture covers the label as it scrolls up underneath. */}
-        <div className="space-y-4 lg:sticky lg:top-24">
-          <div className="border-border bg-background relative aspect-[3/4] overflow-hidden border p-6">
+
+      <div className="grid items-start gap-6 md:grid-cols-[1.15fr_1fr] md:gap-10 lg:gap-20">
+        <div className="space-y-3">
+          <div className="border-border bg-background relative aspect-[5/4] overflow-hidden border md:aspect-square">
             {gallery[0] ? (
               <Image
                 src={gallery[0]}
                 alt={product.name}
                 fill
-                sizes="(min-width:1024px) 45vw, 100vw"
+                sizes="(min-width: 1280px) 640px, (min-width: 768px) 52vw, 100vw"
                 priority
-                className="object-contain p-6 mix-blend-multiply dark:mix-blend-normal"
+                className="object-contain p-5 mix-blend-multiply md:p-10 dark:mix-blend-normal"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
-                  {product.brand}
-                </span>
-              </div>
-            )}
-
-            {product.concentration && (
-              <span className="bg-foreground text-background text-micro absolute top-4 right-4 px-3 py-1 font-mono tracking-[0.16em] uppercase">
-                {product.concentration}
+              <span className="eyebrow absolute inset-0 grid place-items-center">
+                {product.brand}
               </span>
             )}
           </div>
-
-          {gallery.length > 1 && (
+          {gallery.length > 1 ? (
             <div className="grid grid-cols-4 gap-3">
-              {gallery.slice(0, 4).map((src, i) => (
-                <div
-                  key={`${src}-${i}`}
-                  className="border-border bg-background relative aspect-square overflow-hidden border p-1"
-                >
+              {gallery.slice(1, 5).map((src, i) => (
+                <div key={`${src}-${i}`} className="border-border relative aspect-square border">
                   <Image
                     src={src}
-                    alt={`${product.name} ${i + 1}`}
+                    alt={`${product.name} ${i + 2}`}
                     fill
-                    sizes="20vw"
-                    className="object-contain p-1 mix-blend-multiply dark:mix-blend-normal"
+                    sizes="140px"
+                    className="object-contain p-2"
                   />
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
 
-        {/* Details & Specifications */}
-        <div className="space-y-8">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              {product.brand_slug ? (
-                <Link
-                  href={taxonomyHref('brand', locale, product.brand_slug)}
-                  className="text-muted-foreground hover:text-foreground text-label font-mono tracking-[0.16em] uppercase"
-                >
-                  {product.brand}
-                </Link>
-              ) : (
-                <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-                  {product.brand}
-                </p>
-              )}
-              <span className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-                {genderLabel[product.gender]}
-              </span>
-            </div>
+        <div className="min-w-0 space-y-6 md:py-4">
+          <div className="space-y-2">
+            {product.brand_slug ? (
+              <Link
+                href={taxonomyHref('brand', locale, product.brand_slug)}
+                className="eyebrow underline-offset-4 hover:underline"
+              >
+                {product.brand}
+              </Link>
+            ) : product.brand ? (
+              <p className="eyebrow">{product.brand}</p>
+            ) : null}
+            <h1 className="page-title">{product.name}</h1>
+            <p className="text-muted-foreground flex flex-wrap gap-2 font-mono text-xs uppercase">
+              {[product.concentration, tp(`gender.${product.gender}`)].filter(Boolean).join(' · ')}
+            </p>
+          </div>
 
-            <h1 className="text-3xl font-semibold tracking-[-0.02em] md:text-5xl">
-              {product.name}
-            </h1>
-
-            {/* Stars, because a star is what a rating looks like. The
-                provenance is the thing that needed handling, not the shape:
-                the count beside them says whose votes these are, and the full
-                record repeats it. */}
-            <div className="flex items-center gap-4 pt-1">
-              {product.votes_count > 0 && (
-                <div className="flex items-center gap-3">
-                  <StarRating value={product.avg_rating} label={tpdp('rating')} />
-                  <span className="text-muted-foreground text-label font-mono tracking-[0.12em] uppercase">
-                    {formatRating(product.avg_rating)} / 5 ·{' '}
-                    {tpdp('votes', { count: product.votes_count })}
-                  </span>
+          <div className="border-border space-y-4 border-y py-5">
+            {sizeOptions.length ? (
+              <fieldset className="space-y-2">
+                <legend className="eyebrow mb-2">{tpdp('availableSizes')}</legend>
+                <div className="flex flex-wrap gap-2">
+                  {sizeOptions.map((option) => (
+                    <Link
+                      key={option.key}
+                      href={option.href}
+                      scroll={false}
+                      aria-current={option.current ? 'true' : undefined}
+                      className="border-border hover:border-foreground focus-visible:outline-foreground aria-[current=true]:border-foreground aria-[current=true]:bg-foreground aria-[current=true]:text-background inline-flex min-h-11 min-w-20 items-center justify-center border px-4 font-mono text-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+                    >
+                      {option.key === 'sample'
+                        ? tpdp('sampleSize', { amount: SAMPLE_ML })
+                        : option.ml === null
+                          ? tpdp('fullSize')
+                          : tpdp('packageMl', { amount: option.ml })}
+                    </Link>
+                  ))}
                 </div>
-              )}
-            </div>
+              </fieldset>
+            ) : null}
 
-            {/* Price and the volume it buys, on one baseline — the shop
-                quotes 16 000 so'm per ml, so 10 ml is 160 000. */}
-            <div className="flex flex-col gap-1 pt-2">
-              <span className="font-mono text-2xl font-semibold tabular-nums">
-                {formatUzs(product.price, locale)}
+            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1" aria-live="polite">
+              <span className="font-mono text-2xl font-semibold tabular-nums md:text-3xl">
+                {formatUzs(price, locale)}
               </span>
-              {product.volume_ml ? (
-                <span className="text-label font-mono tracking-[0.16em] uppercase">
-                  {tpdp('decantLine', {
-                    ml: product.volume_ml,
-                    price: formatUzs(PRICE_PER_ML, locale),
+              {packageSize ? (
+                <span className="text-muted-foreground font-mono text-sm">
+                  {tpdp(packageSize.unit === 'g' ? 'packageGrams' : 'packageMl', {
+                    amount: packageSize.amount,
                   })}
                 </span>
               ) : null}
             </div>
-          </div>
 
-          {/* Built from the record rather than read out of it: the stored
-              description is Fragrantica's English template, filed under `ru` as
-              well, and 133 products had none at all. */}
-          <p className="text-muted-foreground max-w-prose font-serif text-base leading-relaxed">
-            {description}
-          </p>
-
-          {getProductStory(product.slug) && (
-            <Link
-              href={`/${locale}/product/${product.slug}/story`}
-              className="text-foreground text-sm font-medium underline underline-offset-4"
-            >
-              {STORY_LINK[locale === 'uz' || locale === 'en' ? locale : 'ru']} →
-            </Link>
-          )}
-
-          {/* The notes, as pictures — in place of the accord measures */}
-          <OlfactivePyramidView notes={product.notes} locale={locale} />
-
-          {/* Cart & Order Actions */}
-          <div className="border-border flex flex-col gap-3 border-t pt-5">
-            <AddToCart
-              productId={product.id}
-              locale={locale}
-              hasSample
-              volumeMl={product.volume_ml ?? null}
-              sampleMl={SAMPLE_ML}
-            />
+            {purchasable ? (
+              <AddToCart
+                key={`${selectedId}:${isSample}`}
+                productId={selectedId}
+                locale={locale}
+                isSample={isSample}
+                volumeMl={volume ?? null}
+              />
+            ) : null}
             <WishlistButton productId={product.id} variant="full" />
-
-            {/* The label carries provenance. One mono line, under the action,
-                where the decision is actually made — not a block seven
-                sections down the home page. */}
-            <p className="text-muted-foreground text-micro font-mono leading-relaxed tracking-[0.12em] uppercase">
-              {tpdp('trustLine')}
-            </p>
-
-            {/* Telegram is a channel, not a third peer button. */}
-            <p className="text-muted-foreground text-xs">
-              {tpdp('telegramPrompt')}{' '}
-              <a
-                href={TELEGRAM_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="text-foreground font-medium underline underline-offset-4"
-              >
-                {tpdp('telegramLink')}
-              </a>
-            </p>
-
-            {/* Closed by default: the label stays the first thing read. */}
-            <details className="border-border group border-t pt-3">
-              <summary className="text-foreground cursor-pointer text-xs font-medium underline underline-offset-4">
-                {tconsult('toggle')}
-              </summary>
-              <div className="pt-4">
-                <ConsultForm
-                  locale={locale}
-                  source="product"
-                  productSlug={product.slug}
-                  showHeading={false}
-                />
-              </div>
-            </details>
           </div>
+
+          {product.votes_count > 0 ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <StarRating value={product.avg_rating} label={tpdp('rating')} />
+              <span className="text-muted-foreground font-mono text-xs">
+                {formatRating(product.avg_rating)} / 5 ·{' '}
+                {tpdp('votes', { count: product.votes_count })}
+              </span>
+            </div>
+          ) : null}
+          <details className="text-sm">
+            <summary className="cursor-pointer font-medium underline underline-offset-4">
+              {tconsult('toggle')}
+            </summary>
+            <div className="space-y-4 pt-3">
+              <p className="text-muted-foreground">
+                {tpdp('telegramPrompt')}{' '}
+                <a
+                  href={TELEGRAM_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-foreground underline underline-offset-4"
+                >
+                  {tpdp('telegramLink')}
+                </a>
+              </p>
+              <ConsultForm
+                locale={locale}
+                source="product"
+                productSlug={product.slug}
+                showHeading={false}
+              />
+            </div>
+          </details>
         </div>
       </div>
 
-      {/* Layer two — everything that is reference rather than label */}
+      <div className="border-border grid min-w-0 gap-8 border-t pt-8 md:grid-cols-2 md:gap-12 md:pt-12">
+        <OlfactivePyramidView notes={product.notes} locale={locale} />
+        <div className="space-y-4">
+          {description ? (
+            <p className="body-copy text-muted-foreground font-serif">{description}</p>
+          ) : null}
+          {getProductStory(product.slug) ? (
+            <Link
+              href={`/${locale}/product/${product.slug}/story`}
+              className="text-sm font-medium underline underline-offset-4"
+            >
+              {STORY_LINK[locale]} →
+            </Link>
+          ) : null}
+        </div>
+      </div>
+
       <ProductRecord
         perfumers={product.perfumers}
         locale={locale}
@@ -272,7 +291,6 @@ export default async function ProductPage({ params }: Props) {
         avgSillage={product.avg_sillage}
         votesCount={product.votes_count}
       />
-
       <ProductReviews
         productId={product.id}
         slug={product.slug}
@@ -281,24 +299,34 @@ export default async function ProductPage({ params }: Props) {
         reviews={reviews}
       />
 
-      {/* Similar Fragrances Carousel / Grid */}
-      {product.similar.length > 0 && (
-        <section className="space-y-6 border-t border-stone-200 pt-12">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-[-0.02em]">{tpdp('similar.title')}</h2>
-              <p className="mt-1 text-xs tracking-widest text-stone-500 uppercase">
-                {tpdp('similar.subtitle')}
-              </p>
-            </div>
-          </div>
+      {related.length ? (
+        <section className="border-border space-y-4 border-t pt-8">
+          <h2 className="section-title">{tpdp('relatedFormats')}</h2>
+          <ul className="space-y-3">
+            {related.map((item) => (
+              <li key={item.slug}>
+                <Link
+                  className="text-sm underline underline-offset-4"
+                  href={`/${locale}/product/${item.slug}`}
+                >
+                  {[item.brand, item.name].filter(Boolean).join(' · ')}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {similar.length ? (
+        <section className="border-border space-y-6 border-t pt-8">
+          <h2 className="section-title">{tpdp('similar.title')}</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
-            {product.similar.map((sim) => (
-              <ProductCard key={sim.id} product={sim} locale={locale} />
+            {similar.map((item) => (
+              <ProductCard key={item.id} product={item} locale={locale} />
             ))}
           </div>
         </section>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { type Locale } from '@/i18n/config';
+import type { Locale } from '@/i18n/config';
 import { cartItemsTotal, readCart } from '@/lib/cart/cart';
 import { formatUzs } from '@/lib/money';
 import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
@@ -11,163 +11,172 @@ import { TELEGRAM_URL } from '@/lib/telegram';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
-type Lang = 'en' | 'ru' | 'uz';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'ru', 'uz'];
-const toLang = (locale: string): Lang =>
-  (SUPPORTED_LANGS as readonly string[]).includes(locale) ? (locale as Lang) : 'ru';
-
-const ORDER_COPY: Record<Lang, string> = {
-  ru: 'Заказать в Telegram',
-  en: 'Order on Telegram',
-  uz: 'Telegramda buyurtma',
-};
-const SAMPLE_COPY: Record<Lang, string> = {
-  ru: 'Пробник',
-  en: 'Sample',
-  uz: 'Namuna',
-};
+const primaryClass =
+  'bg-foreground text-background hover:opacity-85 inline-flex min-h-12 items-center justify-center px-6 text-sm font-semibold transition-opacity focus-visible:outline-2 focus-visible:outline-offset-4';
 
 export default async function CartPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-
-  const cart = await readCart(locale);
-  const t = await getTranslations('cart');
-  const tpdp = await getTranslations('pdp');
+  const [cart, t, tpdp] = await Promise.all([
+    readCart(locale),
+    getTranslations('cart'),
+    getTranslations('pdp'),
+  ]);
   const freeFrom = freeDeliveryThreshold();
-  const lang = toLang(locale);
   const itemsTotal = cartItemsTotal(cart);
+  const catalogHref = `/${locale}/catalog`;
+  const hasItems = cart.items.length > 0;
 
   return (
-    <div className="container py-10 md:py-16">
-      <h1 className="font-display text-ink dark:text-bone mb-8 text-4xl md:text-5xl">
-        {t('title')}
-      </h1>
-
-      {cart.items.length === 0 ? (
-        <div className="flex flex-col items-start gap-4 py-10">
-          <p className="text-ink-muted text-lg dark:text-stone-400">{t('empty')}</p>
-          <Link
-            href={`/${locale}/catalog`}
-            className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 items-center justify-center px-7 text-xs font-semibold tracking-widest uppercase transition-colors"
-          >
-            {t('emptyCta')}
-          </Link>
+    <div className="container mx-auto max-w-7xl py-7 md:py-12">
+      <header className="mb-7 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 md:mb-10">
+        <div className="space-y-1">
+          <h1 className="page-title">{t('title')}</h1>
+          {hasItems ? (
+            <p className="text-muted-foreground font-mono text-xs" aria-live="polite">
+              {t('itemCount', { count: cart.itemCount })}
+            </p>
+          ) : null}
         </div>
-      ) : (
-        <div className="grid gap-12 lg:grid-cols-[1fr_22rem]">
-          {/* Line items */}
-          <ul className="divide-border border-border divide-y border-y">
-            {cart.items.map((line) => (
-              <li key={line.id} className="flex gap-4 py-6">
-                <Link
-                  href={`/${locale}/product/${line.slug}`}
-                  className="relative h-28 w-24 shrink-0 overflow-hidden rounded bg-stone-50"
+        {hasItems ? (
+          <Link
+            href={catalogHref}
+            className="inline-flex min-h-11 items-center text-sm underline underline-offset-4"
+          >
+            {t('continueShopping')}
+          </Link>
+        ) : null}
+      </header>
+
+      {hasItems ? (
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:gap-12">
+          <ul className="border-border divide-border min-w-0 divide-y border-y">
+            {cart.items.map((line) => {
+              const display = line.display;
+              const name = display?.name ?? line.name;
+              const productPath = `/${locale}/product/${display?.productSlug ?? line.slug}`;
+              const href = display?.selectedMl
+                ? `${productPath}?size=${display.selectedMl}`
+                : productPath;
+              const measure = display?.size;
+              const meta = [
+                line.isSample ? t('sample') : display?.concentration?.toUpperCase(),
+                measure
+                  ? tpdp(measure.unit === 'g' ? 'packageGrams' : 'packageMl', {
+                      amount: measure.amount,
+                    })
+                  : undefined,
+              ]
+                .filter(Boolean)
+                .join(' · ');
+              return (
+                <li
+                  key={line.id}
+                  className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-x-4 gap-y-3 py-5 sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:gap-x-5 sm:py-6"
                 >
-                  {line.image && (
-                    <Image
-                      src={line.image}
-                      alt={line.name}
-                      fill
-                      sizes="96px"
-                      className="object-contain p-2"
-                    />
-                  )}
-                </Link>
-                <div className="flex min-w-0 flex-1 flex-col gap-2">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      {line.brand && (
-                        <p className="text-xs tracking-widest text-stone-500 uppercase">
-                          {line.brand}
-                        </p>
-                      )}
-                      <Link
-                        href={`/${locale}/product/${line.slug}`}
-                        className="text-ink dark:text-bone text-base hover:underline hover:underline-offset-4"
+                  <div className="border-border bg-muted/30 relative row-span-2 aspect-square overflow-hidden border sm:row-span-1">
+                    {line.image ? (
+                      <Image
+                        src={line.image}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 88px, 72px"
+                        className="object-contain p-2 mix-blend-multiply dark:mix-blend-normal"
+                      />
+                    ) : (
+                      <span
+                        aria-hidden="true"
+                        className="text-muted-foreground absolute inset-0 grid place-items-center text-xl"
                       >
-                        {line.name}
-                      </Link>
-                      {line.isSample && (
-                        <span className="text-micro ml-2 inline-block rounded bg-stone-100 px-1.5 py-0.5 tracking-wide text-stone-600 uppercase dark:bg-stone-800 dark:text-stone-300">
-                          {SAMPLE_COPY[lang]}
-                        </span>
-                      )}
-                      <p className="text-ink-muted mt-1 text-sm dark:text-stone-400">
-                        {formatUzs(line.unitPrice, locale)}
-                      </p>
-                    </div>
-                    <span className="text-ink dark:text-bone text-base font-medium whitespace-nowrap">
-                      {formatUzs(line.lineTotal, locale)}
-                    </span>
+                        —
+                      </span>
+                    )}
                   </div>
-                  <div className="mt-auto">
+                  <div className="min-w-0 space-y-2">
+                    <div className="space-y-0.5">
+                      {line.brand ? <p className="eyebrow break-words">{line.brand}</p> : null}
+                      <Link
+                        href={href}
+                        className="block text-base leading-snug font-semibold break-words hover:underline hover:underline-offset-4"
+                      >
+                        {name}
+                      </Link>
+                      {meta ? (
+                        <p className="text-muted-foreground font-mono text-xs">{meta}</p>
+                      ) : null}
+                    </div>
                     <CartLineControls
                       itemId={line.id}
                       quantity={line.quantity}
                       locale={locale}
-                      removeLabel={t('remove')}
+                      itemLabel={[name, meta].filter(Boolean).join(' · ')}
                     />
                   </div>
-                </div>
-              </li>
-            ))}
+                  <p className="col-start-2 font-mono text-sm font-semibold sm:col-start-3 sm:min-w-30 sm:text-right sm:text-base">
+                    {formatUzs(line.lineTotal, locale)}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
 
-          {/* Summary */}
-          <aside className="border-border h-fit space-y-5 rounded-lg border p-6">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-ink-muted dark:text-stone-400">{t('subtotal')}</span>
-              <span className="text-ink dark:text-bone font-medium">
-                {formatUzs(cart.subtotal, locale)}
-              </span>
+          <aside
+            className="border-border h-fit space-y-4 border p-5 sm:p-6 lg:sticky lg:top-24"
+            aria-labelledby="cart-summary"
+          >
+            <h2 id="cart-summary" className="section-title">
+              {t('summaryTitle')}
+            </h2>
+            <dl aria-live="polite" className="space-y-2">
+              {cart.setDiscount > 0 ? (
+                <>
+                  <div className="flex flex-wrap justify-between gap-x-3 text-sm">
+                    <dt className="text-muted-foreground">{t('subtotal')}</dt>
+                    <dd className="font-mono">{formatUzs(cart.subtotal, locale)}</dd>
+                  </div>
+                  {cart.sets.map((set) => (
+                    <div key={set.slug} className="flex flex-wrap justify-between gap-x-3 text-sm">
+                      <dt className="text-muted-foreground">
+                        {t('set', { title: set.title })}
+                        {set.count > 1 ? ` × ${set.count}` : ''}
+                      </dt>
+                      <dd className="font-mono">−{formatUzs(set.saving, locale)}</dd>
+                    </div>
+                  ))}
+                </>
+              ) : null}
+              <div className="border-border flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t pt-4">
+                <dt className="text-sm font-medium">{t('productsTotal')}</dt>
+                <dd className="font-mono text-lg font-semibold">{formatUzs(itemsTotal, locale)}</dd>
+              </div>
+            </dl>
+            <div className="text-muted-foreground space-y-1 text-xs leading-relaxed">
+              <p>{t('shippingAtCheckout')}</p>
+              {freeFrom !== null ? (
+                <p>
+                  {itemsTotal >= freeFrom
+                    ? t('deliveryThresholdReached')
+                    : t('freeDeliveryLeft', { amount: formatUzs(freeFrom - itemsTotal, locale) })}
+                </p>
+              ) : null}
             </div>
-            {/* Discovery sets the samples complete: one row each, then what is left. */}
-            {cart.sets.map((set) => (
-              <div key={set.slug} className="flex items-center justify-between gap-4 text-sm">
-                <span className="text-ink-muted dark:text-stone-400">
-                  {t('set', { title: set.title })}
-                  {set.count > 1 ? ` × ${set.count}` : ''}
-                </span>
-                <span className="text-ink dark:text-bone whitespace-nowrap">
-                  −{formatUzs(set.saving, locale)}
-                </span>
-              </div>
-            ))}
-            {cart.setDiscount > 0 && (
-              <div className="border-border flex items-center justify-between border-t pt-4 text-sm">
-                <span className="text-ink-muted dark:text-stone-400">{t('total')}</span>
-                <span className="text-ink dark:text-bone text-base font-medium">
-                  {formatUzs(itemsTotal, locale)}
-                </span>
-              </div>
-            )}
-            {/* Before a promo code: the checkout recounts after one. */}
-            {freeFrom !== null && (
-              <p className="text-ink-muted text-xs dark:text-stone-400">
-                {itemsTotal >= freeFrom
-                  ? t('freeDeliveryReached')
-                  : t('freeDeliveryLeft', { amount: formatUzs(freeFrom - itemsTotal, locale) })}
-              </p>
-            )}
-            {/* The same promise the product page makes under its button, repeated
-                where the money is committed. */}
-            <p className="text-muted-foreground text-micro font-mono leading-relaxed tracking-[0.12em] uppercase">
-              {tpdp('trustLine')}
-            </p>
-            <Link
-              href={`/${locale}/checkout`}
-              className="bg-ink text-bone hover:bg-brass dark:bg-bone dark:text-ink inline-flex h-12 w-full items-center justify-center text-xs font-semibold tracking-widest uppercase transition-colors"
-            >
+            <Link href={`/${locale}/checkout`} className={`${primaryClass} w-full`}>
               {t('proceed')}
             </Link>
             <a
               href={TELEGRAM_URL}
-              className="border-foreground text-foreground hover:bg-foreground hover:text-background inline-flex h-12 w-full items-center justify-center gap-2 border text-xs font-semibold tracking-[0.18em] uppercase transition-colors"
+              className="text-muted-foreground hover:text-foreground inline-flex min-h-11 items-center text-xs underline underline-offset-4"
             >
-              {ORDER_COPY[lang]}
+              {t('telegramHelp')}
             </a>
           </aside>
+        </div>
+      ) : (
+        <div className="border-border flex flex-col items-start gap-5 border-y py-10 md:py-14">
+          <p className="body-copy text-muted-foreground">{t('empty')}</p>
+          <Link href={catalogHref} className={primaryClass}>
+            {t('emptyCta')}
+          </Link>
         </div>
       )}
     </div>

@@ -9,6 +9,7 @@
 // would swallow the redirect. We compute the destination inside try, then
 // redirect after.
 
+import type { DeliveryPin } from '@/lib/delivery/delivery-pin';
 import { redirect } from 'next/navigation';
 
 import { getCurrentUserId } from '@/lib/auth/session';
@@ -34,6 +35,7 @@ export interface PlaceOrderInput {
   region: string;
   district: string;
   address: string;
+  deliveryPin?: DeliveryPin;
   deliveryMethod: string;
   payment: PaymentChoice;
   promoCode?: string;
@@ -68,6 +70,7 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
           region: input.region,
           district: input.district,
           address: input.address,
+          pin: input.deliveryPin,
         },
         deliveryMethod: input.deliveryMethod,
         promoCode: input.promoCode || undefined,

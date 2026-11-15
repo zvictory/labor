@@ -17,8 +17,15 @@ import { cookies } from 'next/headers';
 import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
+import {
+  getSeparateFormat,
+  listingSlug,
+  separateFormatSlugs,
+  volumeGroup,
+  type PackageSize,
+} from '@/lib/catalog/product-formats';
 import { resolveLocaleText } from '@/lib/catalog/locale';
-import { SAMPLE_PRICE } from '@/lib/money';
+import { SAMPLE_ML, SAMPLE_PRICE } from '@/lib/money';
 import { applySampleSets, SET_MAX_ITEMS, SET_MIN_ITEMS, type AppliedSet } from '@/lib/sets/rules';
 import { liveSampleSets } from '@/lib/sets/sets';
 
@@ -73,6 +80,13 @@ export interface CartLineDTO {
   isSample: boolean;
   unitPrice: number;
   lineTotal: number;
+  display?: {
+    name: string;
+    productSlug: string;
+    selectedMl?: number;
+    size?: PackageSize;
+    concentration?: string;
+  };
 }
 
 /** The cart projection consumed by the cart page, mini-cart and the API. */
@@ -108,7 +122,7 @@ const cartInclude = {
             select: { url: true },
           },
           fragrance: {
-            select: { brand: { select: { name: true } } },
+            select: { volumeMl: true, concentration: true, brand: { select: { name: true } } },
           },
         },
       },
@@ -285,17 +299,46 @@ export const getOrCreateCart = async (): Promise<CartWithItems> => {
 
 const toCartLine = (item: CartWithItems['items'][number], locale: string): CartLineDTO => {
   const unitPrice = lineUnitPrice(item.product, item.isSample);
+  const name = resolveLocaleText(item.product.name, locale);
+  const { slug, fragrance } = item.product;
+  const group = volumeGroup(slug);
+  const format = getSeparateFormat(slug);
+  const volume = fragrance?.volumeMl;
+  const size = group ? (item.isSample ? SAMPLE_ML : volume) : null;
+  const packageSize: PackageSize | undefined = item.isSample
+    ? { amount: SAMPLE_ML, unit: 'ml' }
+    : format
+      ? format.size
+      : volume
+        ? { amount: volume, unit: 'ml' }
+        : undefined;
+  // Imported names may already end in a package size.
+  const sizeInName =
+    packageSize &&
+    new RegExp(
+      `(?:^|[^0-9])${packageSize.amount}\\s*(?:${packageSize.unit === 'ml' ? 'ml|мл' : 'g|gr|г|гр'})(?![a-zа-я])`,
+      'i',
+    ).test(name);
   return {
     id: item.id,
     productId: item.productId,
     slug: item.product.slug,
-    name: resolveLocaleText(item.product.name, locale),
+    name: size ? `${name} · ${size} ${locale === 'ru' ? 'мл' : 'ml'}` : name,
     brand: item.product.fragrance?.brand?.name ?? '',
     image: item.product.images[0]?.url ?? '',
     quantity: item.quantity,
     isSample: item.isSample,
     unitPrice,
     lineTotal: unitPrice * item.quantity,
+    display: {
+      name,
+      productSlug: listingSlug(slug),
+      ...(group && slug !== group[0] && volume ? { selectedMl: volume } : {}),
+      ...(packageSize && !sizeInName ? { size: packageSize } : {}),
+      ...(!format && !item.isSample && fragrance?.concentration
+        ? { concentration: fragrance.concentration }
+        : {}),
+    },
   };
 };
 
@@ -383,9 +426,16 @@ export const addItem = async (
   productId: number,
   options: AddItemOptions = {},
 ): Promise<CartDTO> => {
-  const cart = await getOrCreateCart();
   const isSample = options.isSample ?? false;
   const quantity = options.quantity ?? 1;
+  if (isSample && quantity > 0) {
+    const product = await db.product.findUnique({
+      where: { id: productId },
+      select: { slug: true },
+    });
+    if (product && getSeparateFormat(product.slug)) return getCart('ru');
+  }
+  const cart = await getOrCreateCart();
 
   const existing = await db.cartItem.findUnique({
     where: {
@@ -421,7 +471,7 @@ export const addItem = async (
 export const addSamples = async (productIds: readonly number[]): Promise<void> => {
   const ids = [...new Set(productIds)].slice(0, SET_MAX_ITEMS);
   const products = await db.product.findMany({
-    where: { id: { in: ids }, status: 'active' },
+    where: { id: { in: ids }, status: 'active', slug: { notIn: separateFormatSlugs } },
     select: { id: true },
   });
   if (products.length === 0) return;

@@ -46,7 +46,7 @@ const ERROR_COPY: Record<Lang, string> = {
 
 const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
-function useAddToCart(productId: number, locale: string) {
+function useAddToCart(productId: number, locale: string, sampleProductId = productId) {
   const [pending, startTransition] = useTransition();
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const lang = toLang(locale);
@@ -54,18 +54,19 @@ function useAddToCart(productId: number, locale: string) {
   const ready = useHydrated();
 
   const add = (isSample: boolean): void => {
+    const selectedId = isSample ? sampleProductId : productId;
     startTransition(async () => {
       try {
         const res = await fetch(`/api/cart?locale=${locale}`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ productId, isSample, quantity: 1 }),
+          body: JSON.stringify({ productId: selectedId, isSample, quantity: 1 }),
         });
         if (!res.ok) throw new Error('request failed');
         const cart = (await res.json()) as CartDTO;
         emitCartUpdated(cart);
         track('add_to_cart', {
-          item_id: String(productId),
+          item_id: String(selectedId),
           item_variant: isSample ? 'sample' : 'decant',
           currency: 'UZS',
         });
@@ -178,17 +179,21 @@ export function AddToCart({
   productId,
   locale,
   hasSample = false,
+  isSample = false,
   volumeMl,
   sampleMl,
+  sampleProductId,
 }: {
   productId: number;
   locale: string;
   hasSample?: boolean;
+  isSample?: boolean;
   volumeMl?: number | null;
   sampleMl?: number;
+  sampleProductId?: number;
 }) {
   const lang = toLang(locale);
-  const { pending, toast, add } = useAddToCart(productId, locale);
+  const { pending, toast, add } = useAddToCart(productId, locale, sampleProductId);
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -198,7 +203,7 @@ export function AddToCart({
         <button
           type="button"
           disabled={pending}
-          onClick={() => add(false)}
+          onClick={() => add(isSample)}
           className="bg-foreground text-background inline-flex h-12 items-center justify-center px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-70 sm:flex-1"
         >
           {ADD_COPY[lang]}

@@ -9,6 +9,8 @@
 import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 
+import { DeliveryPinPicker } from '@/components/checkout/delivery-pin-picker';
+import { supportsDeliveryPin, type DeliveryPin } from '@/lib/delivery/delivery-pin';
 import { UZ_REGIONS } from '@/lib/delivery/uz-regions';
 import { availableMethodsForRegion } from '@/lib/delivery/methods';
 import {
@@ -104,6 +106,8 @@ interface Props {
   /** The promise made under the buy button, repeated where the money is committed. */
   trustLine: string;
   /** The signed-in customer's name and phone; empty for a guest. */
+  mapTileUrl: string;
+  mapTileCredit: string;
   initialName: string;
   initialPhone: string;
 }
@@ -139,6 +143,8 @@ export function CheckoutForm({
   freeDeliveryFrom,
   bonusAvailable,
   trustLine,
+  mapTileUrl,
+  mapTileCredit,
   initialName,
   initialPhone,
 }: Props) {
@@ -150,6 +156,7 @@ export function CheckoutForm({
   const [regionName, setRegionName] = useState('');
   const [district, setDistrict] = useState('');
   const [street, setStreet] = useState('');
+  const [deliveryPin, setDeliveryPin] = useState<DeliveryPin | null>(null);
   const [deliveryMethod, setDeliveryMethod] = useState('');
   const [payment, setPayment] = useState<PaymentChoice>('payme');
   const [error, setError] = useState<string | null>(null);
@@ -236,12 +243,14 @@ export function CheckoutForm({
     locale === 'ru' ? d.name_ru : d.name_uz;
 
   function onRegionChange(value: string) {
+    setDeliveryPin(null);
     setRegionName(value);
     setDistrict('');
     setDeliveryMethod('');
   }
 
   const pickupOnly = deliveryMethod === 'pickup';
+  const showDeliveryPin = supportsDeliveryPin(deliveryMethod, regionName);
   const missing = missingCheckoutFields({
     name,
     phone,
@@ -311,6 +320,7 @@ export function CheckoutForm({
       region: regionName,
       district,
       address: street.trim(),
+      ...(showDeliveryPin && deliveryPin ? { deliveryPin } : {}),
       deliveryMethod,
       payment,
       promoCode: promo?.code,
@@ -436,7 +446,10 @@ export function CheckoutForm({
                 id="co-district"
                 className={fieldCls('district')}
                 value={district}
-                onChange={(e) => setDistrict(e.target.value)}
+                onChange={(e) => {
+                  setDistrict(e.target.value);
+                  setDeliveryPin(null);
+                }}
                 disabled={!region}
                 required
                 {...invalidProps('district')}
@@ -459,7 +472,10 @@ export function CheckoutForm({
               id="co-street"
               className={fieldCls('address')}
               value={street}
-              onChange={(e) => setStreet(e.target.value)}
+              onChange={(e) => {
+                setStreet(e.target.value);
+                setDeliveryPin(null);
+              }}
               placeholder={copy.streetPlaceholder}
               autoComplete="street-address"
               // street is optional only for pickup
@@ -469,6 +485,16 @@ export function CheckoutForm({
             />
             {fieldError('address')}
           </div>
+          {showDeliveryPin && region ? (
+            <DeliveryPinPicker
+              key={JSON.stringify([regionName, district, street, deliveryMethod])}
+              tileUrl={mapTileUrl}
+              tileCredit={mapTileCredit}
+              center={region.center}
+              value={deliveryPin}
+              onChange={setDeliveryPin}
+            />
+          ) : null}
         </section>
 
         {/* Delivery method */}
@@ -498,7 +524,10 @@ export function CheckoutForm({
                     className="accent-brass mt-1"
                     value={m.id}
                     checked={checked}
-                    onChange={() => setDeliveryMethod(m.id)}
+                    onChange={() => {
+                      setDeliveryMethod(m.id);
+                      setDeliveryPin(null);
+                    }}
                   />
                   <span className="flex-1">
                     <span className="flex items-baseline justify-between gap-3">

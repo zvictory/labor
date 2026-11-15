@@ -1,3 +1,4 @@
+import { listingSlug } from './product-formats';
 import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
@@ -9,10 +10,7 @@ export { LOGO_FILES } from './media-manifest';
 
 // Counts and membership are over ACTIVE products only, the way the catalogue
 // counts them. Without the filter /brands said "Tom Ford · 26 ароматов" while
-// /catalog?brand=tom-ford found 18 — archived duplicates and drafts were still
-// counted here. The ordering below is still by the unfiltered count: Prisma
-// cannot filter the relation count it sorts on, and the difference moves a row
-// by a place or two, which is not worth fetching every row to sort in memory.
+// Count active perfume groups and independent products as the catalogue does.
 const brandSelect = {
   slug: true,
   name: true,
@@ -21,16 +19,17 @@ const brandSelect = {
   logoUrl: true,
   description: true,
   products: {
+    where: { product: { status: 'active' } },
     orderBy: { productId: 'asc' },
     select: {
       product: {
         select: {
+          slug: true,
           images: { orderBy: { position: 'asc' }, take: 1, select: { url: true } },
         },
       },
     },
   },
-  _count: { select: { products: { where: { product: { status: 'active' } } } } },
 } satisfies Prisma.BrandSelect;
 
 type BrandRow = {
@@ -40,8 +39,7 @@ type BrandRow = {
   niche: boolean;
   logoUrl: string | null;
   description: unknown;
-  products: { product: { images: { url: string }[] } }[];
-  _count: { products: number };
+  products: { product: { slug: string; images: { url: string }[] } }[];
 };
 
 const toBrand = (row: BrandRow, locale = 'en'): BrandDTO => ({
@@ -55,7 +53,7 @@ const toBrand = (row: BrandRow, locale = 'en'): BrandDTO => ({
   ...(row.country ? { country: row.country } : {}),
   niche: row.niche,
   // `products` is the FragranceDetail back-relation → one per product.
-  product_count: row._count.products,
+  product_count: new Set(row.products.map(({ product }) => listingSlug(product.slug))).size,
   description: resolveLocaleText(row.description, locale),
 });
 
@@ -82,8 +80,7 @@ export const getBrands = async (
   try {
     const rows = await db.brand.findMany({
       where: { active: true, products: { some: { product: { status: 'active' } } } },
-      orderBy: [{ products: { _count: 'desc' } }, { name: 'asc' }],
-      take: options?.take,
+      orderBy: { name: 'asc' },
       select: brandSelect,
     });
 
@@ -91,7 +88,10 @@ export const getBrands = async (
       return getFallbackBrands(options);
     }
 
-    return rows.map((row) => toBrand(row, locale));
+    return rows
+      .map((row) => toBrand(row, locale))
+      .sort((a, b) => b.product_count - a.product_count)
+      .slice(0, options?.take ?? rows.length);
   } catch (err) {
     console.error('[catalog/brands] DB query failed:', err);
     return getFallbackBrands(options);

@@ -10,8 +10,8 @@
 // Idempotent: upsert by composite unique (productId, noteId, pyramidLayer).
 // Skips rows whose product was dropped.
 
-import { db } from "@/lib/db";
-import { query } from "../source";
+import { db } from '@/lib/db';
+import { query } from '../source';
 
 interface ProductNoteRow {
   spree_product_id: string;
@@ -34,8 +34,16 @@ export async function loadProductNotes(
       ORDER BY pn.id`,
   );
 
-  let written = 0;
   let skipped = 0;
+  const memberships = new Map<
+    string,
+    {
+      productId: number;
+      noteId: number;
+      pyramidLayer: string;
+      position: number;
+    }
+  >();
 
   for (const r of rows) {
     const productId = productOldIdToNewId.get(Number(r.spree_product_id));
@@ -45,21 +53,32 @@ export async function loadProductNotes(
       continue;
     }
 
-    const data = { position: r.position };
+    // Preserve stored source layer spelling; changing heart to middle would
+    // insert parallel rows into a previously imported catalogue.
+    const pyramidLayer = r.pyramid_layer;
+    const key = `${productId}:${noteId}:${pyramidLayer}`;
+    const existing = memberships.get(key);
+    if (!existing || r.position < existing.position) {
+      memberships.set(key, { productId, noteId, pyramidLayer, position: r.position });
+    }
+  }
 
+  // Aliases may share one destination key: choose the earliest position before
+  // writing so source order and repeated imports cannot change the scent order.
+  for (const { productId, noteId, pyramidLayer, position } of memberships.values()) {
+    const data = { position };
     await db.productNote.upsert({
       where: {
         productId_noteId_pyramidLayer: {
           productId,
           noteId,
-          pyramidLayer: r.pyramid_layer,
+          pyramidLayer,
         },
       },
-      create: { productId, noteId, pyramidLayer: r.pyramid_layer, ...data },
+      create: { productId, noteId, pyramidLayer, ...data },
       update: data,
     });
-    written += 1;
   }
 
-  console.log(`[productNotes] upserted ${written}, skipped ${skipped}`);
+  console.log(`[productNotes] upserted ${memberships.size}, skipped ${skipped}`);
 }

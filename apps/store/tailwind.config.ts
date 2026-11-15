@@ -51,8 +51,8 @@ const config: Config = {
       fontSize: {
         // The technical scale: eyebrows and meta lines at `micro`, measured
         // values at `label`. Everything larger uses Tailwind's own steps.
-        micro: ['0.625rem', { lineHeight: '1rem' }],
-        label: ['0.6875rem', { lineHeight: '1rem' }],
+        micro: ['0.75rem', { lineHeight: '1rem' }],
+        label: ['0.75rem', { lineHeight: '1rem' }],
       },
       colors: {
         // Brandbook palette. Amber has no literal name on purpose: it is only

@@ -34,18 +34,16 @@ export default async function DeliveryPage({ params }: Props) {
   return (
     <main className="container max-w-3xl space-y-12 py-12">
       <header className="space-y-3">
-        <h1 className="font-display text-4xl tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
-        <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
+        <h1 className="page-title">{t('title')}</h1>
+        <p className="body-copy">{t('subtitle')}</p>
       </header>
 
       <section className="border-border border-t pt-8">
-        <h2 className="text-label mb-6 font-mono tracking-[0.16em] uppercase">
-          {t('shippingTitle')}
-        </h2>
+        <h2 className="section-title mb-6">{t('shippingTitle')}</h2>
         <dl className="grid gap-px sm:grid-cols-2">
           <div className="border-border space-y-1 border p-6">
             <dt className="text-base font-medium">{t('tashkentTerm')}</dt>
-            <dd className="text-muted-foreground text-sm">
+            <dd className="body-copy">
               {t('tashkentBody')}
               {freeFrom !== null && (
                 <> {t('tashkentFree', { amount: formatUzs(freeFrom, locale) })}</>
@@ -54,27 +52,23 @@ export default async function DeliveryPage({ params }: Props) {
           </div>
           <div className="border-border space-y-1 border p-6 sm:border-l-0">
             <dt className="text-base font-medium">{t('regionsTerm')}</dt>
-            <dd className="text-muted-foreground text-sm">{t('regionsBody')}</dd>
+            <dd className="body-copy">{t('regionsBody')}</dd>
           </div>
         </dl>
       </section>
 
       <section className="border-border border-t pt-8">
-        <h2 className="text-label mb-4 font-mono tracking-[0.16em] uppercase">
-          {t('paymentTitle')}
-        </h2>
-        <p className="max-w-prose text-base">{t('paymentBody')}</p>
+        <h2 className="section-title mb-4">{t('paymentTitle')}</h2>
+        <p className="body-copy max-w-prose">{t('paymentBody')}</p>
       </section>
 
       <section className="border-border border-t pt-8">
-        <h2 className="text-label mb-4 font-mono tracking-[0.16em] uppercase">
-          {t('authenticityTitle')}
-        </h2>
-        <p className="max-w-prose text-base">{t('authenticityBody')}</p>
+        <h2 className="section-title mb-4">{t('authenticityTitle')}</h2>
+        <p className="body-copy max-w-prose">{t('authenticityBody')}</p>
       </section>
 
       <section className="border-border border-t pt-8">
-        <h2 className="font-display mb-3 text-2xl">{t('helpTitle')}</h2>
+        <h2 className="section-title mb-3">{t('helpTitle')}</h2>
         <p className="text-muted-foreground max-w-prose text-sm">{t('helpBody')}</p>
         <a
           href={TELEGRAM_URL}

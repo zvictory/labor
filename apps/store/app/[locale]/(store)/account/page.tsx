@@ -94,7 +94,7 @@ export default async function AccountPage({ params, searchParams }: Props) {
   return (
     <div className="container max-w-2xl py-12 md:py-16">
       <div className="flex items-start justify-between gap-4">
-        <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">{copy.title}</h1>
+        <h1 className="page-title">{copy.title}</h1>
         <SignOutButton locale={locale} />
       </div>
 
@@ -111,10 +111,8 @@ export default async function AccountPage({ params, searchParams }: Props) {
       )}
 
       {/* Profile */}
-      <section className="border-border mt-10 space-y-3 rounded-xl border p-6">
-        <h2 className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-          {copy.profile}
-        </h2>
+      <section className="border-border mt-10 space-y-3 border p-6">
+        <h2 className="eyebrow">{copy.profile}</h2>
         <Row label={copy.name} value={user.name ?? copy.notSet} />
         <Row label={copy.contact} value={contactEmail ?? copy.notSet} />
         <Row
@@ -128,7 +126,7 @@ export default async function AccountPage({ params, searchParams }: Props) {
       <section className="mt-6">
         <Link
           href={`/${locale}/account/orders`}
-          className="border-border hover:border-foreground flex items-center justify-between rounded-xl border p-6 transition-colors"
+          className="border-border hover:border-foreground flex items-center justify-between border p-6 transition-colors"
         >
           <span className="text-ink dark:text-bone text-sm font-medium">{copy.ordersLink}</span>
           <span className="text-brass">→</span>

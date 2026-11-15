@@ -28,23 +28,25 @@ export const SelectionCard = ({ product, locale }: { product: ProductCardDTO; lo
             className="object-contain p-3 mix-blend-multiply dark:mix-blend-normal"
           />
         ) : (
-          <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
+          <span className="text-muted-foreground font-mono text-xs leading-4 tracking-[0.16em] uppercase">
             {product.brand}
           </span>
         )}
       </div>
 
       <div className="flex flex-grow flex-col gap-1.5 p-[11px]">
-        <p className="text-muted-foreground text-micro font-mono tracking-[0.06em] uppercase">
+        <p className="text-muted-foreground font-mono text-xs leading-4 tracking-[0.06em] uppercase">
           {product.brand}
         </p>
-        <p className="text-sm leading-[18px] font-semibold tracking-[-0.01em]">{product.name}</p>
+        <p className="line-clamp-2 min-h-10 text-sm leading-5 font-semibold tracking-[-0.01em]">
+          {product.name}
+        </p>
         {product.notes.length > 0 && (
-          <p className="text-muted-foreground text-label font-mono">{product.notes.join(' · ')}</p>
+          <p className="text-muted-foreground text-xs leading-4">{product.notes.join(' · ')}</p>
         )}
         {product.avg_longevity > 0 && (
           <div className="flex items-center gap-2 pt-0.5">
-            <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
+            <span className="text-muted-foreground font-mono text-xs leading-4 tracking-[0.16em] uppercase">
               {t('longevity')}
             </span>
             <TickScale

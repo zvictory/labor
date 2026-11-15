@@ -10,8 +10,9 @@
 //   - `description` is translated only.
 //   - Note.name is REQUIRED JSON -> use collapseRequiredLocaleJson (slug fallback).
 //
-// Idempotent: upsert by `slug`. Returns slug->newId map.
+// Idempotent: retains source metadata by slug; returns source slug->canonical ID map.
 
+import { canonicalNoteSlug } from '@/lib/catalog/note-aliases';
 import { db } from '@/lib/db';
 import {
   migrateTaxonomyMedia,
@@ -56,7 +57,15 @@ export async function loadNotes(
   const slugToId = new Map<string, number>();
   const failures = mediaFailures ?? [];
 
-  for (const n of notes) {
+  // Canonical source metadata wins regardless of source ID order. Every source
+  // slug still maps to its canonical ID for ProductNote foreign-key resolution.
+  const ordered = [...notes].sort(
+    (a, b) =>
+      Number(a.slug !== canonicalNoteSlug(a.slug)) - Number(b.slug !== canonicalNoteSlug(b.slug)),
+  );
+  const canonicalIds = new Map<string, number>();
+  for (const n of ordered) {
+    const slug = canonicalNoteSlug(n.slug);
     const id = Number(n.id);
     const name = collapseRequiredLocaleJson(n.name, names.get(id) ?? [], n.slug);
     const description = collapseLocaleJson(null, descriptions.get(id) ?? []);
@@ -86,16 +95,35 @@ export async function loadNotes(
       iconUrl,
     };
 
-    const saved = await db.note.upsert({
+    // Retain the source row, including translated old names/descriptions, for
+    // directory search. Only the returned ID controls imported memberships.
+    const source = await db.note.upsert({
       where: { slug: n.slug },
       create: { slug: n.slug, ...data },
       update: data,
       select: { id: true },
     });
-    slugToId.set(n.slug, saved.id);
+    const existingId = canonicalIds.get(slug);
+    const canonicalId =
+      existingId ??
+      (slug === n.slug
+        ? source.id
+        : (
+            await db.note.upsert({
+              where: { slug },
+              create: { slug, ...data },
+              update: data,
+              select: { id: true },
+            })
+          ).id);
+    canonicalIds.set(slug, canonicalId);
+    slugToId.set(slug, canonicalId);
+    slugToId.set(n.slug, canonicalId);
   }
 
-  console.log(`[notes] upserted ${slugToId.size} notes`);
+  console.log(
+    `[notes] upserted ${canonicalIds.size} canonical notes (${slugToId.size} source/canonical slugs)`,
+  );
   if (!mediaFailures) reportTaxonomyMediaFailures(failures);
   return slugToId;
 }

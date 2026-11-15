@@ -1,3 +1,4 @@
+import { notePilotImage } from './note-pilot';
 export { LOGO_FILES, PERFUMER_IMAGES } from './media-manifest';
 
 import { LOGO_FILES, NOTE_ICON_FILES, PERFUMER_IMAGES } from './media-manifest';
@@ -27,7 +28,9 @@ export const resolveNoteImage = ({
   slug,
   iconUrl,
 }: ImageFallbackInput & { iconUrl?: string | null }): string | undefined =>
-  iconUrl || (NOTE_ICON_FILES[slug] ? `/notes/${NOTE_ICON_FILES[slug]}` : undefined);
+  notePilotImage(slug) ||
+  iconUrl ||
+  (NOTE_ICON_FILES[slug] ? `/notes/${NOTE_ICON_FILES[slug]}` : undefined);
 
 export const resolvePerfumerImage = ({
   slug,

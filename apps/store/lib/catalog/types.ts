@@ -1,3 +1,5 @@
+import type { PackageSize } from './product-formats';
+
 // DTO contract shared between the server data-access layer (this package), the
 // ETL, and the UI (Agent 5). Field names match what the carried-over prototype
 // components consume (see apps/web ProductCard) — do not rename without updating
@@ -40,6 +42,8 @@ export interface ProductCardDTO {
   concentration?: string | null;
   /** Decant size. The shop sells by volume, so the price is meaningless without it. */
   volume_ml?: number | null;
+  package_size?: PackageSize;
+  separate_format?: boolean;
   top_accord?: { name: string; color_hex: string } | null;
   /** One note from each layer of the pyramid, top first — the card's "A · B · C" line. */
   notes: string[];
@@ -61,6 +65,8 @@ export interface OrbitNoteDTO {
 
 /// Note as surfaced on listing/browse pages.
 export interface NoteDTO {
+  /** Canonical/legacy slugs and translated names for directory search. */
+  searchTerms?: string[];
   slug: string;
   name: string;
   image?: string;
@@ -137,6 +143,8 @@ export interface ProductDetailDTO {
   concentration?: string;
   release_year?: number | null;
   volume_ml?: number | null;
+  package_size?: PackageSize;
+  separate_format?: boolean;
   avg_rating: number;
   /** Imported averages on a 0-10 scale — shown as ticks in the full record. */
   avg_longevity: number;
@@ -146,6 +154,7 @@ export interface ProductDetailDTO {
   accords: ProductAccordDTO[];
   perfumers: ProductPerfumerDTO[];
   similar: ProductCardDTO[];
+  active?: boolean;
   seasons: Record<string, number>;
   time: Record<string, number>;
   love: Record<string, number>;

@@ -137,8 +137,8 @@ export default async function ContactsPage({ params }: Props) {
         />
       )}
       <header className="space-y-3">
-        <h1 className="font-display text-4xl tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
-        <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
+        <h1 className="page-title">{t('title')}</h1>
+        <p className="body-copy">{t('subtitle')}</p>
       </header>
 
       <dl className="divide-border border-border divide-y border-y">

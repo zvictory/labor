@@ -39,7 +39,7 @@ export function SiteMenu({
         aria-label={open ? closeLabel : openLabel}
         onClick={() => setOpen((o) => !o)}
         disabled={!ready}
-        className="flex h-11 w-11 items-center justify-center xl:hidden"
+        className="flex h-11 w-11 items-center justify-center 2xl:hidden"
       >
         {open ? (
           <X className="h-[22px] w-[22px]" strokeWidth={1.4} />
@@ -53,12 +53,12 @@ export function SiteMenu({
           {/* A tap anywhere below the panel closes it; the header stays live. */}
           <div
             aria-hidden="true"
-            className="fixed inset-x-0 top-14 bottom-0 md:top-16 xl:hidden"
+            className="fixed inset-x-0 top-16 bottom-0 md:top-20 2xl:hidden"
             onClick={() => setOpen(false)}
           />
           <nav
             id="site-menu"
-            className="border-border bg-background absolute inset-x-0 top-full border-b xl:hidden"
+            className="border-border bg-background absolute inset-x-0 top-full border-b 2xl:hidden"
           >
             <ul className="container">
               {items.map((item) => (

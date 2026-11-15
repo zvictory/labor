@@ -9,8 +9,7 @@ import { StaffLoginForm } from '@/components/account/staff-login-form';
 type Props = { params: Promise<{ locale: Locale }> };
 
 type Lang = 'ru' | 'uz' | 'en';
-const toLang = (locale: string): Lang =>
-  locale === 'uz' || locale === 'en' ? locale : 'ru';
+const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
 
 const COPY: Record<
   Lang,
@@ -24,24 +23,25 @@ const COPY: Record<
   }
 > = {
   ru: {
-    title: 'Вход',
-    subtitle: 'Войдите с помощью нашего Telegram-бота.',
+    title: 'Вход или регистрация',
+    subtitle: 'Получите код в Telegram. При первом входе аккаунт создаётся автоматически.',
     telegram: 'Войти через Telegram',
     or: 'или',
     phone: 'Вход по телефону',
     staff: 'Сотрудникам',
   },
   uz: {
-    title: 'Kirish',
-    subtitle: 'Telegram-botimiz orqali kiring.',
+    title: 'Kirish yoki roʻyxatdan oʻtish',
+    subtitle: 'Telegram orqali kod oling. Birinchi kirishda hisobingiz avtomatik yaratiladi.',
     telegram: 'Telegram orqali kirish',
     or: 'yoki',
     phone: 'Telefon orqali kirish',
     staff: 'Xodimlar uchun',
   },
   en: {
-    title: 'Sign in',
-    subtitle: 'Sign in using our Telegram bot.',
+    title: 'Sign in or create an account',
+    subtitle:
+      'Get a code on Telegram. Your account is created automatically the first time you sign in.',
     telegram: 'Sign in with Telegram',
     or: 'or',
     phone: 'Phone sign-in',
@@ -64,10 +64,8 @@ export default async function LoginPage({ params }: Props) {
   return (
     <div className="container max-w-md py-12 md:py-16">
       <div className="space-y-2 text-center">
-        <h1 className="font-display text-4xl text-ink dark:text-bone md:text-5xl">
-          {copy.title}
-        </h1>
-        <p className="text-sm text-ink-muted dark:text-stone-400">{copy.subtitle}</p>
+        <h1 className="page-title">{copy.title}</h1>
+        <p className="body-copy text-muted-foreground">{copy.subtitle}</p>
       </div>
 
       {/* Phone OTP */}
@@ -76,8 +74,8 @@ export default async function LoginPage({ params }: Props) {
       </section>
 
       {/* Staff (subtle) */}
-      <details className="mt-12 border-t border-border pt-6">
-        <summary className="cursor-pointer text-[10px] font-semibold uppercase tracking-widest text-ink-muted hover:text-brass dark:text-stone-400">
+      <details className="border-border mt-12 border-t pt-6">
+        <summary className="text-ink-muted hover:text-brass cursor-pointer text-[10px] font-semibold tracking-widest uppercase dark:text-stone-400">
           {copy.staff}
         </summary>
         <div className="mt-4">

@@ -1,5 +1,15 @@
 import type { Prisma } from '@prisma/client';
 
+import { canonicalNoteSlug, noteSlugVariants } from '@/lib/catalog/note-aliases';
+import {
+  collapseVolumeListings,
+  copiedProfileSlugs,
+  getSeparateFormat,
+  relatedFormatSlugs,
+  separateFormatSlugs,
+  volumeGroup,
+  VOLUME_GROUPS,
+} from '@/lib/catalog/product-formats';
 import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import type {
@@ -39,6 +49,7 @@ export interface ListProductsParams {
   gender?: string;
   q?: string;
   page?: number;
+  perfumesOnly?: boolean;
 }
 
 export interface ListProductsResult {
@@ -98,6 +109,7 @@ const pickLayerNotes = (rows: ProductCardRow['notes'], locale: string): string[]
 
 const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
   const fragrance = row.fragrance;
+  const format = getSeparateFormat(row.slug);
   const topAccordRow = row.accords[0]?.accord;
   const top_accord =
     topAccordRow && topAccordRow.colorHex
@@ -116,11 +128,12 @@ const toProductCard = (row: ProductCardRow, locale: string): ProductCardDTO => {
     image: row.images[0]?.url ?? '',
     avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
     votes_count,
-    concentration: fragrance?.concentration ?? null,
-    volume_ml: fragrance?.volumeMl ?? null,
-    top_accord,
-    notes: pickLayerNotes(row.notes, locale),
-    orbit: pickOrbitNotes(row.notes, locale),
+    concentration: format ? null : (fragrance?.concentration ?? null),
+    volume_ml: format ? null : (fragrance?.volumeMl ?? null),
+    ...(format ? { separate_format: true, package_size: format.size } : {}),
+    top_accord: format?.copiedProfile ? null : top_accord,
+    notes: format?.copiedProfile ? [] : pickLayerNotes(row.notes, locale),
+    orbit: format?.copiedProfile ? [] : pickOrbitNotes(row.notes, locale),
     avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
   };
 };
@@ -143,6 +156,10 @@ const findProductIdsByName = async (q: string): Promise<number[]> => {
 
 const buildWhere = async (params: ListProductsParams): Promise<Prisma.ProductWhereInput> => {
   const where: Prisma.ProductWhereInput = { status: 'active' };
+  if (params.perfumesOnly) where.slug = { notIn: separateFormatSlugs };
+  else if (params.note || params.family || params.accord || params.perfumer) {
+    where.slug = { notIn: copiedProfileSlugs };
+  }
   const fragrance: Prisma.FragranceDetailWhereInput = {};
 
   if (params.brand) {
@@ -162,7 +179,7 @@ const buildWhere = async (params: ListProductsParams): Promise<Prisma.ProductWhe
 
   if (params.note || params.family) {
     const noteFilter: Prisma.NoteWhereInput = {};
-    if (params.note) noteFilter.slug = params.note;
+    if (params.note) noteFilter.slug = { in: noteSlugVariants(params.note) };
     if (params.family) noteFilter.family = RETIRED_FAMILIES[params.family] ?? params.family;
     where.notes = { some: { note: noteFilter } };
   }
@@ -197,7 +214,27 @@ const buildOrderBy = (sort: ProductSort | undefined): Prisma.ProductOrderByWithR
 export const listProducts = async (params: ListProductsParams): Promise<ListProductsResult> => {
   const page = Math.max(1, params.page ?? 1);
   const where = await buildWhere(params);
-  const orderBy = buildOrderBy(params.sort);
+  const orderBy = [buildOrderBy(params.sort), { id: 'desc' as const }];
+
+  if (VOLUME_GROUPS.length > 0) {
+    const matches = await db.product.findMany({ where, orderBy, select: { id: true, slug: true } });
+    const listings = collapseVolumeListings(matches);
+    const ids = listings.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(({ id }) => id);
+    const rows = ids.length
+      ? await db.product.findMany({ where: { ...where, id: { in: ids } }, select: cardSelect })
+      : [];
+    const cards = new Map(rows.map((row) => [row.id, toProductCard(row, params.locale)]));
+    return {
+      data: ids.flatMap((id) => {
+        const card = cards.get(id);
+        return card ? [card] : [];
+      }),
+      meta: {
+        total: listings.length,
+        totalPages: Math.max(1, Math.ceil(listings.length / PAGE_SIZE)),
+      },
+    };
+  }
 
   const [total, rows] = await Promise.all([
     db.product.count({ where }),
@@ -277,7 +314,7 @@ export const toProductNote = (
   note: { slug: string; name: Prisma.JsonValue; family: string | null; iconUrl: string | null },
   locale: string,
 ): ProductNoteDTO => ({
-  slug: note.slug,
+  slug: canonicalNoteSlug(note.slug),
   name: resolveLocaleText(note.name, locale),
   ...(note.family ? { family: note.family } : {}),
   ...(note.iconUrl ? { icon_url: note.iconUrl } : {}),
@@ -295,6 +332,7 @@ export const getProduct = async (
       name: true,
       description: true,
       price: true,
+      status: true,
       images: {
         orderBy: { position: 'asc' },
         select: { url: true },
@@ -348,25 +386,28 @@ export const getProduct = async (
     return null;
   }
 
+  const format = getSeparateFormat(product.slug);
   const notes: NotePyramidDTO = { top: [], middle: [], base: [] };
-  for (const pn of product.notes) {
+  for (const pn of format?.copiedProfile ? [] : product.notes) {
     const layer = toPyramidLayer(pn.pyramidLayer);
     if (layer) {
       notes[layer].push(toProductNote(pn.note, locale));
     }
   }
 
-  const accords: ProductAccordDTO[] = product.accords.map((pa) => ({
+  const accords: ProductAccordDTO[] = (format?.copiedProfile ? [] : product.accords).map((pa) => ({
     slug: pa.accord.slug,
     name: resolveLocaleText(pa.accord.name, locale),
     color_hex: pa.accord.colorHex ?? '',
     weight: pa.weight,
   }));
 
-  const perfumers: ProductPerfumerDTO[] = product.perfumers.map((pp) => ({
-    slug: pp.perfumer.slug,
-    name: pp.perfumer.name,
-  }));
+  const perfumers: ProductPerfumerDTO[] = (format?.copiedProfile ? [] : product.perfumers).map(
+    (pp) => ({
+      slug: pp.perfumer.slug,
+      name: pp.perfumer.name,
+    }),
+  );
 
   const similar: ProductCardDTO[] = product.similarsFrom.map((ps) =>
     toProductCard(ps.similar, locale),
@@ -374,7 +415,7 @@ export const getProduct = async (
 
   const fragrance = product.fragrance;
 
-  const parseBreakdown = (val: any): Record<string, number> => {
+  const parseBreakdown = (val: unknown): Record<string, number> => {
     if (typeof val === 'object' && val !== null) {
       return val as Record<string, number>;
     }
@@ -392,9 +433,11 @@ export const getProduct = async (
     image: product.images[0]?.url ?? '',
     images: product.images.map((img) => img.url),
     gender: normalizeGender(fragrance?.gender),
-    ...(fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
+    ...(!format && fragrance?.concentration ? { concentration: fragrance.concentration } : {}),
     release_year: fragrance?.releaseYear ?? null,
-    volume_ml: fragrance?.volumeMl ?? null,
+    volume_ml: format ? null : (fragrance?.volumeMl ?? null),
+    ...(format ? { separate_format: true, package_size: format.size } : {}),
+    active: product.status === 'active',
     avg_rating: fragrance ? Number(fragrance.avgRating) : 0,
     avg_longevity: fragrance ? Number(fragrance.avgLongevity) : 0,
     avg_sillage: fragrance ? Number(fragrance.avgSillage) : 0,
@@ -408,3 +451,43 @@ export const getProduct = async (
     love: parseBreakdown(fragrance?.loveBreakdown),
   };
 };
+
+export async function getProductFormats(slug: string, locale: string) {
+  const group = volumeGroup(slug) ?? [];
+  const related = relatedFormatSlugs(slug);
+  const source = getSeparateFormat(slug)?.inspiredBy;
+  const slugs = [...group, ...related, ...(source ? [source] : [])];
+  if (!slugs.length) return { sizes: [], related: [] };
+  const rows = await db.product.findMany({
+    where: { status: 'active', slug: { in: slugs } },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      price: true,
+      fragrance: { select: { volumeMl: true, brand: { select: { name: true } } } },
+    },
+  });
+  const bySlug = new Map(rows.map((row) => [row.slug, row]));
+  return {
+    sizes: group
+      .flatMap((member) => {
+        const row = bySlug.get(member);
+        const ml = row?.fragrance?.volumeMl;
+        return row && ml ? [{ id: row.id, slug: member, ml, price: row.price }] : [];
+      })
+      .sort((a, b) => a.ml - b.ml),
+    related: [...related, ...(source ? [source] : [])].flatMap((member) => {
+      const row = bySlug.get(member);
+      return row
+        ? [
+            {
+              slug: member,
+              name: resolveLocaleText(row.name, locale),
+              brand: row.fragrance?.brand?.name,
+            },
+          ]
+        : [];
+    }),
+  };
+}

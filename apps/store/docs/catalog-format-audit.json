@@ -1,0 +1,1655 @@
+{
+  "applied": true,
+  "source": "labor_design_check_20261115",
+  "activeProducts": 461,
+  "separateFormats": 122,
+  "volumeGroups": [],
+  "duplicateCandidates": [
+    [
+      "symphony-300",
+      "symphony-300-gr"
+    ]
+  ],
+  "archives": [
+    {
+      "slug": "symphony-300-gr",
+      "keep": "symphony-300",
+      "from": "active",
+      "to": "archived"
+    }
+  ],
+  "relatedFormats": [
+    {
+      "slug": "50-baccarat",
+      "parent": "baccarat-rouge-540-maison"
+    },
+    {
+      "slug": "50-ganymede",
+      "parent": "ganymede"
+    },
+    {
+      "slug": "aventus-2",
+      "parent": "aventus"
+    },
+    {
+      "slug": "aventus-300-gr",
+      "parent": "aventus"
+    },
+    {
+      "slug": "aventus-50-ml",
+      "parent": "aventus"
+    },
+    {
+      "slug": "avto-parfum-thomas-kosmala-4",
+      "parent": "n4-apres-l-amour"
+    },
+    {
+      "slug": "baccarat",
+      "parent": "baccarat-rouge-540-maison"
+    },
+    {
+      "slug": "baccarat-300",
+      "parent": "baccarat-rouge-540-maison"
+    },
+    {
+      "slug": "black-afgano-220-ml",
+      "parent": "black-afgano"
+    },
+    {
+      "slug": "black-afgano-300",
+      "parent": "black-afgano"
+    },
+    {
+      "slug": "black-afgano-50-ml",
+      "parent": "black-afgano"
+    },
+    {
+      "slug": "chanel-sport-220-ml",
+      "parent": "allure-homme-sport"
+    },
+    {
+      "slug": "chanel-tendre",
+      "parent": "chance-eau-tendre"
+    },
+    {
+      "slug": "creed-aventus-220-ml",
+      "parent": "aventus"
+    },
+    {
+      "slug": "ganymed-50-ml",
+      "parent": "ganymede"
+    },
+    {
+      "slug": "good-girl-gone-bad-300",
+      "parent": "good-girl-gone-bad-by"
+    },
+    {
+      "slug": "good-girl-gone-bad-50-ml",
+      "parent": "good-girl-gone-bad-by"
+    },
+    {
+      "slug": "imagination-300-gr",
+      "parent": "imagination-2"
+    },
+    {
+      "slug": "kirke-220-ml",
+      "parent": "kirke"
+    },
+    {
+      "slug": "kirke-300-gr",
+      "parent": "kirke"
+    },
+    {
+      "slug": "lelabo-santal-33-220-ml",
+      "parent": "santal-33"
+    },
+    {
+      "slug": "light-blue-2",
+      "parent": "light-blue"
+    },
+    {
+      "slug": "limmensite-220-ml",
+      "parent": "l-immensit"
+    },
+    {
+      "slug": "limmensite-300-gr",
+      "parent": "l-immensit"
+    },
+    {
+      "slug": "limmensite-50-ml",
+      "parent": "l-immensit"
+    },
+    {
+      "slug": "lost-cherry-2",
+      "parent": "lost-cherry-5"
+    },
+    {
+      "slug": "lost-cherry-300-gr",
+      "parent": "lost-cherry-5"
+    },
+    {
+      "slug": "maison-baccarat-220-ml",
+      "parent": "baccarat-rouge-540-maison"
+    },
+    {
+      "slug": "mango-skin-2",
+      "parent": "mango-skin"
+    },
+    {
+      "slug": "megamare-50-ml",
+      "parent": "megamare"
+    },
+    {
+      "slug": "molecula-020-300",
+      "parent": "molecule-02"
+    },
+    {
+      "slug": "molecule-02-50-ml",
+      "parent": "molecule-02"
+    },
+    {
+      "slug": "montabaco-50-ml",
+      "parent": "montabaco"
+    },
+    {
+      "slug": "my-way-300-gr",
+      "parent": "my-way"
+    },
+    {
+      "slug": "my-way-50-ml",
+      "parent": "my-way"
+    },
+    {
+      "slug": "ombre-leather-50-ml",
+      "parent": "ombre-leather"
+    },
+    {
+      "slug": "pink-molecule-090-300",
+      "parent": "pink-molecule-090"
+    },
+    {
+      "slug": "sauvage-50-ml",
+      "parent": "sauvage"
+    },
+    {
+      "slug": "symphony-300",
+      "parent": "symphony"
+    },
+    {
+      "slug": "symphony-300-gr",
+      "parent": "symphony"
+    },
+    {
+      "slug": "symphony-50-ml",
+      "parent": "symphony"
+    },
+    {
+      "slug": "tobacco-vanille-50-ml",
+      "parent": "tobacco-vanille"
+    },
+    {
+      "slug": "tomford-lostcherry-220-ml",
+      "parent": "lost-cherry-5"
+    },
+    {
+      "slug": "tygar-2",
+      "parent": "tygar"
+    },
+    {
+      "slug": "tygar-220-ml",
+      "parent": "tygar"
+    },
+    {
+      "slug": "tygar-300",
+      "parent": "tygar"
+    },
+    {
+      "slug": "tygar-50-ml",
+      "parent": "tygar"
+    }
+  ],
+  "priceReview": [
+    {
+      "slug": "black-prince",
+      "storedPrice": 160000,
+      "historicalPrice": 1500
+    },
+    {
+      "slug": "zed-87190",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "symphony-50-ml",
+      "storedPrice": 160000,
+      "historicalPrice": 90000
+    },
+    {
+      "slug": "boc-27674",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "ciu-73448",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "imagination-300-gr",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "black-afgano-50-ml",
+      "storedPrice": 160000,
+      "historicalPrice": 90000
+    },
+    {
+      "slug": "baccarat",
+      "storedPrice": 160000,
+      "historicalPrice": 1500
+    },
+    {
+      "slug": "aventus-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "ywu-88819",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "10",
+      "storedPrice": 160000,
+      "historicalPrice": 140000
+    },
+    {
+      "slug": "black-earth",
+      "storedPrice": 160000,
+      "historicalPrice": 45000
+    },
+    {
+      "slug": "green-scent",
+      "storedPrice": 160000,
+      "historicalPrice": 45000
+    },
+    {
+      "slug": "120",
+      "storedPrice": 160000,
+      "historicalPrice": 1500000
+    },
+    {
+      "slug": "hayati-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "avto-parfum-imagination",
+      "storedPrice": 160000,
+      "historicalPrice": 40000
+    },
+    {
+      "slug": "50-baccarat",
+      "storedPrice": 160000,
+      "historicalPrice": 750000
+    },
+    {
+      "slug": "thermal-spa-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "lost-cherry-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "tygar-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "20",
+      "storedPrice": 160000,
+      "historicalPrice": 300000
+    },
+    {
+      "slug": "15",
+      "storedPrice": 160000,
+      "historicalPrice": 210000
+    },
+    {
+      "slug": "savon-500",
+      "storedPrice": 160000,
+      "historicalPrice": 30000
+    },
+    {
+      "slug": "ctu-18189",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "chanel-tendre",
+      "storedPrice": 160000,
+      "historicalPrice": 1500
+    },
+    {
+      "slug": "xrn-92860",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "prs-28742",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "lv",
+      "storedPrice": 160000,
+      "historicalPrice": 240000
+    },
+    {
+      "slug": "nature-function",
+      "storedPrice": 160000,
+      "historicalPrice": 3000
+    },
+    {
+      "slug": "epy-76014",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "limmensite-300-gr",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "symphony-300-gr",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "lost-cherry-300-gr",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "kirke-300-gr",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "aventus-300-gr",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "pink-molecule-090-300",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "baccarat-300",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "black-afgano-300",
+      "storedPrice": 160000,
+      "historicalPrice": 120000
+    },
+    {
+      "slug": "50-ganymede",
+      "storedPrice": 160000,
+      "historicalPrice": 750000
+    },
+    {
+      "slug": "tzd-44196",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "prada-candy",
+      "storedPrice": 160000,
+      "historicalPrice": 40000
+    },
+    {
+      "slug": "elixir-des-merveilles",
+      "storedPrice": 160000,
+      "historicalPrice": 40000
+    },
+    {
+      "slug": "light-blue-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "cocaina",
+      "storedPrice": 160000,
+      "historicalPrice": 40000
+    },
+    {
+      "slug": "le-blanc",
+      "storedPrice": 160000,
+      "historicalPrice": 40000
+    },
+    {
+      "slug": "mango-skin-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "wood-sage-sea-salt-2",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "wood-sage-sea-salt",
+      "storedPrice": 160000,
+      "historicalPrice": 40000
+    },
+    {
+      "slug": "atelier-cologne",
+      "storedPrice": 160000,
+      "historicalPrice": 14000
+    },
+    {
+      "slug": "uew-77664",
+      "storedPrice": 160000
+    },
+    {
+      "slug": "50",
+      "storedPrice": 160000,
+      "historicalPrice": 650000
+    }
+  ],
+  "corrections": [
+    {
+      "slug": "black-prince",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "zed-87190",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "mr-flakon-20-ml",
+      "from": {
+        "price": 7000,
+        "volumeMl": null
+      },
+      "to": {
+        "price": 7000,
+        "volumeMl": 20
+      }
+    },
+    {
+      "slug": "symphony-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "magnit-flakon-10-ml",
+      "from": {
+        "price": 7000,
+        "volumeMl": null
+      },
+      "to": {
+        "price": 7000,
+        "volumeMl": 10
+      }
+    },
+    {
+      "slug": "flora-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "my-way-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "boc-27674",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "savon-krem-milo-romance-500-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 25000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-blue-400-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 60000,
+        "volumeMl": 400
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-melon-400-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 60000,
+        "volumeMl": 400
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-crystal-400-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 60000,
+        "volumeMl": 400
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-citiboy-400-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 60000,
+        "volumeMl": 400
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-blue-100-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 100
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-melon-100-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 100
+      }
+    },
+    {
+      "slug": "ciu-73448",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-citiboy-100-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 100
+      }
+    },
+    {
+      "slug": "savon-krem-milo-relax-500-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 25000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "elysium-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "imagination-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "kalso-10",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 10
+      }
+    },
+    {
+      "slug": "kalso-20",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 20
+      }
+    },
+    {
+      "slug": "black-afgano-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "tygar-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "diffuzor-rosso-nobili",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 250000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "tygar-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "20-c",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 300000,
+        "volumeMl": 20
+      }
+    },
+    {
+      "slug": "montabaco-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "good-girl-gone-bad-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "limmensite-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "aventus-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "baccarat",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "aventus-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "ywu-88819",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "10",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "black-earth",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "green-scent",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "120",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": 120
+      }
+    },
+    {
+      "slug": "megamare-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "molecule-02-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "hayati-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-fleur-100-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 100
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-crystal-100-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 20000,
+        "volumeMl": 100
+      }
+    },
+    {
+      "slug": "avto-parfum-bukhoor",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 40000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "avto-parfum-imagination",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "antiseptik-sofderm-extra-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 15000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "diffuzor-joly",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 250000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "diffuzor-black-vanilla",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 250000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "savon-krem-milo-thermal-spa-500-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 25000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "savon-krem-milo-natural-500-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 25000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "symphony-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 120000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "good-girl-gone-bad-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 120000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "molecula-020-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 120000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "flora-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 120000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "my-way-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 120000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "ganymed-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 67600,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "black-code-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "sauvage-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "tobacco-vanille-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 90000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "50-baccarat",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "thermal-spa-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "lelabo-santal-33-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "limmensite-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "lost-cherry-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "chanel-chance-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "tomford-lostcherry-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "creed-aventus-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "kirke-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "maison-baccarat-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "chanel-sport-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "chanel-bleu-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "bulgari-aqua-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "tygar-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "20",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "15",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "savon-500",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "ctu-18189",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "chanel-tendre",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "xrn-92860",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "prs-28742",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "lv",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "nature-function",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "epy-76014",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "limmensite-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "symphony-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "lost-cherry-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "kirke-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "aventus-300-gr",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "pink-molecule-090-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "baccarat-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "black-afgano-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "50-ganymede",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "tzd-44196",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "prada-candy",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "elixir-des-merveilles",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "light-blue-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "cocaina",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "le-blanc",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "mango-skin-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "wood-sage-sea-salt-2",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "wood-sage-sea-salt",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "avto-parfum-thomas-kosmala-4",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 40000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "ombre-leather-50-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 67600,
+        "volumeMl": 50
+      }
+    },
+    {
+      "slug": "tygar-300",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 120000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "black-afgano-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "bright-crystal-220-ml",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 100000,
+        "volumeMl": 220
+      }
+    },
+    {
+      "slug": "atelier-cologne",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "uew-77664",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    },
+    {
+      "slug": "50",
+      "from": {
+        "price": 160000,
+        "volumeMl": 10
+      },
+      "to": {
+        "price": 160000,
+        "volumeMl": null
+      }
+    }
+  ],
+  "verification": {
+    "activeProducts": 460,
+    "pendingPriceReview": 50,
+    "changesOnSecondRun": 0
+  }
+}

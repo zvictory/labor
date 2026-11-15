@@ -1,3 +1,4 @@
+import { LaborLogo } from '@/components/brand/labor-logo';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -21,7 +22,9 @@ export function SiteFooter({ locale }: { locale: string }) {
     <footer className="border-border bg-bone mt-20 border-t py-12">
       <div className="container grid gap-10 md:grid-cols-3">
         <div>
-          <div className="font-logo text-ink text-3xl">{b('name')}</div>
+          <Link href={href('')} aria-label={b('name')} className="inline-flex">
+            <LaborLogo />
+          </Link>
           <p className="text-ink-muted mt-3 max-w-xs text-sm">{b('tagline')}</p>
         </div>
         <div>

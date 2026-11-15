@@ -9,6 +9,7 @@
  *
  * Usage: npx tsx scripts/set-decant-prices.ts [--dry]
  */
+import { getSeparateFormat, volumeGroup } from '../lib/catalog/product-formats';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -24,8 +25,12 @@ async function main() {
   const dry = process.argv.includes('--dry');
   const products = await prisma.product.findMany({ select: { id: true, slug: true, price: true } });
 
-  const accessories = products.filter((p) => NON_FRAGRANCE.test(p.slug));
-  const decants = products.filter((p) => !NON_FRAGRANCE.test(p.slug));
+  const accessories = products.filter(
+    (p) => volumeGroup(p.slug) || getSeparateFormat(p.slug) || NON_FRAGRANCE.test(p.slug),
+  );
+  const decants = products.filter(
+    (p) => !(volumeGroup(p.slug) || getSeparateFormat(p.slug) || NON_FRAGRANCE.test(p.slug)),
+  );
 
   console.log(`decants: ${decants.length}  accessories (left alone): ${accessories.length}`);
   console.log(accessories.map((a) => `  ${a.slug} — ${a.price} UZS`).join('\n'));

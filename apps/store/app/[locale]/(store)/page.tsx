@@ -109,11 +109,9 @@ export default async function HomePage({ params }: Props) {
       )}
 
       <section className="border-border border-b">
-        <div className="container flex flex-col gap-3 pt-6 pb-8 md:gap-6 md:py-16">
+        <div className="container flex flex-col gap-7 py-12 md:gap-10 md:py-20">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em] md:text-4xl md:leading-tight">
-              {c.selection}
-            </h2>
+            <h2 className="section-title">{c.selection}</h2>
             <Link
               href={`/${locale}/catalog`}
               className="text-label inline-flex min-h-11 items-center font-mono tracking-[0.1em] uppercase underline underline-offset-4"
@@ -135,10 +133,8 @@ export default async function HomePage({ params }: Props) {
       </section>
 
       <section className="border-border border-b">
-        <div className="container flex flex-col gap-3.5 py-7 md:gap-6 md:py-16">
-          <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em] md:text-4xl md:leading-tight">
-            {c.families}
-          </h2>
+        <div className="container flex flex-col gap-6 py-12 md:gap-8 md:py-20">
+          <h2 className="section-title">{c.families}</h2>
           <div className="flex flex-wrap gap-2">
             {FAMILY_FILTERS.map((family) => (
               <Link

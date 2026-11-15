@@ -1,19 +1,22 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 
 const TELEGRAM_SCRIPT_SRC = 'https://telegram.org/js/telegram-web-app.js';
 
 export function TelegramWebAppBridge() {
   const pathname = usePathname();
+  const router = useRouter();
   const { status: sessionStatus } = useSession();
 
   useEffect(() => {
     // Proactively clean up class on standard browsers before script loads/checks
     const initialTg = (window as any).Telegram?.WebApp;
-    const isInsideTelegramInit = Boolean(initialTg?.initData && initialTg.initData.includes('hash='));
+    const isInsideTelegramInit = Boolean(
+      initialTg?.initData && initialTg.initData.includes('hash='),
+    );
     const isTgRouteInit = pathname.split('/').includes('tg');
     if (!isInsideTelegramInit && !isTgRouteInit) {
       document.body.classList.remove('is-telegram-webapp');
@@ -26,7 +29,14 @@ export function TelegramWebAppBridge() {
       const isInsideTelegram = Boolean(tg.initData && tg.initData.includes('hash='));
       const isTgRoute = pathname.split('/').includes('tg');
 
-      console.log('[TelegramWebAppBridge] initData present:', Boolean(tg.initData), 'hasHash:', isInsideTelegram, 'isTgRoute:', isTgRoute);
+      console.log(
+        '[TelegramWebAppBridge] initData present:',
+        Boolean(tg.initData),
+        'hasHash:',
+        isInsideTelegram,
+        'isTgRoute:',
+        isTgRoute,
+      );
 
       if (!isInsideTelegram && !isTgRoute) {
         document.body.classList.remove('is-telegram-webapp');
@@ -38,7 +48,8 @@ export function TelegramWebAppBridge() {
 
       const applyTheme = () => {
         const root = document.documentElement;
-        const { bg_color, text_color, hint_color, button_color, button_text_color } = tg.themeParams;
+        const { bg_color, text_color, hint_color, button_color, button_text_color } =
+          tg.themeParams;
         if (bg_color) root.style.setProperty('--tg-bg', bg_color);
         if (text_color) root.style.setProperty('--tg-text', text_color);
         if (hint_color) root.style.setProperty('--tg-hint', hint_color);
@@ -56,9 +67,13 @@ export function TelegramWebAppBridge() {
 
       // Auto-login: if inside Mini App and not authenticated in NextAuth, link dynamically via initData
       if (sessionStatus === 'unauthenticated' && tg.initData) {
-        signIn('telegram-webapp', { initData: tg.initData, redirect: false }).catch((err) => {
-          console.error('[telegram-webapp] Auto-login failed:', err);
-        });
+        signIn('telegram-webapp', { initData: tg.initData, redirect: false })
+          .then((result) => {
+            if (result?.ok) router.refresh();
+          })
+          .catch((err) => {
+            console.error('[telegram-webapp] Auto-login failed:', err);
+          });
       }
 
       return () => {
@@ -76,12 +91,16 @@ export function TelegramWebAppBridge() {
       return () => cleanup?.();
     }
 
-    const existing = document.querySelector<HTMLScriptElement>(`script[src="${TELEGRAM_SCRIPT_SRC}"]`);
-    const script = existing ?? Object.assign(document.createElement('script'), {
-      src: TELEGRAM_SCRIPT_SRC,
-      async: true,
-    });
-    
+    const existing = document.querySelector<HTMLScriptElement>(
+      `script[src="${TELEGRAM_SCRIPT_SRC}"]`,
+    );
+    const script =
+      existing ??
+      Object.assign(document.createElement('script'), {
+        src: TELEGRAM_SCRIPT_SRC,
+        async: true,
+      });
+
     const onLoad = () => {
       cleanup = handleWebApp();
     };
@@ -93,7 +112,7 @@ export function TelegramWebAppBridge() {
       script.removeEventListener('load', onLoad);
       cleanup?.();
     };
-  }, [sessionStatus, pathname]);
+  }, [sessionStatus, pathname, router]);
 
   return null;
 }

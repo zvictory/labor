@@ -1,3 +1,4 @@
+import { LaborLogo } from '@/components/brand/labor-logo';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -76,24 +77,26 @@ export default async function BrandDetailPage({ params, searchParams }: Props) {
 
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="flex items-center gap-6">
-            {brand.image && (
+            {(brand.image || brand.slug === 'labor') && (
               <div className="border-border relative hidden h-24 w-24 shrink-0 overflow-hidden border sm:block">
-                <Image
-                  src={brand.image}
-                  alt=""
-                  fill
-                  sizes="96px"
-                  className="object-contain p-3 mix-blend-multiply dark:mix-blend-normal"
-                />
+                {brand.slug === 'labor' ? (
+                  <LaborLogo className="absolute inset-4 h-16 w-16" />
+                ) : brand.image ? (
+                  <Image
+                    src={brand.image}
+                    alt=""
+                    fill
+                    sizes="96px"
+                    className="object-contain p-3 mix-blend-multiply dark:mix-blend-normal"
+                  />
+                ) : null}
               </div>
             )}
             <div className="space-y-2">
               <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
                 {facts.join(' · ')}
               </p>
-              <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">
-                {brand.name}
-              </h1>
+              <h1 className="page-title">{brand.name}</h1>
             </div>
           </div>
 
@@ -106,16 +109,12 @@ export default async function BrandDetailPage({ params, searchParams }: Props) {
         </div>
 
         {brand.description && (
-          <p className="text-muted-foreground max-w-prose font-serif text-base leading-relaxed">
-            {brand.description}
-          </p>
+          <p className="body-copy max-w-prose font-serif">{brand.description}</p>
         )}
       </header>
 
       <section className="border-border space-y-6 border-t pt-8">
-        <h2 className="text-label font-mono tracking-[0.16em] uppercase">
-          {t('detailProducts')}
-        </h2>
+        <h2 className="text-label font-mono tracking-[0.16em] uppercase">{t('detailProducts')}</h2>
         <TaxonomyProductGrid products={data} locale={locale} emptyLabel={t('emptyProducts')} />
       </section>
 

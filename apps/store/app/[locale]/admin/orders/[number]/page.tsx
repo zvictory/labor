@@ -4,6 +4,10 @@
 // primary labels. Money via formatUzs (integer so'm).
 
 import Link from 'next/link';
+import Image from 'next/image';
+import QRCode from 'qrcode';
+import { getTranslations } from 'next-intl/server';
+import { yandexDeliveryPinUrl } from '@/lib/delivery/delivery-pin';
 import { notFound } from 'next/navigation';
 
 import { requireStaff } from '@/lib/admin/guard';
@@ -40,6 +44,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
 
   const order = await getAdminOrder(number, locale);
   if (!order) notFound();
+  const mapUrl = order.deliveryPin ? yandexDeliveryPinUrl(order.deliveryPin) : null;
+  const qr = mapUrl ? await QRCode.toDataURL(mapUrl, { width: 176, margin: 4 }) : null;
+  const pinCopy = await getTranslations({ locale, namespace: 'deliveryPin' });
 
   const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
 
@@ -166,6 +173,19 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               <p className="text-ink dark:text-bone mt-2">
                 {[order.region, order.district, order.address].filter(Boolean).join(', ') || '—'}
               </p>
+              {mapUrl && qr ? (
+                <div className="border-border mt-3 space-y-2 border-t pt-3">
+                  <a
+                    href={mapUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-4"
+                  >
+                    {pinCopy('openInYandex')}
+                  </a>
+                  <Image src={qr} width={176} height={176} unoptimized alt={pinCopy('qrAlt')} />
+                </div>
+              ) : null}
               {order.deliveryMethodLabel && (
                 <p className="text-ink-muted mt-1 text-xs dark:text-stone-400">
                   {order.deliveryMethodLabel}

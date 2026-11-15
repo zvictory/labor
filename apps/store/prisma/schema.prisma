@@ -343,6 +343,8 @@ model Order {
   address            String?
   phone              String?
   deliveryMethod     String?
+  deliveryLatitude   Float?
+  deliveryLongitude  Float?
   // ad attribution snapshot: the tags of the visitor's latest tagged visit (lib/attribution)
   utmSource          String?
   utmMedium          String?

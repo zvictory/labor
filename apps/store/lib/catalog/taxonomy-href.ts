@@ -1,3 +1,5 @@
+import { canonicalNoteSlug } from './note-aliases';
+
 export type TaxonomyKind = 'brand' | 'note' | 'perfumer';
 
 const FILTER_KEYS: Record<TaxonomyKind, string> = {
@@ -11,4 +13,4 @@ const FILTER_KEYS: Record<TaxonomyKind, string> = {
 export const taxonomyHref = (kind: TaxonomyKind, locale: string, slug: string): string =>
   kind === 'brand'
     ? `/${locale}/brands/${encodeURIComponent(slug)}`
-    : `/${locale}/catalog?${FILTER_KEYS[kind]}=${encodeURIComponent(slug)}`;
+    : `/${locale}/catalog?${FILTER_KEYS[kind]}=${encodeURIComponent(kind === 'note' ? canonicalNoteSlug(slug) : slug)}`;

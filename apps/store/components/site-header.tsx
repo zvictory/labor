@@ -1,17 +1,25 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Heart, Search, ShoppingBag } from 'lucide-react';
+import { Heart, Search, ShoppingBag, UserRound } from 'lucide-react';
 
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { CartCountBadge } from '@/components/cart/cart-count-badge';
+import { LaborLogo } from '@/components/brand/labor-logo';
+import type { accountNavigation } from '@/lib/account-navigation';
 import { SiteMenu } from '@/components/site-menu';
 
 // Site chrome. On a phone: menu and language left, the wordmark centred, search and
-// cart right — every target 44 × 44, the bar 56 px. From xl up the menu's pages
-// are listed inline instead; any narrower, six labels do not fit beside a
+// cart right — every target 44 × 44. From xl up the menu's pages
+// are listed inline at 2xl; any narrower, six labels do not fit beside a
 // centred logo. Server-safe: useTranslations works in RSC under
 // NextIntlClientProvider. All links are locale-prefixed.
-export function SiteHeader({ locale }: { locale: string }) {
+export function SiteHeader({
+  locale,
+  account,
+}: {
+  locale: string;
+  account: ReturnType<typeof accountNavigation>;
+}) {
   const t = useTranslations('nav');
   const b = useTranslations('brand');
   const href = (path: string) => `/${locale}${path}`;
@@ -28,6 +36,7 @@ export function SiteHeader({ locale }: { locale: string }) {
   // The inline xl nav has no room for a seventh label: in Uzbek it already
   // pushes the logo off centre. Contacts sit in the menu and the footer.
   const menuPages = [
+    { href: account.href, label: account.label },
     ...pages,
     { href: href('/sets'), label: t('sets') },
     { href: href('/campaigns'), label: t('campaigns') },
@@ -40,10 +49,10 @@ export function SiteHeader({ locale }: { locale: string }) {
   // screen's version of it. The hairline does the separating.
   return (
     <header className="border-border bg-background sticky top-0 z-40 border-b">
-      <div className="grid h-14 grid-cols-[88px_1fr_88px] items-center px-1.5 md:container md:h-16 md:grid-cols-[1fr_auto_1fr]">
-        <div className="flex items-center xl:gap-6">
+      <div className="grid h-16 grid-cols-[88px_1fr_88px] items-center px-1.5 md:container md:h-20 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+        <div className="flex items-center 2xl:gap-4">
           <SiteMenu items={menuPages} openLabel={t('menu')} closeLabel={t('closeMenu')} />
-          <nav className="text-label hidden items-center gap-6 font-mono tracking-[0.1em] uppercase xl:flex">
+          <nav className="hidden items-center gap-4 text-xs font-medium 2xl:flex">
             {pages.map((page) => (
               <Link
                 key={page.href}
@@ -58,15 +67,18 @@ export function SiteHeader({ locale }: { locale: string }) {
         </div>
 
         <Link href={href('')} aria-label={b('name')} className="flex justify-center">
-          {/* The wordmark alone, without the circle, at every width: inside the
-              seal the lettering was too small to read. 36 px in the phone's
-              56 px bar, 40 px in the 64 px bar from md up. */}
-          <span className="font-logo text-ink dark:text-bone text-[36px] leading-none md:text-[40px]">
-            {b('name')}
-          </span>
+          <LaborLogo />
         </Link>
 
         <div className="flex items-center justify-end">
+          <Link
+            href={account.href}
+            className="hidden min-h-11 items-center gap-2 px-3 text-sm font-medium md:inline-flex"
+          >
+            <UserRound className="h-[18px] w-[18px]" strokeWidth={1.3} />
+            <span className="hidden xl:inline">{account.label}</span>
+            <span className="xl:hidden">{account.shortLabel}</span>
+          </Link>
           <Link
             href={href('/search')}
             aria-label={t('search')}

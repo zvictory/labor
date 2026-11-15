@@ -88,6 +88,12 @@
     "volumeShort": "{ml} ml"
   },
   "pdp": {
+    "sampleSize": "Namuna · {amount} ml",
+    "fullSize": "Toʻliq hajm",
+    "packageMl": "{amount} ml",
+    "packageGrams": "{amount} g",
+    "availableSizes": "Mavjud hajmlar",
+    "relatedFormats": "Bogʻliq mahsulotlar",
     "longevityShort": "Davom.",
     "sillageShort": "Iz",
     "cart": {
@@ -186,6 +192,19 @@
     }
   },
   "cart": {
+    "itemCount": "{count} ta mahsulot",
+    "continueShopping": "Xaridni davom ettirish",
+    "sample": "Namuna",
+    "summaryTitle": "Buyurtmangiz",
+    "productsTotal": "Mahsulotlar jami",
+    "shippingAtCheckout": "Yetkazib berish narxi rasmiylashtirishda hisoblanadi",
+    "deliveryThresholdReached": "Toshkent boʻylab bepul yetkazib berish mavjud",
+    "telegramHelp": "Yordam kerakmi? Telegram",
+    "quantityFor": "Miqdori: {item}",
+    "decrease": "Miqdorini kamaytirish: {item}",
+    "increase": "Miqdorini oshirish: {item}",
+    "removeItem": "Olib tashlash: {item}",
+    "updateError": "Savat yangilanmadi. Qayta urinib koʻring.",
     "title": "Savat",
     "empty": "Savat boʻsh",
     "emptyCta": "Katalogga oʻtish",
@@ -203,6 +222,34 @@
     "freeDeliveryLeft": "Yana {amount} — va Toshkent boʻylab yetkazib berish bepul",
     "freeDeliveryReached": "Toshkent boʻylab yetkazib berish — bepul",
     "set": "«{title}» toʻplami"
+  },
+  "finderAtelier": {
+    "scene0": "Tanlovlaringizni joylayapmiz",
+    "scene1": "Uchta sinov tasmasini tayyorlayapmiz",
+    "scene2": "Tanlov deyarli tayyor",
+    "resume": "Qolgan joyingizdan davom eting",
+    "workbench": "Atir ustaxonasi",
+    "resetBody": "Saqlangan javoblarni oʻchirib, boshidan boshlaysizmi?",
+    "cancel": "Javoblarni saqlash",
+    "preparing": "Tanlovingizni tayyorlayapmiz",
+    "skip": "Natijalarni koʻrsatish",
+    "samples": "Uchta 2 ml namuna · {price}",
+    "choices": "Javoblaringiz · {count}"
+  },
+  "deliveryPin": {
+    "useCenter": "Xarita markazini tanlash",
+    "open": "Xaritada belgilang · ixtiyoriy",
+    "close": "Xaritani yopish",
+    "edit": "Nuqtani oʻzgartirish",
+    "remove": "Nuqtani olib tashlash",
+    "saved": "Yetkazib berish nuqtasi saqlandi.",
+    "instruction": "Binoga kirish joyini belgilang va tasdiqlang.",
+    "confirm": "Nuqtani tasdiqlash",
+    "unavailable": "Xarita mavjud emas. Yozilgan manzil bilan davom etishingiz mumkin.",
+    "mapLabel": "Yetkazib berish xaritasi",
+    "loading": "Xarita yuklanmoqda…",
+    "openInYandex": "Yandex Xaritalarda ochish",
+    "qrAlt": "Kuryer uchun yetkazib berish nuqtasining QR kodi"
   },
   "checkout": {
     "title": "Buyurtma rasmiylashtirish",
