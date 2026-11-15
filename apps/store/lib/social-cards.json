@@ -1,0 +1,13 @@
+{
+  "home": { "image": "/hero/imagination.webp", "crop": "east", "titles": { "ru": ["Селективная", "парфюмерия"], "en": ["Niche", "perfumery"], "uz": ["Selektiv", "parfyumeriya"] } },
+  "catalog": { "image": "/hero/baccarat-rouge-540-extrait.webp", "crop": "east", "titles": { "ru": ["Каталог", "ароматов"], "en": ["Fragrance", "catalog"], "uz": ["Atirlar", "katalogi"] } },
+  "find-your-perfume": { "image": "/finder/labor-atelier-v1.webp", "crop": "centre", "titles": { "ru": ["Ателье", "ароматов"], "en": ["Scent", "atelier"], "uz": ["Atir", "ustaxonasi"] } },
+  "notes": { "image": "/notes/labor-library-header-v1.webp", "crop": "centre", "titles": { "ru": ["Библиотека", "нот"], "en": ["Notes", "library"], "uz": ["Notalar", "kutubxonasi"] } },
+  "brands": { "image": "/hero/ombre-nomade.webp", "crop": "east", "titles": { "ru": ["Парфюмерные", "бренды"], "en": ["Perfume", "brands"], "uz": ["Atir", "brendlari"] } },
+  "perfumers": { "image": "/hero/story-blotters.webp", "crop": "east", "titles": { "ru": ["Парфюмеры"], "en": ["Perfumers"], "uz": ["Parfyumerlar"] } },
+  "sets": { "image": "/hero/story-decants.webp", "crop": "east", "titles": { "ru": ["Наборы", "пробников"], "en": ["Discovery", "sets"], "uz": ["Namunalar", "toʻplamlari"] } },
+  "campaigns": { "image": "/hero/baccarat-rouge-540-extrait.webp", "crop": "east", "titles": { "ru": ["Кампании"], "en": ["Campaigns"], "uz": ["Kampaniyalar"] } },
+  "delivery": { "image": "/hero/story-uzbekistan.webp", "crop": "east", "titles": { "ru": ["Доставка", "и оплата"], "en": ["Delivery", "and payment"], "uz": ["Yetkazish", "va toʻlov"] } },
+  "contacts": { "image": "/hero/story-uzbekistan.webp", "crop": "centre", "titles": { "ru": ["Контакты"], "en": ["Contact"], "uz": ["Aloqa"] } },
+  "corporate": { "image": "/hero/story-uzbekistan.webp", "crop": "east", "titles": { "ru": ["Корпоративные", "подарки"], "en": ["Corporate", "gifts"], "uz": ["Korporativ", "sovgʻalar"] } }
+}

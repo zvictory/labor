@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
+import { locales } from '@/i18n/config';
+
+import socialCards from './social-cards.json';
 import {
   SITE_URL,
   absoluteUrl,
@@ -50,6 +53,35 @@ describe('pageMetadata', () => {
   it('sets the Open Graph locale from the page locale', () => {
     const meta = pageMetadata({ locale: 'uz', path: '', title: 'Labor' });
     expect(meta.openGraph).toMatchObject({ locale: 'uz_UZ', url: `${SITE_URL}/uz` });
+  });
+
+  it.each(
+    Object.entries(socialCards).flatMap(([page, card]) =>
+      locales.map((locale) => ({ page, locale, card })),
+    ),
+  )('uses the localized share card for $locale/$page', ({ page, locale, card }) => {
+    const path = page === 'home' ? '' : `/${page}`;
+    const meta = pageMetadata({ locale, path, title: 'Page title', description: 'Description' });
+    const image = {
+      url: `${SITE_URL}/social/v1/${page}-${locale}.jpg`,
+      width: 1200,
+      height: 630,
+      type: 'image/jpeg',
+    };
+    expect(meta.title).toBe('Page title');
+    expect(meta.openGraph).toMatchObject({
+      title: card.titles[locale].join(' '),
+      description: 'Description',
+      images: [image],
+    });
+    expect(meta.twitter).toMatchObject({ card: 'summary_large_image', images: [image] });
+  });
+
+  it('keeps an explicit product image and skips a generic card for noindex pages', () => {
+    const catalog = { locale: 'en', path: '/catalog', title: 'Catalog' };
+    const product = { ...catalog, path: '/product/aventus', images: ['/storage/aventus.jpg'] };
+    expect(pageMetadata(product).openGraph?.images).toEqual([`${SITE_URL}/storage/aventus.jpg`]);
+    expect(pageMetadata({ ...catalog, noindex: true }).openGraph?.images).toBeUndefined();
   });
 });
 

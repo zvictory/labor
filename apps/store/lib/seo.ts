@@ -6,6 +6,7 @@
 // at random — usually not the Uzbek one a buyer in Samarkand searched in.
 
 import type { Metadata } from 'next';
+import socialCards from './social-cards.json';
 
 import { defaultLocale, locales, type Locale } from '@/i18n/config';
 import type { ProductDetailDTO } from '@/lib/catalog/types';
@@ -69,6 +70,17 @@ export const pageMetadata = ({
   absoluteTitle,
 }: PageMetadataInput): Metadata => {
   const alternates = localeAlternates(locale, path);
+  const page = path.split('?')[0]?.slice(1) || 'home';
+  const card =
+    !noindex && !images?.some(Boolean) && Object.hasOwn(socialCards, page)
+      ? socialCards[page as keyof typeof socialCards]
+      : undefined;
+  const language = locales.find((item) => item === locale) ?? defaultLocale;
+  const cardTitle = card?.titles[language].join(' ');
+  const imageUrl = card ? absoluteUrl(`/social/v1/${page}-${language}.jpg`) : null;
+  const shareImage = imageUrl
+    ? { url: imageUrl, width: 1200, height: 630, type: 'image/jpeg', alt: `Labor — ${cardTitle}` }
+    : null;
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
@@ -76,12 +88,22 @@ export const pageMetadata = ({
     openGraph: {
       type: 'website',
       siteName: SITE_NAME,
-      title,
+      title: cardTitle ?? title,
       description,
       url: alternates.canonical,
       locale: OG_LOCALE[locale as Locale] ?? OG_LOCALE[defaultLocale],
-      images: images?.filter(Boolean).map(absoluteUrl),
+      images: shareImage ? [shareImage] : images?.filter(Boolean).map(absoluteUrl),
     },
+    ...(shareImage
+      ? {
+          twitter: {
+            card: 'summary_large_image',
+            title: cardTitle ?? title,
+            description,
+            images: [shareImage],
+          },
+        }
+      : {}),
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };
 };
