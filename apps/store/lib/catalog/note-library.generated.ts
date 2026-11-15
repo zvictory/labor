@@ -536,6 +536,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/earthy-notes.webp",
     "representative": true
   },
+  "ebony": {
+    "src": "/notes/labor-library-v1/ebony.webp",
+    "representative": false
+  },
   "egyptian-jasmine": {
     "src": "/notes/labor-library-v1/egyptian-jasmine.webp",
     "representative": false
@@ -548,8 +552,24 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/eucalyptus.webp",
     "representative": false
   },
+  "evernyl": {
+    "src": "/notes/labor-library-v1/evernyl.webp",
+    "representative": true
+  },
+  "exotic-fruits": {
+    "src": "/notes/labor-library-v1/exotic-fruits.webp",
+    "representative": false
+  },
+  "fennel": {
+    "src": "/notes/labor-library-v1/fennel.webp",
+    "representative": false
+  },
   "fig": {
     "src": "/notes/labor-library-v1/fig.webp",
+    "representative": false
+  },
+  "fig-leaf": {
+    "src": "/notes/labor-library-v1/fig-leaf.webp",
     "representative": false
   },
   "fir": {
@@ -558,6 +578,14 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "fir-resin": {
     "src": "/notes/labor-library-v1/fir-resin.webp",
+    "representative": false
+  },
+  "flint": {
+    "src": "/notes/labor-library-v1/flint.webp",
+    "representative": false
+  },
+  "floral-bouquet": {
+    "src": "/notes/labor-library-v1/floral-bouquet.webp",
     "representative": false
   },
   "floral-notes": {
@@ -604,6 +632,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/ginger.webp",
     "representative": false
   },
+  "granny-smith-apple": {
+    "src": "/notes/labor-library-v1/granny-smith-apple.webp",
+    "representative": false
+  },
   "grapefruit": {
     "src": "/notes/labor-library-v1/grapefruit.webp",
     "representative": false
@@ -616,13 +648,25 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/grass.webp",
     "representative": false
   },
+  "grasse-rose": {
+    "src": "/notes/labor-library-v1/grasse-rose.webp",
+    "representative": false
+  },
   "green-apple": {
     "src": "/notes/labor-library-v1/green-apple.webp",
+    "representative": false
+  },
+  "green-mandarin": {
+    "src": "/notes/labor-library-v1/green-mandarin.webp",
     "representative": false
   },
   "green-notes": {
     "src": "/notes/labor-library-v1/green-notes.webp",
     "representative": true
+  },
+  "green-pepper": {
+    "src": "/notes/labor-library-v1/green-pepper.webp",
+    "representative": false
   },
   "green-tea": {
     "src": "/notes/labor-library-v1/green-tea.webp",
@@ -630,6 +674,14 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "guaiac-wood": {
     "src": "/notes/labor-library-v1/guaiac-wood.webp",
+    "representative": false
+  },
+  "guatemalan-cardamom": {
+    "src": "/notes/labor-library-v1/guatemalan-cardamom.webp",
+    "representative": false
+  },
+  "gummy-candies": {
+    "src": "/notes/labor-library-v1/gummy-candies.webp",
     "representative": false
   },
   "gurjan-balsam": {
@@ -680,6 +732,14 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/hyacinth.webp",
     "representative": false
   },
+  "ice": {
+    "src": "/notes/labor-library-v1/ice.webp",
+    "representative": false
+  },
+  "ice-cream": {
+    "src": "/notes/labor-library-v1/ice-cream.webp",
+    "representative": false
+  },
   "icing-pink": {
     "src": "/notes/labor-library-v1/icing-pink.webp",
     "representative": false
@@ -700,6 +760,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/indian-tuberose.webp",
     "representative": false
   },
+  "indonesian-nutmeg": {
+    "src": "/notes/labor-library-v1/indonesian-nutmeg.webp",
+    "representative": false
+  },
   "indonesian-patchouli-leaf": {
     "src": "/notes/labor-library-v1/indonesian-patchouli-leaf.webp",
     "representative": false
@@ -715,6 +779,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   "iso-e-super": {
     "src": "/notes/labor-library-v1/iso-e-super.webp",
     "representative": true
+  },
+  "ivy": {
+    "src": "/notes/labor-library-v1/ivy.webp",
+    "representative": false
   },
   "jasmine-sambac": {
     "src": "/notes/labor-library-v1/jasmine-sambac.webp",
@@ -748,6 +816,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/lactones.webp",
     "representative": true
   },
+  "lava": {
+    "src": "/notes/labor-library-v1/lava.webp",
+    "representative": false
+  },
   "lavender": {
     "src": "/notes/labor-library-v1/lavender.webp",
     "representative": false
@@ -756,12 +828,24 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/leather.webp",
     "representative": false
   },
+  "lemon-blossom": {
+    "src": "/notes/labor-library-v1/lemon-blossom.webp",
+    "representative": false
+  },
   "lemon-zest": {
     "src": "/notes/labor-library-v1/lemon-zest.webp",
     "representative": false
   },
+  "lemongrass": {
+    "src": "/notes/labor-library-v1/lemongrass.webp",
+    "representative": false
+  },
   "licorice": {
     "src": "/notes/labor-library-v1/licorice.webp",
+    "representative": false
+  },
+  "lilac": {
+    "src": "/notes/labor-library-v1/lilac.webp",
     "representative": false
   },
   "lily": {
@@ -774,6 +858,18 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "lime": {
     "src": "/notes/labor-library-v1/lime.webp",
+    "representative": false
+  },
+  "lime-linden-blossom": {
+    "src": "/notes/labor-library-v1/lime-linden-blossom.webp",
+    "representative": false
+  },
+  "liquor": {
+    "src": "/notes/labor-library-v1/liquor.webp",
+    "representative": false
+  },
+  "litsea-cubeba": {
+    "src": "/notes/labor-library-v1/litsea-cubeba.webp",
     "representative": false
   },
   "lotus": {
@@ -820,6 +916,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/marshmallow.webp",
     "representative": false
   },
+  "matcha-tea": {
+    "src": "/notes/labor-library-v1/matcha-tea.webp",
+    "representative": false
+  },
   "mate": {
     "src": "/notes/labor-library-v1/mate.webp",
     "representative": false
@@ -836,6 +936,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/metallic-notes.webp",
     "representative": true
   },
+  "mignonette": {
+    "src": "/notes/labor-library-v1/mignonette.webp",
+    "representative": false
+  },
   "milk": {
     "src": "/notes/labor-library-v1/milk.webp",
     "representative": false
@@ -850,6 +954,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "mint": {
     "src": "/notes/labor-library-v1/mint.webp",
+    "representative": false
+  },
+  "mock-orange": {
+    "src": "/notes/labor-library-v1/mock-orange.webp",
     "representative": false
   },
   "moss": {
@@ -872,6 +980,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/mysore-sandalwood.webp",
     "representative": false
   },
+  "mystikal": {
+    "src": "/notes/labor-library-v1/mystikal.webp",
+    "representative": true
+  },
   "narcissus": {
     "src": "/notes/labor-library-v1/narcissus.webp",
     "representative": false
@@ -888,12 +1000,28 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/nutmeg.webp",
     "representative": false
   },
+  "nutmeg-flower": {
+    "src": "/notes/labor-library-v1/nutmeg-flower.webp",
+    "representative": false
+  },
   "oak": {
     "src": "/notes/labor-library-v1/oak.webp",
     "representative": false
   },
   "oakmoss": {
     "src": "/notes/labor-library-v1/oakmoss.webp",
+    "representative": false
+  },
+  "olive": {
+    "src": "/notes/labor-library-v1/olive.webp",
+    "representative": false
+  },
+  "olive-blossom": {
+    "src": "/notes/labor-library-v1/olive-blossom.webp",
+    "representative": false
+  },
+  "oolong-tea": {
+    "src": "/notes/labor-library-v1/oolong-tea.webp",
     "representative": false
   },
   "opoponax": {
@@ -908,8 +1036,16 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/orange-blossom.webp",
     "representative": false
   },
+  "orange-peel": {
+    "src": "/notes/labor-library-v1/orange-peel.webp",
+    "representative": false
+  },
   "orchid": {
     "src": "/notes/labor-library-v1/orchid.webp",
+    "representative": false
+  },
+  "oregano": {
+    "src": "/notes/labor-library-v1/oregano.webp",
     "representative": false
   },
   "orris": {
@@ -936,6 +1072,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/ozonic-notes.webp",
     "representative": true
   },
+  "palisander-rosewood": {
+    "src": "/notes/labor-library-v1/palisander-rosewood.webp",
+    "representative": false
+  },
   "palo-santo": {
     "src": "/notes/labor-library-v1/palo-santo.webp",
     "representative": false
@@ -956,6 +1096,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/passionfruit.webp",
     "representative": false
   },
+  "patchouli-leaf": {
+    "src": "/notes/labor-library-v1/patchouli-leaf.webp",
+    "representative": false
+  },
   "peach": {
     "src": "/notes/labor-library-v1/peach.webp",
     "representative": false
@@ -970,6 +1114,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "pepper": {
     "src": "/notes/labor-library-v1/pepper.webp",
+    "representative": false
+  },
+  "pepperwood": {
+    "src": "/notes/labor-library-v1/pepperwood.webp",
     "representative": false
   },
   "peru-balsam": {
@@ -992,16 +1140,40 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/pine.webp",
     "representative": false
   },
+  "pine-needles": {
+    "src": "/notes/labor-library-v1/pine-needles.webp",
+    "representative": false
+  },
   "pineapple": {
     "src": "/notes/labor-library-v1/pineapple.webp",
+    "representative": false
+  },
+  "pink-lotus": {
+    "src": "/notes/labor-library-v1/pink-lotus.webp",
+    "representative": false
+  },
+  "pink-rose": {
+    "src": "/notes/labor-library-v1/pink-rose.webp",
     "representative": false
   },
   "plum": {
     "src": "/notes/labor-library-v1/plum.webp",
     "representative": false
   },
+  "pomarose": {
+    "src": "/notes/labor-library-v1/pomarose.webp",
+    "representative": true
+  },
+  "pomegranate": {
+    "src": "/notes/labor-library-v1/pomegranate.webp",
+    "representative": false
+  },
   "pomelo": {
     "src": "/notes/labor-library-v1/pomelo.webp",
+    "representative": false
+  },
+  "popcorn": {
+    "src": "/notes/labor-library-v1/popcorn.webp",
     "representative": false
   },
   "powdery-notes": {
@@ -1010,6 +1182,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "praline": {
     "src": "/notes/labor-library-v1/praline.webp",
+    "representative": false
+  },
+  "quince": {
+    "src": "/notes/labor-library-v1/quince.webp",
     "representative": false
   },
   "rain": {
@@ -1022,6 +1198,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   },
   "red-berries": {
     "src": "/notes/labor-library-v1/red-berries.webp",
+    "representative": false
+  },
+  "red-currant": {
+    "src": "/notes/labor-library-v1/red-currant.webp",
     "representative": false
   },
   "red-fruits": {
@@ -1040,6 +1220,26 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/rice.webp",
     "representative": false
   },
+  "rooibos-tea": {
+    "src": "/notes/labor-library-v1/rooibos-tea.webp",
+    "representative": false
+  },
+  "rose-geranium": {
+    "src": "/notes/labor-library-v1/rose-geranium.webp",
+    "representative": false
+  },
+  "rose-oxide": {
+    "src": "/notes/labor-library-v1/rose-oxide.webp",
+    "representative": true
+  },
+  "rose-petals": {
+    "src": "/notes/labor-library-v1/rose-petals.webp",
+    "representative": false
+  },
+  "rose-water": {
+    "src": "/notes/labor-library-v1/rose-water.webp",
+    "representative": false
+  },
   "rosemary": {
     "src": "/notes/labor-library-v1/rosemary.webp",
     "representative": false
@@ -1051,6 +1251,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   "saffron": {
     "src": "/notes/labor-library-v1/saffron.webp",
     "representative": false
+  },
+  "safraleine": {
+    "src": "/notes/labor-library-v1/safraleine.webp",
+    "representative": true
   },
   "sage": {
     "src": "/notes/labor-library-v1/sage.webp",
@@ -1064,12 +1268,24 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/sand.webp",
     "representative": false
   },
+  "sapodilla": {
+    "src": "/notes/labor-library-v1/sapodilla.webp",
+    "representative": false
+  },
   "sea-notes": {
     "src": "/notes/labor-library-v1/sea-notes.webp",
     "representative": true
   },
+  "sea-water": {
+    "src": "/notes/labor-library-v1/sea-water.webp",
+    "representative": false
+  },
   "seaweed": {
     "src": "/notes/labor-library-v1/seaweed.webp",
+    "representative": false
+  },
+  "sesame": {
+    "src": "/notes/labor-library-v1/sesame.webp",
     "representative": false
   },
   "sichuan-pepper": {
@@ -1088,6 +1304,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/smoke.webp",
     "representative": true
   },
+  "soil-tincture": {
+    "src": "/notes/labor-library-v1/soil-tincture.webp",
+    "representative": false
+  },
   "sour-cherry": {
     "src": "/notes/labor-library-v1/sour-cherry.webp",
     "representative": false
@@ -1100,8 +1320,16 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/spicy-notes.webp",
     "representative": true
   },
+  "spray-paint": {
+    "src": "/notes/labor-library-v1/spray-paint.webp",
+    "representative": false
+  },
   "star-anise": {
     "src": "/notes/labor-library-v1/star-anise.webp",
+    "representative": false
+  },
+  "stone": {
+    "src": "/notes/labor-library-v1/stone.webp",
     "representative": false
   },
   "strawberry": {
@@ -1128,6 +1356,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/sweet-pea.webp",
     "representative": false
   },
+  "tahitian-vetiver": {
+    "src": "/notes/labor-library-v1/tahitian-vetiver.webp",
+    "representative": false
+  },
   "tangerine": {
     "src": "/notes/labor-library-v1/tangerine.webp",
     "representative": false
@@ -1136,8 +1368,16 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/tea.webp",
     "representative": false
   },
+  "teak-wood": {
+    "src": "/notes/labor-library-v1/teak-wood.webp",
+    "representative": false
+  },
   "thyme": {
     "src": "/notes/labor-library-v1/thyme.webp",
+    "representative": false
+  },
+  "tiare-flower": {
+    "src": "/notes/labor-library-v1/tiare-flower.webp",
     "representative": false
   },
   "timur": {
@@ -1156,6 +1396,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/tobacco-leaf.webp",
     "representative": false
   },
+  "tolu-balsam": {
+    "src": "/notes/labor-library-v1/tolu-balsam.webp",
+    "representative": false
+  },
   "tuberose": {
     "src": "/notes/labor-library-v1/tuberose.webp",
     "representative": false
@@ -1164,13 +1408,29 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/tunisian-neroli.webp",
     "representative": false
   },
+  "tunisian-orange-blossom": {
+    "src": "/notes/labor-library-v1/tunisian-orange-blossom.webp",
+    "representative": false
+  },
   "turkish-rose": {
     "src": "/notes/labor-library-v1/turkish-rose.webp",
+    "representative": false
+  },
+  "vanilla-bean": {
+    "src": "/notes/labor-library-v1/vanilla-bean.webp",
+    "representative": false
+  },
+  "vanilla-orchid": {
+    "src": "/notes/labor-library-v1/vanilla-orchid.webp",
     "representative": false
   },
   "vanilla-sugar": {
     "src": "/notes/labor-library-v1/vanilla-sugar.webp",
     "representative": false
+  },
+  "velvione": {
+    "src": "/notes/labor-library-v1/velvione.webp",
+    "representative": true
   },
   "verbena": {
     "src": "/notes/labor-library-v1/verbena.webp",
@@ -1192,6 +1452,22 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/virginia-cedar.webp",
     "representative": false
   },
+  "vodka": {
+    "src": "/notes/labor-library-v1/vodka.webp",
+    "representative": false
+  },
+  "water-hyacinth": {
+    "src": "/notes/labor-library-v1/water-hyacinth.webp",
+    "representative": false
+  },
+  "water-jasmine": {
+    "src": "/notes/labor-library-v1/water-jasmine.webp",
+    "representative": false
+  },
+  "water-lily": {
+    "src": "/notes/labor-library-v1/water-lily.webp",
+    "representative": false
+  },
   "water-notes": {
     "src": "/notes/labor-library-v1/water-notes.webp",
     "representative": true
@@ -1204,6 +1480,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/whiskey.webp",
     "representative": false
   },
+  "white-cedar-extract": {
+    "src": "/notes/labor-library-v1/white-cedar-extract.webp",
+    "representative": false
+  },
   "white-flowers": {
     "src": "/notes/labor-library-v1/white-flowers.webp",
     "representative": false
@@ -1211,6 +1491,10 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
   "white-musk": {
     "src": "/notes/labor-library-v1/white-musk.webp",
     "representative": true
+  },
+  "white-peach": {
+    "src": "/notes/labor-library-v1/white-peach.webp",
+    "representative": false
   },
   "white-pepper": {
     "src": "/notes/labor-library-v1/white-pepper.webp",
@@ -1220,12 +1504,36 @@ export const NOTE_LIBRARY_ASSETS: Readonly<Record<string, { src: string; represe
     "src": "/notes/labor-library-v1/white-rose.webp",
     "representative": false
   },
+  "white-rum": {
+    "src": "/notes/labor-library-v1/white-rum.webp",
+    "representative": false
+  },
+  "white-sandalwood": {
+    "src": "/notes/labor-library-v1/white-sandalwood.webp",
+    "representative": false
+  },
   "white-suede": {
     "src": "/notes/labor-library-v1/white-suede.webp",
     "representative": false
   },
   "white-tea": {
     "src": "/notes/labor-library-v1/white-tea.webp",
+    "representative": false
+  },
+  "white-tobacco": {
+    "src": "/notes/labor-library-v1/white-tobacco.webp",
+    "representative": false
+  },
+  "white-wood": {
+    "src": "/notes/labor-library-v1/white-wood.webp",
+    "representative": false
+  },
+  "white-woods": {
+    "src": "/notes/labor-library-v1/white-woods.webp",
+    "representative": false
+  },
+  "wild-berries": {
+    "src": "/notes/labor-library-v1/wild-berries.webp",
     "representative": false
   },
   "woody-notes": {
