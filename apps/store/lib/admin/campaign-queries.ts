@@ -6,16 +6,18 @@
 // featured-products picker. Money stays integer UZS minor units.
 
 import { db } from '@/lib/db';
-import { resolveLocaleText } from '@/lib/catalog/locale';
+import { decodeLocaleRecord, resolveLocaleText } from '@/lib/catalog/locale';
 import type { LocaleText } from '@/lib/catalog/types';
 
 /** Coerce arbitrary stored JSON to a LocaleText ({ ru, uz?, en? }), ru required. */
 export function toLocaleText(value: unknown): LocaleText {
-  if (typeof value === 'string') {
+  // The actions below save these as JSON text: read it back as the record, or
+  // the form would show the JSON in the RU field and save it one level deeper.
+  const rec = decodeLocaleRecord(value);
+  if (!rec && typeof value === 'string') {
     return { ru: value };
   }
-  if (value && typeof value === 'object' && !Array.isArray(value)) {
-    const rec = value as Record<string, unknown>;
+  if (rec) {
     const str = (k: string): string | undefined =>
       typeof rec[k] === 'string' ? (rec[k] as string) : undefined;
     return {
