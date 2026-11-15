@@ -56,13 +56,8 @@ docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 # down this way the first time --build was used. It is not restarted by the line
 # above because its own image and config did not change.
 docker compose -f infra/docker-compose.yml restart nginx
-# Telegram delivers the bot's updates to the store. The old bot container
-# re-registered its own address each time it started; with it gone this keeps
-# the webhook on /api/telegram/webhook. '< /dev/null' is load-bearing: this
-# script reaches the server as ssh's stdin and 'exec -T' would read the rest of
-# it. A failure here is reported but does not stop the deploy: the site is up.
-docker compose -f infra/docker-compose.yml exec -T store node scripts/telegram-webhook.mjs < /dev/null \
-  || echo "--> WARNING: the Telegram webhook was not set; the bot gets no messages" >&2
+# The deploy never touches the Telegram webhook: the live bot is connected to
+# Billz (labor.billz.io), which owns where its updates go.
 docker image prune -f
 
 # Fail the deploy if the store is not actually rendering pages. Everything above

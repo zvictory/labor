@@ -43,6 +43,5 @@ $COMPOSE run --rm -T store \
 
 echo "==> 5/5  Starting store and nginx"
 $COMPOSE up -d
-$COMPOSE exec -T store node scripts/telegram-webhook.mjs < /dev/null || true
 
 echo "==> Bootstrap complete: https://laborparfum.com/ru"

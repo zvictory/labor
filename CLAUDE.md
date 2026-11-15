@@ -45,9 +45,11 @@ Do **not** start Docker locally: `infra/docker-compose.yml` is the production st
 ## Production
 
 The VPS runs Docker: `store`, `postgres` and `nginx` (`infra/docker-compose.yml`).
-`infra/deploy/deploy.sh`, run from the Mac, builds and migrates there, keeps the Telegram
-webhook on `/api/telegram/webhook` (`apps/store/scripts/telegram-webhook.mjs`) and fails
-unless `/ru` answers 200. Never deploy without Zafar's approval.
+`infra/deploy/deploy.sh`, run from the Mac, builds and migrates there and fails unless `/ru`
+answers 200. Never deploy without Zafar's approval.
+
+- The live Telegram bot is connected to Billz (labor.billz.io). Don't touch it: never call
+  `setWebhook` or otherwise change its webhook, from a script, the deploy or the store.
 
 - Product photos are the files behind the `/storage/...` URLs in the catalog: the Docker
   volume `labor_backend_storage`, served by nginx. Declared `external`, never remove it.
