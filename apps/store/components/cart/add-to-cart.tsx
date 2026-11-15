@@ -81,6 +81,78 @@ function useAddToCart(productId: number, locale: string) {
 }
 
 /**
+ * One 2 ml sample of each perfume, added together: a discovery set, or the
+ * scent quiz's picks. The label is the caller's, so it can carry the price.
+ */
+export function AddSamples({
+  productIds,
+  locale,
+  label,
+  variant = 'primary',
+}: {
+  productIds: number[];
+  locale: string;
+  label: string;
+  variant?: 'primary' | 'outline';
+}) {
+  const [busy, startTransition] = useTransition();
+  const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  const lang = toLang(locale);
+  const ready = useHydrated();
+
+  const add = (): void => {
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/cart?locale=${locale}`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ sampleProductIds: productIds }),
+        });
+        if (!res.ok) throw new Error('request failed');
+        emitCartUpdated((await res.json()) as CartDTO);
+        for (const id of productIds) {
+          track('add_to_cart', { item_id: String(id), item_variant: 'sample', currency: 'UZS' });
+        }
+        setToast({ kind: 'ok', text: ADDED_COPY[lang] });
+      } catch {
+        setToast({ kind: 'err', text: ERROR_COPY[lang] });
+      }
+      window.setTimeout(() => setToast(null), 2500);
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <button
+        type="button"
+        disabled={busy || !ready}
+        onClick={add}
+        className={
+          'inline-flex h-12 items-center justify-center px-7 text-xs font-semibold tracking-[0.18em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-70 ' +
+          (variant === 'primary'
+            ? 'bg-foreground text-background hover:opacity-85'
+            : 'border-foreground text-foreground hover:bg-foreground hover:text-background border')
+        }
+      >
+        {label}
+      </button>
+      {toast && (
+        <p
+          role="status"
+          className={
+            toast.kind === 'ok'
+              ? 'text-micro font-mono tracking-[0.16em] uppercase'
+              : 'text-xs text-red-600 dark:text-red-400'
+          }
+        >
+          {toast.text}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/**
  * Compact icon add-to-cart for the catalog card overlay. Rendered as a sibling
  * of the card's <Link> (never nested inside the anchor) so the markup stays
  * valid and the click doesn't trigger navigation. Full bottle only.

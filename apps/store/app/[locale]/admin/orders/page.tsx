@@ -144,6 +144,11 @@ export default async function AdminOrdersPage({ params, searchParams }: Props) {
                     >
                       {o.number}
                     </Link>
+                    {o.isGift && (
+                      <span className="border-brass text-ink dark:text-bone text-micro ml-2 inline-block border px-1.5 py-0.5 tracking-widest uppercase">
+                        Подарок
+                      </span>
+                    )}
                   </td>
                   <td className="text-ink-muted px-4 py-3 dark:text-stone-400">{o.phone ?? '—'}</td>
                   <td className="text-ink-muted px-4 py-3 dark:text-stone-400">{o.itemsCount}</td>

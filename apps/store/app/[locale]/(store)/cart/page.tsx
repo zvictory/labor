@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
-import { readCart } from '@/lib/cart/cart';
+import { cartItemsTotal, readCart } from '@/lib/cart/cart';
 import { formatUzs } from '@/lib/money';
 import { freeDeliveryThreshold } from '@/lib/delivery/free-delivery';
 import { CartLineControls } from '@/components/cart/cart-line-controls';
@@ -36,6 +36,7 @@ export default async function CartPage({ params }: Props) {
   const tpdp = await getTranslations('pdp');
   const freeFrom = freeDeliveryThreshold();
   const lang = toLang(locale);
+  const itemsTotal = cartItemsTotal(cart);
 
   return (
     <div className="container py-10 md:py-16">
@@ -121,12 +122,32 @@ export default async function CartPage({ params }: Props) {
                 {formatUzs(cart.subtotal, locale)}
               </span>
             </div>
+            {/* Discovery sets the samples complete: one row each, then what is left. */}
+            {cart.sets.map((set) => (
+              <div key={set.slug} className="flex items-center justify-between gap-4 text-sm">
+                <span className="text-ink-muted dark:text-stone-400">
+                  {t('set', { title: set.title })}
+                  {set.count > 1 ? ` × ${set.count}` : ''}
+                </span>
+                <span className="text-ink dark:text-bone whitespace-nowrap">
+                  −{formatUzs(set.saving, locale)}
+                </span>
+              </div>
+            ))}
+            {cart.setDiscount > 0 && (
+              <div className="border-border flex items-center justify-between border-t pt-4 text-sm">
+                <span className="text-ink-muted dark:text-stone-400">{t('total')}</span>
+                <span className="text-ink dark:text-bone text-base font-medium">
+                  {formatUzs(itemsTotal, locale)}
+                </span>
+              </div>
+            )}
             {/* Before a promo code: the checkout recounts after one. */}
             {freeFrom !== null && (
               <p className="text-ink-muted text-xs dark:text-stone-400">
-                {cart.subtotal >= freeFrom
+                {itemsTotal >= freeFrom
                   ? t('freeDeliveryReached')
-                  : t('freeDeliveryLeft', { amount: formatUzs(freeFrom - cart.subtotal, locale) })}
+                  : t('freeDeliveryLeft', { amount: formatUzs(freeFrom - itemsTotal, locale) })}
               </p>
             )}
             {/* The same promise the product page makes under its button, repeated

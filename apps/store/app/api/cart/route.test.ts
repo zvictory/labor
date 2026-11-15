@@ -21,13 +21,21 @@ beforeEach(() => {
 const request = (method: string, body?: unknown) =>
   new NextRequest('http://localhost/api/cart?locale=ru', {
     method,
-    ...(body ? { body: JSON.stringify(body), headers: { 'content-type': 'application/json' } } : {}),
+    ...(body
+      ? { body: JSON.stringify(body), headers: { 'content-type': 'application/json' } }
+      : {}),
   });
 
 describe('/api/cart without a cart cookie', () => {
   it('GET answers an empty cart and creates nothing', async () => {
     const res = await GET(request('GET'));
-    expect(await res.json()).toEqual({ items: [], itemCount: 0, subtotal: 0 });
+    expect(await res.json()).toEqual({
+      items: [],
+      itemCount: 0,
+      subtotal: 0,
+      sets: [],
+      setDiscount: 0,
+    });
     expect(cart.create).not.toHaveBeenCalled();
     expect(cookieSet).not.toHaveBeenCalled();
   });

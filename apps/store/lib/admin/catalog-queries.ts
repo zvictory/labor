@@ -8,7 +8,7 @@
 import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
-import { resolveLocaleText } from '@/lib/catalog/locale';
+import { decodeLocaleRecord, resolveLocaleText } from '@/lib/catalog/locale';
 import { toPyramidLayer } from '@/lib/catalog/types';
 import type { LocaleText, PyramidLayer } from '@/lib/catalog/types';
 
@@ -18,11 +18,13 @@ export const ADMIN_PAGE_SIZE = 20;
 
 /** Coerce a stored Json value into an editable { ru, uz, en } shape (ru required). */
 export const toLocaleText = (value: Prisma.JsonValue | null | undefined): LocaleText => {
-  if (typeof value === 'string') {
+  // The actions save these as JSON text: read it back as the record, or the
+  // form would show the JSON in the RU field and save it one level deeper.
+  const rec = decodeLocaleRecord(value);
+  if (!rec && typeof value === 'string') {
     return { ru: value };
   }
-  if (value && typeof value === 'object' && !Array.isArray(value)) {
-    const rec = value as Record<string, unknown>;
+  if (rec) {
     const pick = (k: string): string | undefined =>
       typeof rec[k] === 'string' ? (rec[k] as string) : undefined;
     return {

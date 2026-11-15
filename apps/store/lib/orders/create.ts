@@ -4,7 +4,8 @@
 //
 //   new Order  → status 'pending', paymentStatus 'unpaid'
 //   Order.number is the PUBLIC id Payme/Click reference (lib/orders/number.ts)
-//   Order.total = items subtotal - promo discount + delivery price (integer UZS / so'm)
+//   Order.total = items subtotal - set discount - promo discount + delivery price
+//                 (integer UZS / so'm)
 //
 // Item prices are snapshotted from the cart lines (unitPrice), NOT re-read from
 // the live Product, so a later price change never alters a placed order.
@@ -23,6 +24,8 @@ import {
 import { claimPromoUse, findPromo, isFirstOrder } from '@/lib/promo/promo';
 import { evaluatePromo, fullSizeUnits } from '@/lib/promo/rules';
 import { findRegion } from '@/lib/delivery/uz-regions';
+import { normalizeUzPhone } from '@/lib/phone';
+import { GIFT_NOTE_MAX } from '@/lib/checkout/gift';
 // Cart module (built in parallel by another agent). ASSUMED exports:
 //   getCart(locale): Promise<CartDTO>   CartDTO { items: CartLineDTO[]; itemCount; subtotal }
 //   clearCart(): Promise<void>
@@ -53,9 +56,17 @@ export const createOrderInputSchema = z.object({
   userId: z.number().int().positive().optional(),
   // Checked again here whatever the checkout preview said.
   promoCode: z.string().trim().max(64).optional(),
+  // A gift: the card text and, when it goes to someone else, who receives it.
+  gift: z
+    .object({
+      note: z.string().trim().max(GIFT_NOTE_MAX, 'gift_note_long').default(''),
+      recipientName: z.string().trim().max(80).default(''),
+      recipientPhone: z.string().trim().max(32).default(''),
+    })
+    .optional(),
 });
 
-export type CreateOrderInput = z.infer<typeof createOrderInputSchema>;
+export type CreateOrderInput = z.input<typeof createOrderInputSchema>;
 
 export class OrderCreationError extends Error {
   constructor(
@@ -82,8 +93,8 @@ function deliveryMethodFor(methodId: string): DeliveryMethod {
 /**
  * Create an Order from the current cart in a single transaction, then clear the
  * cart. Validates a non-empty cart and all required fields. Item unit prices are
- * snapshotted from the cart lines; the order total is
- * `subtotal - discount + deliveryFee`. A promo code is re-validated here and its
+ * snapshotted from the cart lines; the order total is the lines, less what the
+ * discovery sets and a promo code take off, plus delivery. A promo code is re-validated here and its
  * use is counted in the same transaction as the order. `opts.attribution` is
  * the visitor's ad tags (lib/attribution), stored with the order.
  *
@@ -106,6 +117,14 @@ export async function createOrderFromCart(
     throw new OrderCreationError('region_unknown', `Unknown region: ${parsed.address.region}`);
   }
 
+  // A recipient's number is optional, but one that is given must be callable:
+  // the courier rings it.
+  const gift = parsed.gift;
+  const giftPhone = gift?.recipientPhone ? normalizeUzPhone(gift.recipientPhone) : null;
+  if (gift?.recipientPhone && !giftPhone) {
+    throw new OrderCreationError('gift_phone_invalid', 'Recipient phone is not a valid number');
+  }
+
   const cart = await getCart(parsed.locale);
   if (!cart || cart.items.length === 0) {
     throw new OrderCreationError('cart_empty', 'Cannot place an order with an empty cart');
@@ -118,9 +137,12 @@ export async function createOrderFromCart(
 
   const method = deliveryMethodFor(parsed.deliveryMethod);
 
-  // Recompute subtotal from line snapshots rather than trusting cart.subtotal,
-  // so the persisted total is internally consistent with the OrderItems.
-  const subtotal = cart.items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  // Recompute the lines from their snapshots rather than trusting cart.subtotal,
+  // so the persisted total is internally consistent with the OrderItems. What
+  // the discovery sets take off comes first; a promo code works on what is left.
+  const linesTotal = cart.items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  const setDiscount = Math.min(cart.setDiscount, linesTotal);
+  const subtotal = linesTotal - setDiscount;
 
   const promo = parsed.promoCode ? await findPromo(parsed.promoCode) : null;
   let discount = 0;
@@ -175,6 +197,11 @@ export async function createOrderFromCart(
             total,
             promoCode: promo && discount > 0 ? promo.code : null,
             discount,
+            setDiscount,
+            isGift: gift !== undefined,
+            giftNote: gift?.note || null,
+            giftRecipientName: gift?.recipientName || null,
+            giftRecipientPhone: giftPhone,
             region: parsed.address.region,
             district: parsed.address.district,
             address: parsed.address.address || null,

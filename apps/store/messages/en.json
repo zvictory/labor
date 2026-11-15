@@ -14,6 +14,7 @@
     "finder": "Finder",
     "delivery": "Delivery",
     "campaigns": "Campaigns",
+    "sets": "Discovery sets",
     "wishlist": "Wishlist",
     "cart": "Cart",
     "account": "Account",
@@ -200,7 +201,8 @@
     "promoCode": "Promo code",
     "apply": "Apply",
     "freeDeliveryLeft": "{amount} more for free delivery in Tashkent",
-    "freeDeliveryReached": "Delivery in Tashkent is free"
+    "freeDeliveryReached": "Delivery in Tashkent is free",
+    "set": "Set: {title}"
   },
   "checkout": {
     "title": "Checkout",
@@ -242,7 +244,8 @@
     "title": "Labor campaigns",
     "empty": "No active campaigns right now",
     "itemsCount": "{count, plural, one {# fragrance} other {# fragrances}}",
-    "until": "until {date}"
+    "until": "until {date}",
+    "setFact": "set {price}"
   },
   "catalog": {
     "title": "Catalog",
@@ -302,7 +305,18 @@
     "open": "View",
     "back": "All offers",
     "products": "Fragrances in this offer",
-    "metaDescription": "Labor offers and selections: discounted fragrances and seasonal edits."
+    "metaDescription": "Labor offers and selections: discounted fragrances and seasonal edits.",
+    "setEyebrow": "Discovery set",
+    "setSize": "{count, plural, one {# sample} other {# samples}}, {ml} ml each",
+    "setSaving": "You save {amount}",
+    "setAdd": "Add the set to cart",
+    "setNote": "The set price holds while a sample of each perfume in it is in the cart."
+  },
+  "sets": {
+    "title": "Discovery sets",
+    "lead": "Several perfumes, 2 ml each, for one price: get to know them before choosing a 10 ml.",
+    "empty": "There are no sets right now. A sample of any perfume can be added from its page.",
+    "metaDescription": "Labor discovery sets: several perfumes, 2 ml each, for one price, delivered across Uzbekistan."
   },
   "tg": {
     "tabs": {

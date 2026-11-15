@@ -80,6 +80,7 @@ async function applyTransition(
       where: { id: order.id },
       data: {
         status: target,
+        ...(target === 'delivered' ? { deliveredAt: new Date() } : {}),
         ...(nextPaymentStatus ? { paymentStatus: nextPaymentStatus } : {}),
       },
     });

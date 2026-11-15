@@ -174,3 +174,14 @@ html[data-tg-scheme="light"] {
     scale: 1 1;
   }
 }
+
+/* The bottle on a perfume's story page — app/[locale]/(store)/product/[slug]/story. */
+@keyframes story-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}

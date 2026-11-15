@@ -8,6 +8,7 @@ import { db } from '@/lib/db';
 import { resolveLocaleText } from '@/lib/catalog/locale';
 import { listProductsByIds } from '@/lib/catalog/products';
 import type { ProductCardDTO } from '@/lib/catalog/types';
+import { setOffer, type SetOfferDTO } from '@/lib/sets/rules';
 
 export interface CampaignSlideDTO {
   imageUrl: string | null;
@@ -25,6 +26,8 @@ export interface CampaignSummaryDTO {
   heroImage: string | null;
   endsAt: Date | null;
   productCount: number;
+  /** The discovery set this campaign sells, if it has a set price (lib/sets). */
+  set: SetOfferDTO | null;
 }
 
 export interface CampaignDTO extends CampaignSummaryDTO {
@@ -53,13 +56,31 @@ export const liveCampaignWhere = (now: Date): Prisma.CampaignWhereInput => ({
   ],
 });
 
-/** Live campaigns, the one ending soonest first (open-ended ones last). */
+const productLinkSelect = {
+  orderBy: { position: 'asc' },
+  select: { productId: true, product: { select: { status: true } } },
+} satisfies Prisma.Campaign$productsArgs;
+
+const offerOf = (row: {
+  setPrice: number | null;
+  products: { productId: number; product: { status: string } }[];
+}): SetOfferDTO | null =>
+  setOffer(
+    row.setPrice,
+    row.products.map((p) => ({ productId: p.productId, active: p.product.status === 'active' })),
+  );
+
+/**
+ * Live campaigns, the one ending soonest first (open-ended ones last).
+ * `setsOnly` keeps the ones that sell a discovery set.
+ */
 export const getLiveCampaigns = async (
   locale: string,
   now: Date = new Date(),
+  opts: { setsOnly?: boolean } = {},
 ): Promise<CampaignSummaryDTO[]> => {
   const rows = await db.campaign.findMany({
-    where: liveCampaignWhere(now),
+    where: { ...liveCampaignWhere(now), ...(opts.setsOnly ? { setPrice: { gt: 0 } } : {}) },
     orderBy: [{ endsAt: { sort: 'asc', nulls: 'last' } }, { createdAt: 'desc' }],
     select: {
       slug: true,
@@ -68,18 +89,22 @@ export const getLiveCampaigns = async (
       ctaLabel: true,
       heroImage: true,
       endsAt: true,
-      _count: { select: { products: { where: { product: { status: 'active' } } } } },
+      setPrice: true,
+      products: productLinkSelect,
     },
   });
-  return rows.map((row) => ({
-    slug: row.slug,
-    title: resolveLocaleText(row.title, locale),
-    subtitle: resolveLocaleText(row.subtitle, locale),
-    ctaLabel: resolveLocaleText(row.ctaLabel, locale),
-    heroImage: row.heroImage,
-    endsAt: row.endsAt,
-    productCount: row._count.products,
-  }));
+  return rows
+    .map((row) => ({
+      slug: row.slug,
+      title: resolveLocaleText(row.title, locale),
+      subtitle: resolveLocaleText(row.subtitle, locale),
+      ctaLabel: resolveLocaleText(row.ctaLabel, locale),
+      heroImage: row.heroImage,
+      endsAt: row.endsAt,
+      productCount: row.products.filter((p) => p.product.status === 'active').length,
+      set: offerOf(row),
+    }))
+    .filter((campaign) => !opts.setsOnly || campaign.set !== null);
 };
 
 /** One live campaign with its slides and products, or null. */
@@ -98,11 +123,12 @@ export const getLiveCampaign = async (
       ctaLabel: true,
       heroImage: true,
       endsAt: true,
+      setPrice: true,
       slides: {
         orderBy: { position: 'asc' },
         select: { imageUrl: true, linkUrl: true, title: true, subtitle: true, ctaLabel: true },
       },
-      products: { orderBy: { position: 'asc' }, select: { productId: true } },
+      products: productLinkSelect,
     },
   });
   if (!row) return null;
@@ -121,6 +147,7 @@ export const getLiveCampaign = async (
     heroImage: row.heroImage,
     endsAt: row.endsAt,
     productCount: products.length,
+    set: offerOf(row),
     slides: row.slides.map((s) => ({
       imageUrl: s.imageUrl,
       linkUrl: safeLinkUrl(s.linkUrl),

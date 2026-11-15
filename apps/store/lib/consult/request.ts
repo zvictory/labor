@@ -15,7 +15,7 @@ import {
   type Attribution,
 } from '@/lib/attribution/attribution';
 
-export const CONSULT_SOURCES = ['product', 'finder', 'contacts', 'corporate'] as const;
+export const CONSULT_SOURCES = ['product', 'finder', 'contacts', 'corporate', 'launch'] as const;
 export type ConsultSource = (typeof CONSULT_SOURCES)[number];
 
 /** Repeat requests from one number inside this window are acknowledged but not stored again. */
@@ -64,6 +64,7 @@ const SOURCE_LABEL: Record<ConsultSource, string> = {
   finder: 'подбор аромата',
   contacts: 'контакты',
   corporate: 'корпоративный заказ',
+  launch: 'лист ожидания: дезодорант',
 };
 
 /** The admin chat message, in Russian like the order notifications. */

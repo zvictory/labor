@@ -6,16 +6,18 @@
 // featured-products picker. Money stays integer UZS minor units.
 
 import { db } from '@/lib/db';
-import { resolveLocaleText } from '@/lib/catalog/locale';
+import { decodeLocaleRecord, resolveLocaleText } from '@/lib/catalog/locale';
 import type { LocaleText } from '@/lib/catalog/types';
 
 /** Coerce arbitrary stored JSON to a LocaleText ({ ru, uz?, en? }), ru required. */
 export function toLocaleText(value: unknown): LocaleText {
-  if (typeof value === 'string') {
+  // The actions below save these as JSON text: read it back as the record, or
+  // the form would show the JSON in the RU field and save it one level deeper.
+  const rec = decodeLocaleRecord(value);
+  if (!rec && typeof value === 'string') {
     return { ru: value };
   }
-  if (value && typeof value === 'object' && !Array.isArray(value)) {
-    const rec = value as Record<string, unknown>;
+  if (rec) {
     const str = (k: string): string | undefined =>
       typeof rec[k] === 'string' ? (rec[k] as string) : undefined;
     return {
@@ -92,6 +94,8 @@ export interface AdminCampaignProduct {
   price: number; // integer so'm
   image: string | null;
   position: number;
+  /** On sale; a set with a perfume off sale is not sold (lib/sets). */
+  active: boolean;
 }
 
 export interface AdminCampaignDetail {
@@ -102,6 +106,8 @@ export interface AdminCampaignDetail {
   body: LocaleText | null;
   ctaLabel: LocaleText | null;
   heroImage: string | null;
+  /** Discovery set price in so'm, or null when the campaign sells no set. */
+  setPrice: number | null;
   active: boolean;
   startsAt: Date | null;
   endsAt: Date | null;
@@ -121,6 +127,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
       body: true,
       ctaLabel: true,
       heroImage: true,
+      setPrice: true,
       active: true,
       startsAt: true,
       endsAt: true,
@@ -146,6 +153,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
               slug: true,
               name: true,
               price: true,
+              status: true,
               images: { orderBy: { position: 'asc' }, take: 1, select: { url: true } },
             },
           },
@@ -164,6 +172,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
     body: optionalLocaleText(c.body),
     ctaLabel: optionalLocaleText(c.ctaLabel),
     heroImage: c.heroImage,
+    setPrice: c.setPrice,
     active: c.active,
     startsAt: c.startsAt,
     endsAt: c.endsAt,
@@ -183,6 +192,7 @@ export async function getAdminCampaign(id: number): Promise<AdminCampaignDetail 
       price: p.product.price,
       image: p.product.images[0]?.url ?? null,
       position: p.position,
+      active: p.product.status === 'active',
     })),
   };
 }

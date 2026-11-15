@@ -16,6 +16,14 @@ import {
   searchCampaignProducts,
 } from '@/lib/admin/campaign-actions';
 import { CampaignForm } from '@/components/admin/campaigns/campaign-form';
+import { formatUzs } from '@/lib/money';
+import {
+  setOffer,
+  setProblem,
+  SET_MAX_ITEMS,
+  SET_MIN_ITEMS,
+  type SetProblem,
+} from '@/lib/sets/rules';
 import { SlideEditor } from '@/components/admin/campaigns/slide-editor';
 import { FeaturedProducts } from '@/components/admin/campaigns/featured-products';
 
@@ -23,6 +31,14 @@ type Props = { params: Promise<{ locale: string; id: string }> };
 
 const toDateInput = (date: Date | null): string | null =>
   date ? date.toISOString().slice(0, 10) : null;
+
+// Why a campaign with a set price sells no set, in the words of what to fix.
+const SET_PROBLEM: Record<Exclude<SetProblem, 'no_price'>, string> = {
+  too_few: `В наборе должно быть не меньше ${SET_MIN_ITEMS} ароматов: добавьте товары кампании.`,
+  too_many: `В наборе может быть не больше ${SET_MAX_ITEMS} ароматов: уберите лишние.`,
+  product_off: 'Один из ароматов снят с продажи: уберите его из кампании или верните в продажу.',
+  no_saving: 'Цена набора не ниже суммы пробников по отдельности: набор ничего не экономит.',
+};
 
 export default async function AdminCampaignEditPage({ params }: Props) {
   await requireStaff();
@@ -35,6 +51,9 @@ export default async function AdminCampaignEditPage({ params }: Props) {
   if (!campaign) notFound();
 
   const base = `/${locale}/admin/campaigns`;
+  const setProducts = campaign.products.map((p) => ({ productId: p.productId, active: p.active }));
+  const offer = setOffer(campaign.setPrice, setProducts);
+  const problem = setProblem(campaign.setPrice, setProducts);
   const sectionTitleCls = 'text-muted-foreground font-mono text-micro tracking-[0.28em] uppercase';
 
   // Inline server actions for the top-bar controls.
@@ -83,6 +102,22 @@ export default async function AdminCampaignEditPage({ params }: Props) {
         </div>
       </header>
 
+      {/* Whether the set price above is actually on sale, and if not, why. */}
+      {campaign.setPrice !== null && (
+        <p
+          className={
+            'rounded-md border px-4 py-3 text-sm ' +
+            (offer
+              ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+              : 'border-amber-300 bg-amber-50 text-amber-900')
+          }
+        >
+          {offer
+            ? `Набор продаётся: ${offer.productIds.length} пробн. за ${formatUzs(offer.price, 'ru')} вместо ${formatUzs(offer.regular, 'ru')}.${campaign.active ? '' : ' Кампания скрыта, поэтому на сайте его нет.'}`
+            : `Набор не продаётся. ${problem && problem !== 'no_price' ? SET_PROBLEM[problem] : ''}`}
+        </p>
+      )}
+
       {/* Core fields */}
       <section className="space-y-4">
         <h2 className={sectionTitleCls}>Параметры</h2>
@@ -97,6 +132,7 @@ export default async function AdminCampaignEditPage({ params }: Props) {
               body: campaign.body,
               ctaLabel: campaign.ctaLabel,
               heroImage: campaign.heroImage,
+              setPrice: campaign.setPrice,
               active: campaign.active,
               startsAt: toDateInput(campaign.startsAt),
               endsAt: toDateInput(campaign.endsAt),

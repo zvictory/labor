@@ -37,5 +37,7 @@ export const formatUzs = (amount: number, locale: string = 'ru'): string => {
 // so the site and the shop cannot drift apart on price.
 export const PRICE_PER_ML = 16_000;
 export const SAMPLE_ML = 2;
+/** What one 2 ml sample costs, whatever the perfume. */
+export const SAMPLE_PRICE = SAMPLE_ML * PRICE_PER_ML;
 
 export const formatRating = (n: number): string => (Math.round(n * 10) / 10).toFixed(1);

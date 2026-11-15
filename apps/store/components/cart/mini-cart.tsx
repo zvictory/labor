@@ -234,7 +234,7 @@ export function MiniCart({ locale }: { locale: string }) {
                 <div className="mb-3 flex items-center justify-between text-sm">
                   <span className="text-ink-muted dark:text-stone-400">{copy.subtotal}</span>
                   <span className="text-ink dark:text-bone text-lg font-medium">
-                    {formatUzs(cart.subtotal, locale)}
+                    {formatUzs(cart.subtotal - cart.setDiscount, locale)}
                   </span>
                 </div>
                 <Link
