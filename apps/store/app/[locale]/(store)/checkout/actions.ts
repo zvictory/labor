@@ -15,6 +15,8 @@ import { getCurrentUserId } from '@/lib/auth/session';
 import { readAttribution } from '@/lib/attribution/server';
 import { cartItemsTotal, readCart } from '@/lib/cart/cart';
 import { reportPurchase } from '@/lib/meta/events';
+import { db } from '@/lib/db';
+import { syncWalletPasses } from '@/lib/wallet/google/sync';
 import { createOrderFromCart, OrderCreationError } from '@/lib/orders/create';
 import { findPromo, isFirstOrder } from '@/lib/promo/promo';
 import { evaluatePromo, fullSizeUnits } from '@/lib/promo/rules';
@@ -77,6 +79,13 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<PlaceOrd
       { attribution },
     );
     await reportPurchase(order, { locale: input.locale, attribution });
+    if (order.bonusSpent > 0 && order.userId) {
+      const account = await db.loyaltyAccount.findUnique({
+        where: { userId: order.userId },
+        select: { id: true },
+      });
+      if (account) syncWalletPasses(account.id, 'spend');
+    }
 
     if (input.payment === 'cod') {
       // Cash on delivery: no Payment row, order stays pending/unpaid until an

@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { isAdmin, requireStaff } from '@/lib/admin/guard';
 import { adjustBalance, LoyaltyError } from '@/lib/loyalty/loyalty';
 import { sendPersonalMessage } from '@/lib/loyalty/notify';
+import { syncWalletPasses } from '@/lib/wallet/google/sync';
 
 export type AdminLoyaltyResult = { ok: true; message?: string } | { ok: false; error: string };
 
@@ -34,6 +35,7 @@ export async function adjustMemberBalance(
     if (err instanceof LoyaltyError) return { ok: false, error: err.code };
     throw err;
   }
+  syncWalletPasses(parsed.data.accountId, 'adjust');
   revalidatePath('/[locale]/admin/loyalty', 'layout');
   return { ok: true };
 }

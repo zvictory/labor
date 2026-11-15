@@ -512,6 +512,7 @@ model LoyaltyAccount {
   marketingConsentSource String? // site | bot | branch
   entries                LoyaltyEntry[]
   messages               LoyaltyMessage[]
+  walletPasses           WalletPass[]
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
 }
@@ -559,4 +560,56 @@ model LoyaltyMessage {
   createdAt   DateTime       @default(now())
 
   @@index([accountId, createdAt])
+}
+
+// ───────────────────────── Wallet passes ─────────────────────────
+
+// A member's card in Google Wallet (and, later, Apple Wallet). The object is
+// created on Google's side when the member asks for the save link; whether
+// they actually saved it comes back as `hasUsers` on the next sync.
+model WalletPass {
+  id            Int                  @id @default(autoincrement())
+  accountId     Int
+  account       LoyaltyAccount       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  platform      String // google | apple
+  objectId      String               @unique
+  hasUsers      Boolean              @default(false)
+  // What the pass last showed, to tell a rise in tier from a plain update.
+  lastBalance   Int?
+  lastTier      String?
+  lastSyncedAt  DateTime?
+  lastError     String?
+  notifications WalletNotification[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@unique([accountId, platform])
+}
+
+// Every update or message that made the member's phone ring. Google allows
+// three a day per pass; Labor allows itself one promotional message a week.
+model WalletNotification {
+  id        Int        @id @default(autoincrement())
+  passId    Int
+  pass      WalletPass @relation(fields: [passId], references: [id], onDelete: Cascade)
+  kind      String // earn | birthday | tier | promo | personal
+  messageId Int?
+  createdAt DateTime   @default(now())
+
+  @@index([passId, createdAt])
+}
+
+// A message staff sent to a segment of Google Wallet holders.
+model WalletMessage {
+  id          Int      @id @default(autoincrement())
+  header      String
+  body        String
+  link        String?
+  segment     String // all | silver | gold | lapsed
+  eligible    Int      @default(0)
+  sent        Int      @default(0)
+  skipped     Int      @default(0)
+  failed      Int      @default(0)
+  staffUserId Int?
+  createdAt   DateTime @default(now())
 }

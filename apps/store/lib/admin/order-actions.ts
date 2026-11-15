@@ -89,8 +89,8 @@ async function applyTransition(
     // The loyalty ledger moves with the status, in the same transaction: a
     // delivered order earns its bonus, a canceled one gives back what it used.
     const earned = target === 'delivered' ? await earnForOrder(tx, order.id, now) : null;
-    if (target === 'canceled') await refundForOrder(tx, order.id, now);
-    return { kind: 'updated' as const, earned };
+    const refunded = target === 'canceled' ? await refundForOrder(tx, order.id, now) : null;
+    return { kind: 'updated' as const, earned, refunded };
   });
 
   if (outcome.kind === 'not_found') return { ok: false, error: 'not_found' };
@@ -108,6 +108,9 @@ async function applyTransition(
         const { notifyEarned } = await import('@/lib/loyalty/notify');
         await notifyEarned(outcome.earned.userId, outcome.earned.amount, outcome.earned.balance);
       }
+      const { syncWalletPasses } = await import('@/lib/wallet/google/sync');
+      if (outcome.earned) syncWalletPasses(outcome.earned.accountId, 'earn');
+      if (outcome.refunded) syncWalletPasses(outcome.refunded.accountId, 'refund');
     } catch (err) {
       console.error('[admin/order-actions] notifyOrderStatus failed:', err);
     }

@@ -8,8 +8,12 @@ import { SignOutButton } from '@/components/account/sign-out-button';
 import { LoyaltyCard } from '@/components/loyalty/loyalty-card';
 import { db } from '@/lib/db';
 import { ensureAccount, getLoyaltyState } from '@/lib/loyalty/loyalty';
+import { googleWalletEnabled } from '@/lib/wallet/google/config';
 
-type Props = { params: Promise<{ locale: Locale }> };
+type Props = {
+  params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ wallet?: string }>;
+};
 
 type Lang = 'ru' | 'uz' | 'en';
 const toLang = (locale: string): Lang => (locale === 'uz' || locale === 'en' ? locale : 'ru');
@@ -67,8 +71,9 @@ const COPY: Record<
   },
 };
 
-export default async function AccountPage({ params }: Props) {
+export default async function AccountPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  const { wallet } = await searchParams;
   setRequestLocale(locale);
 
   const user = await getCurrentUser();
@@ -100,6 +105,8 @@ export default async function AccountPage({ params }: Props) {
           history={loyalty.member?.loyalty?.entries ?? []}
           birthDate={loyalty.member?.birthDate ?? null}
           consent={loyalty.member?.loyalty?.marketingConsentAt != null}
+          googleWallet={googleWalletEnabled()}
+          walletError={wallet === 'error'}
         />
       )}
 

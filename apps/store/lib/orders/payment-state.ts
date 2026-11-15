@@ -20,6 +20,7 @@
 import type { Order, Payment, Prisma, PrismaClient } from '@prisma/client';
 import { db } from '@/lib/db';
 import { refundForOrder } from '@/lib/loyalty/loyalty';
+import { syncWalletPasses } from '@/lib/wallet/google/sync';
 
 /// Provider identifiers stored on Payment.provider / PaymentWebhookEvent.provider.
 export type PaymentProvider = 'payme' | 'click' | 'uzum';
@@ -199,7 +200,8 @@ export async function markPaymentCanceled(
   externalTxnId: string,
   opts?: { refund?: boolean },
 ): Promise<Order | null> {
-  return db.$transaction(async (tx) => {
+  let refundedAccount: number | null = null;
+  const updated = await db.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { number: orderNumber },
       select: { id: true, total: true, status: true, paymentStatus: true },
@@ -223,11 +225,17 @@ export async function markPaymentCanceled(
 
     // A canceled order gives back the Labor bonus it used (once; a repeated
     // webhook finds the refund already written).
-    if (nextStatus === 'canceled') await refundForOrder(tx, order.id, new Date());
+    if (nextStatus === 'canceled') {
+      const refund = await refundForOrder(tx, order.id, new Date());
+      refundedAccount = refund?.accountId ?? null;
+    }
 
     return tx.order.update({
       where: { id: order.id },
       data: { status: nextStatus, paymentStatus: nextPaymentStatus },
     });
   });
+  // After the commit: the member's Wallet card shows the bonus back.
+  if (refundedAccount !== null) syncWalletPasses(refundedAccount, 'refund');
+  return updated;
 }

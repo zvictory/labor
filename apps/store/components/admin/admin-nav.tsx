@@ -19,6 +19,7 @@ import {
   BellRing,
   ScanLine,
   Award,
+  WalletCards,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -40,6 +41,7 @@ export function AdminNav({ locale }: { locale: string }) {
     { href: `${base}/orders`, label: 'Заказы', icon: ShoppingCart },
     { href: `${base}/scan`, label: 'Касса', icon: ScanLine },
     { href: `${base}/loyalty`, label: 'Лояльность', icon: Award },
+    { href: `${base}/wallet`, label: 'Google Wallet', icon: WalletCards },
     { href: `${base}/requests`, label: 'Заявки', icon: PhoneCall },
     { href: `${base}/sources`, label: 'Источники', icon: ChartColumn },
     { href: `${base}/reviews`, label: 'Отзывы', icon: Star },
