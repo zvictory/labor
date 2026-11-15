@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -283,9 +284,24 @@ export default async function CheckoutPage({ params }: Props) {
         event="begin_checkout"
         params={{ value: cartItemsTotal(cart), currency: 'UZS' }}
       />
-      <h1 className="font-display text-ink dark:text-bone mb-10 text-4xl md:text-5xl">
-        {copy.heading}
-      </h1>
+      <h1 className="page-title mb-6">{copy.heading}</h1>
+
+      {!user && (
+        <p className="text-muted-foreground mb-8 text-sm">
+          <Link
+            href={`/${locale}/account/login`}
+            className="text-foreground font-medium underline underline-offset-4"
+          >
+            {lang === 'ru' ? 'Войти в аккаунт' : lang === 'uz' ? 'Hisobga kirish' : 'Sign in'}
+          </Link>
+          {' · '}
+          {lang === 'ru'
+            ? 'Или продолжайте без регистрации.'
+            : lang === 'uz'
+              ? 'Yoki roʻyxatdan oʻtmasdan davom eting.'
+              : 'Or continue as a guest.'}
+        </p>
+      )}
 
       <CheckoutForm
         locale={locale}
@@ -297,6 +313,11 @@ export default async function CheckoutPage({ params }: Props) {
         freeDeliveryFrom={freeDeliveryThreshold()}
         trustLine={tpdp('trustLine')}
         bonusAvailable={bonusAvailable}
+        mapTileUrl={
+          process.env.CHECKOUT_MAP_TILE_URL?.trim() ||
+          'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+        }
+        mapTileCredit={process.env.CHECKOUT_MAP_TILE_CREDIT?.trim() ?? ''}
         initialName={profile?.name ?? ''}
         initialPhone={profile?.phone ?? ''}
       />

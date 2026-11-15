@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+// Keep legacy fallback fixtures independent from the growing completed-asset registry.
+vi.mock('./note-library.generated', () => ({ NOTE_LIBRARY_ASSETS: {} }));
+import { describe, expect, it, vi } from 'vitest';
 
 import { notePicture } from './note-picture';
 
@@ -8,9 +10,9 @@ import { notePicture } from './note-picture';
 describe('notePicture', () => {
   const files = { rose: 'rose.webp' };
 
-  it('prefers our own cut-out, the one the card orbit shows', () => {
+  it('prefers the shared pilot over the old cut-out and database photograph', () => {
     expect(notePicture({ slug: 'rose', icon_url: '/notes/prod/rose.jpg' }, files)).toEqual({
-      src: '/notes/orbit/rose.webp',
+      src: '/notes/labor-pilot-v1/rose.webp',
       cutout: true,
     });
   });

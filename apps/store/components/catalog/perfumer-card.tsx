@@ -20,7 +20,13 @@ export function PerfumerCard({ perfumer, locale }: { perfumer: PerfumerInfo; loc
     <div className="border-border flex items-center gap-4 border p-4">
       <div className="border-border relative h-14 w-14 shrink-0 overflow-hidden border">
         {perfumer.photo ? (
-          <Image src={perfumer.photo} alt="" fill sizes="56px" className="object-cover" />
+          <Image
+            src={perfumer.photo}
+            alt=""
+            fill
+            sizes="56px"
+            className="object-cover object-top"
+          />
         ) : (
           <div className="text-muted-foreground flex h-full w-full items-center justify-center font-mono text-sm">
             {perfumer.name.charAt(0)}

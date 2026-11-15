@@ -1,14 +1,14 @@
+import { LaborLogo } from '@/components/brand/labor-logo';
+import { DirectorySearch } from '@/components/catalog/directory-search';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
-import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
-import { BlockMarker, chunk, pad } from '@/components/catalog/index-block';
 import { getBrands } from '@/lib/catalog/brands';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { pageMetadata } from '@/lib/seo';
-import { countryName } from '@/lib/catalog/countries';
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -18,83 +18,70 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata({ locale, path: '/brands', title: t('title'), description: t('subtitle') });
 }
 
-// Blocks of twelve, ordered by how much of the catalogue each house actually
-// holds. Alphabetical order gave a brand with one decant the same standing as
-// one with eighty-four, which is not what a customer walking the shop sees.
-const BLOCK_SIZE = 12;
-
 export default async function BrandsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('brands');
-  const tc = await getTranslations('common');
   const brands = await getBrands(locale);
-  const blocks = chunk(brands, BLOCK_SIZE);
 
   return (
-    <main className="container space-y-10 py-12">
+    <main className="container space-y-10 py-10 md:space-y-14 md:py-16">
       <header className="max-w-2xl space-y-3">
-        <p className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-          {t('title')}
-        </p>
-        <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
-        <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
-        <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-          {t('houseCount', { count: brands.length })}
-        </p>
+        <h1 className="page-title">{t('title')}</h1>
+        <p className="body-copy">{t('subtitle')}</p>
       </header>
 
       {brands.length === 0 ? (
         <p className="text-muted-foreground py-16 text-center text-sm">{t('empty')}</p>
       ) : (
-        <div className="space-y-12">
-          {blocks.map((block, bi) => {
-            const first = bi * BLOCK_SIZE + 1;
-            const last = first + block.length - 1;
-            return (
-              <section key={first} className="space-y-5">
-                <BlockMarker
-                  label={tc('block', { n: pad(bi + 1) })}
-                  position={`${pad(first)}–${pad(last)} / ${brands.length}`}
-                />
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
-                  {block.map((brand) => (
-                    <Link
-                      key={brand.slug}
-                      href={taxonomyHref('brand', locale, brand.slug)}
-                      className="group border-border hover:border-foreground flex flex-col border transition-colors"
-                    >
-                      <div className="border-border border-b">
-                        <TaxonomyCardImage
+        <DirectorySearch
+          locale={locale}
+          variant="minimal"
+          groups={[
+            {
+              id: 'brands',
+              label: t('title'),
+              items: brands.map((brand) => ({
+                id: brand.slug,
+                name: brand.name,
+                content: (
+                  <Link
+                    href={taxonomyHref('brand', locale, brand.slug)}
+                    aria-label={`${brand.name} — ${t('productCount', { count: brand.product_count })}`}
+                    className="flex h-full flex-col items-center py-4 text-center hover:opacity-75 focus-visible:outline-offset-4 motion-safe:transition-opacity motion-safe:duration-150"
+                  >
+                    <div className="relative flex h-28 w-full items-center justify-center md:h-36">
+                      <span
+                        aria-hidden="true"
+                        className="bg-muted text-muted-foreground absolute top-1 right-1 z-10 flex h-8 w-8 items-center justify-center rounded-[50%] text-xs leading-none tabular-nums md:top-3 md:right-3"
+                      >
+                        {brand.product_count}
+                      </span>
+                      {brand.slug === 'labor' ? (
+                        <LaborLogo className="max-w-[70%]" />
+                      ) : brand.image ? (
+                        <Image
                           src={brand.image}
-                          alt={brand.name}
-                          mode="contain"
-                          fallback={
-                            // No logo file yet. The brand's own name set in the
-                            // page's type is a truer stand-in than a bottle
-                            // photograph, which would read as the product.
-                            <span className="px-3 text-center text-sm font-semibold tracking-[-0.01em]">
-                              {brand.name}
-                            </span>
-                          }
+                          alt=""
+                          fill
+                          sizes="(min-width:1024px) 240px, (min-width:640px) 28vw, 42vw"
+                          className="object-contain px-5 py-7 mix-blend-multiply md:px-8 md:py-9 dark:mix-blend-normal"
                         />
-                      </div>
-                      <div className="flex flex-col gap-1 p-3">
-                        <p className="text-sm leading-tight font-semibold tracking-[-0.01em]">
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="px-3 text-lg font-medium tracking-tight md:text-2xl"
+                        >
                           {brand.name}
-                        </p>
-                        <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase tabular-nums">
-                          {brand.country ? `${countryName(brand.country, locale)} · ` : ''}
-                          {t('productCount', { count: brand.product_count })}
                         </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-        </div>
+                      )}
+                    </div>
+                  </Link>
+                ),
+              })),
+            },
+          ]}
+        />
       )}
     </main>
   );

@@ -1,3 +1,6 @@
+import { getCurrentUser } from '@/lib/auth/session';
+import { accountNavigation } from '@/lib/account-navigation';
+import type { Locale } from '@/i18n/config';
 import type { ReactNode } from 'react';
 
 import { SiteHeader } from '@/components/site-header';
@@ -18,12 +21,15 @@ type Props = { children: ReactNode; params: Promise<{ locale: string }> };
 export default async function StoreLayout({ children, params }: Props) {
   const { locale } = await params;
 
+  const user = await getCurrentUser();
+  const account = accountNavigation(locale as Locale, Boolean(user));
+
   return (
     <div className="flex min-h-screen flex-col pb-16 md:pb-0">
-      <SiteHeader locale={locale} />
+      <SiteHeader locale={locale} account={account} />
       <main className="flex-1">{children}</main>
       <SiteFooter locale={locale} />
-      <MobileBottomNav locale={locale} />
+      <MobileBottomNav locale={locale} account={account} />
       {/* Storefront only: staff working in /admin are not visitors. */}
       <AnalyticsScripts />
     </div>

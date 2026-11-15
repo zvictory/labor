@@ -10,6 +10,7 @@
 // Item prices are snapshotted from the cart lines (unitPrice), NOT re-read from
 // the live Product, so a later price change never alters a placed order.
 
+import { orderDeliveryPin } from '@/lib/delivery/delivery-pin';
 import { Prisma } from '@prisma/client';
 import type { Order } from '@prisma/client';
 import { z } from 'zod';
@@ -52,6 +53,7 @@ export const createOrderInputSchema = z.object({
     // street/building free text; optional for pickup but required otherwise —
     // refined below once we know the delivery method.
     address: z.string().trim().default(''),
+    pin: z.unknown().optional(),
   }),
   deliveryMethod: z.string().trim().min(1, 'delivery_required'),
   userId: z.number().int().positive().optional(),
@@ -109,6 +111,11 @@ export async function createOrderFromCart(
   opts: { attribution?: Attribution | null } = {},
 ): Promise<Order> {
   const parsed = createOrderInputSchema.parse(input);
+  const deliveryPin = orderDeliveryPin(
+    parsed.address.pin,
+    parsed.deliveryMethod,
+    parsed.address.region,
+  );
 
   // Pickup needs no street; every other method requires a non-empty address.
   if (parsed.deliveryMethod !== 'pickup' && parsed.address.address.length === 0) {
@@ -227,6 +234,8 @@ export async function createOrderFromCart(
             address: parsed.address.address || null,
             phone: parsed.customer.phone,
             deliveryMethod: parsed.deliveryMethod,
+            deliveryLatitude: deliveryPin?.lat ?? null,
+            deliveryLongitude: deliveryPin?.lng ?? null,
             ...attributionColumns(opts.attribution ?? null),
             items: { create: itemsData },
           },

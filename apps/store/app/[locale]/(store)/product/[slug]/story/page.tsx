@@ -250,7 +250,7 @@ export default async function ProductStoryPage({ params }: Props) {
               <AddToCart
                 productId={product.id}
                 locale={locale}
-                hasSample
+                hasSample={!product.separate_format}
                 volumeMl={product.volume_ml ?? null}
                 sampleMl={SAMPLE_ML}
               />

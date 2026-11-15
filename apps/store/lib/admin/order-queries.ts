@@ -6,6 +6,7 @@
 // Product names are per-locale JSON; resolved via resolveLocaleText with ru
 // fallback. Money stays integer UZS minor units — formatting is the UI's job.
 
+import { orderDeliveryPin, type DeliveryPin } from '@/lib/delivery/delivery-pin';
 import type { Prisma } from '@prisma/client';
 
 import { db } from '@/lib/db';
@@ -158,6 +159,7 @@ export interface AdminOrderDetail {
   region: string | null;
   district: string | null;
   address: string | null;
+  deliveryPin: DeliveryPin | null;
   deliveryMethod: string | null;
   deliveryMethodLabel: string | null; // localized, from the registry
   /** A gift: the card text and, when it goes to someone else, who receives it. */
@@ -195,6 +197,8 @@ export async function getAdminOrder(
       region: true,
       district: true,
       address: true,
+      deliveryLatitude: true,
+      deliveryLongitude: true,
       phone: true,
       deliveryMethod: true,
       utmSource: true,
@@ -263,6 +267,11 @@ export async function getAdminOrder(
     region: order.region,
     district: order.district,
     address: order.address,
+    deliveryPin: orderDeliveryPin(
+      { lat: order.deliveryLatitude, lng: order.deliveryLongitude },
+      order.deliveryMethod ?? '',
+      order.region ?? '',
+    ),
     deliveryMethod: order.deliveryMethod,
     deliveryMethodLabel,
     gift: order.isGift

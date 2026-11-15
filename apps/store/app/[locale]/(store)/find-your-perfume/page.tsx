@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import { listProducts } from '@/lib/catalog/products';
+import { getProductFormats, listProducts } from '@/lib/catalog/products';
 import {
   PerfumeFinderClient,
   type FinderCandidate,
@@ -10,6 +10,8 @@ import type { ProductCardDTO } from '@/lib/catalog/types';
 import type { Locale } from '@/i18n/config';
 import { FAMILY_FILTERS } from '@/lib/catalog/note-families';
 import { pageMetadata } from '@/lib/seo';
+import { volumeGroup } from '@/lib/catalog/product-formats';
+import { noteLaborAsset } from '@/lib/catalog/note-pilot';
 import { ConsultForm } from '@/components/consult/consult-form';
 
 interface Props {
@@ -24,22 +26,45 @@ const toLang = (locale: string): Lang =>
 
 const GENDER_FILTERS = ['men', 'women', 'unisex'] as const;
 
+// The same validated images used by Labor’s note directory.
+const MATERIALS: Record<string, string> = {
+  unisex: 'paper',
+  men: 'cedar',
+  women: 'jasmine',
+  neutral: 'vetiver',
+  woods: 'sandalwood',
+  flowers: 'bulgarian-rose',
+  fresh: 'calabrian-bergamot',
+  warm: 'vanilla',
+  daily: 'basil',
+  evening: 'black-tea',
+  gift: 'tuberose',
+  statement: 'agarwood',
+  quiet: 'white-musk',
+  balanced: 'tonka-bean',
+  bold: 'incense',
+  surprise: 'pink-pepper',
+};
+
 const COPY: Record<Lang, FinderCopy> = {
   en: {
     eyebrow: 'Fragrance finder',
-    title: 'Find the perfume that matches your style',
-    intro:
-      'Answer four focused questions and Labor will narrow the catalog to fragrances that fit your mood, presence, and daily rhythm.',
+    title: 'Labor scent atelier',
+    intro: 'Choose what draws you in. Labor will bring three perfumes to the table.',
     start: 'Start the finder',
+    continue: 'Continue',
+    cardTitle: 'Your scent card',
+    pending: 'Your choices, kept here as you explore. Select an answer to edit it.',
+    cartError: 'Could not add to the bag. Please try again.',
     progress: 'Question {current} of {total}',
     back: 'Back',
     restart: 'Restart',
     resultsEyebrow: 'Your selection',
     resultsTitle: 'Three perfumes to try first',
-    resultsIntro: 'These matches are scored from real Labor catalog data and your answers.',
+    resultsIntro:
+      'Three starting points from the catalog. Try them on your skin; wear and projection can vary.',
     samplesLead: 'Not sure yet? Take these as 2 ml samples and choose on your skin.',
     samplesCta: 'All as samples · {price}',
-    match: 'Match',
     view: 'View perfume',
     add: 'Add to cart',
     added: 'Added',
@@ -166,30 +191,30 @@ const COPY: Record<Lang, FinderCopy> = {
       },
     ],
     reasons: {
+      alternative: 'An alternative to compare with your {family} selection.',
       family: 'Shares your {family} direction.',
       gender: 'Fits the {style} style preference.',
-      occasion: 'Works for {occasion}.',
-      presenceQuiet: 'Chosen for a quieter, easy-wearing profile.',
-      presenceBalanced: 'Balanced rating and presence for regular wear.',
-      presenceBold: 'Has stronger materials for a memorable trail.',
-      rating: 'Strong catalog rating compared with nearby options.',
+      occasion: 'Catalog notes overlap with your {occasion} selection.',
     },
   },
   ru: {
     eyebrow: 'Подбор аромата',
-    title: 'Найдите аромат под ваш стиль',
-    intro:
-      'Ответьте на четыре коротких вопроса, и Labor подберет ароматы из каталога под настроение, шлейф и образ.',
+    title: 'Ателье ароматов Labor',
+    intro: 'Выберите, что вам ближе. Labor предложит три аромата для знакомства.',
     start: 'Начать подбор',
+    continue: 'Продолжить',
+    cardTitle: 'Ваша карта аромата',
+    pending: 'Здесь сохраняются ваши предпочтения. Нажмите на ответ, чтобы изменить его.',
+    cartError: 'Не удалось добавить в корзину. Попробуйте ещё раз.',
     progress: 'Вопрос {current} из {total}',
     back: 'Назад',
     restart: 'Сначала',
     resultsEyebrow: 'Ваш выбор',
     resultsTitle: 'Три аромата, с которых стоит начать',
-    resultsIntro: 'Подбор рассчитан по данным каталога Labor и вашим ответам.',
+    resultsIntro:
+      'Три отправные точки из каталога. Попробуйте на коже: звучание и шлейф могут отличаться.',
     samplesLead: 'Не уверены? Возьмите эти ароматы по 2 мл и выберите на коже.',
     samplesCta: 'Все пробниками · {price}',
-    match: 'Совпадение',
     view: 'Смотреть аромат',
     add: 'В корзину',
     added: 'Добавлено',
@@ -306,30 +331,30 @@ const COPY: Record<Lang, FinderCopy> = {
       },
     ],
     reasons: {
+      alternative: 'Альтернатива для сравнения с направлением «{family}».',
       family: 'Совпадает с направлением {family}.',
       gender: 'Подходит под стиль {style}.',
-      occasion: 'Уместен для сценария: {occasion}.',
-      presenceQuiet: 'Выбран за спокойный профиль.',
-      presenceBalanced: 'Хороший баланс оценки и носибельности.',
-      presenceBold: 'Есть более выразительные материалы для шлейфа.',
-      rating: 'Сильная оценка в каталоге.',
+      occasion: 'Ноты каталога пересекаются с вашим выбором «{occasion}».',
     },
   },
   uz: {
     eyebrow: 'Atir tanlash',
-    title: 'Uslubingizga mos atirni toping',
-    intro:
-      'Toʻrtta savolga javob bering, Labor katalogdan kayfiyat, vaziyat va ifor kuchiga mos atirlarni tanlaydi.',
+    title: 'Labor atir ustaxonasi',
+    intro: 'Oʻzingizga yaqin yoʻnalishni tanlang. Labor sizga uchta atir taklif qiladi.',
     start: 'Boshlash',
+    continue: 'Davom etish',
+    cardTitle: 'Sizning ifor kartangiz',
+    pending: 'Tanlovlaringiz shu yerda saqlanadi. Javobni o‘zgartirish uchun uni bosing.',
+    cartError: 'Savatga qo‘shilmadi. Qayta urinib ko‘ring.',
     progress: 'Savol {current}/{total}',
     back: 'Orqaga',
     restart: 'Qayta boshlash',
     resultsEyebrow: 'Tanlovingiz',
     resultsTitle: 'Avval sinab ko‘rishga arziydigan uch atir',
-    resultsIntro: 'Natijalar Labor katalogi va javoblaringiz asosida hisoblandi.',
+    resultsIntro:
+      'Katalogdan uchta boshlang‘ich tanlov. Terida sinab ko‘ring: ifor va shleyf farq qilishi mumkin.',
     samplesLead: 'Ikkilanyapsizmi? Shu atirlarni 2 ml dan oling va teringizda tanlang.',
     samplesCta: 'Hammasi namuna sifatida · {price}',
-    match: 'Moslik',
     view: 'Atirni ko‘rish',
     add: 'Savatga',
     added: 'Qo‘shildi',
@@ -445,13 +470,10 @@ const COPY: Record<Lang, FinderCopy> = {
       },
     ],
     reasons: {
+      alternative: '«{family}» tanlovingiz bilan solishtirish uchun muqobil.',
       family: '{family} yo‘nalishiga mos.',
       gender: '{style} uslubiga mos keladi.',
-      occasion: '{occasion} uchun yaxshi.',
-      presenceQuiet: 'Sokin va oson taqiladigan profil.',
-      presenceBalanced: 'Reyting va taqilish balansi yaxshi.',
-      presenceBold: 'Shleyf uchun kuchliroq materiallar bor.',
-      rating: 'Katalogdagi reytingi kuchli.',
+      occasion: 'Katalog notalari «{occasion}» tanlovingizga yaqin.',
     },
   },
 };
@@ -472,10 +494,21 @@ export default async function FindYourPerfumePage({ params }: Props) {
   setRequestLocale(locale);
   const lang = toLang(locale);
   const candidates = await loadCandidates(locale);
+  const materialImages = Object.fromEntries(
+    Object.entries(MATERIALS).flatMap(([id, slug]) => {
+      const asset = noteLaborAsset(slug);
+      return asset ? [[id, asset.src]] : [];
+    }),
+  );
 
   return (
     <>
-      <PerfumeFinderClient locale={locale} candidates={candidates} copy={COPY[lang]} />
+      <PerfumeFinderClient
+        locale={locale}
+        candidates={candidates}
+        copy={COPY[lang]}
+        materialImages={materialImages}
+      />
       {/* Four questions narrow the shelf; a person narrows it further. */}
       <section className="border-border mx-auto max-w-3xl border-t px-4 py-12 md:py-16">
         <ConsultForm locale={locale} source="finder" />
@@ -486,18 +519,18 @@ export default async function FindYourPerfumePage({ params }: Props) {
 
 async function loadCandidates(locale: string): Promise<FinderCandidate[]> {
   const requests: Promise<{ tag: string; products: ProductCardDTO[] }>[] = [
-    listProducts({ locale, sort: 'popular' }).then((res) => ({
+    listProducts({ locale, perfumesOnly: true, sort: 'popular' }).then((res) => ({
       tag: 'popular',
       products: res.data,
     })),
     ...FAMILY_FILTERS.map((family) =>
-      listProducts({ locale, family, sort: 'popular' }).then((res) => ({
+      listProducts({ locale, perfumesOnly: true, family, sort: 'popular' }).then((res) => ({
         tag: `family:${family}`,
         products: res.data,
       })),
     ),
     ...GENDER_FILTERS.map((gender) =>
-      listProducts({ locale, gender, sort: 'popular' }).then((res) => ({
+      listProducts({ locale, perfumesOnly: true, gender, sort: 'popular' }).then((res) => ({
         tag: `gender:${gender}`,
         products: res.data,
       })),
@@ -528,7 +561,21 @@ async function loadCandidates(locale: string): Promise<FinderCandidate[]> {
     }
   }
 
-  return Array.from(byId.values()).slice(0, 80);
+  const candidates = Array.from(byId.values()).slice(0, 80);
+  return Promise.all(
+    candidates.map(async (candidate) => {
+      if (!volumeGroup(candidate.slug)) return candidate;
+      const { sizes } = await getProductFormats(candidate.slug, locale);
+      const defaultSize = sizes.find((size) => size.slug === candidate.slug) ?? sizes[0];
+      return {
+        ...candidate,
+        volumeOptions: sizes.map((size) => ({
+          ml: size.ml,
+          useDefault: size.slug === defaultSize?.slug,
+        })),
+      };
+    }),
+  );
 }
 
 function toCandidate(product: ProductCardDTO): FinderCandidate {
@@ -537,5 +584,6 @@ function toCandidate(product: ProductCardDTO): FinderCandidate {
   return {
     ...product,
     matchedFamilies: topAccord ? [topAccord] : [],
+    volumeOptions: product.volume_ml ? [{ ml: product.volume_ml, useDefault: true }] : [],
   };
 }

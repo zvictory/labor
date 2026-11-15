@@ -23,6 +23,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { getSeparateFormat, volumeGroup } from '../lib/catalog/product-formats';
 import { PrismaClient } from '@prisma/client';
 
 const db = new PrismaClient();
@@ -54,7 +55,11 @@ const readName = (value: unknown): string => {
 };
 
 const isDecant = (slug: string, name: string): boolean =>
-  !CYRILLIC.test(name) && !NOT_A_DECANT.test(name) && !KEEP_PRICE.has(slug);
+  !volumeGroup(slug) &&
+  !getSeparateFormat(slug) &&
+  !CYRILLIC.test(name) &&
+  !NOT_A_DECANT.test(name) &&
+  !KEEP_PRICE.has(slug);
 
 const quote = (s: string): string => `'${s.replace(/'/g, "''")}'`;
 

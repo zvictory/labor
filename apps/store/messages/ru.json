@@ -88,6 +88,12 @@
     "volumeShort": "{ml} мл"
   },
   "pdp": {
+    "sampleSize": "Пробник · {amount} мл",
+    "fullSize": "Полный объём",
+    "packageMl": "{amount} мл",
+    "packageGrams": "{amount} г",
+    "availableSizes": "Доступные объёмы",
+    "relatedFormats": "Связанные товары",
     "longevityShort": "Стойк.",
     "sillageShort": "Шлейф",
     "cart": {
@@ -186,6 +192,19 @@
     }
   },
   "cart": {
+    "itemCount": "{count, plural, one {# товар} few {# товара} many {# товаров} other {# товара}}",
+    "continueShopping": "Продолжить покупки",
+    "sample": "Пробник",
+    "summaryTitle": "Ваш заказ",
+    "productsTotal": "Итого за товары",
+    "shippingAtCheckout": "Стоимость доставки рассчитаем при оформлении",
+    "deliveryThresholdReached": "Доступна бесплатная доставка по Ташкенту",
+    "telegramHelp": "Нужна помощь? Telegram",
+    "quantityFor": "Количество: {item}",
+    "decrease": "Уменьшить количество: {item}",
+    "increase": "Увеличить количество: {item}",
+    "removeItem": "Удалить: {item}",
+    "updateError": "Не удалось обновить корзину. Попробуйте ещё раз.",
     "title": "Корзина",
     "empty": "Корзина пуста",
     "emptyCta": "Перейти в каталог",
@@ -203,6 +222,34 @@
     "freeDeliveryLeft": "Ещё {amount} — и доставка по Ташкенту бесплатно",
     "freeDeliveryReached": "Доставка по Ташкенту — бесплатно",
     "set": "Набор «{title}»"
+  },
+  "finderAtelier": {
+    "scene0": "Раскладываем ваши материалы",
+    "scene1": "Готовим три тестерные полоски",
+    "scene2": "Подборка почти готова",
+    "resume": "Продолжить с сохранённого места",
+    "workbench": "Ателье ароматов",
+    "resetBody": "Удалить сохранённые ответы и начать заново?",
+    "cancel": "Сохранить ответы",
+    "preparing": "Собираем вашу подборку",
+    "skip": "Показать результаты",
+    "samples": "Все три пробника по 2 мл · {price}",
+    "choices": "Ваши ответы · {count}"
+  },
+  "deliveryPin": {
+    "useCenter": "Выбрать центр карты",
+    "open": "Отметить на карте · необязательно",
+    "close": "Закрыть карту",
+    "edit": "Изменить точку",
+    "remove": "Убрать точку",
+    "saved": "Точка доставки сохранена.",
+    "instruction": "Отметьте вход в здание и подтвердите точку.",
+    "confirm": "Подтвердить точку",
+    "unavailable": "Карта недоступна. Можно продолжить с указанным адресом.",
+    "mapLabel": "Карта места доставки",
+    "loading": "Загружаем карту…",
+    "openInYandex": "Открыть в Яндекс Картах",
+    "qrAlt": "QR-код точки доставки для курьера"
   },
   "checkout": {
     "title": "Оформление заказа",

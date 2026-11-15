@@ -371,8 +371,8 @@ export const FRAGRANTICA_SOURCES: readonly FragranticaSource[] = [
   {
     slug: 'my-way-50-ml',
     fragranticaId: 62036,
-    basis: 'inspired',
-    note: 'inspired by Giorgio Armani My Way',
+    basis: 'search',
+    note: 'Giorgio Armani My Way EDP 50 ml, confirmed by the catalog owner',
   },
   {
     slug: 'black-code-50-ml',

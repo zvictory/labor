@@ -1,10 +1,11 @@
+import { DirectorySearch } from '@/components/catalog/directory-search';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
-import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
-import { BlockMarker } from '@/components/catalog/index-block';
+import Image from 'next/image';
+import { notePilotImage, noteLaborAsset, noteRepresentativeLabel } from '@/lib/catalog/note-pilot';
 import { getNotes } from '@/lib/catalog/notes';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { pageMetadata } from '@/lib/seo';
@@ -63,63 +64,85 @@ export default async function NotesPage({ params }: Props) {
   });
 
   return (
-    <main className="container space-y-10 py-12">
-      <header className="max-w-2xl space-y-3">
-        <p className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-          {t('eyebrow')}
-        </p>
-        <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
-        <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
-        <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
-          {t('noteCount', { count: notes.length })} · {t('familyCount', { count: families.length })}
-        </p>
+    <div className="container space-y-5 py-6 md:space-y-8 md:py-10">
+      <header className="grid items-center gap-4 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-8">
+        <div className="space-y-2">
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="body-copy">{t('subtitle')}</p>
+        </div>
+        <div className="bg-muted relative h-[5.5rem] overflow-hidden md:h-36 lg:h-40">
+          <Image
+            src="/notes/labor-library-header-v1.webp"
+            alt=""
+            fill
+            sizes="(min-width: 1280px) 600px, (min-width: 768px) 46vw, 100vw"
+            priority
+            className="object-cover"
+          />
+        </div>
       </header>
 
       {notes.length === 0 ? (
         <p className="text-muted-foreground py-16 text-center text-sm">{t('empty')}</p>
       ) : (
-        <div className="space-y-14">
-          {families.map((family) => (
-            <section key={family.key} className="space-y-5">
-              <BlockMarker
-                label={family.label}
-                position={t('noteCount', { count: family.notes.length })}
-              />
-              <h2 className="sr-only">{family.label}</h2>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
-                {family.notes.map((note) => (
-                  <Link
-                    key={note.slug}
-                    href={taxonomyHref('note', locale, note.slug)}
-                    className="group border-border hover:border-foreground flex flex-col border transition-colors"
-                  >
-                    <div className="border-border border-b">
-                      <TaxonomyCardImage
+        <DirectorySearch
+          locale={locale}
+          jumpLinks
+          variant="minimal-notes"
+          groups={families.map((family) => ({
+            id: family.key,
+            label: family.label,
+            items: family.notes.map((note) => ({
+              id: note.slug,
+              name: note.name,
+              searchTerms: note.searchTerms,
+              content: (
+                <Link
+                  key={note.slug}
+                  href={taxonomyHref('note', locale, note.slug)}
+                  aria-label={`${note.name} — ${t('productCount', { count: note.product_count })}`}
+                  className="flex h-full flex-col items-center py-4 text-center hover:opacity-75 focus-visible:outline-offset-4 motion-safe:transition-opacity motion-safe:duration-150"
+                >
+                  <div className="relative flex aspect-square w-full items-center justify-center">
+                    <span
+                      aria-hidden="true"
+                      className="bg-muted text-muted-foreground absolute top-1 right-1 z-10 flex h-8 w-8 items-center justify-center rounded-[50%] text-xs tabular-nums md:top-3 md:right-3"
+                    >
+                      {note.product_count}
+                    </span>
+                    {note.image ? (
+                      <Image
                         src={note.image}
-                        alt={note.name}
-                        mode="cover"
-                        fallback={
-                          <span className="text-muted-foreground text-micro font-mono uppercase">
-                            {note.name.slice(0, 2)}
-                          </span>
+                        alt=""
+                        fill
+                        sizes="(min-width:1024px) 240px, (min-width:640px) 28vw, 42vw"
+                        className={
+                          notePilotImage(note.slug)
+                            ? 'object-contain p-5 md:p-8'
+                            : 'object-contain p-5 mix-blend-multiply md:p-8 dark:mix-blend-normal'
                         }
                       />
-                    </div>
-                    <div className="flex flex-col gap-1 p-3">
-                      <p className="text-sm leading-tight font-semibold tracking-[-0.01em]">
-                        {note.name}
-                      </p>
-                      <span className="text-muted-foreground text-micro font-mono tabular-nums">
-                        {t('productCount', { count: note.product_count })}
+                    ) : (
+                      <span
+                        aria-hidden="true"
+                        className="text-muted-foreground px-4 font-serif text-2xl"
+                      >
+                        {note.name.slice(0, 2)}
                       </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+                    )}
+                  </div>
+                  <p className="mt-4 text-sm leading-5 font-medium">{note.name}</p>
+                  {noteLaborAsset(note.slug)?.representative && (
+                    <p className="text-muted-foreground mt-1 text-xs leading-4">
+                      {noteRepresentativeLabel(locale)}
+                    </p>
+                  )}
+                </Link>
+              ),
+            })),
+          }))}
+        />
       )}
-    </main>
+    </div>
   );
 }

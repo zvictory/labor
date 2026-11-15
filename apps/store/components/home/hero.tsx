@@ -166,9 +166,9 @@ const RISE =
 const FRAME =
   'container flex h-[clamp(400px,calc(100svh-230px),500px)] flex-col gap-3 py-4 lg:h-[clamp(560px,calc(100svh-140px),720px)] lg:justify-center lg:py-16';
 const COLUMN = 'relative flex shrink-0 flex-col gap-3 lg:isolate lg:max-w-[440px] lg:gap-8';
-const CODE_LINE = 'text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase';
+const CODE_LINE = 'eyebrow text-muted-foreground';
 const TITLE =
-  'text-[32px] leading-9 font-semibold tracking-[-0.025em] md:text-5xl md:leading-[1.05]';
+  'font-display text-[32px] leading-[1.06] tracking-[-0.025em] md:text-5xl md:leading-[52px]';
 
 // One note per layer: how the scent opens, sits and dries down.
 const arcOf = (notes: ProductDetailDTO['notes']): string[] =>

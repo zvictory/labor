@@ -29,7 +29,13 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
   const codeLine = [
     product.brand,
     product.concentration,
-    product.volume_ml ? t('volumeShort', { ml: product.volume_ml }) : null,
+    product.package_size
+      ? tpdp(product.package_size.unit === 'g' ? 'packageGrams' : 'packageMl', {
+          amount: product.package_size.amount,
+        })
+      : product.volume_ml
+        ? t('volumeShort', { ml: product.volume_ml })
+        : null,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -45,7 +51,7 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
         <WishlistButton productId={product.id} />
       </div>
 
-      <Link href={`/${locale}/product/${product.slug}`} className="block">
+      <Link href={`/${locale}/product/${product.slug}`} className="flex h-full flex-col">
         <div className="border-hairline dark:border-gunmetal relative aspect-[3/4] w-full overflow-hidden border-b">
           {hasImage ? (
             <>
@@ -64,21 +70,23 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
             </>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <span className="text-muted-foreground text-micro font-mono tracking-[0.16em] uppercase">
+              <span className="text-muted-foreground font-mono text-xs leading-4 tracking-[0.16em] uppercase">
                 {product.brand}
               </span>
             </div>
           )}
         </div>
 
-        <div className="flex flex-col gap-2 p-4">
-          <p className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase">
+        <div className="flex flex-1 flex-col gap-2 p-3 md:p-4">
+          <p className="text-muted-foreground font-mono text-xs leading-4 tracking-[0.12em] uppercase">
             {codeLine}
           </p>
 
-          <p className="line-clamp-1 text-sm font-semibold tracking-[-0.01em]">{product.name}</p>
+          <p className="line-clamp-2 min-h-10 text-sm leading-5 font-semibold tracking-[-0.01em]">
+            {product.name}
+          </p>
 
-          <p className="text-muted-foreground text-label font-mono leading-4">
+          <p className="text-muted-foreground text-xs leading-4">
             {product.top_accord?.name ?? ' '}
           </p>
 
@@ -91,8 +99,8 @@ export const ProductCard = ({ product, locale }: { product: ProductCardDTO; loca
 
           {/* Two cells that must never break mid-value: at 2-up on a phone the
               row folds into two clean lines instead of splitting the price. */}
-          <div className="border-hairline dark:border-gunmetal flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t pt-2 font-mono">
-            <span className="text-muted-foreground text-micro tracking-[0.12em] whitespace-nowrap uppercase">
+          <div className="border-hairline dark:border-gunmetal mt-auto flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t pt-2 font-mono">
+            <span className="text-muted-foreground text-xs leading-4 tracking-[0.12em] whitespace-nowrap uppercase">
               {product.votes_count > 0 ? t('votes', { count: product.votes_count }) : t('inStore')}
             </span>
             <span className="text-foreground text-sm font-semibold whitespace-nowrap">

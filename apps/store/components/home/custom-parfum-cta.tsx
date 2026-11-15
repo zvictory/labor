@@ -44,11 +44,9 @@ export function CustomParfumCta({ lang }: { lang: Lang }) {
     <section className="bg-accent text-accent-foreground">
       <div className="container grid gap-[18px] py-[34px] md:grid-cols-2 md:items-end md:gap-12 md:py-20">
         <div className="flex flex-col gap-[18px]">
-          <p className="text-micro font-mono tracking-[0.16em] uppercase">{c.eyebrow}</p>
-          <h2 className="text-[28px] leading-[33px] font-semibold tracking-[-0.025em] md:text-5xl md:leading-[1.05]">
-            {c.headline}
-          </h2>
-          <p className="max-w-md font-serif text-base leading-[26px] text-pretty">{c.sub}</p>
+          <p className="eyebrow">{c.eyebrow}</p>
+          <h2 className="section-title max-w-lg">{c.headline}</h2>
+          <p className="body-copy max-w-md font-serif text-pretty">{c.sub}</p>
         </div>
         <div className="flex flex-col gap-[18px]">
           <ol className="border-graphite/25 border-t pt-3 font-mono text-sm leading-[26px]">

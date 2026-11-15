@@ -1,18 +1,17 @@
 import type { Prisma } from '@prisma/client';
 
+import { copiedProfileSlugs, listingSlug } from './product-formats';
+
 import { db } from '@/lib/db';
-import { resolveLocaleText } from '@/lib/catalog/locale';
+import { canonicalNoteSlug, noteSlugVariants } from '@/lib/catalog/note-aliases';
+import { decodeLocaleRecord, resolveLocaleText } from '@/lib/catalog/locale';
 import { resolveNoteImage } from '@/lib/catalog/taxonomy-images';
 import type { NoteDTO } from '@/lib/catalog/types';
 
 export { NOTE_ICON_FILES } from './media-manifest';
 
-// Counts and membership are over ACTIVE products only, the way the catalogue
-// counts them. Without the filter /brands said "Tom Ford · 26 ароматов" while
-// /catalog?brand=tom-ford found 18 — archived duplicates and drafts were still
-// counted here. The ordering below is still by the unfiltered count: Prisma
-// cannot filter the relation count it sorts on, and the difference moves a row
-// by a place or two, which is not worth fetching every row to sort in memory.
+// Read retained source rows too: their old translated names remain searchable
+// after memberships have moved to the canonical row.
 const noteSelect = {
   slug: true,
   name: true,
@@ -20,43 +19,59 @@ const noteSelect = {
   iconUrl: true,
   description: true,
   productNotes: {
+    where: { product: { status: 'active', slug: { notIn: copiedProfileSlugs } } },
     orderBy: { productId: 'asc' },
     select: {
+      productId: true,
       product: {
         select: {
+          slug: true,
           images: { orderBy: { position: 'asc' }, take: 1, select: { url: true } },
         },
       },
     },
   },
-  _count: { select: { productNotes: { where: { product: { status: 'active' } } } } },
 } satisfies Prisma.NoteSelect;
 
-type NoteRow = {
-  slug: string;
-  name: unknown;
-  family: string | null;
-  iconUrl: string | null;
-  description: unknown;
-  productNotes: { product: { images: { url: string }[] } }[];
-  _count: { productNotes: number };
-};
+type NoteRow = Prisma.NoteGetPayload<{ select: typeof noteSelect }>;
 
-const toNote = (row: NoteRow, locale: string): NoteDTO => ({
-  slug: row.slug,
-  name: resolveLocaleText(row.name, locale),
-  image: resolveNoteImage({
-    slug: row.slug,
-    iconUrl: row.iconUrl,
-    productImageUrls: row.productNotes.flatMap(({ product }) =>
-      product.images.map(({ url }) => url),
-    ),
-  }),
-  ...(row.family ? { family: row.family } : {}),
-  ...(row.iconUrl ? { icon_url: row.iconUrl } : {}),
-  product_count: row._count.productNotes,
-  description: resolveLocaleText(row.description, locale),
-});
+const toNotes = (rows: NoteRow[], locale: string): NoteDTO[] => {
+  const groups = new Map<string, NoteRow[]>();
+  for (const row of rows) {
+    const slug = canonicalNoteSlug(row.slug);
+    const group = groups.get(slug) ?? [];
+    group.push(row);
+    groups.set(slug, group);
+  }
+  return [...groups].map(([slug, group]) => {
+    const row = group.find((candidate) => candidate.slug === slug) ?? group[0]!;
+    const links = group.flatMap((candidate) => candidate.productNotes);
+    const names = group.flatMap((candidate) => {
+      const record = decodeLocaleRecord(candidate.name);
+      return record
+        ? Object.values(record).filter((value): value is string => typeof value === 'string')
+        : [resolveLocaleText(candidate.name, locale)];
+    });
+    return {
+      slug,
+      name: resolveLocaleText(row.name, locale),
+      searchTerms: [...new Set([...noteSlugVariants(slug), ...names])],
+      image: resolveNoteImage({
+        slug,
+        iconUrl: row.iconUrl,
+        productImageUrls: links.flatMap(({ product }) => product.images.map(({ url }) => url)),
+      }),
+      ...(row.family ? { family: row.family } : {}),
+      ...(row.iconUrl ? { icon_url: row.iconUrl } : {}),
+      product_count: new Set(
+        links.map(({ productId, product }) =>
+          product.slug ? listingSlug(product.slug) : productId,
+        ),
+      ).size,
+      description: resolveLocaleText(row.description, locale),
+    };
+  });
+};
 
 const FALLBACK_NOTES: NoteDTO[] = [
   {
@@ -94,9 +109,7 @@ const FALLBACK_NOTES: NoteDTO[] = [
 export const getNotes = async (locale: string, options?: { take?: number }): Promise<NoteDTO[]> => {
   try {
     const rows = await db.note.findMany({
-      where: { productNotes: { some: { product: { status: 'active' } } } },
-      orderBy: [{ productNotes: { _count: 'desc' } }, { slug: 'asc' }],
-      take: options?.take,
+      orderBy: { slug: 'asc' },
       select: noteSelect,
     });
 
@@ -104,7 +117,10 @@ export const getNotes = async (locale: string, options?: { take?: number }): Pro
       return FALLBACK_NOTES;
     }
 
-    return rows.map((row) => toNote(row, locale));
+    return toNotes(rows, locale)
+      .filter((note) => note.product_count > 0)
+      .sort((a, b) => b.product_count - a.product_count || a.slug.localeCompare(b.slug))
+      .slice(0, options?.take);
   } catch (err) {
     console.error('[catalog/notes] DB query failed:', err);
     return FALLBACK_NOTES;
@@ -112,10 +128,10 @@ export const getNotes = async (locale: string, options?: { take?: number }): Pro
 };
 
 export const getNote = async (slug: string, locale: string): Promise<NoteDTO | null> => {
-  const row = await db.note.findUnique({
-    where: { slug },
+  const rows = await db.note.findMany({
+    where: { slug: { in: noteSlugVariants(slug) } },
     select: noteSelect,
   });
 
-  return row ? toNote(row, locale) : null;
+  return toNotes(rows, locale)[0] ?? null;
 };

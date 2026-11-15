@@ -1,0 +1,574 @@
+{
+  "10": {},
+  "120": {
+    "size": {
+      "amount": 120,
+      "unit": "ml"
+    }
+  },
+  "15": {},
+  "20": {},
+  "20-c": {
+    "size": {
+      "amount": 20,
+      "unit": "ml"
+    }
+  },
+  "50": {},
+  "50-baccarat": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "baccarat-rouge-540-maison",
+    "copiedProfile": true
+  },
+  "50-ganymede": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "ganymede",
+    "copiedProfile": true
+  },
+  "ain-dubai-cassette": {},
+  "antiseptik-sofderm-blue-100-ml": {
+    "size": {
+      "amount": 100,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-blue-400-ml": {
+    "size": {
+      "amount": 400,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-citiboy-100-ml": {
+    "size": {
+      "amount": 100,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-citiboy-400-ml": {
+    "size": {
+      "amount": 400,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-crystal-100-ml": {
+    "size": {
+      "amount": 100,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-crystal-400-ml": {
+    "size": {
+      "amount": 400,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-extra-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-fleur-100-ml": {
+    "size": {
+      "amount": 100,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-melon-100-ml": {
+    "size": {
+      "amount": 100,
+      "unit": "ml"
+    }
+  },
+  "antiseptik-sofderm-melon-400-ml": {
+    "size": {
+      "amount": 400,
+      "unit": "ml"
+    }
+  },
+  "atelier-cologne": {},
+  "aventus-2": {
+    "inspiredBy": "aventus",
+    "copiedProfile": true
+  },
+  "aventus-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "aventus",
+    "copiedProfile": true
+  },
+  "aventus-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "aventus",
+    "copiedProfile": true
+  },
+  "avto-parfum-bukhoor": {},
+  "avto-parfum-imagination": {},
+  "avto-parfum-thomas-kosmala-4": {
+    "inspiredBy": "n4-apres-l-amour",
+    "copiedProfile": true
+  },
+  "baccarat": {
+    "inspiredBy": "baccarat-rouge-540-maison",
+    "copiedProfile": true
+  },
+  "baccarat-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "baccarat-rouge-540-maison",
+    "copiedProfile": true
+  },
+  "black-afgano-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "black-afgano",
+    "copiedProfile": true
+  },
+  "black-afgano-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "black-afgano",
+    "copiedProfile": true
+  },
+  "black-afgano-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "black-afgano",
+    "copiedProfile": true
+  },
+  "black-code-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "copiedProfile": true
+  },
+  "black-earth": {},
+  "black-prince": {
+    "copiedProfile": true
+  },
+  "boc-27674": {},
+  "body-lotion-osmanthus-jasmine": {},
+  "body-lotion-vanilla-milk": {},
+  "body-lotion-violet-peach": {},
+  "bright-crystal-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "copiedProfile": true
+  },
+  "bulgari-aqua-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "copiedProfile": true
+  },
+  "car-parfum-orange": {},
+  "chanel-bleu-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    }
+  },
+  "chanel-chance-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "copiedProfile": true
+  },
+  "chanel-sport-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "allure-homme-sport",
+    "copiedProfile": true
+  },
+  "chanel-tendre": {
+    "inspiredBy": "chance-eau-tendre",
+    "copiedProfile": true
+  },
+  "ciu-73448": {},
+  "cocaina": {},
+  "creed-aventus-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "aventus",
+    "copiedProfile": true
+  },
+  "ctu-18189": {},
+  "diffuzor-black-vanilla": {},
+  "diffuzor-joly": {},
+  "diffuzor-rosso-nobili": {
+    "copiedProfile": true
+  },
+  "elixir-des-merveilles": {
+    "copiedProfile": true
+  },
+  "elysium-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    }
+  },
+  "epy-76014": {},
+  "flakon-koja-kvadrat": {},
+  "flakon-koja-louivitton": {},
+  "flakon-koja-orang": {},
+  "flakon-koja-roziviy": {},
+  "flakon-koja-zeleniy": {},
+  "flora-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    }
+  },
+  "flora-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    }
+  },
+  "ganymed-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "ganymede",
+    "copiedProfile": true
+  },
+  "good-girl-gone-bad-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "good-girl-gone-bad-by",
+    "copiedProfile": true
+  },
+  "good-girl-gone-bad-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "good-girl-gone-bad-by",
+    "copiedProfile": true
+  },
+  "green-scent": {},
+  "hayati-2": {},
+  "imagination-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "imagination-2",
+    "copiedProfile": true
+  },
+  "kalso-10": {
+    "size": {
+      "amount": 10,
+      "unit": "ml"
+    }
+  },
+  "kalso-20": {
+    "size": {
+      "amount": 20,
+      "unit": "ml"
+    }
+  },
+  "kirke-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "kirke",
+    "copiedProfile": true
+  },
+  "kirke-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "kirke",
+    "copiedProfile": true
+  },
+  "le-blanc": {},
+  "lelabo-santal-33-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "santal-33",
+    "copiedProfile": true
+  },
+  "light-blue-2": {
+    "inspiredBy": "light-blue",
+    "copiedProfile": true
+  },
+  "limmensite-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "l-immensit",
+    "copiedProfile": true
+  },
+  "limmensite-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "l-immensit",
+    "copiedProfile": true
+  },
+  "limmensite-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "l-immensit",
+    "copiedProfile": true
+  },
+  "london-eye-cassette": {},
+  "lost-cherry-2": {
+    "inspiredBy": "lost-cherry-5",
+    "copiedProfile": true
+  },
+  "lost-cherry-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "lost-cherry-5",
+    "copiedProfile": true
+  },
+  "lovers-cassette": {},
+  "lv": {},
+  "magnit-flakon-10-ml": {
+    "size": {
+      "amount": 10,
+      "unit": "ml"
+    }
+  },
+  "maison-baccarat-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "baccarat-rouge-540-maison",
+    "copiedProfile": true
+  },
+  "mango-skin-2": {
+    "inspiredBy": "mango-skin",
+    "copiedProfile": true
+  },
+  "megamare-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "megamare",
+    "copiedProfile": true
+  },
+  "molecula-020-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "molecule-02",
+    "copiedProfile": true
+  },
+  "molecule-02-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "molecule-02",
+    "copiedProfile": true
+  },
+  "montabaco-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "montabaco",
+    "copiedProfile": true
+  },
+  "mr-flakon-20-ml": {
+    "size": {
+      "amount": 20,
+      "unit": "ml"
+    }
+  },
+  "my-way-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "my-way",
+    "copiedProfile": true
+  },
+  "nature-function": {},
+  "ombre-leather-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "ombre-leather",
+    "copiedProfile": true
+  },
+  "pink-molecule-090-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "pink-molecule-090",
+    "copiedProfile": true
+  },
+  "prada-candy": {
+    "copiedProfile": true
+  },
+  "prs-28742": {},
+  "santrope-cassette": {},
+  "sauvage-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "sauvage",
+    "copiedProfile": true
+  },
+  "savon-500": {
+    "size": {
+      "amount": 500,
+      "unit": "g"
+    }
+  },
+  "savon-krem-milo-natural-500-gr": {
+    "size": {
+      "amount": 500,
+      "unit": "g"
+    }
+  },
+  "savon-krem-milo-relax-500-gr": {
+    "size": {
+      "amount": 500,
+      "unit": "g"
+    }
+  },
+  "savon-krem-milo-romance-500-gr": {
+    "size": {
+      "amount": 500,
+      "unit": "g"
+    }
+  },
+  "savon-krem-milo-thermal-spa-500-gr": {
+    "size": {
+      "amount": 500,
+      "unit": "g"
+    }
+  },
+  "symphony-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "symphony",
+    "copiedProfile": true
+  },
+  "symphony-300-gr": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "symphony",
+    "copiedProfile": true
+  },
+  "symphony-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "symphony",
+    "copiedProfile": true
+  },
+  "thermal-spa-2": {},
+  "tobacco-vanille-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "tobacco-vanille",
+    "copiedProfile": true
+  },
+  "tomford-lostcherry-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "lost-cherry-5",
+    "copiedProfile": true
+  },
+  "tygar-2": {
+    "inspiredBy": "tygar",
+    "copiedProfile": true
+  },
+  "tygar-220-ml": {
+    "size": {
+      "amount": 220,
+      "unit": "ml"
+    },
+    "inspiredBy": "tygar",
+    "copiedProfile": true
+  },
+  "tygar-300": {
+    "size": {
+      "amount": 300,
+      "unit": "g"
+    },
+    "inspiredBy": "tygar",
+    "copiedProfile": true
+  },
+  "tygar-50-ml": {
+    "size": {
+      "amount": 50,
+      "unit": "ml"
+    },
+    "inspiredBy": "tygar",
+    "copiedProfile": true
+  },
+  "tzd-44196": {},
+  "uew-77664": {},
+  "wood-sage-sea-salt": {
+    "copiedProfile": true
+  },
+  "wood-sage-sea-salt-2": {
+    "copiedProfile": true
+  },
+  "xrn-92860": {},
+  "ywu-88819": {},
+  "zed-87190": {}
+}

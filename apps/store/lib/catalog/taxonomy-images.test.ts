@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+// Keep legacy fallback fixtures independent from the growing completed-asset registry.
+vi.mock('./note-library.generated', () => ({ NOTE_LIBRARY_ASSETS: {} }));
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   LOGO_FILES,
@@ -60,20 +62,20 @@ describe('taxonomy image resolution', () => {
     ).toBeUndefined();
   });
 
-  it('prioritizes a database note icon over curated and product images', () => {
+  it('prioritizes the shared pilot over database and legacy note icons', () => {
     expect(
       resolveNoteImage({
         slug: 'rose',
         iconUrl: 'https://minio.test/rose.png',
         productImageUrls: ['https://images.test/product.webp'],
       }),
-    ).toBe('https://minio.test/rose.png');
+    ).toBe('/notes/labor-pilot-v1/rose.webp');
   });
 
-  it('uses a curated note icon before a product image', () => {
+  it('uses the shared pilot when no database icon exists', () => {
     expect(
       resolveNoteImage({ slug: 'rose', productImageUrls: ['https://images.test/product.webp'] }),
-    ).toBe('/notes/rose.png');
+    ).toBe('/notes/labor-pilot-v1/rose.webp');
   });
 
   it('uses a curated perfumer portrait before a product image', () => {

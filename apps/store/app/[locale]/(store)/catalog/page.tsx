@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
+import { CatalogFilters, type FilterGroup } from '@/components/catalog/catalog-filters';
+import { catalogHref as buildHref } from '@/components/catalog/filter-query';
 import { ProductCard } from '@/components/catalog/product-card';
 import { listProducts, PAGE_SIZE, type ProductSort } from '@/lib/catalog/products';
 import { getNotes } from '@/lib/catalog/notes';
@@ -109,22 +111,6 @@ const GENDER_COPY: Record<Lang, Record<Gender, string>> = {
 const first = (v: string | string[] | undefined): string | undefined =>
   Array.isArray(v) ? v[0] : v;
 
-// Build a /catalog href that preserves the current filter set, overriding the
-// given keys. `null` removes a key.
-const buildHref = (
-  locale: string,
-  current: Record<string, string | undefined>,
-  overrides: Record<string, string | null>,
-): string => {
-  const sp = new URLSearchParams();
-  const merged = { ...current, ...overrides };
-  for (const [k, val] of Object.entries(merged)) {
-    if (val) sp.set(k, val);
-  }
-  const qs = sp.toString();
-  return `/${locale}/catalog${qs ? `?${qs}` : ''}`;
-};
-
 // Filters that define what the page is about stay in the canonical URL, so a
 // brand's or a note's listing can rank on its own. Paging and sort orders do
 // not: they are the same listing, reshuffled.
@@ -177,16 +163,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const pageRaw = Number(first(sp.page));
   const page = Number.isFinite(pageRaw) && pageRaw > 0 ? Math.floor(pageRaw) : 1;
 
-  // Active filter snapshot, reused to build links.
-  const active: Record<string, string | undefined> = {
-    note,
-    brand,
-    family,
-    gender,
-    perfumer,
-    q,
-    sort: sort === 'new' ? undefined : sort,
-  };
+  const active = { ...sp };
 
   const [result, notes, brands] = await Promise.all([
     listProducts({ locale, sort, brand, note, family, gender, perfumer, q, page }),
@@ -199,18 +176,68 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const fc = FILTERS_COPY[lang];
   const topNotes = notes.slice(0, 12);
   const topBrands = brands.slice(0, 12);
-  const hasActiveFilter = Boolean(note || brand || family || gender || q);
+  const filterKeys = ['note', 'brand', 'family', 'gender', 'perfumer', 'q'];
+  const clearHref = buildHref(
+    locale,
+    active,
+    Object.fromEntries([...filterKeys, 'page'].map((key) => [key, null])),
+  );
+  const groups: FilterGroup[] = [
+    {
+      name: 'note',
+      label: fc.notes,
+      value: note,
+      options: topNotes.map((n) => ({ value: n.slug, label: n.name })),
+      moreHref: `/${locale}/notes`,
+      moreLabel: fc.allNotes,
+    },
+    {
+      name: 'brand',
+      label: fc.brands,
+      value: brand,
+      options: topBrands.map((br) => ({ value: br.slug, label: br.name })),
+      moreHref: `/${locale}/brands`,
+      moreLabel: fc.allBrands,
+    },
+    {
+      name: 'family',
+      label: fc.families,
+      value: family,
+      options: FAMILY_FILTERS.map((f) => ({ value: f, label: FAMILY_LABELS[lang][f] })),
+    },
+    {
+      name: 'gender',
+      label: fc.genders,
+      value: gender,
+      options: GENDER_FILTERS.map((g) => ({ value: g, label: GENDER_COPY[lang][g] })),
+    },
+  ].map((group) =>
+    group.value && !group.options.some((option) => option.value === group.value)
+      ? { ...group, options: [{ value: group.value, label: group.value }, ...group.options] }
+      : group,
+  );
+  const preserved = Object.entries(sp).flatMap(([key, value]) =>
+    groups.some((group) => group.name === key) || key === 'page'
+      ? []
+      : (Array.isArray(value) ? value : value ? [value] : []).map((item): [string, string] => [
+          key,
+          item,
+        ]),
+  );
+  const panelCopy = {
+    ru: { filters: 'Фильтры', apply: 'Применить', cancel: 'Отмена' },
+    en: { filters: 'Filters', apply: 'Apply', cancel: 'Cancel' },
+    uz: { filters: 'Filtrlar', apply: 'Qo‘llash', cancel: 'Bekor qilish' },
+  }[lang];
 
   return (
-    <div className="container py-12 md:py-16">
-      <header className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+    <div className="container py-6 md:py-12">
+      <header className="mb-5 flex flex-wrap items-baseline justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="font-display text-ink dark:text-bone text-4xl md:text-5xl">
-            {t('title')}
-          </h1>
+          <h1 className="page-title">{t('title')}</h1>
           {/* The result count is a measured value, not prose: mono and
               tabular, like every other number on the page. */}
-          <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
+          <p className="text-muted-foreground font-mono text-xs leading-4 tabular-nums">
             {t('foundCount', { count: meta.total })}
           </p>
         </div>
@@ -226,7 +253,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 key={s}
                 href={buildHref(locale, active, { sort: s === 'new' ? null : s, page: null })}
                 aria-current={isActive ? 'true' : undefined}
-                className={`border px-3 py-1.5 text-xs tracking-wider uppercase transition-colors ${
+                className={`inline-flex min-h-11 items-center border px-3 py-1.5 text-xs tracking-wider uppercase transition-colors ${
                   isActive
                     ? 'border-brass bg-brass text-bone'
                     : 'border-border text-ink-muted hover:border-foreground hover:text-foreground dark:text-stone-400'
@@ -239,73 +266,34 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         </div>
       </header>
 
-      {/* Filter rails */}
-      <div className="border-border mb-10 space-y-4 border-b pb-8">
-        <FilterRow
-          id="filter-notes"
-          label={fc.notes}
-          allLabel={fc.all}
-          allActive={!note}
-          allHref={buildHref(locale, active, { note: null, page: null })}
-          items={topNotes.map((n) => ({
-            key: n.slug,
-            label: n.name,
-            active: n.slug === note,
-            href: buildHref(locale, active, { note: n.slug, page: null }),
-          }))}
-          moreHref={`/${locale}/notes`}
-          moreLabel={fc.allNotes}
-        />
-        <FilterRow
-          id="filter-brands"
-          label={fc.brands}
-          allLabel={fc.all}
-          allActive={!brand}
-          allHref={buildHref(locale, active, { brand: null, page: null })}
-          items={topBrands.map((br) => ({
-            key: br.slug,
-            label: br.name,
-            active: br.slug === brand,
-            href: buildHref(locale, active, { brand: br.slug, page: null }),
-          }))}
-          moreHref={`/${locale}/brands`}
-          moreLabel={fc.allBrands}
-        />
-        <FilterRow
-          id="filter-families"
-          label={fc.families}
-          allLabel={fc.all}
-          allActive={!family}
-          allHref={buildHref(locale, active, { family: null, page: null })}
-          items={FAMILY_FILTERS.map((f) => ({
-            key: f,
-            label: FAMILY_LABELS[lang][f],
-            active: f === family,
-            href: buildHref(locale, active, { family: f, page: null }),
-          }))}
-        />
-        <FilterRow
-          id="filter-genders"
-          label={fc.genders}
-          allLabel={fc.all}
-          allActive={!gender}
-          allHref={buildHref(locale, active, { gender: null, page: null })}
-          items={GENDER_FILTERS.map((g) => ({
-            key: g,
-            label: GENDER_COPY[lang][g],
-            active: g === gender,
-            href: buildHref(locale, active, { gender: g, page: null }),
-          }))}
-        />
-        {hasActiveFilter && (
-          <Link
-            href={`/${locale}/catalog${sort === 'new' ? '' : `?sort=${sort}`}`}
-            className="text-brass inline-block text-xs tracking-wider uppercase hover:underline"
-          >
-            {fc.clear}
-          </Link>
-        )}
-      </div>
+      <CatalogFilters
+        key={buildHref(locale, active, {})}
+        action={`/${locale}/catalog`}
+        groups={groups}
+        preserved={preserved}
+        clearHref={clearHref}
+        copy={{ ...panelCopy, clear: fc.clear, all: fc.all }}
+      />
+      {filterKeys.some((key) => first(sp[key])) && (
+        <div aria-label={panelCopy.filters} className="mb-5 flex flex-wrap gap-2">
+          {filterKeys.map((key) => {
+            const value = first(sp[key]);
+            if (!value) return null;
+            const group = groups.find((item) => item.name === key);
+            const label = group?.options.find((option) => option.value === value)?.label ?? value;
+            return (
+              <Link
+                key={key}
+                href={buildHref(locale, active, { [key]: null, page: null })}
+                aria-label={`${fc.clear}: ${group?.label ?? key} — ${label}`}
+                className="border-border inline-flex min-h-11 items-center gap-3 border px-3 text-xs leading-4"
+              >
+                {label} <span aria-hidden="true">×</span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
       {/* Results, in blocks of twelve.
           The island carries 84 testers in seven blocks of twelve with a gap
@@ -319,7 +307,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             const first = (page - 1) * PAGE_SIZE + i * BLOCK_SIZE + 1;
             return (
               <div key={first} className="flex flex-col gap-4">
-                <div className="border-border text-muted-foreground text-micro flex items-baseline justify-between border-t pt-3 font-mono tracking-[0.16em] uppercase tabular-nums">
+                <div className="border-border text-muted-foreground flex items-baseline justify-between border-t pt-3 font-mono text-xs leading-4 tracking-[0.16em] uppercase tabular-nums">
                   <span>{tc('block', { n: pad(Math.ceil(first / BLOCK_SIZE)) })}</span>
                   <span>
                     {pad(first)}–{pad(first + block.length - 1)} / {meta.total}
@@ -374,67 +362,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   );
 }
 
-// A rail is a group of links, not a loose run of them: the label that reads as
-// its heading on screen names the group for a screen reader too, and the pill
-// standing for the view you are looking at says so.
-//
-// `moreHref` is the way past the rail. Brands and notes are cut to twelve, out
-// of 243 and 418 — without it, everything below the twelfth is unreachable from
-// the catalogue at any screen width.
-function FilterRow({
-  id,
-  label,
-  allLabel,
-  allActive,
-  allHref,
-  items,
-  moreHref,
-  moreLabel,
-}: {
-  id: string;
-  label: string;
-  allLabel: string;
-  allActive: boolean;
-  allHref: string;
-  items: { key: string; label: string; active: boolean; href: string }[];
-  moreHref?: string;
-  moreLabel?: string;
-}) {
-  if (items.length === 0) return null;
-  return (
-    <div
-      role="group"
-      aria-labelledby={id}
-      className="flex flex-col gap-2 sm:flex-row sm:items-baseline"
-    >
-      {/* The label is a fixed column from `sm` up so the four rails read as one
-          grid. It sits above the pills on a phone instead: at 64px it clipped
-          СЕМЕЙСТВО into the first pill, and a column wide enough for Russian
-          would eat a quarter of a 375px screen. */}
-      <span
-        id={id}
-        className="text-ink-muted text-micro font-bold tracking-[0.2em] uppercase sm:mr-3 sm:w-24 sm:shrink-0 dark:text-stone-400"
-      >
-        {label}
-      </span>
-      <div className="flex flex-wrap items-center gap-2">
-        <Pill label={allLabel} active={allActive} href={allHref} />
-        {items.map((it) => (
-          <Pill key={it.key} label={it.label} active={it.active} href={it.href} />
-        ))}
-        {moreHref && moreLabel && (
-          <Link
-            href={moreHref}
-            className="text-muted-foreground text-label hover:text-foreground ml-1 font-mono tracking-[0.08em] underline underline-offset-4"
-          >
-            {moreLabel} →
-          </Link>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // Twelve is the shelf block. Numbers are zero-padded so the markers form a
 // column down the page instead of jittering as the count crosses 100.
 const BLOCK_SIZE = 12;
@@ -444,19 +371,3 @@ const chunk = <T,>(rows: T[], size: number): T[][] =>
   Array.from({ length: Math.ceil(rows.length / size) }, (_, i) =>
     rows.slice(i * size, (i + 1) * size),
   );
-
-function Pill({ label, active, href }: { label: string; active: boolean; href: string }) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? 'true' : undefined}
-      className={`text-label border px-3 py-1 font-mono tracking-[0.08em] transition-colors ${
-        active
-          ? 'border-foreground bg-foreground text-background'
-          : 'border-border text-muted-foreground hover:border-foreground hover:text-foreground'
-      }`}
-    >
-      {label}
-    </Link>
-  );
-}

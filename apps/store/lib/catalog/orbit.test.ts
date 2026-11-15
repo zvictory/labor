@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+// Keep legacy fallback fixtures independent from the growing completed-asset registry.
+vi.mock('./note-library.generated', () => ({ NOTE_LIBRARY_ASSETS: {} }));
+import { describe, expect, it, vi } from 'vitest';
 
 import { pickOrbitNotes, orbitSlot } from './orbit';
 
@@ -40,13 +42,13 @@ describe('pickOrbitNotes', () => {
     const rows = [
       createRow('top', 'amber', '/notes/prod/amber.jpg'),
       createRow('middle', 'n2', '/notes/prod/n2.jpg'),
-      createRow('base', 'vetiver', '/notes/prod/vetiver.jpg'),
+      createRow('base', 'musk', '/notes/prod/musk.jpg'),
     ];
     const notes = pickOrbitNotes(rows, 'en', dummyFiles);
     expect(notes.map(({ slug, image, cutout }) => ({ slug, image, cutout }))).toEqual([
       { slug: 'amber', image: '/notes/prod/amber.jpg', cutout: false },
       { slug: 'n2', image: '/notes/orbit/n2.webp', cutout: true },
-      { slug: 'vetiver', image: '/notes/prod/vetiver.jpg', cutout: false },
+      { slug: 'musk', image: '/notes/prod/musk.jpg', cutout: false },
     ]);
   });
 

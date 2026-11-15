@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Home, Grid, Search, ShoppingBag, User } from 'lucide-react';
 
+import type { accountNavigation } from '@/lib/account-navigation';
 import type { CartDTO } from '@/lib/cart/cart';
 import { onCartUpdated } from '@/components/cart/cart-events';
 
@@ -17,9 +18,10 @@ const homeLabels: Record<string, string> = {
 
 interface MobileBottomNavProps {
   locale: string;
+  account: ReturnType<typeof accountNavigation>;
 }
 
-export function MobileBottomNav({ locale }: MobileBottomNavProps) {
+export function MobileBottomNav({ locale, account }: MobileBottomNavProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
   const [cartCount, setCartCount] = useState(0);
@@ -78,9 +80,9 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
       badge: cartCount,
     },
     {
-      href: `/${locale}/account`,
+      href: account.href,
       icon: User,
-      label: t('account'),
+      label: account.shortLabel,
       exact: false,
     },
   ];
@@ -115,7 +117,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
                   </span>
                 )}
               </div>
-              <span className="text-micro font-mono tracking-[0.16em] uppercase">{item.label}</span>
+              <span className="text-[11px] font-medium">{item.label}</span>
             </Link>
           );
         })}

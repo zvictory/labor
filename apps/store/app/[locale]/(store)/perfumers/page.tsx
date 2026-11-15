@@ -1,10 +1,11 @@
+import { DirectorySearch } from '@/components/catalog/directory-search';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { type Locale } from '@/i18n/config';
 import { TaxonomyCardImage } from '@/components/catalog/taxonomy-card-image';
-import { BlockMarker, chunk, pad } from '@/components/catalog/index-block';
+import { chunk, pad } from '@/components/catalog/index-block';
 import { getPerfumers } from '@/lib/catalog/perfumers';
 import { taxonomyHref } from '@/lib/catalog/taxonomy-href';
 import { pageMetadata } from '@/lib/seo';
@@ -15,7 +16,12 @@ type Props = { params: Promise<{ locale: Locale }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'perfumers' });
-  return pageMetadata({ locale, path: '/perfumers', title: t('title'), description: t('subtitle') });
+  return pageMetadata({
+    locale,
+    path: '/perfumers',
+    title: t('title'),
+    description: t('subtitle'),
+  });
 }
 
 // Same twelve-block rhythm as the catalogue and the brand index, so the three
@@ -41,11 +47,9 @@ export default async function PerfumersPage({ params }: Props) {
   return (
     <main className="container space-y-10 py-12">
       <header className="max-w-2xl space-y-3">
-        <p className="text-muted-foreground text-micro font-mono tracking-[0.28em] uppercase">
-          {t('title')}
-        </p>
-        <h1 className="text-4xl font-semibold tracking-[-0.02em] md:text-6xl">{t('title')}</h1>
-        <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
+        <p className="eyebrow">{t('title')}</p>
+        <h1 className="page-title">{t('title')}</h1>
+        <p className="body-copy">{t('subtitle')}</p>
         <p className="text-muted-foreground text-label font-mono tracking-[0.16em] uppercase">
           {t('count', { count: perfumers.length })}
         </p>
@@ -53,54 +57,50 @@ export default async function PerfumersPage({ params }: Props) {
       {perfumers.length === 0 ? (
         <p className="text-muted-foreground py-16 text-center text-sm">{t('empty')}</p>
       ) : (
-        <div className="space-y-12">
-          {blocks.map((block, bi) => {
-            const first = bi * BLOCK_SIZE + 1;
-            const last = first + block.length - 1;
-            return (
-              <section key={first} className="space-y-5">
-                <BlockMarker
-                  label={tc('block', { n: pad(bi + 1) })}
-                  position={`${pad(first)}–${pad(last)} / ${perfumers.length}`}
-                />
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
-                  {block.map((perfumer) => (
-                    <Link
-                      key={perfumer.slug}
-                      href={taxonomyHref('perfumer', locale, perfumer.slug)}
-                      className="group border-border hover:border-foreground flex flex-col border transition-colors"
-                    >
-                      <div className="border-border border-b">
-                        <TaxonomyCardImage
-                          src={perfumer.image}
-                          alt={perfumer.name}
-                          mode="cover"
-                          fallback={
-                            <span
-                              aria-hidden="true"
-                              className="text-muted-foreground font-mono text-2xl"
-                            >
-                              {initials(perfumer.name)}
-                            </span>
-                          }
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 p-3">
-                        <p className="text-sm leading-tight font-semibold tracking-[-0.01em]">
-                          {perfumer.name}
-                        </p>
-                        <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase tabular-nums">
-                          {perfumer.country ? `${countryName(perfumer.country, locale)} · ` : ''}
-                          {t('productCount', { count: perfumer.product_count })}
+        <DirectorySearch
+          locale={locale}
+          groups={blocks.map((block, bi) => ({
+            id: String(bi),
+            label: tc('block', { n: pad(bi + 1) }),
+            items: block.map((perfumer) => ({
+              id: perfumer.slug,
+              name: perfumer.name,
+              content: (
+                <Link
+                  key={perfumer.slug}
+                  href={taxonomyHref('perfumer', locale, perfumer.slug)}
+                  className="group border-border hover:border-foreground flex flex-col border transition-colors"
+                >
+                  <div className="border-border border-b">
+                    <TaxonomyCardImage
+                      src={perfumer.image}
+                      alt={perfumer.name}
+                      mode="cover"
+                      portrait
+                      fallback={
+                        <span
+                          aria-hidden="true"
+                          className="text-muted-foreground font-mono text-2xl"
+                        >
+                          {initials(perfumer.name)}
                         </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-        </div>
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1 p-3">
+                    <p className="text-sm leading-tight font-semibold tracking-[-0.01em]">
+                      {perfumer.name}
+                    </p>
+                    <span className="text-muted-foreground text-micro font-mono tracking-[0.12em] uppercase tabular-nums">
+                      {perfumer.country ? `${countryName(perfumer.country, locale)} · ` : ''}
+                      {t('productCount', { count: perfumer.product_count })}
+                    </span>
+                  </div>
+                </Link>
+              ),
+            })),
+          }))}
+        />
       )}
     </main>
   );

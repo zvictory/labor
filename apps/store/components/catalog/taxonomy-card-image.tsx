@@ -6,9 +6,16 @@ type Props = {
   alt: string;
   fallback: ReactNode;
   mode?: 'contain' | 'cover';
+  portrait?: boolean;
 };
 
-export function TaxonomyCardImage({ src, alt, fallback, mode = 'contain' }: Props) {
+export function TaxonomyCardImage({
+  src,
+  alt,
+  fallback,
+  mode = 'contain',
+  portrait = false,
+}: Props) {
   return (
     // No radius, no tinted plate, no bottom margin: the card that owns this
     // supplies its own frame and spacing, so the image is just the image.
@@ -19,7 +26,13 @@ export function TaxonomyCardImage({ src, alt, fallback, mode = 'contain' }: Prop
           alt={alt}
           fill
           sizes="(min-width:1024px) 20vw, 50vw"
-          className={mode === 'cover' ? 'object-cover' : 'object-contain p-3'}
+          className={
+            mode === 'cover'
+              ? portrait
+                ? 'object-cover object-top'
+                : 'object-cover'
+              : 'object-contain p-6 sm:p-8'
+          }
         />
       ) : (
         fallback
