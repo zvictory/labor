@@ -5,8 +5,8 @@ import time
 # -------------------------------
 # 1. Load data
 # -------------------------------
-catalog = pd.read_csv("apps/backend/db/catalog/billz_catalog.csv")
-parfumo = pd.read_csv("apps/backend/db/catalog/parfumo_data_clean.csv")
+catalog = pd.read_csv("data/catalog/billz_catalog.csv")
+parfumo = pd.read_csv("data/catalog/parfumo_data_clean.csv")
 
 # -------------------------------
 # 2. Normalization
@@ -136,7 +136,7 @@ output_cols = [
     "Top_Notes", "Middle_Notes", "Base_Notes", "Perfumers", "URL"
 ]
 available = [c for c in output_cols if c in enriched.columns]
-enriched.to_csv("apps/backend/db/catalog/billz_catalog_enriched.csv", index=False, columns=available)
+enriched.to_csv("data/catalog/billz_catalog_enriched.csv", index=False, columns=available)
 
 total = len(parfum_catalog)
 matched = exact_matches + name_matches_count + brand_matches_count
@@ -148,4 +148,4 @@ print(f"  Exact name only:   {name_matches_count}")
 print(f"  Brand token match: {brand_matches_count}")
 print(f"  Total matched:     {matched}/{total}")
 print(f"  Not found:         {total - matched}")
-print(f"\nSaved to apps/backend/db/catalog/billz_catalog_enriched.csv")
+print(f"\nSaved to data/catalog/billz_catalog_enriched.csv")

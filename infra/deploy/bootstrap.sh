@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Labor — first-run bootstrap on a fresh Contabo VPS.
-# Run AFTER `git clone` + `cp .env.example .env` (filled in).
-# Idempotent: safe to re-run.
+# Labor — first run on a fresh VPS.
+# Run AFTER `git clone` + `cp .env.example .env` (filled in), and with the TLS
+# certificate in infra/nginx/certs. Idempotent: safe to re-run.
+# Later releases go out with infra/deploy/deploy.sh.
 
 set -euo pipefail
 
@@ -13,28 +14,35 @@ if [[ ! -f .env ]]; then
   exit 1
 fi
 
-echo "==> 1/6  Pulling images"
-docker compose -f infra/docker-compose.yml pull --ignore-pull-failures
+COMPOSE="docker compose -f infra/docker-compose.yml"
 
-echo "==> 2/6  Building local images"
-docker compose -f infra/docker-compose.yml build
+echo "==> 1/5  Photo volume"
+# External in the compose file, so compose never creates it. On a moved server,
+# restore the old /storage files into it before the site goes live.
+docker volume inspect labor_backend_storage >/dev/null 2>&1 || docker volume create labor_backend_storage
 
-echo "==> 3/6  Starting datastores"
-docker compose -f infra/docker-compose.yml up -d postgres redis
+echo "==> 2/5  Pulling and building images"
+$COMPOSE pull --ignore-buildable
+$COMPOSE build store
 
-echo "==> 4/6  Waiting for postgres..."
-until docker compose -f infra/docker-compose.yml exec -T postgres pg_isready -U "${POSTGRES_USER:-labor}" >/dev/null 2>&1; do
+echo "==> 3/5  Starting postgres"
+$COMPOSE up -d postgres
+until $COMPOSE exec -T postgres pg_isready -U "${POSTGRES_USER:-labor}" >/dev/null 2>&1; do
   sleep 2
 done
 
-echo "==> 5/6  Creating + migrating + seeding DB"
-docker compose -f infra/docker-compose.yml run --rm backend \
-  bash -lc "bundle exec rails db:prepare && bundle exec rails db:seed"
+echo "==> 4/5  Store database and migrations"
+# The store's database is STORE_DB (labor_store), next to POSTGRES_DB.
+STORE_DB="$(grep -E '^STORE_DB=' .env | cut -d= -f2- || true)"
+STORE_DB="${STORE_DB:-labor_store}"
+$COMPOSE exec -T postgres sh -c \
+  "psql -U \"\$POSTGRES_USER\" -d \"\$POSTGRES_DB\" -tc \"SELECT 1 FROM pg_database WHERE datname = '$STORE_DB'\" | grep -q 1 \
+   || createdb -U \"\$POSTGRES_USER\" '$STORE_DB'" < /dev/null
+$COMPOSE run --rm -T store \
+  sh -c 'npx -y prisma@$(node -p "require(\"@prisma/client/package.json\").version") migrate deploy' < /dev/null
 
-echo "==> 6/6  Bringing up backend, sidekiq, web, bot, nginx"
-docker compose -f infra/docker-compose.yml up -d
+echo "==> 5/5  Starting store, bot and nginx"
+$COMPOSE build bot
+$COMPOSE up -d
 
-echo "==> Bootstrap complete."
-echo "    Storefront: http://$(hostname -I | awk '{print $1}'):3001"
-echo "    Backend  : http://$(hostname -I | awk '{print $1}'):3000"
-echo "    Admin    : http://$(hostname -I | awk '{print $1}'):3000/admin"
+echo "==> Bootstrap complete: https://laborparfum.com/ru"

@@ -1,62 +1,38 @@
 ---
-description: Launch the Labor dev stack — Next.js storefront, Telegram bot, and backend infra
+description: Launch the Labor store locally — Next.js dev server on a local Postgres, no Docker
 ---
 
-# Run: Labor dev stack
+# Run: the Labor store
 
 ## One command
 
 ```bash
-npm run dev:all
+npm run dev -w apps/store
 ```
 
-Run this from the **repo root** (`/Users/zafar/Documents/labor`).
+From the repo root. It serves http://localhost:3012 (`PORT_STORE` overrides) with hot
+reload. Stop with Ctrl-C.
 
-## What it starts
+## What it needs
 
-| Process | Port | Notes |
-|---|---|---|
-| Web (Next.js 15) | `:3001` | `next dev -p 3001`, full HMR |
-| Bot (grammy) | `:8080` | `tsx watch src/index.ts`; runs in **mock mode** unless `TELEGRAM_BOT_TOKEN` in `.env` is a real Telegram token |
-| Backend (Rails/Spree) | `:4000` | Docker container; internal port 3000, published on host 4000 |
-| Postgres | `:5432` | Docker |
-| Redis | `:6379` | Docker |
-| Sidekiq | — | Docker (high + low queue workers) |
+| What     | How                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Postgres | Homebrew `postgresql@16` on `localhost:5432`: `brew services start postgresql@16`. `psql` is at `/opt/homebrew/opt/postgresql@16/bin/psql` |
+| Env      | `apps/store/.env`, with `DATABASE_URL` pointing at the local `labor_store` database. Never commit it.                                |
+| Schema   | after pulling new migrations: `npx -w apps/store prisma migrate deploy`                                                              |
 
-Port conflicts on `:3001` / `:8080` are cleared automatically by the script — no manual
-`lsof | xargs kill` needed.
+The Telegram bot lives inside the store (`lib/telegram/`). Locally it receives nothing
+unless `TELEGRAM_BOT_TOKEN` is real and a webhook points at a public URL, so test bot
+replies on production or through a tunnel.
 
 ## Verify it's up
 
 ```bash
-# Storefront — must return 200 with real brand data
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:3001/ru/brands
-
-# Backend API directly
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:4000/api/v2/storefront/brands?per_page=1
-
-# Bot HTTP server
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:3012/ru
 ```
 
-Expected: `200` for all three (bot returns 404 on `/` — that's fine, it means the server is up).
+Expect `200`. The admin is at http://localhost:3012/ru/admin.
 
-## Stop
+## Don't
 
-- **Web + bot:** Ctrl-C in the terminal running `npm run dev:all`.
-- **Docker infra:** `docker compose -f infra/docker-compose.yml --env-file .env stop`
-  (do this only if you want to stop postgres/redis/backend too).
-
-## Env
-
-Web reads from `apps/web/.env.local`:
-- `INTERNAL_API_URL=http://localhost:4000` (SSR/RSC calls)
-- `NEXT_PUBLIC_API_URL=http://localhost:4000/api` (browser calls)
-
-Root `.env` is loaded by docker-compose for Postgres credentials etc. Do **not** commit it.
-
-## Important: do NOT use the compose web/bot services for dev
-
-`infra/docker-compose.yml` defines `web:` and `bot:` services, but they are **production
-builds** — `next build`, `restart: unless-stopped`, no hot-reload. Always use
-`npm run dev:all` for daily development.
+- Don't start Docker or `infra/docker-compose.yml` locally: that file is production only.

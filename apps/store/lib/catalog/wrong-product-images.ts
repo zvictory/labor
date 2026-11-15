@@ -7,7 +7,7 @@
 // VERSET, POSH, DILIS. Somebody photographed the cheap copy and filed it under
 // the original's name.
 //
-// The cause was traceable in the end. `apps/backend/db/data/product_image_manifest.json`
+// The cause was traceable in the end. `data/catalog/product_image_manifest.json`
 // maps product -> Fragrantica id, and for 27 of these it holds the id of the
 // clone: the image pipeline fetched exactly what it was told to. A block of
 // consecutive ids around 92 900-93 100 accounts for most of them — one harvest

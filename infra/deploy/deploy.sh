@@ -34,9 +34,9 @@ set -euo pipefail
 cd "$REMOTE_DIR"
 git fetch --all --prune
 git reset --hard origin/main
-# Only postgres, redis and nginx come from a registry. The other seven services
-# are built from this checkout, so --ignore-buildable keeps pull from warning
-# about images that will never exist, and --build is what actually deploys the
+# postgres and nginx come from a registry; the store and the bot are built
+# from this checkout, so --ignore-buildable keeps pull from warning about
+# images that will never exist there, and --build is what actually deploys the
 # code: without it 'up -d' sees the same compose definition, leaves the running
 # containers alone, and the deploy reports success having shipped nothing.
 docker compose -f infra/docker-compose.yml pull --ignore-buildable
@@ -56,13 +56,9 @@ docker compose -f infra/docker-compose.yml up -d --build --remove-orphans
 # down this way the first time --build was used. It is not restarted by the line
 # above because its own image and config did not change.
 docker compose -f infra/docker-compose.yml restart nginx
-# '< /dev/null' on both, and it is load-bearing. This script reaches the server
-# as ssh's stdin, and 'exec -T' reads stdin — so without it the rails command
-# swallows the rest of the script. Everything below these two lines silently
-# never ran, including the image prune that has been in this script from the
-# start, and the shell then reached EOF and exited 0.
-docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails db:migrate < /dev/null
-docker compose -f infra/docker-compose.yml exec -T backend bundle exec rails tmp:clear < /dev/null
+# The deploy never touches the Telegram webhook. The bot container sets it to
+# TELEGRAM_WEBHOOK_URL itself when it starts, as it always has; the bot is
+# connected to Billz (labor.billz.io), so leave both as they are.
 docker image prune -f
 
 # Fail the deploy if the store is not actually rendering pages. Everything above
