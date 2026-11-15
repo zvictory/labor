@@ -9,3 +9,5 @@ apps/store/.next
 docs
 data
 infra/nginx
+apps/bot/node_modules
+apps/bot/dist

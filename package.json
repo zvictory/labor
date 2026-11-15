@@ -4,7 +4,8 @@
   "private": true,
   "description": "Labor — multi-brand fragrance ecommerce for Uzbekistan (Next.js store, Telegram bot inside)",
   "workspaces": [
-    "apps/store"
+    "apps/store",
+    "apps/bot"
   ],
   "scripts": {
     "dev": "npm run dev -w apps/store",

@@ -41,7 +41,8 @@ $COMPOSE exec -T postgres sh -c \
 $COMPOSE run --rm -T store \
   sh -c 'npx -y prisma@$(node -p "require(\"@prisma/client/package.json\").version") migrate deploy' < /dev/null
 
-echo "==> 5/5  Starting store and nginx"
+echo "==> 5/5  Starting store, bot and nginx"
+$COMPOSE build bot
 $COMPOSE up -d
 
 echo "==> Bootstrap complete: https://laborparfum.com/ru"

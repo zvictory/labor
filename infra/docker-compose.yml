@@ -1,7 +1,7 @@
 name: labor
 
-# Production: the store, its Postgres and nginx in front. Nothing else runs here;
-# the earlier Spree stack (Rails, Sidekiq, the old storefront and bot, Redis) is gone.
+# Production: the store, its Postgres, the Telegram bot and nginx in front. The
+# earlier Spree stack (Rails, Sidekiq, the old storefront, Redis) is gone.
 # Locally the store runs without Docker (see CLAUDE.md).
 
 services:
@@ -47,6 +47,17 @@ services:
     expose:
       - "3002"
 
+  # The live @laborparfum_bot: Telegram's webhook points at it (/telegram/webhook),
+  # and the bot is connected to Billz (labor.billz.io). Kept exactly as it ran;
+  # don't move its webhook. Its one Spree call (saving the language) now fails
+  # quietly, as the code already allows.
+  bot:
+    build:
+      context: ..
+      dockerfile: apps/bot/Dockerfile
+    restart: on-failure
+    env_file: ../.env
+
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
@@ -60,6 +71,7 @@ services:
       - product_images:/usr/share/nginx/html/storage:ro
     depends_on:
       - store
+      - bot
 
 volumes:
   pgdata:

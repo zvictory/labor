@@ -19,7 +19,8 @@ Checks: `npm run typecheck`, `npm test`.
 
 | Path            | What                                                         |
 | --------------- | ------------------------------------------------------------ |
-| `apps/store`    | the store: storefront, admin, API, Telegram bot, payments    |
+| `apps/store`    | the store: storefront, admin, API, payments, Telegram sends  |
+| `apps/bot`      | the live @laborparfum_bot, connected to Billz; leave as is   |
 | `data/catalog`  | catalog source files (Billz export, Parfumo, image manifest) |
 | `scripts`       | Python tools that built the catalog from those files         |
 | `infra`         | production: compose file, nginx, `deploy/deploy.sh`          |

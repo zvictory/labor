@@ -12,7 +12,7 @@ Develop it as a plain Next.js app — **no Docker locally.**
 | Data         | Prisma 5 + Postgres, database `labor_store`; schema `apps/store/prisma/schema.prisma`                  |
 | Auth         | NextAuth v5 (`lib/auth/config.ts`): Telegram login, Telegram WebApp, phone OTP, staff email + password |
 | Payments     | Click and Payme route handlers under `app/api/payments/`                                               |
-| Telegram bot | grammy inside the app (`lib/telegram/`, webhook `app/api/telegram/webhook`)                            |
+| Telegram bot | Live bot: `apps/bot` (grammy, connected to Billz). The store sends messages with `lib/telegram/`; its `app/api/telegram/webhook` gets no updates |
 | i18n         | next-intl — locales ru, en, uz; ru is the default                                                      |
 | Validation   | Zod                                                                                                    |
 | Tests        | Vitest (unit), Playwright (`e2e/`)                                                                     |
@@ -44,19 +44,21 @@ Do **not** start Docker locally: `infra/docker-compose.yml` is the production st
 
 ## Production
 
-The VPS runs Docker: `store`, `postgres` and `nginx` (`infra/docker-compose.yml`).
+The VPS runs Docker: `store`, `postgres`, `bot` and `nginx` (`infra/docker-compose.yml`).
 `infra/deploy/deploy.sh`, run from the Mac, builds and migrates there and fails unless `/ru`
 answers 200. Never deploy without Zafar's approval.
 
-- The live Telegram bot is connected to Billz (labor.billz.io). Don't touch it: never call
-  `setWebhook` or otherwise change its webhook, from a script, the deploy or the store.
+- The live Telegram bot, @laborparfum_bot, is `apps/bot` (grammy), connected to Billz
+  (labor.billz.io). Don't touch it: keep its container and nginx's `/telegram/webhook`
+  route, and never call `setWebhook` or change its webhook from a script, the deploy or the
+  store. The bot registers `TELEGRAM_WEBHOOK_URL` itself on start. The store's own bot code
+  (`lib/telegram/`, `/api/telegram/webhook`) uses the same token only to send messages.
 
 - Product photos are the files behind the `/storage/...` URLs in the catalog: the Docker
   volume `labor_backend_storage`, served by nginx. Declared `external`, never remove it.
 - The Postgres container also keeps the old Spree database (`POSTGRES_DB`, labor_production).
   Nothing reads it at runtime; only `apps/store/scripts/etl` can (`SPREE_DATABASE_URL`).
-- The earlier Spree stack (Rails, the Next.js 14 storefront, the old bot, `packages/*`,
-  Redis, Sidekiq) was removed from the repository; it is in git history if ever needed.
+- The earlier Spree stack (Rails, the Next.js 14 storefront, `packages/*`, Redis, Sidekiq) was removed from the repository; it is in git history if ever needed.
 - Catalog source files (Billz export, Parfumo data, image manifest) are in `data/catalog/`.
 
 ## Conventions

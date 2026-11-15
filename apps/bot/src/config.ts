@@ -1,0 +1,48 @@
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+const required = (key: string): string => {
+  const v = process.env[key];
+  if (!v) {
+    if (process.env.NODE_ENV === 'development') {
+      return `mock_${key.toLowerCase()}`;
+    }
+    throw new Error(`Missing required env: ${key}`);
+  }
+  return v;
+};
+
+const requiredMinLength = (key: string, min: number): string => {
+  const v = process.env[key];
+  if (!v || v.length < min) {
+    if (process.env.NODE_ENV === 'development') {
+      return `mock_${key.toLowerCase()}`.padEnd(min, '_');
+    }
+    if (!v) throw new Error(`Missing required env: ${key}`);
+    throw new Error(`Env ${key} must be at least ${min} chars (got ${v.length})`);
+  }
+  return v;
+};
+
+export const config = {
+  botToken: required('TELEGRAM_BOT_TOKEN'),
+  webappUrl: process.env.TELEGRAM_WEBAPP_URL ?? process.env.NEXT_PUBLIC_MINIAPP_URL ?? process.env.WEBAPP_URL ?? 'https://laborparfum.com/tg',
+  apiBaseUrl: process.env.LABOR_API_BASE_URL ?? 'http://backend:3000/api/v2',
+  adminChatId: process.env.TELEGRAM_ADMIN_CHAT_ID,
+  defaultLocale: (process.env.DEFAULT_LOCALE ?? 'ru') as 'ru' | 'en' | 'uz' | 'uzc',
+  channelUrl: process.env.TELEGRAM_CHANNEL_URL ?? 'https://t.me/labor_uz',
+  webhookUrl: process.env.TELEGRAM_WEBHOOK_URL,
+  // Fail-fast: both secrets are required at boot. Telegram webhook secret guards
+  // grammy's webhookCallback; internal notify token is HMAC key for Spree → bot.
+  webhookSecret: requiredMinLength('TELEGRAM_WEBHOOK_SECRET', 16),
+  internalNotifyToken: requiredMinLength('INTERNAL_NOTIFY_TOKEN', 32),
+  port: Number(process.env.PORT ?? 8080),
+} as const;
+
+export type Locale = typeof config.defaultLocale;
